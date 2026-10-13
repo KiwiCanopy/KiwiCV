@@ -3,7 +3,7 @@ import type { Translations } from '@/locales/en';
 export const v_005_000_000: Translations['changelog']['entries']['v_005_000_000'] = {
   _highlights: {
     one_day_pass: {
-      badge: 'Novedad',
+      badge: 'Pass de 1 día',
       content:
         '¿No estás seguro de que KiwiCV sea para ti? El nuevo Pass de 1 día desbloquea todas las funciones de IA para tu próxima candidatura, así lo descubres antes de comprometerte con un Pass más largo. Las tarjetas de precios ahora ofrecen 1, 7 y 30 días.',
       title: 'Pruébalo por un día',

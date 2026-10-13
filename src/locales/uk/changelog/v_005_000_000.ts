@@ -3,7 +3,7 @@ import type { Translations } from '@/locales/en';
 export const v_005_000_000: Translations['changelog']['entries']['v_005_000_000'] = {
   _highlights: {
     one_day_pass: {
-      badge: 'Нове',
+      badge: '1-денний Pass',
       content:
         'Сумніваєшся, чи підходить тобі KiwiCV? Новий 1-денний Pass відкриває всі функції ШІ для твоєї наступної подачі резюме, тож можна все перевірити, перш ніж обирати довший Pass. У картках тарифів тепер є 1, 7 і 30 днів.',
       title: 'Спробуй на один день',

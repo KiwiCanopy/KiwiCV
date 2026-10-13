@@ -353,7 +353,7 @@ started by whichever event ends it). A chain that ends without a usable verdict
 — Drive never answered, or the token was signed out or replaced meanwhile —
 removes `PENDING_GOOGLE_RESTORE_KEY`, so a much later passing check cannot pull
 the user into the restore prompt. If all three fail, the card stays "checking"
-until the next auth event; a toast with Retry is a follow-up, not built yet.
+until the next auth event; a toast with Retry is #2.
 
 The middle row is the usual one: a Connect over a stored credential omits
 `prompt=consent`, and Google then issues no refresh token. On an OAuth return

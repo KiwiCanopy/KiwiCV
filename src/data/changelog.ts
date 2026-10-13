@@ -28,7 +28,7 @@ const allChangelogs: ChangelogEntry[] = [
     version: '5.0.0',
     date: '2026-10-13',
     id: 'v_005_000_000',
-    highlights: [{ id: 'one_day_pass' }, { id: 'open_source' }],
+    highlights: [{ id: 'open_source' }, { id: 'one_day_pass' }],
   },
   {
     version: '4.5.1',

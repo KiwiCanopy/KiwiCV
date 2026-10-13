@@ -1,0 +1,17 @@
+export const languages = {
+  bg: 'Bulgarian',
+  de: 'German',
+  en: 'English',
+  es: 'Spanish',
+  fr: 'French',
+  it: 'Italian',
+  ja: 'Japanese',
+  nl: 'Dutch',
+  pl: 'Polish',
+  pt: 'Portuguese',
+  ru: 'Russian',
+  sv: 'Swedish',
+  tr: 'Turkish',
+  uk: 'Ukrainian',
+  zh: 'Chinese',
+};

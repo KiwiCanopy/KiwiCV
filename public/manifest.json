@@ -1,0 +1,36 @@
+{
+  "id": "/",
+  "short_name": "KiwiCV",
+  "name": "KiwiCV",
+  "description": "Write your CV and cover letter and export a clean PDF. Editing and PDF export stay free, with no subscription.",
+  "icons": [
+    {
+      "src": "/logos/kiwicv/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logos/kiwicv/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/logos/kiwicv/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/logos/kiwicv/icon-maskable-512.png?v=2",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#f4f8f4"
+}

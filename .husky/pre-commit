@@ -1,0 +1,24 @@
+# Refuse a commit while HEAD is `main`: main takes PRs only, and a session whose
+# HEAD moved under it would otherwise commit there unnoticed. Gates the commit,
+# not the push. Override: KIWICV_ALLOW_MAIN_COMMIT=1 git commit …
+if [ "$(git symbolic-ref --quiet --short HEAD)" = "main" ] &&
+  [ "${KIWICV_ALLOW_MAIN_COMMIT:-0}" != "1" ]; then
+  echo "pre-commit: refusing to commit on 'main'. Branch per change (feat/, fix/, chore/…) and open a PR."
+  echo "  Intended? KIWICV_ALLOW_MAIN_COMMIT=1 git commit …"
+  exit 1
+fi
+
+# Load NVM if it exists to ensure npx is found in non-interactive shells.
+#
+# ⚠️ Sourcing nvm.sh selects the DEFAULT alias, not `.nvmrc` — on a machine
+# whose default is node 20 this hook ran the whole suite under 20 and died at
+# vitest's import with `'node:util' does not provide an export named
+# `styleText`, which is the first symptom `scripts/check-node-version.cjs`
+# exists to stop being anonymous. `preinstall` cannot see this path. The
+# switch is best-effort: if node 24 is not installed, `pretest` reports it
+# with the actionable message instead of nvm failing the hook here.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm use --silent >/dev/null 2>&1 || true
+
+npx lint-staged

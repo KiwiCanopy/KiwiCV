@@ -1,0 +1,68 @@
+import type { Translations } from '@/locales/en';
+
+export const design: Translations['design'] = {
+  address_schema_active_fields: 'Aktywne pola (Przeciągnij, aby zmienić kolejność)',
+  address_schema_apply_template: 'Zastosuj szablon',
+  address_schema_available_fields: 'Dostępne pola (Kliknij, aby dodać)',
+  address_schema_desc: 'Formatuj układ bloku adresu i separatory niezależnie od języka CV.',
+  address_schema_mode_custom: 'Niestandardowy',
+  address_schema_mode_default: 'Zależny od języka',
+  address_schema_mode_default_desc:
+    'Schemat automatycznie dostosowuje się do języka Twojego CV. Jeśli różni się on od ustawionego języka wyświetlania, dodawany jest również kod kraju. Aby uzyskać więcej opcji dostosowywania, wybierz „{customLayout}”.',
+  address_schema_mode_label: 'Tryb układu',
+  address_schema_no_active_fields: 'Brak aktywnych pól. Kliknij pola poniżej, aby je dodać.',
+  address_schema_preset_european: 'Styl europejski',
+  address_schema_preset_us_ca: 'Styl US/CA',
+  address_schema_restore: 'Przywróć domyślne',
+  address_schema_separator_comma: 'Przecinek',
+  address_schema_separator_dash: 'Myślnik',
+  address_schema_separator_space: 'Spacja',
+  address_schema_title: 'Zarządzanie schematem adresu',
+  address_schema_toggle_separator: 'Przełącz separator między przecinkiem a spacją',
+  bold_header: {
+    desc: 'Wybierz, które szczegóły powinny być wyświetlane jako pogrubiony nagłówek (główna linia)',
+    title: 'Tryb pogrubionego nagłówka',
+  },
+  color_chooser: 'Schemat kolorów',
+  column_empty: 'Brak sekcji',
+  design_filter: {
+    one_column: 'Jedna kolumna',
+    two_column: 'Dwie kolumny',
+  },
+  empty_sections_subtitle:
+    'Te sekcje są jeszcze puste. Czy na pewno nie chcesz nic dodać? Każdy szczegół ma znaczenie.',
+  empty_sections_title: 'Dodatkowe dostępne sekcje',
+  example_section: 'Przykładowa sekcja',
+  formatting: 'formatowanie',
+  groups: {
+    details: 'Szczegóły',
+    layout: 'Układ',
+    typography: 'Typografia',
+  },
+  layout_flip: 'Odbicie lustrzane układu',
+  layout_main_column: 'Kolumna główna',
+  layout_side_column: 'Pasek boczny',
+  layout_swap_tooltip: 'Przenieś do innej kolumny',
+  more_actions_named: 'Więcej akcji dla „{{name}}”',
+  page_break_add: 'Dodaj podział strony',
+  page_break_disabled_first: 'Podział strony niedostępny dla pierwszego elementu',
+  page_break_disabled_hidden: 'Podział strony niedostępny dla ukrytych sekcji',
+  page_break_removal_tooltip: 'Usuń podział strony przed tą sekcją (dotyczy tylko wersji PDF)',
+  page_break_remove: 'Usuń podział strony',
+  page_break_tooltip: 'Dodaj podział strony przed tą sekcją (dotyczy tylko wersji PDF)',
+  pdf_footer: {
+    date: 'Dołącz datę',
+    desc: 'Wstaw linie podpisu, miejscowosc i date na dole strony',
+    location: 'Dołącz lokalizację',
+    show: 'Pokaż stopkę',
+    title: 'Stopka PDF',
+  },
+  section_reordering: {
+    hint: 'Sekcje pojawiają się w Twoim CV w tej kolejności. Przeciągnij wiersz za uchwyt, aby go przenieść.',
+    hint_touch:
+      'Sekcje pojawiają się w Twoim CV w tej kolejności. Użyj strzałek, aby przenieść wiersz, lub przytrzymaj uchwyt i przeciągnij.',
+    title: 'Kolejność sekcji',
+  },
+  swap_column_named: 'Przenieś „{{name}}” do innej kolumny',
+  template: 'Szablon',
+};

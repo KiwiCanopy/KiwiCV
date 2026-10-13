@@ -1,0 +1,28 @@
+export const blog = {
+  back_to_overview: 'Torna alla panoramica',
+  categories: {
+    career_growth: 'Crescita professionale',
+    career_stories: 'Storie di carriera',
+    inside_kiwicv: 'Dietro le quinte di KiwiCV',
+    interview_prep: 'Preparazione al colloquio',
+    job_search: 'Ricerca di lavoro',
+    personal_brand: 'Brand personale',
+    resume_guide: 'Guida al curriculum',
+  },
+  editorial_name: 'Redazione KiwiCV',
+  editorial_subtitle: 'Consigli degli esperti per la tua prossima mossa di carriera.',
+  media_error: 'Impossibile caricare il contenuto',
+  no_content: 'Nessun contenuto disponibile.',
+  no_posts: 'Nessun post trovato.',
+  post_not_found: 'Articolo non trovato',
+  read_more: 'Leggi di più',
+  reading_time: '{{minutes}} min di lettura',
+  share_article: 'Condividi articolo',
+  share_error: 'Condivisione fallita.',
+  share_insecure: 'La condivisione richiede una connessione sicura (HTTPS).',
+  subtitle:
+    "Consigli degli esperti sulla creazione del curriculum, la crescita professionale e l'ottenimento del lavoro dei tuoi sogni.",
+  tagline: 'Approfondimenti & Guide',
+  title: 'Blog KiwiCV',
+  unknown_date: 'Data sconosciuta',
+};

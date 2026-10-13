@@ -1,0 +1,515 @@
+/* Inter Font (Local) */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-400-normal.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-500-normal.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-600-normal.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-700-normal.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* Headings are weight 800 (see DESIGN_LANGUAGE.md). Without this face the
+   browser synthesizes it from 700, which is the muddy result the weight
+   change exists to avoid. `font-black` (900) also resolves here: CSS font
+   matching walks upward from the requested weight first, and 800 is the
+   heaviest face we ship. */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-800-normal.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+/* Inter's italics. Without these the browser synthesizes an oblique by
+   slanting the upright face, while Typst — which has had these exact files in
+   `EAGER_FONT_FILES` all along — renders the real italic. Nine of the twelve
+   themes resolve to Inter, so that made most italic text in the app a
+   preview/export mismatch. No new files: they were already being served.
+
+   400/600/700 and no 500: those are the three italic faces in `public/fonts`.
+   CSS font matching resolves a requested 500 italic to the 400 face rather than
+   synthesizing, so the gap costs nothing. */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-400-italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-600-italic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-700-italic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Theme faces for the HTML preview.
+
+   `THEME_FONTS` in `themes/shared/fonts.ts` names a family per theme and
+   `resolveHTMLFontStack` puts it in the rendered `font-family`. Until this block
+   existed, Inter was the only family this file declared, so elegant and timeless
+   (Lora) and javascript (JetBrains Mono) fell straight through to the generic
+   `serif` / `monospace` in the browser while their PDFs rendered the real face —
+   the preview and the export disagreed and nothing said so.
+
+   Both families were already in `public/fonts` and already registered for Typst
+   via `EAGER_FONT_FILES`; only the browser had never been told. So this adds no
+   files and no dependency. It also costs nothing to a user on an Inter theme:
+   `@font-face` is lazy, and the browser fetches a face only once a rule actually
+   matches text.
+
+   Italics are declared rather than left to synthesis — an algorithmic oblique
+   is visibly wrong on a serif, and the files are already served. Inter's own
+   italics were the same gap one issue later, and are declared above now
+   too. */
+
+/* Lora — elegant, timeless. */
+@font-face {
+  font-family: 'Lora';
+  src: url('/fonts/lora-latin-400-normal.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lora';
+  src: url('/fonts/lora-latin-400-italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lora';
+  src: url('/fonts/lora-latin-700-normal.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lora';
+  src: url('/fonts/lora-latin-700-italic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* JetBrains Mono — javascript. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-latin-400-normal.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-latin-400-italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-latin-700-normal.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-latin-700-italic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Product-chrome tokens. Shares one target palette with KiwiCanopy-web
+   (`src/styles/theme.css`), but NOT one set of names — do not copy values
+   across on name alone:
+
+     KiwiCV `--accent`   = neutral hover/selected tint  ≙ Canopy `--surface-*`
+     KiwiCV `--kiwi`     = the brand green (#A9CB59)    ≙ Canopy `--accent`
+
+   A naive `--accent` swap therefore paints every hover surface brand green.
+   `--secondary` (pale green subtle surface) and `--mist` (pale green band) are
+   two roles in both repos and stay separate on purpose.
+
+   `--kiwi` is FILL/RING-ONLY (`bg-kiwi/*`, `ring-kiwi`) — never `text-kiwi`
+   on light surfaces: #A9CB59 sits at ~1.7:1 on the light background, far
+   below AA. Green *text* on light uses the family's darkened literal
+   #506C37 (5.6:1), same rule as Canopy's and KiwiDesk's theme files.
+
+   Generated CV themes are a separate token system (see THEME_SYSTEM.md) and
+   never read from here. */
+@layer base {
+  :root {
+    --background: 120 22.2% 96.5%;
+    --foreground: 155.5 44% 9.8%;
+    --card: 0 0% 100%;
+    --card-foreground: 155.5 44% 9.8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 155.5 44% 9.8%;
+    --primary: 77.9 52.3% 57.3%;
+    /**
+     * ⚠️ Introduced holding `--primary`'s own value, so adding it and migrating
+     * the call sites is provably a no-op. The values diverge in a later commit,
+     * where the entire visual change is three lines instead of a 470-site diff.
+     *
+     * `--primary` is the FILL. `--primary-strong` is everything DRAWN — text,
+     * borders, rings, strokes.
+     *
+     * ⚠️ The fill is deliberately LIGHTER than a white label could survive. Ink
+     * on it is 6.46:1 at 54% lightness; at 46% it was 4.97:1 — over AA, but only
+     * just, and dark-on-mid-tone is where a label starts to feel like work.
+     *
+     * ⚠️ Filled buttons carry NO visible rim, and that is a decision rather than
+     * an oversight. The fill is 2.49:1 against `--card`, which reads as a
+     * non-text contrast failure only if the *edge* is what identifies the
+     * control. It is not: the label does, at 6.46:1. Light buttons are the
+     * opposite case — `bg-card` on `--card` is 1.00:1, so there the edge IS the
+     * button, and `--input` carries it at 3.83:1. One rule: `bg-*` and `accent-*` take the fill,
+     * everything else takes the strong.
+     */
+    --primary-strong: 162 60% 19.6%;
+    --primary-foreground: 155.5 44% 9.8%;
+    --secondary: 127.5 18.2% 91.4%;
+    --secondary-foreground: 155.5 44% 9.8%;
+    --muted: 127.5 18.2% 91.4%;
+    --muted-foreground: 148.7 13.1% 34.3%;
+    --accent: 127.5 18.2% 91.4%;
+    --accent-foreground: 155.5 44% 9.8%;
+    /*
+     * ⚠️ A RED, not a brick. `0 47.5% 43.3%` was too far toward brown for the
+     * expired-pass pill; `347 77% 50%` (the old raw `rose-600`) was a pink-red
+     * that shouted. This sits between them, deliberately.
+     *
+     * Every role still clears AA on the Ink rail surfaces: 5.94:1 as text on
+     * `--card`, 5.55:1 on the canvas, 4.98:1 on `--secondary`, 4.57:1 on
+     * `--mist`, and white — `--destructive-foreground` in light — is 5.94:1 on
+     * the fill. `--mist` is the binding one now, not `--secondary`; it is what
+     * fails first if this is ever lightened. (Re-measured 2026-09-01; the
+     * previous figures were against the pre-palette surfaces.)
+     *
+     * ⚠️ `--danger` holds the same triple and must keep doing so. They are two
+     * names for one colour (73 and 11 call sites); letting them drift is how a
+     * palette ends up with two reds nobody can tell apart.
+     */
+    --destructive: 357 66% 45%;
+    /*
+     * Informational states — a plan that is simply "free", a neutral notice.
+     * NOT a warning and NOT an error: nothing is wrong, so `--warning` and
+     * `--destructive` both over-signal it.
+     *
+     * Added because the account page had a raw `blue-500` with nowhere to go:
+     * `--info` did not exist, so the literal could not follow the theme and
+     * a sweep could not remove it. 6.30:1 as text on `--card` in light,
+     * 5.94:1 in dark after the 2026-09-01 lift (see the dark block).
+     *
+     * ⚠️ 41%, not 45%. The only place this is used is a `bg-info/10` pill on a
+     * tinted gradient — never on bare `--card` — and the composite there was
+     * 4.47:1 at rest and 4.31:1 on hover, both under AA. The token's own ratio
+     * is not the rendered ratio; check the composite, not the token. Slightly desaturated from Tailwind's blue so it does not
+     * shout next to a warm-neutral palette.
+     */
+    --info: 214 75% 41%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 128.6 14.6% 81.2%;
+    --input: 144.5 9.3% 46.3%;
+    --ring: 155.5 44% 9.8%;
+    --kiwi: 77.9 52.3% 57.3%;
+    --pale-kiwi: 79 50% 76%;
+    --mist: 129.2 20% 87.3%;
+    --success: 137.8 33.8% 31.4%;
+    /*
+     * ⚠️ The label INVERTS between themes, like the two paid families. Light
+     * `--success` is a deep green under a white label (6.28:1); dark is a light
+     * green under an ink one (10.09:1). A hardcoded `text-white` measures
+     * 1.62:1 on the dark fill — which is what `CloudSaveButton`'s success state
+     * once shipped with. Read this token, never a literal.
+     */
+    --success-foreground: 0 0% 100%;
+    --warning: 35.8 75.8% 30.8%;
+    /**
+     * Paid tiers, passes and upsells. ⚠️ **An accent, not a surface.** The
+     * account page's premium card is near-white with gold *accents* — a
+     * gradient CTA, gold pills, a gold crown — and that is what reads as gold.
+     *
+     * Two attempts got this wrong before the shipped card was looked at: a dark
+     * gold fill (which is brown at 34% lightness) and then a flat light gold
+     * card (which is a yellow slab). Gold glows because it is a gradient with
+     * depth sitting ON something light, not because of its hue. `--premium` and
+     * `--premium-deep` are the two stops; `--premium-foreground` is the
+     * near-black brown that rides on them, matching the shipped Buy Pass button
+     * (`amber-400` -> `amber-500`, `amber-950` text) at 8.97:1.
+     *
+     * ⚠️ Gold only reads as gold when it is LIGHT. A first attempt used a dark
+     * gold fill with white text on it, on the reasoning that a filled badge
+     * needs white; at 34% lightness that is not gold, it is brown, and the owner
+     * said so immediately. Value carries "gold" here, not hue — so the surface
+     * is light and the text is dark, which is the inverse of every other filled
+     * token in this file.
+     *
+     * ⚠️ NOT a synonym for `--warning`. They cannot be told apart by colour and
+     * are not meant to be: they separate by **icon, grammar and placement** — a
+     * warning is a bordered tint chip beside the thing that is wrong; premium is
+     * a surface at a decision point.
+     */
+    --premium: 43 92% 58%;
+    --premium-deep: 38 92% 50%;
+    /**
+     * ⚠️ Ink, not the amber-950 brown the account page's Buy Pass uses. Brown on
+     * gold measures 8.80:1 — plenty — but it reads *soft*: dark brown on warm
+     * gold is high contrast and low crispness, and it looked washed out beside
+     * the ink labels every other button carries. Ink is 9.51:1 on the gradient's
+     * light end and 7.55:1 on its deep end, and it is the same label colour as
+     * the primary buttons, so the premium CTA reads as the same kind of object.
+     */
+    --premium-foreground: 145.3 34.5% 10.8%;
+    --danger: 357 66% 45%;
+    --focus-separator: 0 0% 100%;
+    --focus-outer: 155.5 44% 9.8%;
+    --radius: 0.75rem;
+    --radius-control: 0.5rem;
+    --radius-card: 0.75rem;
+    --radius-panel: 1rem;
+    --radius-feature: 1.5rem;
+    --elevation-1: 0 1px 2px rgb(18 37 26 / 6%);
+    --elevation-2: 0 8px 24px rgb(18 37 26 / 10%);
+    --motion-control: 140ms;
+    --motion-panel: 200ms;
+    --motion-large: 280ms;
+    --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --h-responsive-mobile: 80vh;
+    --h-responsive-desktop: 90vh;
+    /*
+     * THE ZONES. Colour is spent here — on whole surfaces stepping by value in
+     * one hue — rather than on the hairlines that used to carry every boundary.
+     * Nav is the darkest surface on screen and the editor the lightest, which
+     * is what makes the middle read as bright instead of washed out.
+     *
+     * ⚠️ These are NOT interchangeable with `--background`. A component that
+     * paints a zone must read its zone token; falling back to `--background`
+     * flattens the ladder back to where it started.
+     */
+    --nav: 162 48.4% 12.2%;
+    --nav-foreground: 147.9 14.3% 61.6%;
+    /*
+     * ⚠️ Two nav text roles, not one. The palette summary exposed only the
+     * muted label; its own screen mock also uses a bright one for the selected
+     * and hovered row, and without it a selected row would have to fall back to
+     * `--foreground`, which is ink and invisible on this surface. Muted is
+     * 5.89:1 on the nav and 4.63:1 on the active row — the active row is the
+     * binding pair and the reason the muted value cannot go dimmer.
+     */
+    --nav-foreground-strong: 133.3 27.3% 93.5%;
+    --nav-border: 159.5 38.8% 19.2%;
+    --nav-active: 158.3 39.1% 18%;
+    --rail: 127.5 18.2% 91.4%;
+    --rail-active: 0 0% 100%;
+    --workspace: 120 22.2% 96.5%;
+    --desk: 133.3 14.8% 88%;
+    /*
+     * ⚠️ Lighter than the DESK, in both themes — not lighter than both panes.
+     * A seam darker than its neighbours reads as a ruled line drawn across the
+     * app; one lighter than the darker pane reads as a gutter. In light it sits
+     * at 93.9% between the workspace at 96.5% and the desk at 88%, so it is
+     * darker than the workspace: the earlier "lighter than both" claim was
+     * false on the light side and would have sent the next reader re-deriving
+     * the wrong rule.
+     */
+    --divider: 120 16.1% 93.9%;
+  }
+
+  .dark {
+    --background: 154.3 22.6% 12.2%;
+    --foreground: 140 15.8% 96.3%;
+    --card: 153.3 21.4% 16.5%;
+    --card-foreground: 140 15.8% 96.3%;
+    --popover: 153.3 21.4% 16.5%;
+    --popover-foreground: 140 15.8% 96.3%;
+    --primary: 77.9 52.3% 57.3%;
+    /**
+     * ⚠️ Deliberately an alias of `--primary`, not a second value. Surface
+     * polarity: dark's surfaces are dark, so the same light value works as a
+     * fill (ink on it, 8.71:1) and as text (9.08:1 on dark `--card`). The token
+     * exists here only so the cascade resolves.
+     */
+    --primary-strong: 77.9 52.3% 57.3%;
+    --primary-foreground: 155.5 44% 9.8%;
+    --secondary: 153 19.6% 20%;
+    --secondary-foreground: 140 15.8% 96.3%;
+    --muted: 153 19.6% 20%;
+    --muted-foreground: 145.7 10.8% 74.5%;
+    --accent: 153 19.6% 20%;
+    --accent-foreground: 140 15.8% 96.3%;
+    /* Muted toward Canopy's dark danger (#c76060) but held lighter than it:
+       `bg-destructive` carries `--destructive-foreground` (deep ink), which
+       only reaches 3.7:1 at Canopy's lightness. 68% keeps 5.77:1 on the filled
+       button and 6.01:1 for `text-destructive` on `--card`.
+
+       ⚠️ Dark is hue 4, light is hue 357, and that mismatch is deliberate. At
+       45% a hue reads as red; at 68% the SAME hue reads as rose, because
+       pastels drift pink. Matching the numbers across themes would mean not
+       matching the colour. Dark also cannot simply go darker to fix it: its
+       lightness is squeezed from both sides, needing to stay light enough for
+       `text-destructive` on the dark card AND light enough to carry an ink
+       label on the filled button. Hue and chroma are the only levers here. */
+    /*
+     * ⚠️ LIGHTENED for the Ink rail surfaces (2026-09-01). These kept their
+     * pre-palette values while every dark surface got LIGHTER — `--card`
+     * 10.2% -> 16.5%, `--secondary` 13.5% -> 20%, `--mist` -> 23.5% — so the
+     * old values stopped clearing AA as text. `--warning` was the worst at
+     * 4.27:1 on `--card`, which is the ordinary ground for text; destructive
+     * was 4.16:1 on `--secondary` and info 3.98:1 on `--mist`.
+     *
+     * Each is lifted in LIGHTNESS only, hue and saturation untouched, to the
+     * smallest value clearing 4.5:1 on `--mist` — the lightest ground any of
+     * them can land on, so the rest have headroom. Re-measure all three if a
+     * dark surface is ever lightened again; they are pinned to `--mist`.
+     */
+    --destructive: 4 68% 74.7%;
+    --info: 214 70% 71.9%;
+    --destructive-foreground: 145.3 34.5% 10.8%;
+    --border: 148.4 13.9% 26.9%;
+    /*
+     * ⚠️ Lighter than `--border`, and it must stay that way. These two held the
+     * SAME value once, which made the whole control-edge rule a no-op in
+     * dark: moving a control from `border-border` to `border-input` changed
+     * nothing, and the boundary sat at 1.89:1 against `--card` — under 1.4.11's
+     * 3:1. Every control-edge fix before this one bought light mode only.
+     *
+     * 40% is the smallest step with real headroom: 38% lands on 3.02:1, which
+     * rounds to the minimum and leaves none. This is 3.28:1.
+     */
+    --input: 144.4 13% 48.2%;
+    --ring: 177.1 38.2% 89.2%;
+    --mist: 152.7 18.3% 23.5%;
+    --success: 148 63.3% 66.9%;
+    --success-foreground: 155.5 44% 9.8%;
+    --warning: 39 52% 59.8%;
+    /** Light gold works on either ground; the dark text goes with it. */
+    /** Light enough to read as text on the dark card: 9.58:1. */
+    --premium: 43 88% 62%;
+    --premium-deep: 38 90% 54%;
+    --premium-foreground: 145.3 34.5% 10.8%;
+    --danger: 4 68% 74.7%;
+    --focus-separator: 154.3 22.6% 12.2%;
+    --focus-outer: 140 15.8% 96.3%;
+
+    /*
+     * ⚠️ Elevation needs a dark variant; the light one is a no-op here. Light
+     * `--elevation-1` is a near-black blur at 6% alpha, which is invisible
+     * against a dark card — the boxes in the editor looked flat in dark while
+     * reading correctly in light, and the fill step plus the border were doing
+     * all the work. A darker blur alone still barely registers, so each role
+     * also takes an inset top rim: on a dark surface a lighter edge is what
+     * reads as "raised", the same way the shadow does on a light one.
+     */
+    --elevation-1: 0 1px 2px rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 5%);
+    --elevation-2: 0 8px 24px rgb(0 0 0 / 55%), inset 0 1px 0 rgb(255 255 255 / 6%);
+    /* See the light block for what the zones are and why. Dark keeps the same
+       ordering: nav darkest, rail below the workspace, desk one step ABOVE the
+       workspace rather than below it — near-black behind the CV made the page
+       float on a hole and killed the hue. */
+    --nav: 152.7 26.8% 8%;
+    --nav-foreground: 145.7 12% 65.7%;
+    --nav-foreground-strong: 140 15.8% 96.3%;
+    --nav-border: 150 19.1% 18.4%;
+    --nav-active: 150 21.3% 18.4%;
+    --rail: 155 24% 9.8%;
+    --rail-active: 151.4 19.6% 21%;
+    --workspace: 154.3 22.6% 12.2%;
+    --desk: 152 21.1% 13.9%;
+    --divider: 148.4 18.4% 20.2%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  /*
+   * ⚠️ The nav is a dark island in LIGHT mode, so the app-wide ring — which is
+   * ink — measured 1.10:1 on it and 1.40:1 on the selected row, under 1.4.11's
+   * 3:1. A keyboard user tabbing into the sidebar saw no focus at all.
+   *
+   * The zone re-points the two ring tokens at its own, which are already
+   * theme-aware, so the two-layer treatment is unchanged and only its colours
+   * follow the surface: 12.84:1 on the nav, 10.14:1 on the selected row.
+   * Any future dark zone needs the same two lines.
+   */
+  .bg-nav {
+    --focus-outer: var(--nav-foreground-strong);
+    --focus-separator: var(--nav);
+    /*
+     * ⚠️ `--ring` too, not just the two ring tokens. The focus colour lives in
+     * THREE tokens, and `btn-ghost` draws `focus-visible:ring-ring` alongside
+     * `focus-visible:outline-none` — which out-specifies the `:where(...)` base
+     * rule below. Re-pointing only `--focus-outer` left the sidebar's own ghost
+     * buttons on root ink at ~1.1:1, so the zone override missed exactly the
+     * controls it was added to protect.
+     */
+    --ring: var(--nav-foreground-strong);
+  }
+
+  /*
+   * ⚠️ The offset and the separator are variables so a CLIPPING container can
+   * re-point them the way `.bg-nav` above re-points the colours — same rung, so
+   * the geometry stays here rather than being re-specified by a utility on each
+   * child. `SegmentedToggle` is the one such container
+   * (`code/DESIGN_LANGUAGE.md` § "A clipping track draws the focus ring inward").
+   */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid hsl(var(--focus-outer));
+    outline-offset: var(--focus-offset, 2px);
+    box-shadow: var(--focus-separator-shadow, 0 0 0 2px hsl(var(--focus-separator)));
+  }
+}
+
+@media (forced-colors: active) {
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid CanvasText;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,0 +1,47 @@
+PROMPT_VERSION: 2026-10-12b
+{
+  "type": "OBJECT",
+  "properties": {
+    "items": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "level": {
+            "type": "INTEGER",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "Skill proficiency level: 0 (Not Specified), 1 (Basic), 2 (Intermediate), 3 (Advanced), 4 (Expert)."
+          },
+          "keywords": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "List of keywords or tags"
+          },
+          "_sourceVIds": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "Original _vId(s) this item was derived from. Use an empty array [] if entirely new."
+          }
+        },
+        "required": [
+          "name",
+          "keywords",
+          "_sourceVIds"
+        ]
+      },
+      "description": "Restructured skill items."
+    }
+  },
+  "required": [
+    "items"
+  ]
+}

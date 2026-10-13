@@ -1,0 +1,674 @@
+PROMPT_VERSION: 2026-10-12b
+{
+  "type": "OBJECT",
+  "properties": {
+    "basics": {
+      "type": "OBJECT",
+      "properties": {
+        "improvedFields": {
+          "type": "OBJECT",
+          "properties": {
+            "label": {
+              "type": "STRING",
+              "description": "Professional title or label (e.g. \"Software Engineer\")."
+            },
+            "summary": {
+              "type": "STRING",
+              "description": "A concise professional summary or description."
+            }
+          },
+          "required": [
+            "label",
+            "summary"
+          ],
+          "description": "Object containing the improved versions of the provided fields."
+        }
+      },
+      "required": [
+        "improvedFields"
+      ]
+    },
+    "work": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "name": {
+                "type": "STRING",
+                "description": "The name of the item, company, skill, or person."
+              },
+              "position": {
+                "type": "STRING",
+                "description": "Job title or role name."
+              },
+              "startDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+              },
+              "endDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+              },
+              "summary": {
+                "type": "STRING",
+                "description": "A concise professional summary or description."
+              },
+              "highlights": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "STRING"
+                },
+                "description": "Achievement list."
+              }
+            },
+            "required": [
+              "name",
+              "position",
+              "startDate",
+              "endDate",
+              "summary",
+              "highlights"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the work section."
+    },
+    "volunteer": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "organization": {
+                "type": "STRING",
+                "description": "Organization name."
+              },
+              "position": {
+                "type": "STRING",
+                "description": "Job title or role name."
+              },
+              "startDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+              },
+              "endDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+              },
+              "summary": {
+                "type": "STRING",
+                "description": "A concise professional summary or description."
+              },
+              "highlights": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "STRING"
+                },
+                "description": "Achievement list."
+              }
+            },
+            "required": [
+              "organization",
+              "position",
+              "startDate",
+              "endDate",
+              "summary",
+              "highlights"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the volunteer section."
+    },
+    "education": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "institution": {
+                "type": "STRING",
+                "description": "Educational institution name."
+              },
+              "area": {
+                "type": "STRING",
+                "description": "Field of study or area of expertise."
+              },
+              "studyType": {
+                "type": "STRING",
+                "description": "Degree or certification type (e.g. 'Bachelor')."
+              },
+              "startDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+              },
+              "endDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+              },
+              "score": {
+                "type": "STRING",
+                "description": "Grade, GPA, or result."
+              },
+              "courses": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "STRING"
+                },
+                "description": "List of courses"
+              }
+            },
+            "required": [
+              "institution",
+              "area",
+              "studyType",
+              "startDate",
+              "endDate",
+              "score",
+              "courses"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the education section."
+    },
+    "awards": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "title": {
+                "type": "STRING",
+                "description": "The title of an award, certificate, or publication."
+              },
+              "date": {
+                "type": "STRING",
+                "description": "Event date (YYYY-MM-DD or YYYY-MM)."
+              },
+              "awarder": {
+                "type": "STRING"
+              },
+              "summary": {
+                "type": "STRING",
+                "description": "A concise professional summary or description."
+              }
+            },
+            "required": [
+              "title",
+              "date",
+              "awarder",
+              "summary"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the awards section."
+    },
+    "certificates": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "name": {
+                "type": "STRING",
+                "description": "The name of the item, company, skill, or person."
+              },
+              "date": {
+                "type": "STRING",
+                "description": "Event date (YYYY-MM-DD or YYYY-MM)."
+              },
+              "issuer": {
+                "type": "STRING"
+              }
+            },
+            "required": [
+              "name",
+              "date",
+              "issuer"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the certificates section."
+    },
+    "publications": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "name": {
+                "type": "STRING",
+                "description": "The name of the item, company, skill, or person."
+              },
+              "publisher": {
+                "type": "STRING"
+              },
+              "releaseDate": {
+                "type": "STRING",
+                "description": "Publication release date (YYYY-MM-DD or YYYY-MM)."
+              },
+              "summary": {
+                "type": "STRING",
+                "description": "A concise professional summary or description."
+              }
+            },
+            "required": [
+              "name",
+              "publisher",
+              "releaseDate",
+              "summary"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the publications section."
+    },
+    "skills": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "name": {
+                "type": "STRING",
+                "description": "The name of the item, company, skill, or person."
+              },
+              "level": {
+                "type": "INTEGER",
+                "minimum": 0,
+                "maximum": 4,
+                "description": "Skill proficiency level: 0 (Not Specified), 1 (Basic), 2 (Intermediate), 3 (Advanced), 4 (Expert)."
+              },
+              "keywords": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "STRING"
+                },
+                "description": "List of keywords or tags"
+              }
+            },
+            "required": [
+              "name",
+              "level",
+              "keywords"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the skills section."
+    },
+    "languages": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "language": {
+                "type": "STRING",
+                "description": "Language name."
+              },
+              "certificate": {
+                "type": "STRING",
+                "description": "Certification or test name."
+              },
+              "level": {
+                "type": "INTEGER",
+                "minimum": 0,
+                "maximum": 5,
+                "description": "Fluency Level: 0 (Not Specified), 1 (Elementary), 2 (Intermediate), 3 (Professional), 4 (Fluent), 5 (Native)."
+              }
+            },
+            "required": [
+              "language",
+              "certificate",
+              "level"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the languages section."
+    },
+    "interests": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "name": {
+                "type": "STRING",
+                "description": "The name of the item, company, skill, or person."
+              },
+              "keywords": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "STRING"
+                },
+                "description": "List of keywords or tags"
+              }
+            },
+            "required": [
+              "name",
+              "keywords"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the interests section."
+    },
+    "projects": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "name": {
+                "type": "STRING",
+                "description": "The name of the item, company, skill, or person."
+              },
+              "description": {
+                "type": "STRING",
+                "description": "A detailed description."
+              },
+              "highlights": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "STRING"
+                },
+                "description": "Achievement list."
+              },
+              "startDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+              },
+              "endDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+              },
+              "entity": {
+                "type": "STRING",
+                "description": "The organization or employer the project was for."
+              },
+              "type": {
+                "type": "STRING",
+                "description": "The type of project or work."
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "highlights",
+              "startDate",
+              "endDate",
+              "entity",
+              "type"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the projects section."
+    },
+    "privateProjects": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "_vId": {
+            "type": "STRING",
+            "description": "The unique identifier of the item being improved."
+          },
+          "improvedFields": {
+            "type": "OBJECT",
+            "properties": {
+              "name": {
+                "type": "STRING",
+                "description": "The name of the item, company, skill, or person."
+              },
+              "description": {
+                "type": "STRING",
+                "description": "A detailed description."
+              },
+              "highlights": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "STRING"
+                },
+                "description": "Achievement list."
+              },
+              "startDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+              },
+              "endDate": {
+                "type": "STRING",
+                "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+              },
+              "entity": {
+                "type": "STRING",
+                "description": "The organization or employer the project was for."
+              },
+              "type": {
+                "type": "STRING",
+                "description": "The type of project or work."
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "highlights",
+              "startDate",
+              "endDate",
+              "entity",
+              "type"
+            ],
+            "description": "Object containing the improved versions of the provided fields."
+          }
+        },
+        "required": [
+          "_vId",
+          "improvedFields"
+        ]
+      },
+      "description": "Array of improved items for the privateProjects section."
+    },
+    "customSections": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "STRING",
+            "description": "The id of the section, copied unchanged."
+          },
+          "items": {
+            "type": "ARRAY",
+            "items": {
+              "type": "OBJECT",
+              "properties": {
+                "_vId": {
+                  "type": "STRING",
+                  "description": "The unique identifier of the item being improved."
+                },
+                "improvedFields": {
+                  "type": "OBJECT",
+                  "properties": {
+                    "name": {
+                      "type": "STRING",
+                      "description": "The name of the item, company, skill, or person."
+                    },
+                    "startDate": {
+                      "type": "STRING",
+                      "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+                    },
+                    "endDate": {
+                      "type": "STRING",
+                      "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+                    },
+                    "summary": {
+                      "type": "STRING",
+                      "description": "A concise professional summary or description."
+                    },
+                    "highlights": {
+                      "type": "ARRAY",
+                      "items": {
+                        "type": "STRING"
+                      },
+                      "description": "Achievement list."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "startDate",
+                    "endDate",
+                    "summary",
+                    "highlights"
+                  ],
+                  "description": "Object containing the improved versions of the provided fields."
+                }
+              },
+              "required": [
+                "_vId",
+                "improvedFields"
+              ]
+            },
+            "description": "Array of improved entries of this custom section."
+          }
+        },
+        "required": [
+          "id",
+          "items"
+        ]
+      },
+      "description": "Array of the improved user-defined sections, one per input section."
+    }
+  },
+  "required": [
+    "basics",
+    "work",
+    "volunteer",
+    "education",
+    "awards",
+    "certificates",
+    "publications",
+    "skills",
+    "languages",
+    "interests",
+    "projects",
+    "privateProjects",
+    "customSections"
+  ]
+}

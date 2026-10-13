@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">KiwiCV social preview</title>
+  <desc id="desc">The KiwiCV logo, product name, the tagline "Your CV, done — no word processor", and the KiwiCanopy endorsement.</desc>
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <circle cx="1110" cy="72" r="260" fill="#dbeeee" opacity=".72"/>
+  <circle cx="1060" cy="610" r="340" fill="#cce0a2" opacity=".58"/>
+  <image href="KiwiCV.svg" x="92" y="105" width="420" height="420"/>
+  <!-- No domain line: every service that renders a link preview already prints
+       the host as card chrome beside the image, so painting it in only says it
+       twice. The remaining lines are re-centred against the mark (y=105..525).
+       The tagline follows KiwiDesk's shape — thing, state, how effortlessly —
+       so the two product cards read as siblings rather than one-offs. -->
+  <text x="548" y="298" fill="#1c373d" font-family="Inter, Arial, sans-serif" font-size="124" font-weight="700" letter-spacing="-5">KiwiCV</text>
+  <text x="556" y="360" fill="#587271" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="600">Your CV, done — no word processor</text>
+  <text x="556" y="414" fill="#587271" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500">by KiwiCanopy</text>
+</svg>

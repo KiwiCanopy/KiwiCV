@@ -1,0 +1,30 @@
+PROMPT_VERSION: 2026-10-12b
+{
+  "type": "OBJECT",
+  "properties": {
+    "improvedFields": {
+      "type": "OBJECT",
+      "properties": {
+        "subject": {
+          "type": "STRING",
+          "description": "Cover letter subject line."
+        },
+        "paragraphs": {
+          "type": "ARRAY",
+          "items": {
+            "type": "STRING"
+          },
+          "description": "Cover letter body, one entry per paragraph. The FIRST entry is the salutation and the LAST is the closing. Return exactly as many entries as were given, in the same order."
+        }
+      },
+      "required": [
+        "subject",
+        "paragraphs"
+      ],
+      "description": "Object containing the improved versions of the provided fields."
+    }
+  },
+  "required": [
+    "improvedFields"
+  ]
+}

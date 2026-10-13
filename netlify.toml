@@ -1,0 +1,107 @@
+[build]
+  # This command checks if the current commit is either a deployment preview or has a tag. If it does not, exit 0 (cancel). Otherwise, exit 1 (continue).
+  ignore = '[ "$CONTEXT" != "deploy-preview" ] && [ -z "$(git describe --tags --exact-match 2>/dev/null)" ]'
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[build.environment]
+  # `netlify dev` applies the SPA rewrite (`/* -> /index.html`) to ANY path that
+  # is not a static file in the publish dir — including Vite module URLs like
+  # /src/main.tsx and /@vite/client — so the app dies with "Failed to parse
+  # source for import analysis" on index.html. This flag makes netlify-cli send
+  # a HEAD probe to the Vite dev server first and pass the request through when
+  # the endpoint exists (non-404). Read only by the local dev server; inert in
+  # production builds.
+  NETLIFY_DEV_SERVER_CHECK_SSG_ENDPOINTS = "true"
+
+# Local development server configuration (`npx netlify dev`).
+# Proxies Vite (port 5173) and Netlify Functions together under port 8888.
+# Keeps localStorage auth tokens and Supabase redirects on port 8888 without port-switching.
+# ⚠️ This block affects local development only and has zero impact on production builds.
+[dev]
+  command = "npm run dev"
+  port = 8888
+  targetPort = 5173
+
+
+# Redirect the Netlify default hostname to the canonical domain. Deploy previews
+# use a different hostname pattern (`deploy-preview-N--kiwicv.netlify.app`) and
+# are unaffected by this rule.
+[[redirects]]
+  from = "https://kiwicv.netlify.app/*"
+  to = "https://kiwicv.kiwicanopy.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://kiwicv.netlify.app/*"
+  to = "https://kiwicv.kiwicanopy.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/api/v1/sync/*"
+  to = "https://eu.i.posthog.com/:splat"
+  status = 200
+  force = true
+
+# English moved from `/en` to the origin root. Everything under the old prefix
+# is indexed and linked, so it 301s rather than 404s — a permanent redirect is
+# what transfers the ranking signals to the new URL.
+#
+# ⚠️ The `[[redirects]]` rules alone never reach crawlers — the prerender
+# extension answers bots before redirects run (wiki SEO.md). The edge
+# function 301s for every user agent instead, unwinding the prerenderer's URL
+# rewrite when it ran first. The `[[redirects]]` rules stay as the backstop.
+[[edge_functions]]
+  path = "/en"
+  function = "en-redirect"
+
+[[edge_functions]]
+  path = "/en/*"
+  function = "en-redirect"
+
+# Must stay ABOVE the SPA catch-all: Netlify applies the first matching rule,
+# and `/*` would otherwise swallow these and serve the shell at the old URL.
+# `src/app/LanguageRouting.tsx` mirrors this client-side for in-app navigation
+# and for the dev server, which applies no redirect rules at all.
+[[redirects]]
+  from = "/en"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/en/*"
+  to = "/:splat"
+  status = 301
+  force = true
+
+# Crawlers, feed readers and older browsers probe `/favicon.ico` at the origin
+# root by convention, without reading the <link rel="icon"> in the document.
+# The catch-all below answered that probe with the HTML shell — a 200 carrying
+# `text/html` where an image was expected, which is worse than a 404. Must stay
+# ABOVE the catch-all: Netlify applies the first matching rule.
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/logos/kiwicv/favicon.ico"
+  status = 200
+
+# A tab still running the previous build asks for hashed chunks this deploy no
+# longer has. The catch-all answered with the HTML shell as `200` (and `_headers`
+# marks `/assets/*` immutable), so the import died on a MIME error. A real 404
+# lets `installStaleChunkReload` reload once onto the new build. Not
+# forced, so existing assets still win. Must stay ABOVE the catch-all.
+# ⚠️ The 404 still gets `immutable` (`_headers` cannot match on status): a
+# rollback then a republish with identical hashes can pin it in one browser.
+[[redirects]]
+  from = "/assets/*"
+  to = "/index.html"
+  status = 404
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

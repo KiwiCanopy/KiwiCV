@@ -1,0 +1,68 @@
+export const design = {
+  address_schema_active_fields: 'Active Fields (Drag to reorder)',
+  address_schema_apply_template: 'Apply Template',
+  address_schema_available_fields: 'Available Fields (Click to include)',
+  address_schema_desc:
+    'Format your address block layout and separators independently from the CV language.',
+  address_schema_mode_custom: 'Custom',
+  address_schema_mode_default: 'Language-based',
+  address_schema_mode_default_desc:
+    'The schema automatically adapts to the language of your CV. If this differs from the set display language, the country code is also added. For more customization options, choose "{customLayout}".',
+  address_schema_mode_label: 'Layout Mode',
+  address_schema_no_active_fields: 'No fields active. Click fields below to add them.',
+  address_schema_preset_european: 'European Style',
+  address_schema_preset_us_ca: 'US/CA Style',
+  address_schema_restore: 'Restore Default',
+  address_schema_separator_comma: 'Comma',
+  address_schema_separator_dash: 'Dash',
+  address_schema_separator_space: 'Space',
+  address_schema_title: 'Address Schema Management',
+  address_schema_toggle_separator: 'Toggle separator between Comma and Space',
+  bold_header: {
+    desc: 'Choose which details should be displayed as the bold header (primary line)',
+    title: 'Experience Bold Header Mode',
+  },
+  color_chooser: 'Select your color scheme',
+  column_empty: 'No sections',
+  design_filter: {
+    one_column: 'One Column',
+    two_column: 'Two Columns',
+  },
+  empty_sections_subtitle:
+    'It looks like these sections are still empty. Are you sure you have nothing to add? Even small details can make a difference.',
+  empty_sections_title: 'Additional Available Sections',
+  example_section: 'Example Section',
+  formatting: 'formatting',
+  groups: {
+    details: 'Details',
+    layout: 'Layout',
+    typography: 'Typography',
+  },
+  layout_flip: 'Mirror Layout',
+  layout_main_column: 'Main Column',
+  layout_side_column: 'Sidebar Column',
+  layout_swap_tooltip: 'Move to other column',
+  more_actions_named: 'More actions for “{{name}}”',
+  page_break_add: 'Add page break',
+  page_break_disabled_first: 'Page break not available for the first item',
+  page_break_disabled_hidden: 'Page break not available for hidden sections',
+  page_break_removal_tooltip:
+    'Remove the pagebreak before this section (only applies to the PDF Version)',
+  page_break_remove: 'Remove page break',
+  page_break_tooltip: 'Add a pagebreak before this section (only applies to the PDF Version)',
+  pdf_footer: {
+    date: 'Include Date',
+    desc: 'Insert signature line, location, and date at the bottom',
+    location: 'Include Location',
+    show: 'Show Footer',
+    title: 'PDF Footer',
+  },
+  section_reordering: {
+    hint: 'Sections appear in your CV in this order. Drag a row by its handle to move it.',
+    hint_touch:
+      'Sections appear in your CV in this order. Use the arrows to move a row, or hold its handle and drag.',
+    title: 'Section Order',
+  },
+  swap_column_named: 'Move “{{name}}” to the other column',
+  template: 'Template',
+};

@@ -1,0 +1,28 @@
+export const blog = {
+  back_to_overview: 'Powrót do przeglądu',
+  categories: {
+    career_growth: 'Rozwój kariery',
+    career_stories: 'Historie zawodowe',
+    inside_kiwicv: 'Wewnątrz KiwiCV',
+    interview_prep: 'Przygotowanie do rozmowy',
+    job_search: 'Szukanie pracy',
+    personal_brand: 'Marka osobista',
+    resume_guide: 'Poradnik CV',
+  },
+  editorial_name: 'Redakcja KiwiCV',
+  editorial_subtitle: 'Eksperckie porady dotyczące Twojego następnego kroku w karierze.',
+  media_error: 'Nie udało się załadować treści',
+  no_content: 'Brak dostępnej zawartości.',
+  no_posts: 'Nie znaleziono postów.',
+  post_not_found: 'Nie znaleziono wpisu',
+  read_more: 'Czytaj więcej',
+  reading_time: '{{minutes}} min czytania',
+  share_article: 'Udostępnij artykuł',
+  share_error: 'Udostępnianie nie powiodło się.',
+  share_insecure: 'Udostępnianie wymaga bezpiecznego połączenia (HTTPS).',
+  subtitle:
+    'Eksperckie porady dotyczące budowania CV, rozwoju kariery i zdobywania wymarzonej pracy.',
+  tagline: 'Wskazówki i poradniki',
+  title: 'Blog KiwiCV',
+  unknown_date: 'Nieznana data',
+};

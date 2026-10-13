@@ -1,0 +1,34 @@
+{
+  "//": "Each command is wrapped in an inline `sh -c` that puts a recent node on PATH before exec'ing. A GUI-launched tool inherits the PATH captured at login rather than the one nvm's shell hooks build, so `npm run dev` could otherwise run under whatever node was default at boot -- surfacing as rolldown importing `styleText` from `node:util` (added in 20.12), an error naming neither node nor the version it wanted.",
+  "//sandbox": "The launcher sandbox refuses to exec files inside the repo (so this cannot live in scripts/) and refuses to READ them (so it cannot consult .nvmrc, which is the obvious source). ~/.nvm is outside the repo and readable, so the version comes from nvm's `default` alias instead. If that alias is missing the glob degrades to every installed version and the numeric sort takes the highest -- a weaker guarantee than .nvmrc, stated here so nobody reads this as honouring the repo pin. tests/lint/node-version.test.mjs and scripts/check-node-version.cjs remain the checks that enforce the pin.",
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "kiwicv-dev",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "d=\"${NVM_DIR:-$HOME/.nvm}/versions/node\"; a=\"${NVM_DIR:-$HOME/.nvm}/alias/default\"; v=''; [ -r \"$a\" ] && v=$(tr -d 'v \\t\\n\\r' < \"$a\"); b=$(ls -d \"$d/v$v\"* 2>/dev/null | sort -t. -k1,1n -k2,2n -k3,3n | tail -1); [ -x \"$b/bin/node\" ] && PATH=\"$b/bin:$PATH\"; export PATH; exec npm run dev"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "kiwicv-dev-alt",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "d=\"${NVM_DIR:-$HOME/.nvm}/versions/node\"; a=\"${NVM_DIR:-$HOME/.nvm}/alias/default\"; v=''; [ -r \"$a\" ] && v=$(tr -d 'v \\t\\n\\r' < \"$a\"); b=$(ls -d \"$d/v$v\"* 2>/dev/null | sort -t. -k1,1n -k2,2n -k3,3n | tail -1); [ -x \"$b/bin/node\" ] && PATH=\"$b/bin:$PATH\"; export PATH; exec npm run dev -- --port 5199 --strictPort"
+      ],
+      "port": 5199
+    },
+    {
+      "name": "kiwicv-netlify",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "d=\"${NVM_DIR:-$HOME/.nvm}/versions/node\"; a=\"${NVM_DIR:-$HOME/.nvm}/alias/default\"; v=''; [ -r \"$a\" ] && v=$(tr -d 'v \\t\\n\\r' < \"$a\"); b=$(ls -d \"$d/v$v\"* 2>/dev/null | sort -t. -k1,1n -k2,2n -k3,3n | tail -1); [ -x \"$b/bin/node\" ] && PATH=\"$b/bin:$PATH\"; export PATH; exec npx netlify dev --offline"
+      ],
+      "port": 8888
+    }
+  ]
+}

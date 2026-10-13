@@ -1,0 +1,42 @@
+import type { Translations } from '@/locales/en';
+
+export const auth: Translations['auth'] = {
+  accept_privacy_label: '我已阅读并同意 {link}',
+  accept_terms_label: '我接受',
+  account_management: '账户管理',
+  ai_login_required: '要使用 AI 功能，请先通过 Google 登录。',
+  benefit_ai_desc: '一键获取专业建议并优化内容任务。',
+  benefit_ai_title: 'AI 简历助力器',
+  benefit_privacy_desc:
+    '你的数据完全归你所有。AI 模型在欧盟安全运行，你的数据绝不会用于训练或另作他用。',
+  benefit_privacy_title: '安全隐私',
+  benefit_sync_desc:
+    '直接安全地存储在你的 Google Drive 中。完美整理所有语言和导出文件，可在你的所有设备上访问。',
+  benefit_sync_title: '智能云同步',
+  consent_mandatory: '请先接受使用条款和隐私政策。',
+  delete_account: '删除账户',
+  error_login_failed: '登录失败。请重试。',
+  gh_alternative_desc: '仅需同步功能？也可以使用 GitHub。',
+  login_to_enable: '登录以启用此功能',
+  login_to_enable_short: '需要登录',
+  not_logged_in: '未登录',
+  permission_modal_hint: '请记得在登录期间允许访问 Google Drive。KiwiCV 只能访问其自身创建的文件。',
+  premium_overview: '高级版概览',
+  privacy_link: '隐私政策',
+  setup_gh: '设置 GitHub',
+  sign_in_google: '通过 Google 登录',
+  sign_in_now: '现在登录',
+  sign_out_github_keep: '保留 GitHub 并退出登录',
+  sign_out_github_message:
+    '你的 GitHub 连接保存在该设备上，而不是你的账户中，因此退出登录后它仍会保留。如果其他人也使用此浏览器，请将其移除。',
+  sign_out_github_remove: '移除 GitHub 并退出登录',
+  sign_out_github_title: '同时从该设备中移除 GitHub？',
+  signing_in: '正在登录...',
+  status_active: '激活',
+  status_expired: '已过期',
+  status_none: '无通行证',
+  success_logout: '成功退出登录！',
+  sync_login_required: '请登录以使用 Google Drive 同步。',
+  terms_link: '服务条款',
+  welcome_subtitle: '登录以将你的简历同步到 Google Drive 并使用高级功能。',
+};

@@ -1,0 +1,23 @@
+export const preview = {
+  choose_format: 'Choose a preview format',
+  fits_pages_one: 'Fits 1 page',
+  fits_pages_other: '{{count}} pages',
+  generating: 'Generating preview…',
+  generating_pdf: 'Generating PDF...',
+  open_html: 'Preview HTML',
+  open_pdf: 'Preview PDF',
+  opened: 'Preview opened',
+  opening: 'Opening preview…',
+  pdf_frame_title: 'PDF preview',
+  pdf_render_error_desc: 'Rendering your PDF is taking longer than expected.',
+  pdf_render_error_hint:
+    'Try reducing the font size, rearranging sections, or temporarily modifying details that might be too long. This error is often caused by a page-break conflict.',
+  pdf_render_error_pro_tip: 'Pro-tip',
+  pdf_render_error_title: 'Something went wrong',
+  popup_blocked: 'Your browser blocked the preview. Allow pop-ups, then try again.',
+  render_failed: 'KiwiCV could not generate this preview. Try again or choose another format.',
+  tab_title: '{{name}} – Resume',
+  try_again: 'Try preview again',
+  view_html: 'HTML',
+  view_pdf: 'PDF',
+};

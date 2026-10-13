@@ -1,0 +1,245 @@
+@keyframes heavenly-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 1.5px 0 0 rgba(161, 98, 7, 0.25),
+      0 0 10px rgba(250, 204, 21, 0.4),
+      0 0 20px rgba(250, 204, 21, 0.1);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 2.5px 0 0 rgba(161, 98, 7, 0.35),
+      0 0 20px rgba(253, 224, 71, 0.6),
+      0 0 40px rgba(253, 224, 71, 0.3);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes heart-beat-gold {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 3.5px 0 0 rgba(180, 83, 9, 0.35),
+      0 0 0px rgba(251, 191, 36, 0),
+      inset 0 1.5px 0 0 #ffffff;
+  }
+  50% {
+    transform: scale(1.008);
+    box-shadow:
+      0 4.5px 0 0 rgba(180, 83, 9, 0.45),
+      0 0 15px rgba(251, 191, 36, 0.3),
+      inset 0 1.5px 0 0 #ffffff;
+  }
+}
+
+@utility animate-gold-pulse {
+  animation: heart-beat-gold 3s ease-in-out infinite;
+}
+
+@utility animate-heavenly-glow {
+  animation: heavenly-glow 4s ease-in-out infinite;
+}
+
+@keyframes float-ghost {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(10px, -15px);
+  }
+  50% {
+    transform: translate(20px, 0px);
+  }
+  75% {
+    transform: translate(10px, 15px);
+  }
+}
+
+@utility animate-float-ghost {
+  animation: float-ghost 8s ease-in-out infinite;
+}
+
+@keyframes ghost-bust {
+  0%,
+  45% {
+    opacity: 0.7;
+    transform: scale(1) translate(-50%, -50%);
+  }
+  48% {
+    opacity: 0.9;
+    transform: scale(1.1) translate(-50%, -50%);
+    filter: brightness(1.8) drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+  }
+  50% {
+    opacity: 0;
+    transform: scale(0.8) translate(-50%, -50%);
+    filter: blur(15px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translate(-50%, -50%);
+  }
+}
+
+@utility animate-ghost-bust {
+  animation: ghost-bust 4s linear infinite;
+}
+
+@keyframes alert-bust {
+  0%,
+  45% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  48% {
+    opacity: 0.9;
+    transform: scale(1.1);
+    filter: brightness(1.2) drop-shadow(0 0 10px rgba(239, 68, 68, 0.3));
+  }
+  50% {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+@utility animate-alert-bust {
+  animation: alert-bust 4s linear infinite;
+}
+
+@keyframes phase-problem {
+  0%,
+  45% {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  50%,
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@utility animate-phase-problem {
+  animation: phase-problem 4s linear infinite;
+}
+
+@keyframes phase-success {
+  0%,
+  45% {
+    opacity: 0;
+    pointer-events: none;
+  }
+  50%,
+  90% {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  95%,
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@utility animate-phase-success {
+  animation: phase-success 4s linear infinite;
+}
+
+@keyframes laser-scan {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  50% {
+    top: 100%;
+    opacity: 1;
+  }
+  55%,
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@utility animate-laser-scan {
+  animation: laser-scan 4s linear infinite;
+}
+
+@keyframes swipe-down {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+@utility animate-swipe-down {
+  animation: swipe-down 2.5s ease-in-out infinite;
+}
+
+@keyframes float-fanned {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+@utility animate-float-fanned {
+  animation: float-fanned 10s ease-in-out infinite;
+}
+
+@keyframes success-pop {
+  0%,
+  45% {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  50%,
+  80% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  90%,
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}
+
+@utility animate-success-pop {
+  animation: success-pop 4s linear infinite;
+}
+
+@layer utilities {
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-200%);
+    }
+    100% {
+      transform: translateX(200%);
+    }
+  }
+}

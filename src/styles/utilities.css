@@ -1,0 +1,78 @@
+/* --- Responsive Modal Handling --- */
+@utility h-responsive {
+  @apply max-h-[var(--h-responsive-mobile)] overflow-y-auto sm:max-h-[var(--h-responsive-desktop)];
+  /* Fix for mobile scrolling */
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@utility clean-scrollbar {
+  scrollbar-width: auto;
+  scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
+
+  &::-webkit-scrollbar {
+    height: 10px;
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    &:hover {
+      background: rgba(0, 0, 0, 0.3);
+      background-clip: padding-box;
+    }
+  }
+
+  .dark & {
+    scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      background-clip: padding-box;
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        background-clip: padding-box;
+      }
+    }
+  }
+}
+
+@utility custom-scrollbar {
+  @apply clean-scrollbar;
+}
+
+@utility btn-primary {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility btn-secondary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 focus-visible:ring-ring inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility btn-ghost {
+  @apply hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility btn-outline {
+  @apply border-input bg-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility input-base {
+  @apply border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@utility card-base {
+  @apply bg-card text-card-foreground rounded-xl border shadow;
+}
+
+@utility badge-base {
+  @apply focus:ring-ring inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none;
+}

@@ -1,0 +1,68 @@
+import type { Translations } from '@/locales/en';
+
+export const design: Translations['design'] = {
+  address_schema_active_fields: 'Активні поля (Перетягни для зміни порядку)',
+  address_schema_apply_template: 'Застосувати шаблон',
+  address_schema_available_fields: 'Доступні поля (Натисни для додавання)',
+  address_schema_desc: 'Форматуй макет адресного блоку та роздільники незалежно від мови резюме.',
+  address_schema_mode_custom: 'Власний',
+  address_schema_mode_default: 'На основі мови',
+  address_schema_mode_default_desc:
+    'Схема автоматично адаптується до мови твого резюме. Якщо вона відрізняється від встановленої мови інтерфейсу, також додається код країни. Для отримання додаткових можливостей налаштування вибери «{customLayout}».',
+  address_schema_mode_label: 'Режим розмітки',
+  address_schema_no_active_fields: 'Немає активних полів. Натисни на поля нижче, щоб додати їх.',
+  address_schema_preset_european: 'Європейський стиль',
+  address_schema_preset_us_ca: 'Американський стиль (US/CA)',
+  address_schema_restore: 'Скинути за замовчуванням',
+  address_schema_separator_comma: 'Кома',
+  address_schema_separator_dash: 'Тире',
+  address_schema_separator_space: 'Пробіл',
+  address_schema_title: 'Управління схемою адреси',
+  address_schema_toggle_separator: 'Перемкнути роздільник між комою та пробілом',
+  bold_header: {
+    desc: 'Вибери, які деталі відображати жирним шрифтом (основний рядок)',
+    title: 'Жирний заголовок досвіду',
+  },
+  color_chooser: 'Колірна схема',
+  column_empty: 'Немає розділів',
+  design_filter: {
+    one_column: 'Одна колонка',
+    two_column: 'Дві колонки',
+  },
+  empty_sections_subtitle:
+    'Ці розділи поки що порожні. Точно нічого не хочеш додати? Кожна деталь важлива.',
+  empty_sections_title: 'Додаткові доступні розділи',
+  example_section: 'Приклад розділу',
+  formatting: 'форматування',
+  groups: {
+    details: 'Деталі',
+    layout: 'Макет',
+    typography: 'Типографіка',
+  },
+  layout_flip: 'Віддзеркалити макет',
+  layout_main_column: 'Головна колонка',
+  layout_side_column: 'Бічна панель',
+  layout_swap_tooltip: 'Перемістити в іншу колонку',
+  more_actions_named: 'Більше дій для «{{name}}»',
+  page_break_add: 'Додати розрив сторінки',
+  page_break_disabled_first: 'Розрив сторінки недоступний для першого елемента',
+  page_break_disabled_hidden: 'Розрив сторінки недоступний для прихованих розділів',
+  page_break_removal_tooltip: 'Видалити розрив сторінки перед цим розділом (лише для PDF-версії)',
+  page_break_remove: 'Видалити розрив сторінки',
+  page_break_tooltip: 'Додати розрив сторінки перед цим розділом (лише для PDF-версії)',
+  pdf_footer: {
+    date: 'Показувати дату',
+    desc: 'Додати внизу рядок для підпису, місце та дату',
+    location: 'Показувати місце',
+    show: 'Показувати колонтитул',
+    title: 'Нижній колонтитул PDF',
+  },
+  section_reordering: {
+    hint: 'Розділи відображаються у твоєму резюме в цьому порядку. Перетягни рядок за ручку, щоб перемістити його.',
+    hint_touch:
+      'Розділи відображаються у твоєму резюме в цьому порядку. Використовуй стрілки, щоб перемістити рядок, або утримуй ручку та перетягуй.',
+    title: 'Порядок розділів',
+  },
+  swap_column_named: 'Перемістити «{{name}}» в іншу колонку',
+  template: 'Шаблон',
+};

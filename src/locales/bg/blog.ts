@@ -1,0 +1,28 @@
+export const blog = {
+  back_to_overview: 'Назад към прегледа',
+  categories: {
+    career_growth: 'Кариерно развитие',
+    career_stories: 'Кариерни истории',
+    inside_kiwicv: 'В KiwiCV',
+    interview_prep: 'Подготовка за интервю',
+    job_search: 'Търсене на работа',
+    personal_brand: 'Личен бранд',
+    resume_guide: 'Ръководство за резюме',
+  },
+  editorial_name: 'Редакция на KiwiCV',
+  editorial_subtitle: 'Експертни съвети за следващата ти кариерна стъпка.',
+  media_error: 'Съдържанието не можа да бъде заредено',
+  no_content: 'Няма налично съдържание.',
+  no_posts: 'Няма намерени публикации.',
+  post_not_found: 'Публикацията не е намерена',
+  read_more: 'Прочети повече',
+  reading_time: '{{minutes}} мин четене',
+  share_article: 'Сподели статията',
+  share_error: 'Споделянето не бе успешно.',
+  share_insecure: 'Споделянето изисква сигурна връзка (HTTPS).',
+  subtitle:
+    'Експертни съвети за изготвяне на автобиография, кариерно израстване и намиране на мечтаната работа.',
+  tagline: 'Идеи и ръководства',
+  title: 'Блог на KiwiCV',
+  unknown_date: 'Неизвестна дата',
+};

@@ -1,0 +1,28 @@
+export const blog = {
+  back_to_overview: 'Terug naar overzicht',
+  categories: {
+    career_growth: 'Carrièregroei',
+    career_stories: 'Carrièreverhalen',
+    inside_kiwicv: 'Achter de schermen bij KiwiCV',
+    interview_prep: 'Interviewvoorbereiding',
+    job_search: 'Zoektocht naar werk',
+    personal_brand: 'Persoonlijk merk',
+    resume_guide: 'Cv-gids',
+  },
+  editorial_name: 'KiwiCV Redactie',
+  editorial_subtitle: 'Deskundig advies voor je volgende carrièrestap.',
+  media_error: 'Inhoud kon niet worden geladen',
+  no_content: 'Geen inhoud beschikbaar.',
+  no_posts: 'Geen berichten gevonden.',
+  post_not_found: 'Bericht niet gevonden',
+  read_more: 'Lees meer',
+  reading_time: '{{minutes}} min leestijd',
+  share_article: 'Artikel delen',
+  share_error: 'Delen mislukt.',
+  share_insecure: 'Delen vereist een beveiligde verbinding (HTTPS).',
+  subtitle:
+    "Deskundig advies over het maken van cv's, carrièregroei en het vinden van je droombaan.",
+  tagline: 'Inzichten & Gidsen',
+  title: 'KiwiCV Blog',
+  unknown_date: 'Onbekende datum',
+};

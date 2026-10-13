@@ -1,0 +1,123 @@
+# Logs
+logs
+*.log
+*.txt
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local Netlify folder
+.netlify
+
+# Deno lockfile left behind by older Netlify CLI versions. The one edge
+# function (netlify/edge-functions/en-redirect.js) is import-free on
+# purpose, so Deno still has nothing to lock. See ops/DEPLOYMENT.md.
+deno.lock
+
+# Other
+!robots.txt
+# Prompt snapshots are the committed reference the payload tests pin against
+!tests/netlify-functions/__snapshots__/*.txt
+# License texts for the redistributed fonts (public/fonts/LICENSES.md)
+!public/fonts/*.txt
+
+# Temporary local scratchpads
+scratch/
+
+# Claude Code local state. Sessions, worktrees and machine-specific settings
+# stay out; the two things that are shared knowledge are negated back in.
+#
+# `.claude/*` rather than `.claude/`: git will not re-include a file whose
+# parent directory is excluded, so the trailing-slash form would make the
+# negations below no-ops.
+#
+# launch.json is shared tooling and holds no secrets — it is the only file that
+# tells an agent how to start this project's dev server.
+#
+# agents/ is tracked as of 2026-08-02. The definitions used to be generic
+# downloads that a script re-fetched per machine, so leaving them untracked cost
+# nothing. They are now hand-written against this repo's own gotchas, which
+# makes them repo knowledge in the same sense AGENTS.md and .agent/wiki/ are —
+# and an untracked roster means a clone, a second machine or a cloud agent gets
+# none of it. `.claude/agents/**` (not `.claude/agents/`) so that any future
+# subdirectory is re-included too.
+#
+# skills/ is tracked for the same reason, as of 2026-08-26. `/verify-gate`,
+# `/review-change` and `/file-issue` encode §2, §3 and §6 of AGENTS.md as
+# commands rather than prose — they are repo knowledge, and a skill that only
+# exists on the machine that wrote it teaches nobody.
+# rules/ is tracked for the same reason, as of 2026-09-03, and more sharply:
+# a rule loads as an *instruction* when you edit its `paths:`, so one that
+# exists only on the machine that wrote it does not merely teach nobody — it
+# makes the same repo behave differently for two people.
+.claude/*
+!.claude/launch.json
+!.claude/agents/
+!.claude/agents/**
+!.claude/skills/
+!.claude/skills/**
+!.claude/rules/
+!.claude/rules/**
+
+# Agent-tool scratch directories. `.agent/skills/` and `.codex/` were deleted on
+# 2026-09-04 (AGENTS.md §8); these entries stay so a re-run of any installer that
+# recreates them cannot commit one machine's copies back into the repo.
+.agent/skills/
+.codex/
+.gemini/
+
+# i18n translation handoff packets. A working artifact, not a source: the
+# catalog owns the English and src/locales/ owns the translations, and
+# `npm run i18n:handoff:generate` reconstructs the packets from both.
+#
+# Untracked because Netlify's secret scanner matches short env values against
+# the SHA-256 fingerprints these files carry — roughly one in 15,000 per hash,
+# times ~120 hashes per file, times 15 files. That failed three deploy previews
+# on 2026-07-21. Deleting them was the fix that kept undoing itself, because
+# regenerating brought them back; now they are never committed in the first
+# place.
+# Untracked entirely as of 2026-07-22: task checklists are working notes for an
+# active task, not product history. Files already committed remain in history;
+# this only stops new ones. AGENTS.md reads this directory when it exists, so a
+# fresh clone simply has no active task.
+.agent/temp_instructions/
+
+# Implementation plans, untracked as of 2026-09-06. They are scaffolding for a
+# task in flight — approach, phase cuts, open questions — and they went stale the
+# moment the task shipped: five folders, four of them for work merged weeks ago.
+#
+# ⚠️ This directory is therefore NOT the durable record, and the line above used
+# to say it was. A plan never reaches a reviewer, a clone, another machine or a
+# cloud agent, so a ruling that only lives here is lost. Anything worth keeping
+# goes to the page that owns it (AGENTS.md §1): .agent/wiki/ for a design or
+# workflow ruling, .claude/rules/ for something that binds while you write code,
+# the issue or the PR body for the argument behind a change. Everything already
+# committed stays in git history — `git log -- .agent/plans/` still has it.
+.agent/plans/
+
+
+# vitest 5 report and attachment output
+.vitest/

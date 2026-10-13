@@ -1,0 +1,333 @@
+{
+  "basics": {
+    "name": "John Doe",
+    "label": "Software Architect | M.Sc. Computer Science",
+    "image": "",
+    "email": "john.doe@example.com",
+    "phone": "+49 123 4567890",
+    "url": "https://github.com/johndoe",
+    "summary": "M.Sc. Computer Science (1.0). Curiosity-driven, proactive engineer. Motto: \"Resistance is where progress happens.\"",
+    "location": {
+      "address": "Sample Street 123",
+      "postalCode": "10115",
+      "city": "Berlin",
+      "countryCode": "DE",
+      "region": "Berlin"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "johndoe",
+        "url": "https://github.com/johndoe"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "john-doe-architect",
+        "url": "https://www.linkedin.com/in/john-doe"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Global Tech Solutions",
+      "position": "Software Architect",
+      "url": "https://techsolutions.example.com",
+      "startDate": "2025-01-01",
+      "endDate": "",
+      "summary": "Development of software and ML solutions (Focus: Scalable architectures, time-series forecasting).",
+      "highlights": [
+        "Implementation of secure LLM architectures (RAG & Agents) via Docker on Azure",
+        "Compliance with strict security standards",
+        "Interface function: modeling, technology, product strategy"
+      ]
+    },
+    {
+      "name": "HealthSync",
+      "position": "Full-Stack Developer & Business Developer",
+      "url": "https://healthsync.example.com",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31",
+      "summary": "Independent development of an app (iOS/Android) for specialized healthcare services.",
+      "highlights": [
+        "Responsibility from business development to technical implementation",
+        "Integration of real-time chat and location services",
+        "Growth to over 1000 active users in the test phase"
+      ]
+    },
+    {
+      "name": "Quantum Research Lab",
+      "position": "Researcher",
+      "url": "https://quantumlab.example.com",
+      "startDate": "2022-04-01",
+      "endDate": "2023-12-31",
+      "summary": "Optimization and simulation of new algorithms on high-performance architectures.",
+      "highlights": [
+        "Optimization and simulation of new algorithms on specialized hardware",
+        "Management activities: Event planning, company pitches, investor talks",
+        "Publication of results in internal white papers"
+      ]
+    },
+    {
+      "name": "AgriData Insights",
+      "position": "Data Scientist & Business Developer",
+      "url": "https://agridata.example.com",
+      "startDate": "2021-06-01",
+      "endDate": "2022-03-31",
+      "summary": "Development of prediction and optimization models from raw data.",
+      "highlights": [
+        "Development of prediction and optimization models from raw data",
+        "Significant acceleration of workflows through API implementations",
+        "Presentation of data analysis to regional cooperatives"
+      ]
+    }
+  ],
+  "volunteer": [
+    {
+      "organization": "Open Source Community",
+      "position": "Active Contributor",
+      "url": "https://github.com",
+      "startDate": "2011-01-01",
+      "endDate": "2020-12-31",
+      "summary": "Support for regional technology campaigns and organization of youth events.",
+      "highlights": ["Coordination of campaign activities", "Moderation of discussion rounds"]
+    },
+    {
+      "organization": "Developer Network",
+      "position": "Contributor",
+      "url": "https://github.com",
+      "startDate": "2021-01-01",
+      "endDate": "",
+      "summary": "Contributions to various JSON Resume tools and themes.",
+      "highlights": ["Bug fixes in React-based PDF generators", "Documentation improvements"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Technical University of Berlin",
+      "url": "https://www.tu-berlin.de",
+      "area": "Bioinformatics",
+      "studyType": "M.Sc.",
+      "startDate": "2025-10-01",
+      "endDate": "",
+      "score": "Ongoing",
+      "courses": [
+        "Part-time study",
+        "Advanced Algorithms in Bioinformatics",
+        "Machine Learning for Life Sciences"
+      ]
+    },
+    {
+      "institution": "Global Institute of Technology",
+      "url": "https://www.git.example.com",
+      "area": "AI & Data Engineering",
+      "studyType": "Professional Education",
+      "startDate": "2024-08-01",
+      "endDate": "2024-12-31",
+      "score": "A",
+      "courses": ["Cloud Computing", "Data Engineering", "Data Science", "AI"]
+    },
+    {
+      "institution": "University of Munich",
+      "url": "https://www.lmu.de",
+      "area": "Computer Science",
+      "studyType": "M.Sc.",
+      "startDate": "2018-10-01",
+      "endDate": "2020-09-30",
+      "score": "1.0",
+      "courses": ["Minor: Finance & Accounting", "Numerical Mathematics", "Stochastics"]
+    }
+  ],
+  "awards": [
+    {
+      "title": "International Research Scholarship",
+      "date": "2020-10-01",
+      "awarder": "Research Council",
+      "summary": "Acceptance rate ~10%. Full scholarship for research at a partner university.",
+      "url": "https://example.com"
+    },
+    {
+      "title": "Top Graduate Award",
+      "date": "2018-02-01",
+      "awarder": "University Council",
+      "summary": "Award for outstanding academic achievements during Bachelor's studies.",
+      "url": "https://example.com"
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Cloud Architecture Associate",
+      "date": "2026-01-01",
+      "issuer": "Global Cloud Provider",
+      "url": "https://example.com/certificates"
+    },
+    {
+      "name": "Certified Quality Engineer",
+      "date": "2025-11-01",
+      "issuer": "Engineering Council",
+      "url": "https://example.com/certificates"
+    }
+  ],
+  "publications": [
+    {
+      "name": "Scalable ML Architectures in Production",
+      "publisher": "Engineering Journal",
+      "releaseDate": "2025-06-15",
+      "url": "https://example.com/publication",
+      "summary": "Analysis of efficient deployment methods for complex models."
+    },
+    {
+      "name": "High-Performance Computing for Simulation",
+      "publisher": "Tech Quarterly",
+      "releaseDate": "2023-11-01",
+      "url": "https://example.com/publication",
+      "summary": "Simulation of differential equations on specialized architectures."
+    }
+  ],
+  "skills": [
+    {
+      "name": "Backend & Frontend Development",
+      "level": 90,
+      "keywords": [
+        "(API) Interfaces",
+        "Django",
+        "Asynchronous Programming",
+        "React",
+        "TypeScript",
+        "Next.js"
+      ]
+    },
+    {
+      "name": "Data Science & AI",
+      "level": 95,
+      "keywords": [
+        "Pandas",
+        "NumPy",
+        "Scikit-Learn",
+        "LLMs",
+        "Statistical Modeling",
+        "SQL / NoSQL",
+        "PyTorch"
+      ]
+    },
+    {
+      "name": "Cloud & DevOps",
+      "keywords": [
+        "Docker",
+        "Git",
+        "CI/CD",
+        "Infrastructure as Code",
+        "Cloud Governance",
+        "Azure",
+        "Terraform"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "German",
+      "fluency": "Native",
+      "level": 5
+    },
+    {
+      "language": "English",
+      "fluency": "Professional (C1)",
+      "level": 4
+    },
+    {
+      "language": "Japanese",
+      "fluency": "Conversational"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Technology & AI",
+      "keywords": ["Edge Computing", "Smart Home", "Automated Systems"]
+    },
+    {
+      "name": "Sports & Travel",
+      "keywords": ["Hiking", "Climbing", "Sustainable Travel"]
+    }
+  ],
+  "references": [
+    {
+      "name": "Available upon request",
+      "reference": "Reference will be provided on demand."
+    }
+  ],
+  "projects": [
+    {
+      "name": "Modular Resume Builder",
+      "description": "A modern, interactive editor for schema-based resumes with PDF export.",
+      "highlights": [
+        "Implementation of a flexible theme system",
+        "Real-time preview with standardized engines",
+        "Multi-language support"
+      ],
+      "keywords": ["React", "Tailwind CSS", "TypeScript", "State Management"],
+      "startDate": "2024-05-01",
+      "endDate": "",
+      "url": "https://github.com/sample/project",
+      "roles": ["Full-Stack Dev", "Architect"],
+      "entity": "Open Source",
+      "type": "Web Application"
+    },
+    {
+      "name": "Predictive Analytics Engine",
+      "description": "Microservice for forecasting market trends using advanced neural networks.",
+      "highlights": ["Processing of real-time data streams", "Automated backtesting pipeline"],
+      "keywords": ["Python", "FastAPI", "TensorFlow"],
+      "startDate": "2023-01-01",
+      "endDate": "2023-08-31",
+      "url": "https://example.com/project",
+      "roles": ["ML Engineer"],
+      "entity": "Research Lab",
+      "type": "Microservice"
+    }
+  ],
+  "meta": {
+    "version": "3.5.0",
+    "theme": {
+      "name": "lunar",
+      "locale": "de",
+      "params": {
+        "showFooter": true,
+        "footerLocation": "Sample City",
+        "footerDate": "auto",
+        "imageShape": "circle"
+      }
+    },
+    "export": {
+      "filenamePattern": "{date-YYYYMM}_{theme}_{lang}_{name}",
+      "config": {
+        "vectorPDF": true,
+        "html": true,
+        "backup": true,
+        "updateBackupOnCloudExport": true
+      }
+    },
+    "content": {
+      "hiddenIds": [],
+      "hiddenSections": [],
+      "order": {
+        "oneColumn": [
+          "basics",
+          "work",
+          "education",
+          "projects",
+          "skills",
+          "awards",
+          "certificates",
+          "languages",
+          "interests",
+          "publications",
+          "volunteer",
+          "references"
+        ],
+        "twoColumn": {
+          "main": [],
+          "sidebar": []
+        }
+      }
+    }
+  }
+}

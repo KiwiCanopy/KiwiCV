@@ -1,0 +1,28 @@
+export const blog = {
+  back_to_overview: 'Genel Bakışa Dön',
+  categories: {
+    career_growth: 'Kariyer Büyümesi',
+    career_stories: 'Kariyer Hikayeleri',
+    inside_kiwicv: 'KiwiCV İçinde',
+    interview_prep: 'Mülakat Hazırlığı',
+    job_search: 'İş Arama',
+    personal_brand: 'Kişisel Marka',
+    resume_guide: 'Özgeçmiş Kılavuzu',
+  },
+  editorial_name: 'KiwiCV Editörlüğü',
+  editorial_subtitle: 'Bir sonraki kariyer adımın için uzman tavsiyeleri.',
+  media_error: 'İçerik yüklenemedi',
+  no_content: 'İçerik mevcut değil.',
+  no_posts: 'Yazı bulunamadı.',
+  post_not_found: 'Gönderi bulunamadı',
+  read_more: 'Daha Fazla Oku',
+  reading_time: '{{minutes}} dk okuma',
+  share_article: 'Makaleyi Paylaş',
+  share_error: 'Paylaşma başarısız.',
+  share_insecure: 'Paylaşma güvenli bir bağlantı (HTTPS) gerektirir.',
+  subtitle:
+    'Özgeçmiş oluşturma, kariyer gelişimi ve hayalindeki işi alma konusunda uzman tavsiyeleri.',
+  tagline: 'İpuçları ve Rehberler',
+  title: 'KiwiCV Blogu',
+  unknown_date: 'Bilinmeyen tarih',
+};

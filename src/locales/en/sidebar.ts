@@ -1,0 +1,15 @@
+export const sidebar = {
+  blog: 'Blog',
+  builder: 'Builder',
+  contact: 'Contact & Feedback',
+  dashboard: 'Dashboard',
+  extras: 'Extras',
+  home: 'Home',
+  learn: 'Learn',
+  menu_description: 'Site navigation',
+  menu_title: 'Menu',
+  more: 'More',
+  my_cvs: 'My CVs',
+  raw_json: 'Raw JSON',
+  settings: 'Settings',
+};

@@ -1,0 +1,21 @@
+PROMPT_VERSION: 2026-10-12b
+{
+  "type": "OBJECT",
+  "properties": {
+    "subject": {
+      "type": "STRING",
+      "description": "Subject line naming the role specifically."
+    },
+    "paragraphs": {
+      "type": "ARRAY",
+      "items": {
+        "type": "STRING"
+      },
+      "description": "The letter, one entry per paragraph. The FIRST entry is the salutation alone and the LAST is the closing formula alone."
+    }
+  },
+  "required": [
+    "subject",
+    "paragraphs"
+  ]
+}

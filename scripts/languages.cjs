@@ -1,0 +1,17 @@
+module.exports = [
+  'en',
+  'de',
+  'fr',
+  'es',
+  'it',
+  'pt',
+  'nl',
+  'pl',
+  'ru',
+  'zh',
+  'ja',
+  'bg',
+  'tr',
+  'sv',
+  'uk',
+];

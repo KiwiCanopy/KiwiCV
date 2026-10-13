@@ -1,0 +1,55 @@
+PROMPT_VERSION: 2026-10-12b
+{
+  "type": "OBJECT",
+  "properties": {
+    "_vId": {
+      "type": "STRING",
+      "description": "The unique identifier of the item being improved."
+    },
+    "improvedFields": {
+      "type": "OBJECT",
+      "properties": {
+        "name": {
+          "type": "STRING",
+          "description": "The name of the item, company, skill, or person."
+        },
+        "position": {
+          "type": "STRING",
+          "description": "Job title or role name."
+        },
+        "startDate": {
+          "type": "STRING",
+          "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+        },
+        "endDate": {
+          "type": "STRING",
+          "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+        },
+        "summary": {
+          "type": "STRING",
+          "description": "A concise professional summary or description."
+        },
+        "highlights": {
+          "type": "ARRAY",
+          "items": {
+            "type": "STRING"
+          },
+          "description": "Achievement list."
+        }
+      },
+      "required": [
+        "name",
+        "position",
+        "startDate",
+        "endDate",
+        "summary",
+        "highlights"
+      ],
+      "description": "Object containing the improved versions of the provided fields."
+    }
+  },
+  "required": [
+    "_vId",
+    "improvedFields"
+  ]
+}

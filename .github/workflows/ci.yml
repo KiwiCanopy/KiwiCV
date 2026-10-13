@@ -1,0 +1,64 @@
+name: CI
+
+# The PR check is the gate: there is no pre-push hook. A push to main runs it
+# again so every merged commit gets a verdict and the README badge reads main.
+# A feature-branch push without a PR runs nothing; tags never trigger it.
+# `pull_request` takes every base, so a PR stacked on another branch is checked
+# too and already carries its checks when it is retargeted to main.
+# The job names are the required checks in branch protection — renaming one
+# silently unrequires it.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A superseded PR run is cancelled. Each push to main gets its own group, so
+# no merged commit's run is cancelled or dropped from the queue.
+concurrency:
+  group: ci-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Check AI constants sync
+        run: npm run ai:check-sync
+
+      - name: Run tests
+        run: npm run test
+
+  build:
+    name: TypeScript & Vite Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run build
+        run: npm run build

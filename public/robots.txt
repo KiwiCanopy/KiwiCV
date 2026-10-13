@@ -1,0 +1,30 @@
+# KiwiCV - Robots.txt
+# Optimized for SEO and crawler efficiency
+
+User-agent: *
+
+# Allow crawling of all informational and marketing content.
+#
+# Login, Account, Settings and JSON are deliberately still crawlable: they emit
+# `noindex, follow` from NOINDEX_PAGES in src/components/ui/SEO.tsx, and a
+# crawler has to fetch a page to read that. Disallowing them here would block
+# the crawl and leave them indexable on inbound links alone, with no snippet —
+# the opposite of what is wanted.
+Allow: /
+
+# Block campaign and technical routes
+Disallow: /promo/
+Disallow: /api/
+
+# Protect internal Netlify infrastructure (functions, redirects, etc.)
+Disallow: /.netlify/
+
+# Security Hardening: Block common vulnerability scan targets 
+# (Even though this is not a WordPress site, this reduces log noise)
+Disallow: /wp-admin/
+Disallow: /wp-content/
+Disallow: /wp-includes/
+Disallow: /xmlrpc.php
+
+# Sitemap
+Sitemap: https://kiwicv.kiwicanopy.com/sitemap.xml

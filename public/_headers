@@ -1,0 +1,41 @@
+# Netlify reads this file from the publish root. Vite copies `public/` into
+# `dist/` verbatim, so this ships as `dist/_headers`.
+#
+# Everything under /assets/ carries a content hash in its filename
+# (vendor-hBn3SBcj.js), so the name changes whenever the bytes do. Those files
+# are immutable by construction and were being served
+# `public,max-age=0,must-revalidate` — a conditional request on every repeat
+# visit, for a URL that cannot have changed.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Everything below ships from `public/` under a STABLE filename, so none of it
+# may be `immutable`: a redeploy can change the bytes behind the same URL, and
+# `immutable` would pin the old copy for a year with no way to bust it. That is
+# not hypothetical — `KiwiCanopy.png` changed in this very commit.
+#
+# Fonts are large and change rarely, so they get a long window; they are served
+# from `public/fonts/` under their upstream names (`inter-latin-400-normal.ttf`)
+# and are NOT build-fingerprinted.
+/fonts/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
+/logos/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/images/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# The HTML shell must always be revalidated: it is what points at the hashed
+# assets above, so a stale copy pins a stale build.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Crawler-facing files change without a filename change.
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+
+/robots.txt
+  Cache-Control: public, max-age=3600

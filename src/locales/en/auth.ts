@@ -1,0 +1,42 @@
+export const auth = {
+  accept_privacy_label: 'I have read and agree to the {link}',
+  accept_terms_label: 'I accept the',
+  account_management: 'Account Management',
+  ai_login_required: 'To use AI features, please sign in with Google first.',
+  benefit_ai_desc:
+    'High-impact improvements, job-specific tailoring, or instant translations—all in seconds with just a few clicks.',
+  benefit_ai_title: 'AI Resume Booster',
+  benefit_privacy_desc:
+    'Your data remains yours. AI models run securely in the EU, and your data is never used for training or repurposed.',
+  benefit_privacy_title: '100% Private & GDPR-Ready',
+  benefit_sync_desc:
+    'Secure storage directly on your Google Drive. Perfect organization for all languages and exports—accessible on all your devices.',
+  benefit_sync_title: 'Smart Cloud Sync',
+  consent_mandatory: 'Please accept the Terms of Service and Privacy Policy first.',
+  delete_account: 'Delete Account',
+  error_login_failed: 'Login failed. Please try again.',
+  gh_alternative_desc: 'Prefer GitHub for sync only?',
+  login_to_enable: 'Log in to enable this feature',
+  login_to_enable_short: 'Login required',
+  not_logged_in: 'Not Logged In',
+  permission_modal_hint:
+    'Remember to allow access to Google Drive during sign-in. KiwiCV can only access files it created itself.',
+  premium_overview: 'Premium Overview',
+  privacy_link: 'Privacy Policy',
+  setup_gh: 'Setup GitHub',
+  sign_in_google: 'Sign in with Google',
+  sign_in_now: 'Sign in now',
+  sign_out_github_keep: 'Keep GitHub and sign out',
+  sign_out_github_message:
+    'Your GitHub connection is stored on this device, not in your account, so signing out leaves it in place. Remove it if other people use this browser.',
+  sign_out_github_remove: 'Remove GitHub and sign out',
+  sign_out_github_title: 'Also remove GitHub from this device?',
+  signing_in: 'Signing in...',
+  status_active: 'Active',
+  status_expired: 'Expired',
+  status_none: 'No Pass',
+  success_logout: 'Signed out successfully!',
+  sync_login_required: 'Please sign in to use Google Drive synchronization.',
+  terms_link: 'Terms of Service',
+  welcome_subtitle: 'Sign in to sync your resumes to Google Drive and access premium features.',
+};

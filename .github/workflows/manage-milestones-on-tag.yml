@@ -1,0 +1,142 @@
+name: Manage Milestones on Tag
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  manage_milestones:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Close current and older milestones
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          version_le() {
+            [ "$1" = "$(echo -e "$1\n$2" | sort -V | head -n1)" ]
+          }
+
+          TAG=${GITHUB_REF_NAME#v}
+          echo "Processing milestones for tag: $TAG"
+          touch closed_milestone_ids.txt
+
+          # Find all open milestones and close those that are numerically <= current tag
+          gh api /repos/$REPO/milestones --jq '.[] | {number: .number, title: .title}' | \
+          while read -r m; do
+            m_title=$(echo "$m" | jq -r '.title')
+            m_number=$(echo "$m" | jq -r '.number')
+            m_ver=${m_title#v}
+            
+            if [[ "$m_ver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && version_le "$m_ver" "$TAG"; then
+              echo "Closing milestone $m_title (ID: $m_number)..."
+              gh api \
+                --method PATCH \
+                -H "Accept: application/vnd.github+json" \
+                /repos/$REPO/milestones/$m_number \
+                -f state="closed"
+              echo "$m_number" >> closed_milestone_ids.txt
+            fi
+          done
+
+      - name: Cleanup empty milestones
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          version_le() {
+            [ "$1" = "$(echo -e "$1\n$2" | sort -V | head -n1)" ]
+          }
+
+          TAG=${GITHUB_REF_NAME#v}
+          echo "Searching for completely empty milestones <= $TAG..."
+
+          gh api /repos/$REPO/milestones --jq '.[] | select(.open_issues == 0 and .closed_issues == 0) | {number: .number, title: .title}' | \
+          while read -r m; do
+            m_title=$(echo "$m" | jq -r '.title')
+            m_number=$(echo "$m" | jq -r '.number')
+            m_ver=${m_title#v}
+
+            if [[ "$m_ver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && version_le "$m_ver" "$TAG"; then
+              echo "Deleting empty milestone $m_title (ID: $m_number)..."
+              gh api \
+                --method DELETE \
+                -H "Accept: application/vnd.github+json" \
+                /repos/$REPO/milestones/$m_number
+            fi
+          done
+          echo "Cleanup finished."
+
+      - name: Calculate and create new milestones
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          TAG=${GITHUB_REF_NAME#v}
+
+          if [[ $TAG =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            PATCH="${BASH_REMATCH[3]}"
+            
+            echo "Calculating new milestones for version: $MAJOR.$MINOR.$PATCH"
+            MILESTONES=()
+            
+            if [[ "$PATCH" -eq 0 && "$MINOR" -eq 0 ]]; then
+              MILESTONES+=("$MAJOR.$MINOR.$((PATCH+1))")
+              MILESTONES+=("$MAJOR.$((MINOR+1)).0")
+              MILESTONES+=("$((MAJOR+1)).0.0")
+            elif [[ "$PATCH" -eq 0 && "$MINOR" -gt 0 ]]; then
+              MILESTONES+=("$MAJOR.$MINOR.$((PATCH+1))")
+              MILESTONES+=("$MAJOR.$((MINOR+1)).0")
+            else
+              MILESTONES+=("$MAJOR.$MINOR.$((PATCH+1))")
+            fi
+            
+            FIRST_MILESTONE_ID=""
+
+            for m in "${MILESTONES[@]}"; do
+              echo "Ensuring milestone exists: $m"
+              # Create if missing, or fetch if already exists
+              RESPONSE=$(gh api --method POST -H "Accept: application/vnd.github+json" /repos/$REPO/milestones -f title="$m" 2>/dev/null) || \
+              RESPONSE=$(gh api /repos/$REPO/milestones --jq '.[] | select(.title == "'"$m"'")')
+              
+              M_ID=$(echo "$RESPONSE" | jq -r '.number')
+              echo "Milestone $m has ID: $M_ID"
+
+              # Capture the first milestone (patch) for migration target
+              if [ -z "$FIRST_MILESTONE_ID" ]; then
+                FIRST_MILESTONE_ID=$M_ID
+                echo "NEXT_PATCH_MILESTONE_ID=$M_ID" >> $GITHUB_ENV
+              fi
+            done
+          else
+            echo "Error: Tag $TAG does not match format X.Y.Z."
+            exit 1
+          fi
+
+      - name: Migrate open issues to next milestone
+        if: env.NEXT_PATCH_MILESTONE_ID != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ -f closed_milestone_ids.txt ]; then
+            while read -r old_id; do
+              echo "Migration: Checking for open issues in closed milestone $old_id..."
+              # Fetch open issue/PR numbers
+              ISSUES=$(gh api "/repos/$REPO/issues?milestone=$old_id&state=open" --jq '.[] | .number')
+              
+              for issue_num in $ISSUES; do
+                echo "Updating issue #$issue_num to milestone $NEXT_PATCH_MILESTONE_ID..."
+                gh api --method PATCH "/repos/$REPO/issues/$issue_num" -f milestone=$NEXT_PATCH_MILESTONE_ID
+              done
+            done < closed_milestone_ids.txt
+            echo "Migration finished."
+          else
+            echo "No milestones were closed, skipping migration."
+          fi

@@ -1,0 +1,607 @@
+PROMPT_VERSION: 2026-10-12b
+{
+  "type": "OBJECT",
+  "properties": {
+    "basics": {
+      "type": "OBJECT",
+      "properties": {
+        "name": {
+          "type": "STRING",
+          "description": "The name of the item, company, skill, or person."
+        },
+        "label": {
+          "type": "STRING",
+          "description": "Professional title or label (e.g. \"Software Engineer\")."
+        },
+        "email": {
+          "type": "STRING",
+          "description": "Contact email address."
+        },
+        "phone": {
+          "type": "STRING",
+          "description": "Contact phone number."
+        },
+        "url": {
+          "type": "STRING",
+          "description": "URL link (https://...)."
+        },
+        "summary": {
+          "type": "STRING",
+          "description": "A concise professional summary or description."
+        },
+        "location": {
+          "type": "OBJECT",
+          "properties": {
+            "address": {
+              "type": "STRING"
+            },
+            "postalCode": {
+              "type": "STRING"
+            },
+            "city": {
+              "type": "STRING"
+            },
+            "countryCode": {
+              "type": "STRING",
+              "description": "ISO alpha-2 country code."
+            },
+            "region": {
+              "type": "STRING"
+            }
+          },
+          "required": [
+            "address",
+            "postalCode",
+            "city",
+            "countryCode",
+            "region"
+          ]
+        },
+        "profiles": {
+          "type": "ARRAY",
+          "items": {
+            "type": "OBJECT",
+            "properties": {
+              "network": {
+                "type": "STRING",
+                "description": "Social network (e.g. LinkedIn)."
+              },
+              "username": {
+                "type": "STRING"
+              },
+              "url": {
+                "type": "STRING"
+              }
+            },
+            "required": [
+              "network",
+              "username",
+              "url"
+            ]
+          }
+        }
+      },
+      "description": "Basic contact and summary information.",
+      "required": [
+        "name",
+        "label",
+        "email",
+        "phone",
+        "url",
+        "summary",
+        "location",
+        "profiles"
+      ]
+    },
+    "work": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "position": {
+            "type": "STRING",
+            "description": "Job title or role name."
+          },
+          "startDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+          },
+          "endDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+          },
+          "summary": {
+            "type": "STRING",
+            "description": "A concise professional summary or description."
+          },
+          "highlights": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "Achievement list."
+          },
+          "url": {
+            "type": "STRING",
+            "description": "URL link (https://...)."
+          },
+          "location": {
+            "type": "STRING",
+            "description": "City, region, or remote indicator (e.g. \"Berlin\", \"Remote\")."
+          }
+        },
+        "required": [
+          "name",
+          "position",
+          "startDate",
+          "endDate",
+          "summary",
+          "highlights",
+          "url",
+          "location"
+        ]
+      },
+      "description": "List of work entries."
+    },
+    "volunteer": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "organization": {
+            "type": "STRING",
+            "description": "Organization name."
+          },
+          "position": {
+            "type": "STRING",
+            "description": "Job title or role name."
+          },
+          "startDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+          },
+          "endDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+          },
+          "summary": {
+            "type": "STRING",
+            "description": "A concise professional summary or description."
+          },
+          "highlights": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "Achievement list."
+          },
+          "url": {
+            "type": "STRING",
+            "description": "URL link (https://...)."
+          },
+          "location": {
+            "type": "STRING",
+            "description": "City, region, or remote indicator (e.g. \"Berlin\", \"Remote\")."
+          }
+        },
+        "required": [
+          "organization",
+          "position",
+          "startDate",
+          "endDate",
+          "summary",
+          "highlights",
+          "url",
+          "location"
+        ]
+      },
+      "description": "List of volunteer entries."
+    },
+    "education": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "institution": {
+            "type": "STRING",
+            "description": "Educational institution name."
+          },
+          "area": {
+            "type": "STRING",
+            "description": "Field of study or area of expertise."
+          },
+          "studyType": {
+            "type": "STRING",
+            "description": "Degree or certification type (e.g. 'Bachelor')."
+          },
+          "startDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+          },
+          "endDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+          },
+          "score": {
+            "type": "STRING",
+            "description": "Grade, GPA, or result."
+          },
+          "courses": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "List of courses"
+          },
+          "url": {
+            "type": "STRING",
+            "description": "URL link (https://...)."
+          },
+          "location": {
+            "type": "STRING",
+            "description": "City, region, or remote indicator (e.g. \"Berlin\", \"Remote\")."
+          }
+        },
+        "required": [
+          "institution",
+          "area",
+          "studyType",
+          "startDate",
+          "endDate",
+          "score",
+          "courses",
+          "url",
+          "location"
+        ]
+      },
+      "description": "List of education entries."
+    },
+    "awards": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "title": {
+            "type": "STRING",
+            "description": "The title of an award, certificate, or publication."
+          },
+          "date": {
+            "type": "STRING",
+            "description": "Event date (YYYY-MM-DD or YYYY-MM)."
+          },
+          "awarder": {
+            "type": "STRING"
+          },
+          "summary": {
+            "type": "STRING",
+            "description": "A concise professional summary or description."
+          },
+          "url": {
+            "type": "STRING",
+            "description": "URL link (https://...)."
+          },
+          "location": {
+            "type": "STRING",
+            "description": "City, region, or remote indicator (e.g. \"Berlin\", \"Remote\")."
+          }
+        },
+        "required": [
+          "title",
+          "date",
+          "awarder",
+          "summary",
+          "url",
+          "location"
+        ]
+      },
+      "description": "List of awards entries."
+    },
+    "certificates": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "date": {
+            "type": "STRING",
+            "description": "Event date (YYYY-MM-DD or YYYY-MM)."
+          },
+          "issuer": {
+            "type": "STRING"
+          },
+          "url": {
+            "type": "STRING",
+            "description": "URL link (https://...)."
+          }
+        },
+        "required": [
+          "name",
+          "date",
+          "issuer",
+          "url"
+        ]
+      },
+      "description": "List of certificates entries."
+    },
+    "publications": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "publisher": {
+            "type": "STRING"
+          },
+          "releaseDate": {
+            "type": "STRING",
+            "description": "Publication release date (YYYY-MM-DD or YYYY-MM)."
+          },
+          "summary": {
+            "type": "STRING",
+            "description": "A concise professional summary or description."
+          },
+          "url": {
+            "type": "STRING",
+            "description": "URL link (https://...)."
+          }
+        },
+        "required": [
+          "name",
+          "publisher",
+          "releaseDate",
+          "summary",
+          "url"
+        ]
+      },
+      "description": "List of publications entries."
+    },
+    "skills": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "level": {
+            "type": "INTEGER",
+            "minimum": 0,
+            "maximum": 4,
+            "description": "Skill proficiency level: 0 (Not Specified), 1 (Basic), 2 (Intermediate), 3 (Advanced), 4 (Expert)."
+          },
+          "keywords": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "List of keywords or tags"
+          }
+        },
+        "required": [
+          "name",
+          "level",
+          "keywords"
+        ]
+      },
+      "description": "List of skills entries."
+    },
+    "languages": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "language": {
+            "type": "STRING",
+            "description": "Language name."
+          },
+          "certificate": {
+            "type": "STRING",
+            "description": "Certification or test name."
+          },
+          "level": {
+            "type": "INTEGER",
+            "minimum": 0,
+            "maximum": 5,
+            "description": "Fluency Level: 0 (Not Specified), 1 (Elementary), 2 (Intermediate), 3 (Professional), 4 (Fluent), 5 (Native)."
+          }
+        },
+        "required": [
+          "language",
+          "certificate",
+          "level"
+        ]
+      },
+      "description": "List of languages entries."
+    },
+    "interests": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "keywords": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "List of keywords or tags"
+          }
+        },
+        "required": [
+          "name",
+          "keywords"
+        ]
+      },
+      "description": "List of interests entries."
+    },
+    "projects": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "description": {
+            "type": "STRING",
+            "description": "A detailed description."
+          },
+          "highlights": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "Achievement list."
+          },
+          "startDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+          },
+          "endDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+          },
+          "entity": {
+            "type": "STRING",
+            "description": "The organization or employer the project was for."
+          },
+          "type": {
+            "type": "STRING",
+            "description": "The type of project or work."
+          },
+          "url": {
+            "type": "STRING",
+            "description": "URL link (https://...)."
+          },
+          "location": {
+            "type": "STRING",
+            "description": "City, region, or remote indicator (e.g. \"Berlin\", \"Remote\")."
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "highlights",
+          "startDate",
+          "endDate",
+          "entity",
+          "type",
+          "url",
+          "location"
+        ]
+      },
+      "description": "List of projects entries."
+    },
+    "privateProjects": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "description": {
+            "type": "STRING",
+            "description": "A detailed description."
+          },
+          "highlights": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            },
+            "description": "Achievement list."
+          },
+          "startDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision."
+          },
+          "endDate": {
+            "type": "STRING",
+            "description": "ISO format (YYYY-MM-DD or YYYY-MM). Match original precision. Leave empty ('') for Present."
+          },
+          "entity": {
+            "type": "STRING",
+            "description": "The organization or employer the project was for."
+          },
+          "type": {
+            "type": "STRING",
+            "description": "The type of project or work."
+          },
+          "url": {
+            "type": "STRING",
+            "description": "URL link (https://...)."
+          },
+          "location": {
+            "type": "STRING",
+            "description": "City, region, or remote indicator (e.g. \"Berlin\", \"Remote\")."
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "highlights",
+          "startDate",
+          "endDate",
+          "entity",
+          "type",
+          "url",
+          "location"
+        ]
+      },
+      "description": "List of privateProjects entries."
+    },
+    "references": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": {
+            "type": "STRING",
+            "description": "The name of the item, company, skill, or person."
+          },
+          "reference": {
+            "type": "STRING",
+            "description": "Recommendation or reference text."
+          }
+        },
+        "required": [
+          "name",
+          "reference"
+        ]
+      },
+      "description": "List of references entries."
+    }
+  },
+  "description": "The extracted and structured resume data.",
+  "required": [
+    "basics",
+    "work",
+    "volunteer",
+    "education",
+    "awards",
+    "certificates",
+    "publications",
+    "skills",
+    "languages",
+    "interests",
+    "projects",
+    "privateProjects",
+    "references"
+  ]
+}

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      Two icon declarations on purpose. The `.ico` carries a single 64x64 entry
+      — legal for Google (square, well over the 8x8 floor) but only just past
+      the >48x48 they recommend, and it is what every legacy consumer asks for
+      by extension. The 192px PNG gives Google and modern browsers a cleaner,
+      larger candidate to prefer.
+
+      Google resolves the site favicon from THIS header on the home page, so a
+      crawler that never runs JavaScript still finds it — do not move these into
+      the Helmet-managed <SEO /> block.
+    -->
+    <link rel="icon" href="/logos/kiwicv/favicon.ico" sizes="64x64" />
+    <link rel="icon" type="image/png" href="/logos/kiwicv/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/logos/kiwicv/apple-touch-icon.png?v=2" />
+    <link rel="manifest" href="/manifest.json" />
+    <!-- Rewritten to the live theme by syncThemeColorMeta (src/utils/themeColorMeta.ts). -->
+    <meta name="theme-color" content="#ffffff" />
+
+    <!--
+      SEO tags (title, description, OG, Twitter) are managed dynamically by the
+      <SEO /> component via react-helmet-async. Do NOT add static OG/Twitter
+      tags here — they would duplicate and override the localized Helmet tags.
+
+      ⚠️ The Netlify Prerender extension does NOT cover every bot, and the
+      claim that it does was wrong here for months. Measured against
+      production on `/blog`:
+
+        prerendered  — Googlebot, bingbot (both re-confirmed 2026-08-30),
+                       Twitterbot, LinkedInBot, DuckDuckBot (2026-07-23)
+        empty shell  — Google-InspectionTool, real browsers (both
+                       re-confirmed 2026-08-30), Applebot, YandexBot,
+                       GPTBot, PerplexityBot, ClaudeBot (2026-07-23)
+
+      Sizes move with the bundle, so compare the two orders of magnitude
+      rather than a number: on 2026-08-30 the shell was 5.3 KB and a
+      prerendered blog post 42 KB. The 1.7 KB shell recorded here on
+      2026-07-23 was accurate then and is not now.
+
+      Googlebot and bingbot are covered, so search is fine. But
+      Google-InspectionTool is what Search Console's URL Inspection and the
+      Rich Results Test fetch as, so structured data cannot be validated
+      through those tools while it receives the shell.
+
+      Re-measure rather than trusting this list — it is dashboard
+      configuration, not repository configuration, so nothing in this repo
+      pins it and it has already changed once. Measure the live English
+      form; `/en/blog` is the retired one and 301s for every user agent
+      (the en-redirect edge function), so it measures the
+      redirect rather than prerender coverage:
+
+        curl -s -A "Googlebot/2.1" https://kiwicv.kiwicanopy.com/blog | wc -c
+    -->
+
+    <!--
+      Organization, WebSite and SoftwareApplication are emitted STATICALLY here
+      on purpose, unlike the per-page FAQPage/Article/BreadcrumbList blocks that
+      <JsonLd /> renders through Helmet.
+
+      These three describe the site rather than a route, so they need no
+      localization, and being in the raw HTML means they survive a crawler that
+      never executes JavaScript — which is exactly the failure this avoids.
+      A Helmet-rendered block would be invisible to that crawler.
+
+      The description below is the same copy as `seo.landing.description` in
+      src/locales/en. Keep them in step; the previous text here was pre-rebrand
+      marketing that appeared nowhere else in the product.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://kiwicv.kiwicanopy.com/#organization",
+            "name": "KiwiCV",
+            "url": "https://kiwicv.kiwicanopy.com/",
+            "logo": "https://kiwicv.kiwicanopy.com/logos/kiwicv/icon-512.png",
+            "sameAs": ["https://x.com/kiwicvapp", "https://ko-fi.com/kiwicanopy"],
+            "parentOrganization": {
+              "@type": "Organization",
+              "name": "KiwiCanopy",
+              "url": "https://kiwicanopy.com/"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://kiwicv.kiwicanopy.com/#website",
+            "name": "KiwiCV",
+            "alternateName": "KiwiCV by KiwiCanopy",
+            "url": "https://kiwicv.kiwicanopy.com/",
+            "publisher": { "@id": "https://kiwicv.kiwicanopy.com/#organization" }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "name": "KiwiCV",
+            "image": "https://kiwicv.kiwicanopy.com/logos/kiwicv/og.jpg",
+            "operatingSystem": "Any",
+            "applicationCategory": "BusinessApplication",
+            "url": "https://kiwicv.kiwicanopy.com/",
+            "publisher": { "@id": "https://kiwicv.kiwicanopy.com/#organization" },
+            "description": "The job market is highly competitive. The chance of being ignored is high. KiwiCV helps you increase your chances. Go even further with AI tailoring.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "EUR",
+              "description": "Free to build and export a CV. AI tailoring needs a paid Premium Pass."
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

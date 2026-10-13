@@ -1,0 +1,28 @@
+export const blog = {
+  back_to_overview: "Retour à l'aperçu",
+  categories: {
+    career_growth: 'Croissance de carrière',
+    career_stories: 'Récits de carrière',
+    inside_kiwicv: "L'envers de KiwiCV",
+    interview_prep: "Préparation d'entretien",
+    job_search: "Recherche d'emploi",
+    personal_brand: 'Marque personnelle',
+    resume_guide: 'Guide du CV',
+  },
+  editorial_name: 'Rédaction KiwiCV',
+  editorial_subtitle: 'Conseils d’experts pour ta prochaine étape de carrière.',
+  media_error: "Le contenu n'a pas pu être chargé",
+  no_content: 'Aucun contenu disponible.',
+  no_posts: 'Aucun article trouvé.',
+  post_not_found: 'Article non trouvé',
+  read_more: 'Lire la suite',
+  reading_time: '{{minutes}} min de lecture',
+  share_article: "Partager l'article",
+  share_error: 'Échec du partage.',
+  share_insecure: 'Le partage nécessite une connexion sécurisée (HTTPS).',
+  subtitle:
+    "Conseils d'experts sur la rédaction de CV, la croissance de carrière et l'obtention du job de tes rêves.",
+  tagline: 'Conseils & Guides',
+  title: 'Blog KiwiCV',
+  unknown_date: 'Date inconnue',
+};

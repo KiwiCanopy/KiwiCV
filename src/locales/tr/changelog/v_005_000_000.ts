@@ -3,7 +3,7 @@ import type { Translations } from '@/locales/en';
 export const v_005_000_000: Translations['changelog']['entries']['v_005_000_000'] = {
   _highlights: {
     one_day_pass: {
-      badge: 'Yeni',
+      badge: '1 günlük Pass',
       content:
         "KiwiCV'nin sana uygun olup olmadığından emin değil misin? Yeni 1 günlük Pass, bir sonraki başvurun için tüm yapay zeka özelliklerinin kilidini açar; böylece daha uzun bir Pass'e karar vermeden önce kendin görebilirsin. Fiyat kartları artık 1, 7 ve 30 gün sunuyor.",
       title: 'Bir günlüğüne dene',

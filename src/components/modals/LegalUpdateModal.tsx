@@ -1,56 +1,24 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import { Button } from '@/components/ui/Button';
 import { DialogFrame, DialogFrameDescription, DialogFrameTitle } from '@/components/ui/DialogFrame';
-import { LAST_LEGAL_UPDATE } from '@/constants/auth';
 import { useAuth } from '@/hooks/useAuth';
+import { useLegalConsentPending } from '@/hooks/useLegalConsentPending';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/lib/supabase';
 import { useToastStore } from '@/store/ui/useToastStore';
-import { useUIStore } from '@/store/ui/useUIStore';
 import { localizedPath } from '@/utils/localeRouting';
 import { ExternalLink, ShieldAlert } from 'lucide-react';
 
 export const LegalUpdateModal: React.FC = () => {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const { t, language } = useTranslation();
-  const location = useLocation();
   const [checked, setChecked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const addToast = useToastStore((state) => state.addToast);
+  const consentPending = useLegalConsentPending();
 
-  const firstTimeLanguageSelected = useUIStore((state) => state.firstTimeLanguageSelected);
-
-  if (!firstTimeLanguageSelected) return null;
-  if (!user || !profile) return null;
-
-  // Exclude legal pages, account, and blog pages from the blocking consent modal
-  const pathname = location.pathname.toLowerCase();
-  const segments = pathname.split('/');
-  const isExcludedPage =
-    segments.includes('privacy') ||
-    segments.includes('terms') ||
-    segments.includes('legal-notice') ||
-    segments.includes('account') ||
-    segments.includes('blog');
-
-  if (isExcludedPage) return null;
-
-  // Check if consent is required
-  const acceptedPrivacyAt = profile.accepted_privacy_at
-    ? new Date(profile.accepted_privacy_at)
-    : null;
-  const acceptedTermsAt = profile.accepted_terms_at ? new Date(profile.accepted_terms_at) : null;
-  const lastUpdate = new Date(LAST_LEGAL_UPDATE);
-
-  const needsConsent =
-    !acceptedPrivacyAt ||
-    !acceptedTermsAt ||
-    acceptedPrivacyAt < lastUpdate ||
-    acceptedTermsAt < lastUpdate;
-
-  if (!needsConsent) return null;
+  if (!consentPending || !user) return null;
 
   const handleSubmit = async () => {
     if (!checked) return;

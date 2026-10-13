@@ -87,6 +87,9 @@ They are the only explanation any user gets. Shipping `--legal` while they still
 describe a previous update re-prompts everyone, in fifteen languages, about
 something that did not happen.
 
+Keep `changes_desc` to two or three sentences and let the policy link carry the
+detail: 5.0.0 shipped a section-by-section paragraph that outran the dialog.
+
 Do not pass it for a change that only _narrows_ what is collected or removes
 clauses about a retired product — re-consent exists for expanded or worsened
 processing, not for good news.

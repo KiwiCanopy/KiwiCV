@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { DialogFrame, DialogFrameDescription, DialogFrameTitle } from '@/components/ui/DialogFrame';
 import { useAuth } from '@/hooks/useAuth';
-import { useLegalConsentPending } from '@/hooks/useLegalConsentPending';
+import { useLegalConsentState } from '@/hooks/useLegalConsentState';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/lib/supabase';
 import { useToastStore } from '@/store/ui/useToastStore';
@@ -16,9 +16,10 @@ export const LegalUpdateModal: React.FC = () => {
   const [checked, setChecked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const addToast = useToastStore((state) => state.addToast);
-  const consentPending = useLegalConsentPending();
+  const consentState = useLegalConsentState();
 
-  if (!consentPending || !user) return null;
+  // `!user` only narrows the type for handleSubmit; 'pending' implies a user.
+  if (consentState !== 'pending' || !user) return null;
 
   const handleSubmit = async () => {
     if (!checked) return;

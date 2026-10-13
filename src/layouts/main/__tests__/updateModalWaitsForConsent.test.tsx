@@ -8,37 +8,44 @@ import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
- * The What's New dialog opens after the blocking consent modal on a release
- * that bumps both. Opened second, it takes Radix's scroll lock and the consent
- * text cannot scroll, so it must wait until consent is given.
+ * The What's New dialog opens on load, and on a release that bumps the legal
+ * date the blocking consent modal does too. Opened second, What's New takes
+ * Radix's scroll lock and the consent text cannot scroll, so it waits until
+ * consent is known to be clear — including while auth is still loading.
  */
-const auth = {
-  user: { id: 'u1' },
+type Profile = { accepted_terms_at: string; accepted_privacy_at: string } | null;
+const auth: { user: { id: string } | null; loading: boolean; profile: Profile } = {
+  user: null,
   loading: false,
-  hasDrivePermission: null,
-  profile: { accepted_terms_at: '', accepted_privacy_at: '' },
+  profile: null,
 };
-vi.mock('@/hooks/useAuth', () => ({ useAuth: () => auth }));
+vi.mock('@/hooks/useAuth', () => ({
+  useAuth: () => ({ ...auth, hasDrivePermission: null }),
+}));
 
-function consentAt(iso: string) {
-  auth.profile = { accepted_terms_at: iso, accepted_privacy_at: iso };
-}
+const lastUpdate = new Date(LAST_LEGAL_UPDATE).getTime();
+const consentAt = (offsetMs: number): Profile => {
+  const iso = new Date(lastUpdate + offsetMs).toISOString();
+  return { accepted_terms_at: iso, accepted_privacy_at: iso };
+};
 
-function renderOverlays() {
-  return render(
-    <MemoryRouter initialEntries={['/en/dashboard']}>
-      <MainLayoutOverlays
-        closeUpdateModal={vi.fn()}
-        currentVersion="5.0.1"
-        isUpdateModalOpen
-        missedVersions={[]}
-      />
-    </MemoryRouter>,
-  );
-}
+const overlays = () => (
+  <MemoryRouter initialEntries={['/en/dashboard']}>
+    <MainLayoutOverlays
+      closeUpdateModal={vi.fn()}
+      currentVersion="5.0.1"
+      isUpdateModalOpen
+      missedVersions={[]}
+    />
+  </MemoryRouter>
+);
+const whatsNew = () => screen.queryByRole('dialog', { name: /your profile/i });
 
 beforeEach(() => {
   useUIStore.setState({ firstTimeLanguageSelected: true });
+  auth.user = { id: 'u1' };
+  auth.loading = false;
+  auth.profile = null;
 });
 
 afterEach(() => {
@@ -47,14 +54,30 @@ afterEach(() => {
 
 describe("What's New and the consent modal", () => {
   it('stays closed while consent to a newer legal update is pending', () => {
-    consentAt(new Date(new Date(LAST_LEGAL_UPDATE).getTime() - 1000).toISOString());
-    renderOverlays();
-    expect(screen.queryByRole('dialog')).toBeNull();
+    auth.profile = consentAt(-1000);
+    render(overlays());
+    expect(whatsNew()).toBeNull();
   });
 
-  it('opens once the current legal update is accepted', () => {
-    consentAt(new Date(new Date(LAST_LEGAL_UPDATE).getTime() + 1000).toISOString());
-    renderOverlays();
-    expect(screen.getByRole('dialog')).toBeTruthy();
+  it("stays closed while a signed-in user's profile is still loading", () => {
+    auth.profile = null;
+    render(overlays());
+    expect(whatsNew()).toBeNull();
+  });
+
+  it('opens once consent is given, without a reload', () => {
+    auth.profile = consentAt(-1000);
+    const { rerender } = render(overlays());
+    expect(whatsNew()).toBeNull();
+
+    auth.profile = consentAt(1000);
+    rerender(overlays());
+    expect(whatsNew()).not.toBeNull();
+  });
+
+  it('opens for a guest, who has nothing to consent to', () => {
+    auth.user = null;
+    render(overlays());
+    expect(whatsNew()).not.toBeNull();
   });
 });

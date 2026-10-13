@@ -5,7 +5,7 @@ import { VersionUpdateModal } from '@/components/modals/VersionUpdateModal';
 import { PricingDialog } from '@/components/monetization/PricingDialog';
 import { PurchaseSuccessHandler } from '@/components/monetization/PurchaseSuccessHandler';
 import { useAuth } from '@/hooks/useAuth';
-import { useLegalConsentPending } from '@/hooks/useLegalConsentPending';
+import { useLegalConsentState } from '@/hooks/useLegalConsentState';
 import { useTranslation } from '@/hooks/useTranslation';
 import { type AuthTriggerSource, useFlowStore } from '@/store/ui/useFlowStore';
 import { useUIStore } from '@/store/ui/useUIStore';
@@ -53,14 +53,14 @@ export function MainLayoutOverlays(props: MainLayoutOverlaysProps) {
    * holds what the opening caller named.
    */
   const restoreFocusToId = useFlowStore((state) => state.auth.restoreFocusToId);
-  const legalConsentPending = useLegalConsentPending();
+  const legalConsent = useLegalConsentState();
 
   return (
     <>
       <VersionUpdateModal
-        // Waits for the blocking consent modal: opened after it, this dialog
-        // would take Radix's scroll lock and freeze the consent text.
-        isOpen={props.isUpdateModalOpen && !legalConsentPending}
+        // Waits until consent is known to be clear: opened after the consent
+        // modal, this dialog would take Radix's scroll lock and freeze its text.
+        isOpen={props.isUpdateModalOpen && legalConsent === 'clear'}
         onClose={props.closeUpdateModal}
         version={props.currentVersion}
         missedVersions={props.missedVersions}

@@ -8,19 +8,21 @@ import { useUIStore } from '@/store/ui/useUIStore';
 const EXCLUDED_SEGMENTS = ['privacy', 'terms', 'legal-notice', 'account', 'blog'];
 
 /**
- * Whether the blocking re-consent modal is showing on this route. Other modals
- * that open on load must wait for it: Radix locks scrolling to the most recently
- * opened dialog, so a second one opening later freezes the consent modal.
+ * Whether the blocking re-consent modal shows on this route: `'unknown'` until
+ * auth has resolved a signed-in user's profile. A modal that opens on load must
+ * wait for `'clear'`: Radix locks scrolling to the most recently opened dialog,
+ * so one opening after the consent modal freezes its text.
  */
-export function useLegalConsentPending(): boolean {
-  const { user, profile } = useAuth();
+export function useLegalConsentState(): 'pending' | 'clear' | 'unknown' {
+  const { user, profile, loading } = useAuth();
   const location = useLocation();
   const firstTimeLanguageSelected = useUIStore((state) => state.firstTimeLanguageSelected);
 
-  if (!firstTimeLanguageSelected || !user || !profile) return false;
+  if (loading || (user && !profile)) return 'unknown';
+  if (!firstTimeLanguageSelected || !user || !profile) return 'clear';
 
   const segments = location.pathname.toLowerCase().split('/');
-  if (EXCLUDED_SEGMENTS.some((segment) => segments.includes(segment))) return false;
+  if (EXCLUDED_SEGMENTS.some((segment) => segments.includes(segment))) return 'clear';
 
   const acceptedPrivacyAt = profile.accepted_privacy_at
     ? new Date(profile.accepted_privacy_at)
@@ -28,10 +30,10 @@ export function useLegalConsentPending(): boolean {
   const acceptedTermsAt = profile.accepted_terms_at ? new Date(profile.accepted_terms_at) : null;
   const lastUpdate = new Date(LAST_LEGAL_UPDATE);
 
-  return (
+  const pending =
     !acceptedPrivacyAt ||
     !acceptedTermsAt ||
     acceptedPrivacyAt < lastUpdate ||
-    acceptedTermsAt < lastUpdate
-  );
+    acceptedTermsAt < lastUpdate;
+  return pending ? 'pending' : 'clear';
 }

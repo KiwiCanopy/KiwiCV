@@ -1,5 +1,5 @@
 ---
-description: File a KiwiCV GitHub issue the way an agent must — render the chosen .github/ISSUE_TEMPLATE body by hand and apply the labels the web form would have applied. Use whenever creating an issue with `gh`.
+description: File a KiwiCV GitHub issue the way an agent must — render the chosen .github/ISSUE_TEMPLATE body by hand, apply its labels, and set the Type, the Priority/Effort issue fields and the milestone. Use whenever creating an issue with `gh`.
 argument-hint: '[template: bug_report|feature_request|refactor|design|conception|discussion|epic]'
 ---
 
@@ -68,12 +68,81 @@ An issue that says "the dropdown is limited" is worth less than one
 that says which component gates it, what the gate is reading, and
 which of the three things it feeds is not prompt-only.
 
-## 4. Do not invent process fields
+## 4. Set the Type, Priority, Effort and milestone
 
-KiwiCV's templates are plain `.md` with `name`, `about`, `title`,
-`labels`, `assignees`. There is **no** issue Type and no
-Priority/Effort project field to set — that is a sibling repo's
-convention. Setting labels is the whole of it.
+The KiwiCanopy org defines issue Types and two single-select issue
+fields, Priority and Effort; they apply to this repository too. No
+template sets them, so every filing
+sets them by hand. An `epic` takes a Type and a milestone but no
+Priority or Effort: it holds work rather than being work.
+
+**Type** — `Bug` for `bug_report`, `Feature` for `feature_request`,
+`Task` for everything else (the org has no Epic
+Type — `gh api orgs/KiwiCanopy/issue-types --jq '.[].name'`):
+
+```sh
+gh api -X PATCH repos/KiwiCanopy/KiwiCV/issues/<n> -f type=Bug
+```
+
+**Priority and Effort** — discover the ids rather than trusting a copy:
+
+```sh
+gh api graphql -F owner=KiwiCanopy -F name=KiwiCV -f query='
+  query($owner:String!, $name:String!) {
+    repository(owner:$owner, name:$name) {
+      issueFields(first:20) { nodes {
+        ... on IssueFieldSingleSelect { id
+          options { id name } } } } } }'
+```
+
+⚠️ Do not add `name` beside `id`: the field name needs the
+`read:project` scope, and asking for it fails the whole query. Tell
+the two apart by their options — Priority has Urgent/High/Medium/Low,
+Effort has High/Medium/Low. The inline fragment is required, since
+`issueFields` is a union.
+
+Then, with `gh api repos/KiwiCanopy/KiwiCV/issues/<n> --jq .node_id`:
+
+```sh
+gh api graphql -f query='mutation($id:ID!,$p:ID!,$e:ID!){
+  setIssueFieldValue(input:{issueId:$id, issueFields:[
+    {fieldId:"<priority IFSS_ id>", singleSelectOptionId:$p},
+    {fieldId:"<effort IFSS_ id>", singleSelectOptionId:$e}]})
+  { issue { number } } }' -f id=<node-id> -f p=<IFSSO_ id> -f e=<IFSSO_ id>
+```
+
+The option variables are `ID!`, not `String!` — a `String!` fails with
+a type mismatch. Field ids start `IFSS_`, option ids `IFSSO_`; an
+`IFSSV_` id is a field _value_ and gives `NOT_FOUND`.
+
+- **Priority** — **Urgent**: blocks the next release, or daily use is
+  broken now. **High**: an issue on any open
+  milestone. **Medium**: a
+  real defect or improvement the release does not wait for. **Low**:
+  deferred, demand-gated, optional.
+- **Effort** — the honest size, not the importance. **Low**: one
+  sitting. **Medium**: one subsystem with its tests and review.
+  **High**: cross-subsystem, a new surface, or an unscoped
+  investigation.
+
+**Milestone** — says which release must not ship without the issue.
+It is not a second priority. Set the next open patch or minor
+milestone for a defect a user can meet in a shipped surface; leave it
+empty for deferred or demand-gated work. Empty is an answer, so decide
+it. A released milestone is closed — check `gh api
+'repos/KiwiCanopy/KiwiCV/milestones?state=open'` before naming one.
+
+```sh
+gh issue edit <n> --milestone "<open milestone>"
+```
+
+Read it all back:
+
+```sh
+gh api repos/KiwiCanopy/KiwiCV/issues/<n> --jq '{type: .type.name,
+  milestone: .milestone.title, fields: [.issue_field_values[]
+  | {(.issue_field_name): .single_select_option.name}]}'
+```
 
 ## 5. After filing
 

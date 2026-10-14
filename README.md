@@ -48,8 +48,9 @@ self-hostable HTML page — all without your data leaving the browser.
   retyping anything.
 - **PDF & HTML export** — A vector PDF compiled in the browser with
   Typst, or a static HTML page ready for hosting.
-- **Your data, portable** — Open JSON export and import, a version
-  for each role, and optional backup to GitHub or Google Drive.
+- **Your data, portable** — Open JSON export and import built on the
+  [JSON Resume](https://jsonresume.org/schema/) schema, a version for
+  each role, and optional backup to GitHub or Google Drive.
 - **15 languages** — English, German, French, Spanish, Italian,
   Portuguese, Dutch, Polish, Russian, Chinese, Japanese, Bulgarian,
   Turkish, Swedish, and Ukrainian.

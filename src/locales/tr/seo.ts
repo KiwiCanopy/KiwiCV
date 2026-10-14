@@ -33,8 +33,8 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      'İş gücü piyasası oldukça rekabetçi. Göz ardı edilme olasılığı yüksektir. KiwiCV şansını artırmana yardımcı olur. Yapay zeka uyarlaması ile bir adım daha ileri git.',
-    title: 'KiwiCV - İş görüşmesine giden yolun | CV Oluşturucu',
+      "CV'ni ve ön yazını saniyeler içinde her iş ilanına göre uyarla. Düzenleyici ve PDF dışa aktarımı ücretsiz — yapay zeka Pass ile, abonelik yok.",
+    title: 'KiwiCV - Ücretsiz CV Oluşturucu ve Yapay Zeka ile Uyarlama',
   },
   login: {
     description:

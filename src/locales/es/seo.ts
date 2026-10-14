@@ -33,8 +33,8 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      'El mercado laboral es altamente competitivo. La probabilidad de ser ignorado es alta. KiwiCV te ayuda a aumentar tus posibilidades. Ve un paso más allá con la personalización por IA.',
-    title: 'KiwiCV - Tu camino hacia la entrevista de trabajo | Generador de CV',
+      'Adapta tu CV y tu carta de presentación a cualquier oferta de empleo en segundos. Editor y exportación de PDF gratis — la IA, con un Pass, sin suscripción.',
+    title: 'KiwiCV - Generador de CV gratis con adaptación por IA',
   },
   login: {
     description:

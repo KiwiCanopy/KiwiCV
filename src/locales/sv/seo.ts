@@ -33,8 +33,8 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      'Arbetsmarknaden är mycket konkurrensutsatt. Risken för att bli ignorerad är stor. KiwiCV hjälper dig att öka dina chanser. Ta det ett steg längre mit AI-skräddarsydd optimering.',
-    title: 'KiwiCV - Din väg till anställningsintervjun | CV-generator',
+      'Anpassa ditt CV och personliga brev efter varje jobbannons på några sekunder. Editor och PDF-export gratis — AI med ett Pass, inget abonnemang.',
+    title: 'KiwiCV - Gratis CV-generator med AI-anpassning',
   },
   login: {
     description:

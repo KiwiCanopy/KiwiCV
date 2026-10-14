@@ -65,7 +65,7 @@ describe('SEO', () => {
     renderAt('/');
 
     await waitFor(() => {
-      expect(head().titles).toEqual(['KiwiCV - Your Path to the Job Interview | Resume Builder']);
+      expect(head().titles).toEqual(['KiwiCV - Free Resume Builder with AI Job Tailoring']);
     });
   });
 
@@ -197,7 +197,7 @@ describe('SEO', () => {
     renderAt('/');
 
     await waitFor(() => {
-      expect(head().titles).toEqual(['KiwiCV - Your Path to the Job Interview | Resume Builder']);
+      expect(head().titles).toEqual(['KiwiCV - Free Resume Builder with AI Job Tailoring']);
     });
   });
 });

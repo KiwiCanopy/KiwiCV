@@ -33,8 +33,8 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      '労働市場は非常に競争が激しいです。無視される可能性が高いです。KiwiCVはチャンスを広げるお手伝いをします。AIによるカスタマイズで、さらに一歩先へ。',
-    title: 'KiwiCV - 採用面接への道のり | 履歴書ジェネレーター',
+      '求人情報に合わせて、履歴書とカバーレターを数秒で最適化。エディターとPDFエクスポートは無料 — AIはPassで、サブスクリプションは不要です。',
+    title: 'KiwiCV - AIで求人に最適化できる無料の履歴書ジェネレーター',
   },
   login: {
     description:

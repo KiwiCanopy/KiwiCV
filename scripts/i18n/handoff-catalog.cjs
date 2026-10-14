@@ -3102,6 +3102,20 @@ const entries = [
   ],
   [
     'seo',
+    'landing.description',
+    'Tailor your CV and cover letter to any job ad in seconds. Free editor and PDF export — AI tailoring with a Pass, no subscription.',
+    'Meta description of the home page: the text WhatsApp, LinkedIn and search results show under every link to KiwiCV, so it states the product\'s promise rather than the job market. Claim boundaries, none of which may widen: the tailoring starts FROM A JOB AD the user pastes; the editor and PDF export are free, the AI needs a Pass, and there is NO free trial of the AI; the Pass is NOT a subscription. Derive the wording from the landing hero in this locale — "tailor" and "job ad" from landing.hero.subtitle, the price clause from landing.hero.pricing_note. "Pass" is a product name — keep it verbatim. Keep it under about 160 characters.',
+    ['Pass', 'PDF'],
+  ],
+  [
+    'seo',
+    'landing.title',
+    'KiwiCV - Free Resume Builder with AI Job Tailoring',
+    'Browser-tab and search-result title of the home page. Keep the "KiwiCV - " prefix as the other seo.*.title values in this locale do. "Free" describes the builder only, never the AI, which needs a paid Pass. Take "resume builder" from the noun the previous landing title shipped in this locale (de Lebenslauf-Generator, fr Générateur de CV), and the tailoring noun from the verb landing.hero.subtitle uses for adapting the CV, not the English loan "Job-Tailoring". Keep it under about 60 characters.',
+    ['KiwiCV'],
+  ],
+  [
+    'seo',
     'account.description',
     'Manage your Premium Pass and unlock professional boosters. Use intelligent Job-Tailoring to maximize your career chances with KiwiCV.',
     'SEO meta description for the account page. ⚠️ Was "Manage your AI credits"; there is no balance to manage, only a Pass.',

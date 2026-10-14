@@ -31,8 +31,8 @@ export const seo = {
   },
   landing: {
     description:
-      'The job market is highly competitive. The chance of being ignored is high. KiwiCV helps you increase your chances. Go even further with AI tailoring.',
-    title: 'KiwiCV - Your Path to the Job Interview | Resume Builder',
+      'Tailor your CV and cover letter to any job ad in seconds. Free editor and PDF export — AI tailoring with a Pass, no subscription.',
+    title: 'KiwiCV - Free Resume Builder with AI Job Tailoring',
   },
   login: {
     description:

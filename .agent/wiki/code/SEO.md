@@ -22,7 +22,7 @@
 ## Overview
 
 KiwiCV combines route-aware localized metadata, canonical/hreflang tags, a
-language-neutral social image, and a generated sitemap for 15 languages. The
+single English social image, and a generated sitemap for 15 languages. The
 canonical origin and asset paths come from `src/config/brand.ts`.
 
 ## Dynamic Metadata

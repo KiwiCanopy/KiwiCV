@@ -28,13 +28,18 @@ dedicated horizontal wordmark is approved.
 - `icon-maskable-512.png`: maskable PWA icon on the mark's outer-ring green (`#14343A`), so a launcher mask that trims the ring stays invisible.
 - `apple-touch-icon.png`: 180 px iOS home-screen icon on the same `#14343A` tile (iOS paints transparency black).
 - `email-avatar.png`: 512 px transparent mailbox/profile image.
-- `og.svg`: editable language-neutral 1200 × 630 social master.
-- `og.jpg`: rendered language-neutral 1200 × 630 social image.
+- `og.svg`: editable 1200 × 630 social master, English for every locale.
+- `og.jpg`: rendered 1200 × 630 social image.
+- `github-social.svg` and `github-social.png`: 1280 × 640 repository social
+  preview, uploaded by hand under the repository's Settings → Social preview.
+  It speaks to developers, so its copy differs from `og.svg`; no page
+  references it.
 
-The Step 1 social master is language-neutral, so it does not require locale
-variants or translated marketing copy. If a later social message introduces or
-changes a complete sentence, author English first and take the other locales
-through the translation packet before creating locale assets.
+One English social image ships for every locale; there are no locale variants.
+The localized `og:title` and `og:description` beside it carry the message, so
+keep the image tagline short enough to read for a non-English audience. When
+`og.jpg` changes, bump the `?v=` on `socialImage` in `src/config/brand.ts` and
+on the JSON-LD `image` in `index.html`, or link previews keep the cached card.
 
 ## Regenerating Assets
 
@@ -44,8 +49,10 @@ On macOS, replace `KiwiCV.svg`, then run:
 ./public/logos/kiwicv/generate-assets.sh
 ```
 
-The script validates both SVG files and recreates the favicon, standard and
-maskable PWA icons, the email avatar, and `og.jpg` at their fixed launch sizes.
+The script validates the SVG files and recreates the favicon, standard and
+maskable PWA icons, the email avatar, `og.jpg` and `github-social.png` at their
+fixed sizes. Re-upload `github-social.png` in the repository's Settings after
+it changes.
 Transparent raster derivatives use the owner-supplied `KiwiCV.png`; this avoids
 SVG renderers that silently flatten transparency. The built-in `qlmanage`,
 `sips`, `swift`, and `xmllint` commands are sufficient, and the script verifies

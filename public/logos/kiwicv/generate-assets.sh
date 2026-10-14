@@ -6,6 +6,7 @@ asset_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 source_svg="$asset_dir/KiwiCV.svg"
 source_png="$asset_dir/KiwiCV.png"
 social_svg="$asset_dir/og.svg"
+github_svg="$asset_dir/github-social.svg"
 temp_dir=$(mktemp -d "${TMPDIR:-/tmp}/kiwicv-assets.XXXXXX")
 
 cleanup() {
@@ -51,7 +52,7 @@ require_command sips
 require_command swift
 require_command xmllint
 
-xmllint --noout "$source_svg" "$social_svg"
+xmllint --noout "$source_svg" "$social_svg" "$github_svg"
 assert_transparent_corners "$source_png"
 
 sips -z 192 192 "$source_png" --out "$asset_dir/icon-192.png" >/dev/null
@@ -78,6 +79,11 @@ sips --cropToHeightWidth 630 1200 "$temp_dir/og.svg.png" \
   --out "$temp_dir/og.png" >/dev/null
 sips -s format jpeg -s formatOptions 88 "$temp_dir/og.png" \
   --out "$asset_dir/og.jpg" >/dev/null
+
+# Uploaded by hand in the repository's Settings; GitHub crops to 2:1.
+qlmanage -t -s 1280 -o "$temp_dir" "$github_svg" >/dev/null
+sips --cropToHeightWidth 640 1280 "$temp_dir/github-social.svg.png" \
+  --out "$asset_dir/github-social.png" >/dev/null
 
 assert_transparent_corners "$asset_dir/icon-192.png"
 assert_transparent_corners "$asset_dir/icon-512.png"

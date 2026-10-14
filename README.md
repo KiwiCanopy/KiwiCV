@@ -2,7 +2,7 @@
 
 <img src="public/logos/kiwicv/KiwiCV.svg" alt="KiwiCV" width="200">
 
-### A modern, modular resume builder
+### Privacy-first, open-source resume builder
 
 Build your resume once, toggle entries on or off per application,
 and export a vector PDF or a static HTML page from one source of

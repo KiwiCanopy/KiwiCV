@@ -44,7 +44,7 @@ export const BRAND_CONFIG = {
   assets: {
     symbol: '/logos/kiwicv/KiwiCV.svg',
     favicon: '/logos/kiwicv/favicon.ico',
-    socialImage: '/logos/kiwicv/og.jpg',
+    socialImage: '/logos/kiwicv/og.jpg?v=2',
   },
   external: {
     kofi: 'https://ko-fi.com/kiwicanopy',

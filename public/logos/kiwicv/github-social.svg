@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">KiwiCV GitHub social preview</title>
+  <desc id="desc">The KiwiCV logo, product name, the tagline "Privacy-first resume builder", and the open-source KiwiCanopy endorsement.</desc>
+  <rect width="1280" height="640" fill="#ffffff"/>
+  <g transform="translate(40 5)">
+    <circle cx="1110" cy="72" r="260" fill="#dbeeee" opacity=".72"/>
+    <circle cx="1060" cy="610" r="340" fill="#cce0a2" opacity=".58"/>
+    <image href="KiwiCV.svg" x="92" y="105" width="420" height="420"/>
+    <!-- GitHub crops the repository preview to 2:1, so this is og.svg's layout
+         re-centred on 1280 x 640, with copy for developers rather than job seekers. -->
+    <text x="548" y="298" fill="#1c373d" font-family="Inter, Arial, sans-serif" font-size="124" font-weight="700" letter-spacing="-5">KiwiCV</text>
+    <text x="556" y="360" fill="#587271" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="600">Privacy-first resume builder</text>
+    <text x="556" y="414" fill="#587271" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500">Open source · by KiwiCanopy</text>
+  </g>
+</svg>

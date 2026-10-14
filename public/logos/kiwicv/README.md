@@ -30,6 +30,10 @@ dedicated horizontal wordmark is approved.
 - `email-avatar.png`: 512 px transparent mailbox/profile image.
 - `og.svg`: editable 1200 × 630 social master, English for every locale.
 - `og.jpg`: rendered 1200 × 630 social image.
+- `github-social.svg` and `github-social.png`: 1280 × 640 repository social
+  preview, uploaded by hand under the repository's Settings → Social preview.
+  It speaks to developers, so its copy differs from `og.svg`; no page
+  references it.
 
 One English social image ships for every locale; there are no locale variants.
 The localized `og:title` and `og:description` beside it carry the message, so
@@ -45,8 +49,10 @@ On macOS, replace `KiwiCV.svg`, then run:
 ./public/logos/kiwicv/generate-assets.sh
 ```
 
-The script validates both SVG files and recreates the favicon, standard and
-maskable PWA icons, the email avatar, and `og.jpg` at their fixed launch sizes.
+The script validates the SVG files and recreates the favicon, standard and
+maskable PWA icons, the email avatar, `og.jpg` and `github-social.png` at their
+fixed sizes. Re-upload `github-social.png` in the repository's Settings after
+it changes.
 Transparent raster derivatives use the owner-supplied `KiwiCV.png`; this avoids
 SVG renderers that silently flatten transparency. The built-in `qlmanage`,
 `sips`, `swift`, and `xmllint` commands are sufficient, and the script verifies

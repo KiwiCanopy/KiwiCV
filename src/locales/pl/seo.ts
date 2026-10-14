@@ -33,8 +33,8 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      'Rynek pracy jest bardzo konkurencyjny. Szansa na bycie zignorowanym jest wysoka. KiwiCV pomaga zwiększyć Twoje szanse. Pójdź o krok dalej dzięki dopasowaniu przez AI.',
-    title: 'KiwiCV - Twoja droga do rozmowy kwalifikacyjnej | Kreator CV',
+      'Dopasuj CV i list motywacyjny do każdego ogłoszenia o pracę w kilka sekund. Edytor i eksport PDF bezpłatnie — AI z Pass, bez subskrypcji.',
+    title: 'KiwiCV - Darmowy kreator CV z dopasowaniem przez AI',
   },
   login: {
     description:

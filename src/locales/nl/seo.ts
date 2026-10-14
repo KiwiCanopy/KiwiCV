@@ -33,8 +33,8 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      'De arbeidsmarkt is zeer concurrerend. De kans om genegeerd te worden is groot. KiwiCV helpt je jouw kansen te vergroten. Doe er nog een schepje bovenop mit KI-aanpassing.',
-    title: 'KiwiCV - Jouw weg naar het sollicitatiegesprek | Cv-generator',
+      'Pas je CV en sollicitatiebrief in seconden aan op elke vacature. Editor en PDF-export gratis — AI met een Pass, geen abonnement.',
+    title: 'KiwiCV - Gratis cv-generator met AI-aanpassing',
   },
   login: {
     description:

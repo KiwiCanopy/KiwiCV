@@ -33,8 +33,8 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      '就业市场竞争激烈。 被忽视的可能性很高。 KiwiCV 帮助你增加机会。 通过 AI 定制更进一步。',
-    title: 'KiwiCV - 助你通往求职面试之路 | 简历生成器',
+      '几秒钟内根据任意职位描述定制你的简历和求职信。编辑器和 PDF 导出免费 — 使用 AI 需要 Pass，无订阅费。',
+    title: 'KiwiCV - 免费简历生成器，AI 按职位定制',
   },
   login: {
     description: '登录以使用专属 AI 简历定制和云同步。100% 安全且不转售数据。',

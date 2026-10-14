@@ -33,8 +33,8 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      'Der Arbeitsmarkt ist hart umkämpft. Die Chance ignoriert zu werden ist groß. KiwiCV hilft dir deine Chancen zu steigern. Setze noch einen drauf mit KI-Maßschneiderung.',
-    title: 'KiwiCV - Dein Weg zum Jobinterview | Lebenslauf-Generator',
+      'Passe deinen Lebenslauf und dein Anschreiben in Sekunden an jede Stellenanzeige an. Editor und PDF-Export kostenlos – KI per Pass, kein Abo.',
+    title: 'KiwiCV - Kostenloser Lebenslauf-Generator mit KI-Anpassung',
   },
   login: {
     description:

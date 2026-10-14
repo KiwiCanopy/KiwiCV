@@ -34,7 +34,7 @@ export const seo: Translations['seo'] = {
   landing: {
     description:
       "CV'ni ve ön yazını saniyeler içinde her iş ilanına göre uyarla. Düzenleyici ve PDF dışa aktarımı ücretsiz — yapay zeka Pass ile, abonelik yok.",
-    title: 'KiwiCV - Yapay Zeka destekli ücretsiz CV Oluşturucu',
+    title: 'KiwiCV - Ücretsiz CV Oluşturucu ve Yapay Zeka ile Uyarlama',
   },
   login: {
     description:

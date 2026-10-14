@@ -33,7 +33,7 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      'Anpassa ditt CV och personliga brev till varje jobbannons på några sekunder. Editor och PDF-export gratis — AI med ett Pass, inget abonnemang.',
+      'Anpassa ditt CV och personliga brev efter varje jobbannons på några sekunder. Editor och PDF-export gratis — AI med ett Pass, inget abonnemang.',
     title: 'KiwiCV - Gratis CV-generator med AI-anpassning',
   },
   login: {

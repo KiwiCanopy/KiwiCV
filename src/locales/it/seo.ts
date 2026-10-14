@@ -33,7 +33,7 @@ export const seo: Translations['seo'] = {
   },
   landing: {
     description:
-      "Adatta il tuo CV e la lettera di presentazione a ogni annuncio di lavoro in pochi secondi. Editor ed esportazione di PDF gratuiti — l'IA con un Pass, nessun abbonamento.",
+      "Adatta CV e lettera di presentazione a ogni annuncio di lavoro in pochi secondi. Editor ed esportazione di PDF gratuiti — l'IA con un Pass, nessun abbonamento.",
     title: 'KiwiCV - Generatore di CV gratuito con adattamento IA',
   },
   login: {

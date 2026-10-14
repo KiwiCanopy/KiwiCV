@@ -3111,7 +3111,7 @@ const entries = [
     'seo',
     'landing.title',
     'KiwiCV - Free Resume Builder with AI Job Tailoring',
-    'Browser-tab and search-result title of the home page. Keep the "KiwiCV - " prefix as the other seo.*.title values in this locale do. "Free" describes the builder only, never the AI, which needs a paid Pass. Take "resume builder" from the noun the previous landing title shipped in this locale (de Lebenslauf-Generator, fr Générateur de CV), and the tailoring noun from the verb landing.hero.subtitle uses for adapting the CV, not the English loan "Job-Tailoring". Keep it under about 60 characters.',
+    'Browser-tab and search-result title of the home page. Keep the "KiwiCV - " prefix as the other seo.*.title values in this locale do. "Free" describes the builder only, never the AI, which needs a paid Pass. Keep the resume-builder noun this title already uses in this locale (titles keep the resume search term, code/SEO.md), and the tailoring noun from the verb landing.hero.subtitle uses for adapting the CV, not the English loan "Job-Tailoring". Keep it under about 60 characters.',
     ['KiwiCV'],
   ],
   [

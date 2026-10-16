@@ -633,16 +633,16 @@ state and preview synchronization are preserved.
 Template and palette choices expose semantic selected states. Section and
 custom-address ordering keep drag-and-drop as an enhancement and provide
 permanent Move up/Move down controls plus localized live announcements. Two-
-column sections retain a named cross-column movement action, visibility, edit,
-page-break, and sidebar-position controls.
+column sections retain a named cross-column movement action, visibility,
+page-break, and sidebar-position controls; edit sits in the row's overflow menu.
 
 The page-break toggle stays on the section row, never behind the overflow menu
 (owner, 2026-10-16). Its on/off state is what the user scans for, and a menu
-item hides that state. Active is shown by tint plus border. On the first row
-or a hidden row the toggle is greyed out and gives its reason only as a
-tooltip, because inline reason text breaks the one-line row. A stacked
-(narrow or touch) row puts the toggle on the title line: a seventh 44px
-control on the button line overflows a 375px column.
+item hides that state. Active is shown by tint plus a full-strength border. On
+the first row or a hidden row the toggle is greyed out, with its reason in the
+shared refusal tooltip (UI_PATTERNS § An empty section refuses Improve). A
+stacked (narrow or touch) row puts the toggle on the title line: a seventh
+44px control on the button line overflows a 375px column.
 
 Design controls no longer dim the complete editor while Typst updates. The
 mounted preview owns synchronization and generation status locally; narrow

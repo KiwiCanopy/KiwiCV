@@ -140,29 +140,66 @@ describe('Design movement controls', () => {
     expect((await axe(container)).violations).toEqual([]);
   });
 
-  it('greys the first row’s page break out with the reason on hover, not inline', async () => {
+  it('greys out the page break on the first or a hidden row, reason in a tooltip', async () => {
     const user = userEvent.setup();
     const onTogglePageBreak = vi.fn();
-    render(
+    const row = (flags: { isFirst?: boolean; isHidden?: boolean }) => (
       <EditorLayoutContext.Provider value={layout(800)}>
         <DndContext>
           <SortableSectionItem
             id="work"
             label="Work"
-            isFirst
+            {...flags}
             onTogglePageBreak={onTogglePageBreak}
+          />
+        </DndContext>
+      </EditorLayoutContext.Provider>
+    );
+    const { container, rerender } = render(row({ isFirst: true }));
+
+    const button = screen.getByRole('button', { name: 'Add page break' });
+    expect(button.getAttribute('aria-disabled')).toBe('true');
+    // Not printed under the button: the reason is the shared refusal tooltip.
+    const tooltip = document.getElementById(button.getAttribute('aria-describedby')!)!;
+    expect(tooltip.getAttribute('role')).toBe('tooltip');
+    expect(tooltip.textContent).toBe('design.page_break_disabled_first');
+    await user.click(button);
+    expect(onTogglePageBreak).not.toHaveBeenCalled();
+    expect((await axe(container)).violations).toEqual([]);
+
+    rerender(row({ isHidden: true }));
+    const hidden = screen.getByRole('button', { name: 'Add page break' });
+    expect(hidden.getAttribute('aria-disabled')).toBe('true');
+    expect(document.getElementById(hidden.getAttribute('aria-describedby')!)!.textContent).toBe(
+      'design.page_break_disabled_hidden',
+    );
+  });
+
+  it('keeps the page break on a stacked row, once', async () => {
+    const user = userEvent.setup();
+    const onTogglePageBreak = vi.fn();
+    const { container } = render(
+      <EditorLayoutContext.Provider value={layout(375)}>
+        <DndContext>
+          <SortableSectionItem
+            id="work"
+            label="Work"
+            onEdit={vi.fn()}
+            onTogglePageBreak={onTogglePageBreak}
+            position={2}
+            total={3}
+            onMoveUp={vi.fn()}
+            onMoveDown={vi.fn()}
           />
         </DndContext>
       </EditorLayoutContext.Provider>,
     );
 
-    const button = screen.getByRole('button', { name: 'Add page break' });
-    expect(button.getAttribute('aria-disabled')).toBe('true');
-    expect(button.getAttribute('title')).toBe('design.page_break_disabled_first');
-    // The reason is announced, but not printed under the button.
-    expect(screen.getByText('design.page_break_disabled_first').className).toContain('sr-only');
-    await user.click(button);
-    expect(onTogglePageBreak).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: 'Add page break' }));
+    expect(onTogglePageBreak).toHaveBeenCalledWith('work');
+    await user.click(screen.getByRole('button', { name: 'More actions for “Work”' }));
+    expect(screen.getAllByRole('button', { name: 'Add page break' })).toHaveLength(1);
+    expect((await axe(container)).violations).toEqual([]);
   });
 
   it('builds sorting announcements from localized labels', () => {

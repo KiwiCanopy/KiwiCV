@@ -20,13 +20,9 @@ interface SectionItemMenuProps {
 }
 
 /**
- * Overflow menu for the less-frequent section actions.
- *
- * Each section row previously carried up to seven controls, which wrapped into
- * a second line as soon as the Design panel narrowed. Edit and the movement
- * controls live here; the row keeps the drag handle, visibility, column swap,
- * and page break, whose on/off state has to stay visible. Every action stays named and pointer-operable,
- * which is what keeps the drag interaction from being the only way to reorder.
+ * Overflow menu for a section row's less-frequent actions: edit, and the move
+ * controls when the row does not show them itself. Every action stays named and
+ * pointer-operable, so dragging is never the only way to reorder.
  */
 export function SectionItemMenu({
   label,

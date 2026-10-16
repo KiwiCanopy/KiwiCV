@@ -110,6 +110,61 @@ describe('Design movement controls', () => {
     expect((await axe(container)).violations).toEqual([]);
   });
 
+  it('keeps the page-break toggle and its state on the row itself', async () => {
+    const user = userEvent.setup();
+    const onTogglePageBreak = vi.fn();
+    const row = (hasPageBreak: boolean) => (
+      <EditorLayoutContext.Provider value={layout(800)}>
+        <DndContext>
+          <SortableSectionItem
+            id="work"
+            label="Work"
+            onEdit={vi.fn()}
+            hasPageBreak={hasPageBreak}
+            onTogglePageBreak={onTogglePageBreak}
+          />
+        </DndContext>
+      </EditorLayoutContext.Provider>
+    );
+    const { container, rerender } = render(row(false));
+
+    await user.click(screen.getByRole('button', { name: 'Add page break' }));
+    expect(onTogglePageBreak).toHaveBeenCalledWith('work');
+
+    rerender(row(true));
+    expect(screen.getByRole('button', { name: 'Remove page break' })).toBeTruthy();
+
+    // Not offered a second time behind the overflow menu.
+    await user.click(screen.getByRole('button', { name: 'More actions for “Work”' }));
+    expect(screen.getAllByRole('button', { name: 'Remove page break' })).toHaveLength(1);
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it('greys the first row’s page break out with the reason on hover, not inline', async () => {
+    const user = userEvent.setup();
+    const onTogglePageBreak = vi.fn();
+    render(
+      <EditorLayoutContext.Provider value={layout(800)}>
+        <DndContext>
+          <SortableSectionItem
+            id="work"
+            label="Work"
+            isFirst
+            onTogglePageBreak={onTogglePageBreak}
+          />
+        </DndContext>
+      </EditorLayoutContext.Provider>,
+    );
+
+    const button = screen.getByRole('button', { name: 'Add page break' });
+    expect(button.getAttribute('aria-disabled')).toBe('true');
+    expect(button.getAttribute('title')).toBe('design.page_break_disabled_first');
+    // The reason is announced, but not printed under the button.
+    expect(screen.getByText('design.page_break_disabled_first').className).toContain('sr-only');
+    await user.click(button);
+    expect(onTogglePageBreak).not.toHaveBeenCalled();
+  });
+
   it('builds sorting announcements from localized labels', () => {
     const announcements = createSortingAnnouncements({
       items: ['work', 'education'],

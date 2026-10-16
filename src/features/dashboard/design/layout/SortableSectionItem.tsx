@@ -1,6 +1,7 @@
-import { memo } from 'react';
+import { memo, useId } from 'react';
 
 import { ItemOrderControls } from '@/components/editor/ItemOrderControls';
+import { IconButton } from '@/components/ui/IconButton';
 import { SectionItemMenu } from '@/features/dashboard/design/layout/SectionItemMenu';
 import { useInlineOrderControls } from '@/features/dashboard/design/layout/useInlineOrderControls';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -8,7 +9,7 @@ import { cn } from '@/utils/cn';
 import { isCustomSectionToken } from '@/utils/layoutMetadata';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowRightLeft, Eye, EyeOff, GripVertical } from 'lucide-react';
+import { ArrowRightLeft, CornerDownLeft, Eye, EyeOff, GripVertical } from 'lucide-react';
 
 interface SortableSectionItemProps {
   id: string;
@@ -80,6 +81,7 @@ export const SortableSectionItem = memo(
     const canMove =
       !isPlaceholder && !isOverlay && !!position && !!total && !!onMoveUp && !!onMoveDown;
 
+    const pageBreakReasonId = useId();
     const isPageBreakDisabled = isFirst || isHidden;
     const pageBreakTooltip = isFirst
       ? t('design.page_break_disabled_first')
@@ -122,6 +124,35 @@ export const SortableSectionItem = memo(
           <GripVertical size={16} aria-hidden="true" />
         </span>
       </button>
+    );
+
+    // On the row, not in the overflow menu: whether a section starts a new PDF
+    // page is state worth seeing at a glance. A stacked row puts it on the
+    // title line, since a seventh 44px control overflows a 375px column.
+    const pageBreakButton = onTogglePageBreak && !isPlaceholder && !isOverlay && (
+      <IconButton
+        label={hasPageBreak ? t('design.page_break_remove') : t('design.page_break_add')}
+        title={pageBreakTooltip}
+        variant="quiet"
+        // Button's disabledReason prints the reason under the control,
+        // which breaks the one-line row; the tooltip carries it visually.
+        aria-disabled={isPageBreakDisabled || undefined}
+        aria-describedby={isPageBreakDisabled ? pageBreakReasonId : undefined}
+        className={cn(
+          'border',
+          hasPageBreak && !isPageBreakDisabled
+            ? 'border-primary-strong/40 bg-primary/10 text-primary-strong hover:bg-primary/15'
+            : 'text-muted-foreground hover:text-primary-strong border-transparent',
+        )}
+        onClick={() => onTogglePageBreak(id)}
+      >
+        <CornerDownLeft size={14} aria-hidden="true" />
+        {isPageBreakDisabled && (
+          <span id={pageBreakReasonId} className="sr-only">
+            {pageBreakTooltip}
+          </span>
+        )}
+      </IconButton>
     );
 
     return (
@@ -171,6 +202,7 @@ export const SortableSectionItem = memo(
             >
               {label}
             </span>
+            {isStacked && pageBreakButton && <span className="ml-auto">{pageBreakButton}</span>}
             {isPlaceholder && (
               <span className="bg-primary/10 text-primary-strong rounded px-1.5 py-0.5 text-[9px] font-bold tracking-wider uppercase">
                 PRV
@@ -224,6 +256,7 @@ export const SortableSectionItem = memo(
               <ArrowRightLeft size={13} />
             </button>
           )}
+          {!isStacked && pageBreakButton}
           {/* On touch and in a narrow column the move buttons ride on the row
               itself. They are the one affordance that needs no gesture
               knowledge, so they must not be the thing hidden behind a menu. */}
@@ -241,10 +274,6 @@ export const SortableSectionItem = memo(
               label={label}
               editTitle={editTitle}
               onEdit={onEdit ? () => onEdit(id) : undefined}
-              pageBreakTitle={pageBreakTooltip}
-              isPageBreakDisabled={isPageBreakDisabled}
-              hasPageBreak={hasPageBreak}
-              onTogglePageBreak={onTogglePageBreak ? () => onTogglePageBreak(id) : undefined}
               position={position}
               total={total}
               onMoveUp={onMoveUp}

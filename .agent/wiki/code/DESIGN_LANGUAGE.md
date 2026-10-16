@@ -636,6 +636,14 @@ permanent Move up/Move down controls plus localized live announcements. Two-
 column sections retain a named cross-column movement action, visibility, edit,
 page-break, and sidebar-position controls.
 
+The page-break toggle stays on the section row, never behind the overflow menu
+(owner, 2026-10-16). Its on/off state is what the user scans for, and a menu
+item hides that state. Active is shown by tint plus border. On the first row
+or a hidden row the toggle is greyed out and gives its reason only as a
+tooltip, because inline reason text breaks the one-line row. A stacked
+(narrow or touch) row puts the toggle on the title line: a seventh 44px
+control on the button line overflows a 375px column.
+
 Design controls no longer dim the complete editor while Typst updates. The
 mounted preview owns synchronization and generation status locally; narrow
 layouts without a live preview therefore remain usable after every change. The

@@ -241,6 +241,25 @@ describe('Design movement controls', () => {
     expect(five.className).toContain('@max-[224px]/row:[&_button]:size-9');
     expect(five.className).not.toContain('268px');
     expect(arrows().className).toContain('@max-[224px]/row:gap-0');
+
+    // Neither swap nor edit → four buttons → 180.
+    rerender(
+      <EditorLayoutContext.Provider value={layout(375)}>
+        <DndContext>
+          <SortableSectionItem
+            id="work"
+            label="Work"
+            onToggleVisibility={vi.fn()}
+            position={2}
+            total={3}
+            onMoveUp={vi.fn()}
+            onMoveDown={vi.fn()}
+          />
+        </DndContext>
+      </EditorLayoutContext.Provider>,
+    );
+    expect(rowOf(arrows()).className).toContain('@max-[180px]/row:[&_button]:size-9');
+    expect(arrows().className).toContain('@max-[180px]/row:gap-0');
   });
 
   it('builds sorting announcements from localized labels', () => {

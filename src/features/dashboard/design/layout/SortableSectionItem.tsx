@@ -11,6 +11,21 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ArrowRightLeft, CornerDownLeft, Eye, EyeOff, GripVertical } from 'lucide-react';
 
+// A stacked row's buttons drop from 44px to 36px, and the move arrows lose their
+// 4px gap, once the row is narrower than its button line needs at 44px
+// (n × 44 + 4), e.g. a two-column row at a 320px viewport (#19). Literal, so
+// Tailwind sees them.
+const COMPACT_BELOW: Record<number, string> = {
+  4: '@max-[180px]/row:[&_button]:size-9 @max-[180px]/row:[&_button]:min-h-0',
+  5: '@max-[224px]/row:[&_button]:size-9 @max-[224px]/row:[&_button]:min-h-0',
+  6: '@max-[268px]/row:[&_button]:size-9 @max-[268px]/row:[&_button]:min-h-0',
+};
+const COMPACT_ARROWS_BELOW: Record<number, string> = {
+  4: '@max-[180px]/row:gap-0',
+  5: '@max-[224px]/row:gap-0',
+  6: '@max-[268px]/row:gap-0',
+};
+
 interface SortableSectionItemProps {
   id: string;
   label: string;
@@ -95,6 +110,8 @@ export const SortableSectionItem = memo(
     // their own instead: a deliberate two-line card, not the accidental wrap
     // that used to orphan the overflow menu.
     const isStacked = canMove && showInlineOrderControls;
+    const stackedButtonCount =
+      1 + (onToggleVisibility ? 1 : 0) + (canSwap && onSwap ? 1 : 0) + 2 + (onEdit ? 1 : 0);
 
     const gripButton = (
       <button
@@ -159,7 +176,9 @@ export const SortableSectionItem = memo(
           // onto a line of its own. When the row also carries move buttons
           // there is no width for that, so it stacks deliberately instead.
           'group mb-2 flex rounded-xl border p-2',
-          isStacked ? 'flex-col items-stretch gap-1' : 'flex-nowrap items-center gap-1 sm:gap-2',
+          isStacked
+            ? cn('@container/row flex-col items-stretch gap-1', COMPACT_BELOW[stackedButtonCount])
+            : 'flex-nowrap items-center gap-1 sm:gap-2',
           !isDragging && 'transition-all duration-300',
           isDragging
             ? 'pointer-events-none opacity-0'
@@ -261,6 +280,7 @@ export const SortableSectionItem = memo(
               total={total!}
               onMoveUp={onMoveUp!}
               onMoveDown={onMoveDown!}
+              className={COMPACT_ARROWS_BELOW[stackedButtonCount]}
             />
           )}
           {!isPlaceholder && !isOverlay && (

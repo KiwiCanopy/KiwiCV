@@ -45,12 +45,11 @@ export const design: Translations['design'] = {
   layout_side_column: 'Coluna lateral',
   layout_swap_tooltip: 'Mover para a outra coluna',
   more_actions_named: 'Mais ações para «{{name}}»',
-  page_break_add: 'Adicionar quebra de página',
   page_break_disabled_first: 'Quebra de página não disponível para o primeiro item',
   page_break_disabled_hidden: 'Quebra de página não disponível para secções ocultas',
+  page_break_named: 'Quebra de página antes de «{{name}}»',
   page_break_removal_tooltip:
     'Remover a quebra de página antes desta secção (aplica-se apenas à versão PDF)',
-  page_break_remove: 'Remover quebra de página',
   page_break_tooltip:
     'Adicionar uma quebra de página antes desta secção (aplica-se apenas à versão PDF)',
   pdf_footer: {

@@ -44,11 +44,10 @@ export const design: Translations['design'] = {
   layout_side_column: 'Pasek boczny',
   layout_swap_tooltip: 'Przenieś do innej kolumny',
   more_actions_named: 'Więcej akcji dla „{{name}}”',
-  page_break_add: 'Dodaj podział strony',
   page_break_disabled_first: 'Podział strony niedostępny dla pierwszego elementu',
   page_break_disabled_hidden: 'Podział strony niedostępny dla ukrytych sekcji',
+  page_break_named: 'Podział strony przed „{{name}}”',
   page_break_removal_tooltip: 'Usuń podział strony przed tą sekcją (dotyczy tylko wersji PDF)',
-  page_break_remove: 'Usuń podział strony',
   page_break_tooltip: 'Dodaj podział strony przed tą sekcją (dotyczy tylko wersji PDF)',
   pdf_footer: {
     date: 'Dołącz datę',

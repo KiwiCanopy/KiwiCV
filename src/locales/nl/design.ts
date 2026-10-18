@@ -46,12 +46,11 @@ export const design: Translations['design'] = {
   layout_side_column: 'Zijbalk',
   layout_swap_tooltip: 'Verplaats naar andere kolom',
   more_actions_named: 'Meer acties voor “{{name}}”',
-  page_break_add: 'Pagina-einde toevoegen',
   page_break_disabled_first: 'Pagina-einde niet beschikbaar voor het eerste item',
   page_break_disabled_hidden: 'Pagina-einde niet beschikbaar voor verborgen secties',
+  page_break_named: 'Pagina-einde vóór “{{name}}”',
   page_break_removal_tooltip:
     'Pagina-einde vóór deze sectie verwijderen (geldt alleen voor de PDF-versie)',
-  page_break_remove: 'Pagina-einde verwijderen',
   page_break_tooltip: 'Pagina-einde vóór deze sectie toevoegen (geldt alleen voor de PDF-versie)',
   pdf_footer: {
     date: 'Datum opnemen',

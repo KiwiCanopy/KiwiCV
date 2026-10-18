@@ -129,7 +129,8 @@ export const SortableSectionItem = memo(
     // scans for. A stacked row puts it on the title line (DESIGN_LANGUAGE.md).
     const pageBreakButton = onTogglePageBreak && !isPlaceholder && !isOverlay && (
       <IconButton
-        label={hasPageBreak ? t('design.page_break_remove') : t('design.page_break_add')}
+        label={t('design.page_break_named', { name: label })}
+        aria-pressed={hasPageBreak}
         title={pageBreakTooltip}
         variant="quiet"
         disabled={isPageBreakDisabled}

@@ -46,12 +46,11 @@ export const design: Translations['design'] = {
   layout_side_column: 'Columna lateral',
   layout_swap_tooltip: 'Mover a la otra columna',
   more_actions_named: 'Más acciones para «{{name}}»',
-  page_break_add: 'Añadir salto de página',
   page_break_disabled_first: 'Salto de página no disponible para el primer elemento',
   page_break_disabled_hidden: 'Salto de página no disponible para secciones ocultas',
+  page_break_named: 'Salto de página antes de «{{name}}»',
   page_break_removal_tooltip:
     'Eliminar el salto de página antes de esta sección (solo se aplica a la versión PDF)',
-  page_break_remove: 'Eliminar salto de página',
   page_break_tooltip:
     'Añadir un salto de página antes de esta sección (solo se aplica a la versión PDF)',
   pdf_footer: {

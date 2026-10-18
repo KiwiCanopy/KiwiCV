@@ -46,11 +46,10 @@ export const design: Translations['design'] = {
   layout_side_column: 'サイドバー',
   layout_swap_tooltip: '別の列に移動',
   more_actions_named: '「{{name}}」のその他の操作',
-  page_break_add: '改ページを追加',
   page_break_disabled_first: '最初の項目では改ページを使用できません',
   page_break_disabled_hidden: '非表示のセクションでは改ページを使用できません',
+  page_break_named: '「{{name}}」の前の改ページ',
   page_break_removal_tooltip: 'このセクションの前の改ページを削除（PDF版のみ適用）',
-  page_break_remove: '改ページを削除',
   page_break_tooltip: 'このセクションの前に改ページを追加（PDF版のみ適用）',
   pdf_footer: {
     date: '日付を含める',

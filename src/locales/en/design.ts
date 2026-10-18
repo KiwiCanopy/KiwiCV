@@ -43,12 +43,11 @@ export const design = {
   layout_side_column: 'Sidebar Column',
   layout_swap_tooltip: 'Move to other column',
   more_actions_named: 'More actions for “{{name}}”',
-  page_break_add: 'Add page break',
   page_break_disabled_first: 'Page break not available for the first item',
   page_break_disabled_hidden: 'Page break not available for hidden sections',
+  page_break_named: 'Page break before “{{name}}”',
   page_break_removal_tooltip:
     'Remove the pagebreak before this section (only applies to the PDF Version)',
-  page_break_remove: 'Remove page break',
   page_break_tooltip: 'Add a pagebreak before this section (only applies to the PDF Version)',
   pdf_footer: {
     date: 'Include Date',

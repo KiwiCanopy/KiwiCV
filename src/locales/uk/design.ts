@@ -44,11 +44,10 @@ export const design: Translations['design'] = {
   layout_side_column: 'Бічна панель',
   layout_swap_tooltip: 'Перемістити в іншу колонку',
   more_actions_named: 'Більше дій для «{{name}}»',
-  page_break_add: 'Додати розрив сторінки',
   page_break_disabled_first: 'Розрив сторінки недоступний для першого елемента',
   page_break_disabled_hidden: 'Розрив сторінки недоступний для прихованих розділів',
+  page_break_named: 'Розрив сторінки перед «{{name}}»',
   page_break_removal_tooltip: 'Видалити розрив сторінки перед цим розділом (лише для PDF-версії)',
-  page_break_remove: 'Видалити розрив сторінки',
   page_break_tooltip: 'Додати розрив сторінки перед цим розділом (лише для PDF-версії)',
   pdf_footer: {
     date: 'Показувати дату',

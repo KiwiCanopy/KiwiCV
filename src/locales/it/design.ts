@@ -46,12 +46,11 @@ export const design: Translations['design'] = {
   layout_side_column: 'Colonna laterale',
   layout_swap_tooltip: "Sposta nell'altra colonna",
   more_actions_named: 'Altre azioni per «{{name}}»',
-  page_break_add: 'Aggiungi interruzione di pagina',
   page_break_disabled_first: 'Interruzione di pagina non disponibile per il primo elemento',
   page_break_disabled_hidden: 'Interruzione di pagina non disponibile per le sezioni nascoste',
+  page_break_named: 'Interruzione di pagina prima di «{{name}}»',
   page_break_removal_tooltip:
     "Rimuovi l'interruzione di pagina prima di questa sezione (si applica solo alla versione PDF)",
-  page_break_remove: 'Rimuovi interruzione di pagina',
   page_break_tooltip:
     "Aggiungi un'interruzione di pagina prima di questa sezione (si applica solo alla versione PDF)",
   pdf_footer: {

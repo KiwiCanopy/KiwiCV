@@ -43,11 +43,10 @@ export const design: Translations['design'] = {
   layout_side_column: 'Боковая панель',
   layout_swap_tooltip: 'Переместить в другую колонку',
   more_actions_named: 'Другие действия для «{{name}}»',
-  page_break_add: 'Добавить разрыв страницы',
   page_break_disabled_first: 'Разрыв страницы недоступен для первого элемента',
   page_break_disabled_hidden: 'Разрыв страницы недоступен для скрытых разделов',
+  page_break_named: 'Разрыв страницы перед «{{name}}»',
   page_break_removal_tooltip: 'Удалить разрыв страницы перед этим разделом (только для PDF-версии)',
-  page_break_remove: 'Удалить разрыв страницы',
   page_break_tooltip: 'Добавить разрыв страницы перед этим разделом (только для PDF-версии)',
   pdf_footer: {
     date: 'Включить дату',

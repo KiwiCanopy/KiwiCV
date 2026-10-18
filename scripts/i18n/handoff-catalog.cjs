@@ -323,13 +323,19 @@ const entries = [
     'design',
     'more_actions_named',
     'More actions for “{{name}}”',
-    'Accessible name of the ⋮ menu button of one section in the layout editor: the actions that do not fit on the row (edit, page break, move).',
+    'Accessible name of the ⋮ menu button of one section in the layout editor: the actions that do not fit on the row (edit, move).',
   ],
   [
     'design',
     'swap_column_named',
     'Move “{{name}}” to the other column',
     'Accessible name of the button that moves one section to the other column in the layout editor. Wording as design.layout_swap_tooltip.',
+  ],
+  [
+    'design',
+    'page_break_named',
+    'Page break before “{{name}}”',
+    'Accessible name of the page-break toggle on one section row in the layout editor. It is an on/off toggle (aria-pressed), so it names the setting, not an action: a noun phrase, no verb. Take the noun from design.page_break_tooltip and the quote marks from design.swap_column_named. Where the language inflects, put the case ending on a noun beside the name, never on the name itself.',
   ],
   [
     'ai',
@@ -866,8 +872,6 @@ const entries = [
   ['design', 'groups.layout', 'Layout', 'Design editor layout settings group'],
   ['design', 'groups.typography', 'Typography', 'Design editor typography settings group'],
   ['design', 'groups.details', 'Details', 'Design editor detail settings group'],
-  ['design', 'page_break_add', 'Add page break', 'Section overflow menu action'],
-  ['design', 'page_break_remove', 'Remove page break', 'Section overflow menu action'],
   [
     'design',
     'section_reordering.hint',

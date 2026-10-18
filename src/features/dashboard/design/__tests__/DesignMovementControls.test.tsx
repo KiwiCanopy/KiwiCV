@@ -21,8 +21,7 @@ vi.mock('@/hooks/useTranslation', () => ({
         'common.success': 'Success',
         'design.layout_swap_tooltip': 'Move to other column',
         'design.page_break_tooltip': 'Add page break',
-        'design.page_break_add': 'Add page break',
-        'design.page_break_remove': 'Remove page break',
+        'design.page_break_named': 'Page break before “{{name}}”',
         'common.move_up': 'Move up',
         'common.move_down': 'Move down',
         'common.move_items': 'Move items',
@@ -128,15 +127,18 @@ describe('Design movement controls', () => {
     );
     const { container, rerender } = render(row(false));
 
-    await user.click(screen.getByRole('button', { name: 'Add page break' }));
+    // Named per section, with the state in aria-pressed rather than the name.
+    const toggle = screen.getByRole('button', { name: 'Page break before “Work”' });
+    expect(toggle.getAttribute('aria-pressed')).toBe('false');
+    await user.click(toggle);
     expect(onTogglePageBreak).toHaveBeenCalledWith('work');
 
     rerender(row(true));
-    expect(screen.getByRole('button', { name: 'Remove page break' })).toBeTruthy();
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
 
     // Not offered a second time behind the overflow menu.
     await user.click(screen.getByRole('button', { name: 'More actions for “Work”' }));
-    expect(screen.getAllByRole('button', { name: 'Remove page break' })).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: 'Page break before “Work”' })).toHaveLength(1);
     expect((await axe(container)).violations).toEqual([]);
   });
 
@@ -157,7 +159,7 @@ describe('Design movement controls', () => {
     );
     const { container, rerender } = render(row({ isFirst: true }));
 
-    const button = screen.getByRole('button', { name: 'Add page break' });
+    const button = screen.getByRole('button', { name: 'Page break before “Work”' });
     expect(button.getAttribute('aria-disabled')).toBe('true');
     // Not printed under the button: the reason is the shared refusal tooltip.
     const tooltip = document.getElementById(button.getAttribute('aria-describedby')!)!;
@@ -168,7 +170,7 @@ describe('Design movement controls', () => {
     expect((await axe(container)).violations).toEqual([]);
 
     rerender(row({ isHidden: true }));
-    const hidden = screen.getByRole('button', { name: 'Add page break' });
+    const hidden = screen.getByRole('button', { name: 'Page break before “Work”' });
     expect(hidden.getAttribute('aria-disabled')).toBe('true');
     expect(document.getElementById(hidden.getAttribute('aria-describedby')!)!.textContent).toBe(
       'design.page_break_disabled_hidden',
@@ -195,10 +197,10 @@ describe('Design movement controls', () => {
       </EditorLayoutContext.Provider>,
     );
 
-    await user.click(screen.getByRole('button', { name: 'Add page break' }));
+    await user.click(screen.getByRole('button', { name: 'Page break before “Work”' }));
     expect(onTogglePageBreak).toHaveBeenCalledWith('work');
     await user.click(screen.getByRole('button', { name: 'More actions for “Work”' }));
-    expect(screen.getAllByRole('button', { name: 'Add page break' })).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: 'Page break before “Work”' })).toHaveLength(1);
     expect((await axe(container)).violations).toEqual([]);
   });
 

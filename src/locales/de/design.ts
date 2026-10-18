@@ -46,12 +46,11 @@ export const design: Translations['design'] = {
   layout_side_column: 'Seitenleiste',
   layout_swap_tooltip: 'In andere Spalte verschieben',
   more_actions_named: 'Weitere Aktionen für „{{name}}“',
-  page_break_add: 'Seitenumbruch hinzufügen',
   page_break_disabled_first: 'Seitenumbruch für das erste Element nicht verfügbar',
   page_break_disabled_hidden: 'Seitenumbruch für ausgeblendete Abschnitte nicht verfügbar',
+  page_break_named: 'Seitenumbruch vor „{{name}}“',
   page_break_removal_tooltip:
     'Seitenumbruch vor diesem Abschnitt entfernen (gilt nur für die PDF-Version)',
-  page_break_remove: 'Seitenumbruch entfernen',
   page_break_tooltip: 'Seitenumbruch vor diesem Abschnitt einfügen (gilt nur für die PDF-Version)',
   pdf_footer: {
     date: 'Datum anzeigen',

@@ -168,6 +168,9 @@ this makes the count checkable rather than asserted.
   `aria-disabled`, because a natively disabled button leaves the accessibility tree and
   takes its `aria-describedby`, `aria-busy`, and loading label with it. Activation is
   refused either way. `DialogFrame` follows the same rule for its busy close button.
+  `disabledReasonDisplay` picks where the reason shows: `inline` (default) prints it
+  under the button; `tooltip` puts it in the shared refusal tooltip and takes no room,
+  for a control inside a one-line row.
 - **Input / TextArea**: Associated form controls sharing error and help semantics.
 - **Field**: Label plus `description`/`warning`/`error`/`required` around a control supplied
   through a render prop. It composes `FieldLabel`, so it carries help affordances too. It has
@@ -263,8 +266,8 @@ this makes the count checkable rather than asserted.
   shares, entering the surface cancels it, and the grace never hides a tooltip while focus
   is on the trigger or inside it. A non-interactive surface stays mounted (`invisible`)
   while closed so `aria-describedby` resolves on first focus; a `group` mounts only while open.
-- **FloatingTooltip**: The floating half of every portalled tooltip — `InfoBox` and the
-  Improve button's refusal reason. Takes an `anchorRef` and an `open` flag rather than
+- **FloatingTooltip**: The floating half of every portalled tooltip — `InfoBox`, and
+  every refusal tooltip through `useRefusalTooltip`. Takes an `anchorRef` and an `open` flag rather than
   owning a trigger, so any control can point `aria-describedby` at it. Escape closes it
   without closing an enclosing dialog (window capture, before Radix's handler). An optional
   `container` replaces `body`; placement then subtracts that container's origin (a
@@ -588,9 +591,9 @@ the confusion. It renders its primary action as `{canRunNow && …}` — **absen
 so folding an add-on's precondition into `canRun` makes the Improve button _vanish because of a
 cover-letter dropdown_. Keep `canRun` for "is a run possible at all" and carry the refusal
 separately, demoting the button to `secondary` with `aria-disabled` and an `aria-describedby`
-pointing at the reason. ⚠️ Not `Button`'s `disabledReason`: it wraps the button in a `span`, so
-passing it conditionally changes the element type at that index and remounts on every
-transition.
+pointing at the reason. ⚠️ Not `Button`'s inline `disabledReason`: it wraps the button in a
+`span`, so passing it conditionally changes the element type at that index and remounts on every
+transition. `disabledReasonDisplay="tooltip"` always returns the same fragment and does not.
 
 **A per-run cost is stated once, at the control that causes it, inside the region that control
 reveals.** Not at the run button, and not on `AIAccessChip`, whose file records why: decorating
@@ -792,10 +795,15 @@ where it is, dimmed, and says why in a tooltip on hover, keyboard focus and tap
 the AI lives. `AISuggestButton`'s `disabledReason` carries it: `aria-disabled` plus
 `aria-describedby`, never the native attribute, and a refused press.
 
-⚠️ **Not `Button`'s `disabledReason`, and not `InfoBox`.** The first renders the reason
-as a line under the button, which would make a header row grow the moment a section
-empties. `InfoBox` owns its own trigger button, so it cannot describe this one. Both
-share `FloatingTooltip` instead: portalled to `body` (or, for `InfoBox` in a modal, the
+**One mechanism for every refusal tooltip: `useRefusalTooltip`.** `AISuggestButton` calls
+it directly, since it is a raw `<button>` with its own sizing; anything built on `Button`
+or `IconButton` passes `disabledReasonDisplay="tooltip"` (the Design editor's page-break
+toggle). Do not wire `useReasonTooltip` and `FloatingTooltip` by hand at a call site.
+
+⚠️ **Not `Button`'s inline `disabledReason`, and not `InfoBox`.** The first renders the
+reason as a line under the button, which would make a header row grow the moment a section
+empties. `InfoBox` owns its own trigger button, so it cannot describe this one. The
+refusal and `InfoBox` share `FloatingTooltip` instead: portalled to `body` (or, for `InfoBox` in a modal, the
 dialog) — it takes no space and escapes
 the sortable entry's `transform`, which would otherwise re-anchor a `fixed` element —
 flipped and clamped into the viewport, and kept on its anchor through scroll. It stays

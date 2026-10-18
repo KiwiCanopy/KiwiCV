@@ -1,9 +1,7 @@
-import { memo, useId, useRef } from 'react';
+import { memo } from 'react';
 
 import { ItemOrderControls } from '@/components/editor/ItemOrderControls';
-import { FloatingTooltip } from '@/components/ui/FloatingTooltip';
 import { IconButton } from '@/components/ui/IconButton';
-import { useReasonTooltip } from '@/components/ui/useReasonTooltip';
 import { SectionItemMenu } from '@/features/dashboard/design/layout/SectionItemMenu';
 import { useInlineOrderControls } from '@/features/dashboard/design/layout/useInlineOrderControls';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -83,10 +81,7 @@ export const SortableSectionItem = memo(
     const canMove =
       !isPlaceholder && !isOverlay && !!position && !!total && !!onMoveUp && !!onMoveDown;
 
-    const pageBreakReasonId = useId();
-    const pageBreakRef = useRef<HTMLButtonElement>(null);
     const isPageBreakDisabled = isFirst || isHidden;
-    const pageBreakReason = useReasonTooltip(isPageBreakDisabled);
     const pageBreakTooltip = isFirst
       ? t('design.page_break_disabled_first')
       : isHidden
@@ -133,42 +128,24 @@ export const SortableSectionItem = memo(
     // On the row, not in the overflow menu: its on/off state is what the user
     // scans for. A stacked row puts it on the title line (DESIGN_LANGUAGE.md).
     const pageBreakButton = onTogglePageBreak && !isPlaceholder && !isOverlay && (
-      <>
-        <IconButton
-          ref={pageBreakRef}
-          label={hasPageBreak ? t('design.page_break_remove') : t('design.page_break_add')}
-          // The refusal reason gets the shared tooltip instead (UI_PATTERNS.md).
-          title={isPageBreakDisabled ? '' : pageBreakTooltip}
-          variant="quiet"
-          aria-disabled={isPageBreakDisabled || undefined}
-          aria-describedby={isPageBreakDisabled ? pageBreakReasonId : undefined}
-          {...(isPageBreakDisabled ? pageBreakReason.triggerProps : {})}
-          className={cn(
-            isPageBreakDisabled
-              ? 'text-muted-foreground hover:text-muted-foreground border-transparent hover:bg-transparent'
-              : hasPageBreak
-                ? 'border-primary-strong bg-primary/10 text-primary-strong hover:bg-primary/15'
-                : 'text-muted-foreground hover:text-primary-strong border-transparent',
-          )}
-          // Button swallows the click while aria-disabled; a tap is how touch reads the reason.
-          onClickCapture={isPageBreakDisabled ? pageBreakReason.tap : undefined}
-          onClick={() => onTogglePageBreak(id)}
-        >
-          <CornerDownLeft size={14} aria-hidden="true" />
-        </IconButton>
-        {isPageBreakDisabled && (
-          <FloatingTooltip
-            id={pageBreakReasonId}
-            anchorRef={pageBreakRef}
-            side="bottom"
-            align="end"
-            {...pageBreakReason.tooltipProps}
-            className="max-w-60 rounded-md px-2.5 py-1.5 text-xs leading-snug shadow-lg"
-          >
-            {pageBreakTooltip}
-          </FloatingTooltip>
+      <IconButton
+        label={hasPageBreak ? t('design.page_break_remove') : t('design.page_break_add')}
+        title={pageBreakTooltip}
+        variant="quiet"
+        disabled={isPageBreakDisabled}
+        disabledReason={isPageBreakDisabled ? pageBreakTooltip : undefined}
+        disabledReasonDisplay="tooltip"
+        className={cn(
+          isPageBreakDisabled
+            ? 'text-muted-foreground hover:text-muted-foreground border-transparent hover:bg-transparent'
+            : hasPageBreak
+              ? 'border-primary-strong bg-primary/10 text-primary-strong hover:bg-primary/15'
+              : 'text-muted-foreground hover:text-primary-strong border-transparent',
         )}
-      </>
+        onClick={() => onTogglePageBreak(id)}
+      >
+        <CornerDownLeft size={14} aria-hidden="true" />
+      </IconButton>
     );
 
     return (

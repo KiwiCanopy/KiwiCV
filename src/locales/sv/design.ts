@@ -44,12 +44,11 @@ export const design: Translations['design'] = {
   layout_side_column: 'Sidofält',
   layout_swap_tooltip: 'Flytta till den andra kolumnen',
   more_actions_named: 'Fler åtgärder för ”{{name}}”',
-  page_break_add: 'Lägg till sidbrytning',
   page_break_disabled_first: 'Sidbrytning är inte tillgänglig för det första objektet',
   page_break_disabled_hidden: 'Sidbrytning är inte tillgänglig för dolda sektioner',
+  page_break_named: 'Sidbrytning före ”{{name}}”',
   page_break_removal_tooltip:
     'Ta bort sidbrytningen före denna sektion (gäller endast PDF-versionen)',
-  page_break_remove: 'Ta bort sidbrytning',
   page_break_tooltip: 'Lägg till en sidbrytning före denna sektion (gäller endast PDF-versionen)',
   pdf_footer: {
     date: 'Inkludera datum',

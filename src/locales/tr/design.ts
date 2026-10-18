@@ -45,12 +45,11 @@ export const design: Translations['design'] = {
   layout_side_column: 'Yan Panel',
   layout_swap_tooltip: 'Diğer sütuna taşı',
   more_actions_named: '“{{name}}” için diğer eylemler',
-  page_break_add: 'Sayfa sonu ekle',
   page_break_disabled_first: 'İlk öğe için sayfa sonu kullanılamaz',
   page_break_disabled_hidden: 'Gizli bölümler için sayfa sonu kullanılamaz',
+  page_break_named: '“{{name}}” bölümünden önce sayfa sonu',
   page_break_removal_tooltip:
     'Bu bölümden önceki sayfa sonunu kaldır (yalnızca PDF Sürümü için geçerlidir)',
-  page_break_remove: 'Sayfa sonunu kaldır',
   page_break_tooltip: 'Bu bölümden önce sayfa sonu ekle (yalnızca PDF Sürümü için geçerlidir)',
   pdf_footer: {
     date: 'Tarihi Dahil Et',

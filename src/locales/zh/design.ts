@@ -43,11 +43,10 @@ export const design: Translations['design'] = {
   layout_side_column: '侧边栏',
   layout_swap_tooltip: '移至另一栏',
   more_actions_named: '“{{name}}”的更多操作',
-  page_break_add: '添加分页符',
   page_break_disabled_first: '第一个项目无法使用分页符',
   page_break_disabled_hidden: '隐藏部分无法使用分页符',
+  page_break_named: '“{{name}}”之前的分页符',
   page_break_removal_tooltip: '删除此部分之前的分页符（仅适用于 PDF 版本）',
-  page_break_remove: '移除分页符',
   page_break_tooltip: '在此部分之前添加分页符（仅适用于 PDF 版本）',
   pdf_footer: {
     date: '包含日期',

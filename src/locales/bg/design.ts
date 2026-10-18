@@ -46,12 +46,11 @@ export const design: Translations['design'] = {
   layout_side_column: 'Странична лента',
   layout_swap_tooltip: 'Преместване в другата колона',
   more_actions_named: 'Още действия за „{{name}}“',
-  page_break_add: 'Добави разделител на страница',
   page_break_disabled_first: 'Нов лист не е наличен за първия елемент',
   page_break_disabled_hidden: 'Нов лист не е наличен за скрити секции',
+  page_break_named: 'Разделител на страница преди „{{name}}“',
   page_break_removal_tooltip:
     'Премахване на новия лист преди тази секция (важа само за PDF версията)',
-  page_break_remove: 'Премахни разделител на страница',
   page_break_tooltip: 'Добавяне на нов лист преди тази секция (важа само за PDF версията)',
   pdf_footer: {
     date: 'Включи дата',

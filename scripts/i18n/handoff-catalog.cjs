@@ -335,7 +335,7 @@ const entries = [
     'design',
     'page_break_named',
     'Page break before “{{name}}”',
-    'Accessible name of the page-break toggle on one section row in the layout editor. It is an on/off toggle (aria-pressed), so it names the setting, not an action: a noun phrase, no verb. Take the noun from design.page_break_tooltip and the quote marks from design.swap_column_named.',
+    'Accessible name of the page-break toggle on one section row in the layout editor. It is an on/off toggle (aria-pressed), so it names the setting, not an action: a noun phrase, no verb. Take the noun from design.page_break_tooltip and the quote marks from design.swap_column_named. Where the language inflects, put the case ending on a noun beside the name, never on the name itself.',
   ],
   [
     'ai',

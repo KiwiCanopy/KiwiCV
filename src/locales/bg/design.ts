@@ -48,10 +48,10 @@ export const design: Translations['design'] = {
   more_actions_named: 'Още действия за „{{name}}“',
   page_break_disabled_first: 'Нов лист не е наличен за първия елемент',
   page_break_disabled_hidden: 'Нов лист не е наличен за скрити секции',
-  page_break_named: 'Разделител на страница преди „{{name}}“',
+  page_break_named: 'Нов лист преди „{{name}}“',
   page_break_removal_tooltip:
-    'Премахване на новия лист преди тази секция (важа само за PDF версията)',
-  page_break_tooltip: 'Добавяне на нов лист преди тази секция (важа само за PDF версията)',
+    'Премахване на новия лист преди тази секция (важи само за PDF версията)',
+  page_break_tooltip: 'Добавяне на нов лист преди тази секция (важи само за PDF версията)',
   pdf_footer: {
     date: 'Включи дата',
     desc: 'Вмъкни ред за подпис, място и дата в долната част',

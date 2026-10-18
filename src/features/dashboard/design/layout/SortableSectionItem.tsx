@@ -232,9 +232,9 @@ export const SortableSectionItem = memo(
         <div
           className={cn(
             'flex items-center',
-            isStacked
-              ? 'border-border/40 w-full justify-between gap-1 border-t pt-1'
-              : 'gap-1 sm:gap-2',
+            // No gap when stacked: six 44px buttons plus gaps overflowed a
+            // 375px column by 10px; justify-between still spaces them (#17).
+            isStacked ? 'border-border/40 w-full justify-between border-t pt-1' : 'gap-1 sm:gap-2',
           )}
         >
           {isStacked && gripButton}

@@ -127,7 +127,6 @@ export const AISuggestButton: React.FC<AISuggestButtonProps> = ({
   }, [suggestionsCount, triggerOnly]);
 
   const isRefused = Boolean(disabledReason) && !hasPendingSuggestions;
-  // `isGenerating` disables the button natively, which can swallow its `blur`.
   const buttonRef = useRef<HTMLButtonElement>(null);
   const reason = useRefusalTooltip({
     anchorRef: buttonRef,
@@ -230,10 +229,7 @@ export const AISuggestButton: React.FC<AISuggestButtonProps> = ({
         // A refused press stays focusable so the reason can be described and read.
         aria-disabled={isRefused || undefined}
         aria-describedby={reason.describedBy}
-        // Unconditional, so leaving or blurring always clears the flag and it
-        // cannot stick from a state that was not refused.
         {...reason.triggerProps}
-        // The native tooltip would stack a second one on top of the reason.
         title={isRefused ? undefined : accessibleName}
         /* ⚠️ `title` alone was the ONLY accessible name here. It does
            supply one — it is the last fallback in the accname algorithm, so axe

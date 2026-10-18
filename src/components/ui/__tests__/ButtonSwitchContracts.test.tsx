@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { useState } from 'react';
+import { createRef, useState } from 'react';
 
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Switch';
@@ -96,6 +96,54 @@ describe('Button disabledReasonDisplay="tooltip"', () => {
     fireEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
     expect(tooltip.classList.contains('visible')).toBe(true);
+  });
+
+  it('still forwards the consumer’s ref and focus handlers while refused', () => {
+    const ref = createRef<HTMLButtonElement>();
+    const onFocus = vi.fn();
+    const onMouseEnter = vi.fn();
+    render(
+      <Button
+        ref={ref}
+        disabled
+        disabledReason="Not on the first section"
+        disabledReasonDisplay="tooltip"
+        onFocus={onFocus}
+        onMouseEnter={onMouseEnter}
+      >
+        Page break
+      </Button>,
+    );
+
+    const button = screen.getByRole('button', { name: 'Page break' });
+    expect(ref.current).toBe(button);
+    fireEvent.focus(button);
+    fireEvent.mouseEnter(button);
+    expect(onFocus).toHaveBeenCalledOnce();
+    expect(onMouseEnter).toHaveBeenCalledOnce();
+    const tooltip = document.getElementById(button.getAttribute('aria-describedby')!)!;
+    expect(tooltip.classList.contains('visible')).toBe(true);
+  });
+
+  it('shows no tooltip for a reason on a button that is not disabled', async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(
+      <Button
+        title="Add a page break"
+        disabledReason="Stray reason"
+        disabledReasonDisplay="tooltip"
+        onClick={onClick}
+      >
+        Page break
+      </Button>,
+    );
+
+    const button = screen.getByRole('button', { name: 'Page break' });
+    expect(button.hasAttribute('aria-describedby')).toBe(false);
+    expect(button.getAttribute('title')).toBe('Add a page break');
+    await user.click(button);
+    expect(onClick).toHaveBeenCalledOnce();
   });
 
   it('keeps the same button node while the reason comes and goes', () => {

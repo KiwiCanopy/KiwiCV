@@ -16,8 +16,10 @@ interface RefusalTooltipOptions {
 /**
  * A refused control's reason as a portalled tooltip, opened by hover, keyboard
  * focus and tap (UI_PATTERNS § An empty section refuses Improve). The caller
- * puts `triggerProps` and `describedBy` on the control `anchorRef` names, calls
- * `tap()` on a refused press, and renders `tooltip` beside it.
+ * puts `triggerProps` and `describedBy` on the control `anchorRef` names, drops
+ * its native `title` while refused (it would stack a second tooltip), calls
+ * `tap()` on a refused press, and renders `tooltip` beside it. `triggerProps`
+ * is undefined while not refused, so other controls never re-render on hover.
  */
 export function useRefusalTooltip({
   anchorRef,
@@ -30,7 +32,7 @@ export function useRefusalTooltip({
 
   return {
     describedBy: refused ? id : undefined,
-    triggerProps: state.triggerProps,
+    triggerProps: refused ? state.triggerProps : undefined,
     tap: state.tap,
     tooltip: refused ? (
       // End-aligned below: a refusable control trails its row in every consumer.

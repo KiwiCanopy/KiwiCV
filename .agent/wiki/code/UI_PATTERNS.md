@@ -168,6 +168,9 @@ this makes the count checkable rather than asserted.
   `aria-disabled`, because a natively disabled button leaves the accessibility tree and
   takes its `aria-describedby`, `aria-busy`, and loading label with it. Activation is
   refused either way. `DialogFrame` follows the same rule for its busy close button.
+  `disabledReasonDisplay` picks where the reason shows: `inline` (default) prints it
+  under the button; `tooltip` puts it in the shared refusal tooltip and takes no room,
+  for a control inside a one-line row.
 - **Input / TextArea**: Associated form controls sharing error and help semantics.
 - **Field**: Label plus `description`/`warning`/`error`/`required` around a control supplied
   through a render prop. It composes `FieldLabel`, so it carries help affordances too. It has
@@ -263,8 +266,8 @@ this makes the count checkable rather than asserted.
   shares, entering the surface cancels it, and the grace never hides a tooltip while focus
   is on the trigger or inside it. A non-interactive surface stays mounted (`invisible`)
   while closed so `aria-describedby` resolves on first focus; a `group` mounts only while open.
-- **FloatingTooltip**: The floating half of every portalled tooltip — `InfoBox` and the
-  Improve button's refusal reason. Takes an `anchorRef` and an `open` flag rather than
+- **FloatingTooltip**: The floating half of every portalled tooltip — `InfoBox`, and
+  every refusal tooltip through `useRefusalTooltip`. Takes an `anchorRef` and an `open` flag rather than
   owning a trigger, so any control can point `aria-describedby` at it. Escape closes it
   without closing an enclosing dialog (window capture, before Radix's handler). An optional
   `container` replaces `body`; placement then subtracts that container's origin (a
@@ -799,8 +802,8 @@ toggle). Do not wire `useReasonTooltip` and `FloatingTooltip` by hand at a call 
 
 ⚠️ **Not `Button`'s inline `disabledReason`, and not `InfoBox`.** The first renders the
 reason as a line under the button, which would make a header row grow the moment a section
-empties. `InfoBox` owns its own trigger button, so it cannot describe this one. Both
-share `FloatingTooltip` instead: portalled to `body` (or, for `InfoBox` in a modal, the
+empties. `InfoBox` owns its own trigger button, so it cannot describe this one. The
+refusal and `InfoBox` share `FloatingTooltip` instead: portalled to `body` (or, for `InfoBox` in a modal, the
 dialog) — it takes no space and escapes
 the sortable entry's `transform`, which would otherwise re-anchor a `fixed` element —
 flipped and clamped into the viewport, and kept on its anchor through scroll. It stays

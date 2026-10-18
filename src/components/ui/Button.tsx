@@ -90,7 +90,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const anchorRef = useRef<HTMLButtonElement | null>(null);
     const refusal = useRefusalTooltip({
       anchorRef,
-      refused: asTooltip && Boolean(disabledReason),
+      // Only while the press is actually refused, so a stray reason on an
+      // enabled button never shows a tooltip over a working click.
+      refused: asTooltip && Boolean(inert && disabledReason),
       reason: disabledReason,
     });
     const reasonId = asTooltip
@@ -106,9 +108,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       },
       [anchorRef, ref],
     );
-    // Only a refused button tracks hover and focus; every other one would
-    // re-render on each pointer pass for nothing.
-    const hint = refusal.tooltip ? refusal.triggerProps : undefined;
+    const hint = refusal.triggerProps;
     // A natively disabled button leaves the accessibility tree, taking its
     // aria-describedby, aria-busy, and loading label with it — so none of them
     // would ever be announced. Whenever there is something to convey, stay in
@@ -123,7 +123,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
         ref={setRefs}
         type={type}
-        // A native title would stack a second tooltip on top of the reason.
         title={refusal.tooltip ? undefined : title}
         onMouseEnter={(event) => {
           hint?.onMouseEnter();

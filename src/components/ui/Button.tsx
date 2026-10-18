@@ -1,5 +1,13 @@
-import { type ButtonHTMLAttributes, type ReactNode, forwardRef, useId } from 'react';
+import {
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  forwardRef,
+  useCallback,
+  useId,
+  useRef,
+} from 'react';
 
+import { useRefusalTooltip } from '@/components/ui/useRefusalTooltip';
 import { cn } from '@/utils/cn';
 import { LoaderCircle } from 'lucide-react';
 
@@ -12,6 +20,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   loadingLabel?: string;
   disabledReason?: ReactNode;
+  /**
+   * `inline` prints the reason under the button; `tooltip` shows it on hover,
+   * focus and tap and takes no room, for a control inside a one-line row.
+   */
+  disabledReasonDisplay?: 'inline' | 'tooltip';
   wrapperClassName?: string;
 }
 
@@ -57,17 +70,45 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       loadingLabel,
       disabled,
       disabledReason,
+      disabledReasonDisplay = 'inline',
       type = 'button',
       onClick,
+      onMouseEnter,
+      onMouseLeave,
+      onFocus,
+      onBlur,
+      title,
       'aria-describedby': ariaDescribedBy,
       'aria-disabled': ariaDisabled,
       ...props
     },
     ref,
   ) => {
+    const asTooltip = disabledReasonDisplay === 'tooltip';
     const generatedReasonId = useId();
-    const reasonId = disabledReason ? generatedReasonId : undefined;
     const inert = disabled || loading;
+    const anchorRef = useRef<HTMLButtonElement | null>(null);
+    const refusal = useRefusalTooltip({
+      anchorRef,
+      refused: asTooltip && Boolean(disabledReason),
+      reason: disabledReason,
+    });
+    const reasonId = asTooltip
+      ? refusal.describedBy
+      : disabledReason
+        ? generatedReasonId
+        : undefined;
+    const setRefs = useCallback(
+      (node: HTMLButtonElement | null) => {
+        anchorRef.current = node;
+        if (typeof ref === 'function') ref(node);
+        else if (ref) ref.current = node;
+      },
+      [anchorRef, ref],
+    );
+    // Only a refused button tracks hover and focus; every other one would
+    // re-render on each pointer pass for nothing.
+    const hint = refusal.tooltip ? refusal.triggerProps : undefined;
     // A natively disabled button leaves the accessibility tree, taking its
     // aria-describedby, aria-busy, and loading label with it — so none of them
     // would ever be announced. Whenever there is something to convey, stay in
@@ -80,8 +121,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const button = (
       <button
         {...props}
-        ref={ref}
+        ref={setRefs}
         type={type}
+        // A native title would stack a second tooltip on top of the reason.
+        title={refusal.tooltip ? undefined : title}
+        onMouseEnter={(event) => {
+          hint?.onMouseEnter();
+          onMouseEnter?.(event);
+        }}
+        onMouseLeave={(event) => {
+          hint?.onMouseLeave();
+          onMouseLeave?.(event);
+        }}
+        onFocus={(event) => {
+          hint?.onFocus();
+          onFocus?.(event);
+        }}
+        onBlur={(event) => {
+          hint?.onBlur();
+          onBlur?.(event);
+        }}
         disabled={softDisabled ? undefined : inert}
         aria-disabled={isAriaDisabled || undefined}
         aria-busy={loading || undefined}
@@ -89,6 +148,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={(event) => {
           if (isAriaDisabled) {
             event.preventDefault();
+            // Touch has no hover, so a tap is how the reason gets read there.
+            if (refusal.tooltip) refusal.tap();
             return;
           }
           onClick?.(event);
@@ -106,6 +167,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {loading && loadingLabel ? loadingLabel : children}
       </button>
     );
+
+    // Always a fragment in this mode, so the reason coming and going never
+    // changes the element type and remounts the button.
+    if (asTooltip) {
+      return (
+        <>
+          {button}
+          {refusal.tooltip}
+        </>
+      );
+    }
 
     if (!disabledReason) return button;
 

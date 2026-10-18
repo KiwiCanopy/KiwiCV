@@ -588,9 +588,9 @@ the confusion. It renders its primary action as `{canRunNow && …}` — **absen
 so folding an add-on's precondition into `canRun` makes the Improve button _vanish because of a
 cover-letter dropdown_. Keep `canRun` for "is a run possible at all" and carry the refusal
 separately, demoting the button to `secondary` with `aria-disabled` and an `aria-describedby`
-pointing at the reason. ⚠️ Not `Button`'s `disabledReason`: it wraps the button in a `span`, so
-passing it conditionally changes the element type at that index and remounts on every
-transition.
+pointing at the reason. ⚠️ Not `Button`'s inline `disabledReason`: it wraps the button in a
+`span`, so passing it conditionally changes the element type at that index and remounts on every
+transition. `disabledReasonDisplay="tooltip"` always returns the same fragment and does not.
 
 **A per-run cost is stated once, at the control that causes it, inside the region that control
 reveals.** Not at the run button, and not on `AIAccessChip`, whose file records why: decorating
@@ -792,8 +792,13 @@ where it is, dimmed, and says why in a tooltip on hover, keyboard focus and tap
 the AI lives. `AISuggestButton`'s `disabledReason` carries it: `aria-disabled` plus
 `aria-describedby`, never the native attribute, and a refused press.
 
-⚠️ **Not `Button`'s `disabledReason`, and not `InfoBox`.** The first renders the reason
-as a line under the button, which would make a header row grow the moment a section
+**One mechanism for every refusal tooltip: `useRefusalTooltip`.** `AISuggestButton` calls
+it directly, since it is a raw `<button>` with its own sizing; anything built on `Button`
+or `IconButton` passes `disabledReasonDisplay="tooltip"` (the Design editor's page-break
+toggle). Do not wire `useReasonTooltip` and `FloatingTooltip` by hand at a call site.
+
+⚠️ **Not `Button`'s inline `disabledReason`, and not `InfoBox`.** The first renders the
+reason as a line under the button, which would make a header row grow the moment a section
 empties. `InfoBox` owns its own trigger button, so it cannot describe this one. Both
 share `FloatingTooltip` instead: portalled to `body` (or, for `InfoBox` in a modal, the
 dialog) — it takes no space and escapes

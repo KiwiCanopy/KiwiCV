@@ -1,7 +1,6 @@
-import React, { useId, useRef } from 'react';
+import React, { useRef } from 'react';
 
-import { FloatingTooltip } from '@/components/ui/FloatingTooltip';
-import { useReasonTooltip } from '@/components/ui/useReasonTooltip';
+import { useRefusalTooltip } from '@/components/ui/useRefusalTooltip';
 import { useAIEntryGuard } from '@/hooks/useAIEntryGuard';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
@@ -128,10 +127,14 @@ export const AISuggestButton: React.FC<AISuggestButtonProps> = ({
   }, [suggestionsCount, triggerOnly]);
 
   const isRefused = Boolean(disabledReason) && !hasPendingSuggestions;
-  const reasonId = useId();
-  const buttonRef = useRef<HTMLButtonElement>(null);
   // `isGenerating` disables the button natively, which can swallow its `blur`.
-  const reason = useReasonTooltip(isRefused && !isGenerating);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const reason = useRefusalTooltip({
+    anchorRef: buttonRef,
+    refused: isRefused,
+    reason: disabledReason,
+    paused: isGenerating,
+  });
 
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -226,7 +229,7 @@ export const AISuggestButton: React.FC<AISuggestButtonProps> = ({
         disabled={isGenerating}
         // A refused press stays focusable so the reason can be described and read.
         aria-disabled={isRefused || undefined}
-        aria-describedby={isRefused ? reasonId : undefined}
+        aria-describedby={reason.describedBy}
         // Unconditional, so leaving or blurring always clears the flag and it
         // cannot stick from a state that was not refused.
         {...reason.triggerProps}
@@ -289,20 +292,9 @@ export const AISuggestButton: React.FC<AISuggestButtonProps> = ({
         )}
       </button>
 
-      {isRefused && (
-        // Portalled, so it takes no room in the header row and escapes the sortable
-        // entry's `transform`. End-aligned: every Improve button trails its row.
-        <FloatingTooltip
-          id={reasonId}
-          anchorRef={buttonRef}
-          side="bottom"
-          align="end"
-          {...reason.tooltipProps}
-          className="max-w-60 rounded-md px-2.5 py-1.5 text-xs leading-snug shadow-lg"
-        >
-          {disabledReason}
-        </FloatingTooltip>
-      )}
+      {/* Portalled, so it takes no room in the header row and escapes the
+          sortable entry's `transform`. */}
+      {reason.tooltip}
 
       {modals}
     </>

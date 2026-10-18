@@ -163,7 +163,7 @@ this makes the count checkable rather than asserted.
 
 ## Reusable Primitives (`src/components/ui/`)
 
-- **Button / IconButton**: Named, 44 px-minimum actions. **Two disablement modes:**
+- **Button / IconButton**: Named, 44 px actions (36 px only in a narrow stacked Design section row). **Two disablement modes:**
   plain `disabled` uses the native attribute; `disabledReason` or `loading` switch to
   `aria-disabled`, because a natively disabled button leaves the accessibility tree and
   takes its `aria-describedby`, `aria-busy`, and loading label with it. Activation is
@@ -1253,7 +1253,7 @@ panes:
 
 1. **Pane-relative layout**: Use `useEditorBreakpoints()` for editor content; viewport breakpoints alone do not describe a resized pane.
 2. **Neutral groups**: Keep the section list and item cards visually distinct without permanent category colors or negative-margin full bleed.
-3. **Wrapping action rows**: Let item actions wrap below the title when space is constrained. Do not shrink 44 px targets.
+3. **Wrapping action rows**: Let item actions wrap below the title when space is constrained. Do not shrink 44 px targets, with one exception: a stacked Design section row drops its buttons to 36 px rather than wrapping to a third line (owner, 2026-10-18; DESIGN_LANGUAGE § Design Editor Implementation).
 4. **Named icon actions**: Compact icons may replace visible labels only when their accessible names remain explicit and include the affected item. Name the item inside one translated sentence — a `{{name}}` key such as `common.delete_named` — never as `${t('verb')}: ${name}`, which fixes English word order and a colon in every locale; `src/utils/__tests__/namedLabels.test.ts` fails on the glued form.
 5. **Reflow-safe dialogs**: Use `ModalContainer` scrolling and stack form groups instead of forcing horizontal grids at 320 px or 400% zoom.
 

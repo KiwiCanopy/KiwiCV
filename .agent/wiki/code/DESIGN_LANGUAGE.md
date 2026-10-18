@@ -642,7 +642,10 @@ item hides that state. Active is shown by tint plus a full-strength border. On
 the first row or a hidden row the toggle is greyed out, with its reason in the
 shared refusal tooltip (UI_PATTERNS § An empty section refuses Improve). A
 stacked (narrow or touch) row puts the toggle on the title line: a seventh
-44px control on the button line overflows a 375px column.
+44px control on the button line overflows a 375px column. Below the width its button line needs at
+44px (a two-column row at a 320px viewport), a stacked row's buttons drop to 36px and
+the move arrows lose their gap (owner, 2026-10-18): one line at 36px beats wrapping to a
+third line, and 36px stays well above the 24px of WCAG 2.5.8.
 
 Design controls no longer dim the complete editor while Typst updates. The
 mounted preview owns synchronization and generation status locally; narrow

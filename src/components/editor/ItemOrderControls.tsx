@@ -24,6 +24,8 @@ interface ItemOrderControlsProps {
    * are inert, out of the tab order and described by it.
    */
   lockedReasonId?: string;
+  /** Merged onto the inline group, e.g. a caller's compact spacing. */
+  className?: string;
 }
 
 export function ItemOrderControls({
@@ -34,6 +36,7 @@ export function ItemOrderControls({
   onMoveDown,
   variant = 'inline',
   lockedReasonId,
+  className,
 }: ItemOrderControlsProps) {
   const { t } = useTranslation();
   const [announcement, setAnnouncement] = useState('');
@@ -127,7 +130,11 @@ export function ItemOrderControls({
   const inertClass = cn(lockedReasonId !== undefined && LOCKED_BUTTON_CLASS);
 
   return (
-    <div className="flex shrink-0 items-center gap-1" role="group" aria-label={groupLabel}>
+    <div
+      className={cn('flex shrink-0 items-center gap-1', className)}
+      role="group"
+      aria-label={groupLabel}
+    >
       <IconButton
         ref={upRef}
         label={moveUpLabel}

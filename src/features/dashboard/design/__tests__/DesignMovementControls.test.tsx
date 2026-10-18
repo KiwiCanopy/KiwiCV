@@ -204,6 +204,64 @@ describe('Design movement controls', () => {
     expect((await axe(container)).violations).toEqual([]);
   });
 
+  it('lets a stacked row shrink its buttons below the width its button count needs', () => {
+    // jsdom does no layout, so this pins the container-query threshold per
+    // button count; the 320px and 375px fit was measured in the browser (#19).
+    const row = (swap: boolean) => (
+      <EditorLayoutContext.Provider value={layout(375)}>
+        <DndContext>
+          <SortableSectionItem
+            id="work"
+            label="Work"
+            onEdit={vi.fn()}
+            onToggleVisibility={vi.fn()}
+            canSwap={swap}
+            onSwap={vi.fn()}
+            position={2}
+            total={3}
+            onMoveUp={vi.fn()}
+            onMoveDown={vi.fn()}
+          />
+        </DndContext>
+      </EditorLayoutContext.Provider>
+    );
+    const { rerender } = render(row(true));
+    const card = () => screen.getByRole('button', { name: 'Move “Work” to the other column' });
+    const rowOf = (el: HTMLElement) => el.closest('.group') as HTMLElement;
+    const arrows = () => screen.getByRole('group', { name: 'Move items' });
+
+    // Six buttons: grip, visibility, swap, up, down, menu → 6 × 44 + 4 = 268.
+    expect(rowOf(card()).className).toContain('@container/row');
+    expect(rowOf(card()).className).toContain('@max-[268px]/row:[&_button]:size-9');
+    expect(arrows().className).toContain('@max-[268px]/row:gap-0');
+
+    // No swap → five buttons → 224.
+    rerender(row(false));
+    const five = rowOf(arrows());
+    expect(five.className).toContain('@max-[224px]/row:[&_button]:size-9');
+    expect(five.className).not.toContain('268px');
+    expect(arrows().className).toContain('@max-[224px]/row:gap-0');
+
+    // Neither swap nor edit → four buttons → 180.
+    rerender(
+      <EditorLayoutContext.Provider value={layout(375)}>
+        <DndContext>
+          <SortableSectionItem
+            id="work"
+            label="Work"
+            onToggleVisibility={vi.fn()}
+            position={2}
+            total={3}
+            onMoveUp={vi.fn()}
+            onMoveDown={vi.fn()}
+          />
+        </DndContext>
+      </EditorLayoutContext.Provider>,
+    );
+    expect(rowOf(arrows()).className).toContain('@max-[180px]/row:[&_button]:size-9');
+    expect(arrows().className).toContain('@max-[180px]/row:gap-0');
+  });
+
   it('builds sorting announcements from localized labels', () => {
     const announcements = createSortingAnnouncements({
       items: ['work', 'education'],

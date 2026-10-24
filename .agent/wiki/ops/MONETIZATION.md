@@ -26,6 +26,13 @@ KiwiCV sells **time-limited Premium Passes** and nothing else. Passes are record
 - **Shared logic**: both paths use the idempotent `fulfillOrder` in `netlify/functions/lib/stripe-fulfillment.mjs`, which accepts `type === 'timepass'` only and calls the `fulfill_stripe_order` RPC.
 - **Pass expiry**: stored as `profiles.premium_until`. There is no `is_premium` column — `isPremium` is computed client-side in `AuthProvider.tsx` as `premium_until > now()`.
 - **Frontend sync**: `PurchaseSuccessHandler.tsx` orchestrates the manual verification and the polling fallback so the UI reflects the new expiry.
+- ⚠️ **Two API versions are in play, and they move separately.** The SDK (`stripe` 23) pins
+  `2026-09-30.endive` for our own requests — none of the three functions passes `apiVersion`, so a
+  major SDK bump silently moves checkout create/retrieve. The webhook endpoint's version, set in
+  the Stripe dashboard (Workbench → Webhooks), shapes the events we receive: `2026-03-25.dahlia`
+  as of 2026-10-24. From events we read only `type`, `id`, `payment_status` and `metadata`, the same in both; our own requests also read the session `url` and the price `id`.
+  Measured on the 23 bump in test mode: the real `create-checkout` handler for all three lookup
+  keys, `sessions.retrieve`, and signature verification through `constructStripeWebhookEvent`.
 
 ## What a Pass Unlocks
 

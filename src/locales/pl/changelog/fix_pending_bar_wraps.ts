@@ -1,4 +1,4 @@
 export const fix_pending_bar_wraps = {
   fix_pending_bar_wraps:
-    'On a narrow editor, the bar of AI proposals to review now wraps its buttons, so Discard all is no longer cut off.',
+    'W wąskim edytorze pasek propozycji AI do sprawdzenia zawija teraz swoje przyciski, więc Odrzuć wszystko nie jest już ucięte.',
 };

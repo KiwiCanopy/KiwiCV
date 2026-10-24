@@ -1,4 +1,4 @@
 export const ui_export_closes_on_success = {
   ui_export_closes_on_success:
-    'After a fully successful export, the Export dialog now closes by itself and a notice confirms it for ten seconds. If any destination fails, the dialog stays open so you can retry.',
+    "Dopo un'esportazione riuscita del tutto, la finestra di esportazione ora si chiude da sola e un avviso lo conferma per dieci secondi. Se una destinazione fallisce, la finestra resta aperta così puoi riprovare.",
 };

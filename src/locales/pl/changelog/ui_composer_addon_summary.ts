@@ -1,4 +1,4 @@
 export const ui_composer_addon_summary = {
   ui_composer_addon_summary:
-    'With the AI bar closed in Professional mode, the add-ons that will run along — like a translation or a skills restructure — are now named next to Improve my CV, and clicking them opens the bar.',
+    'Gdy pasek AI jest zamknięty w trybie Profesjonalny, dodatki, które uruchomią się razem — jak tłumaczenie czy przebudowa umiejętności — są teraz wymienione obok Ulepsz mój CV, a kliknięcie ich otwiera pasek.',
 };

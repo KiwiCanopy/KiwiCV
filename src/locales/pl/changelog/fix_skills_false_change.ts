@@ -1,4 +1,4 @@
 export const fix_skills_false_change = {
   fix_skills_false_change:
-    "Skills you did not touch no longer show up as changed after Improve with AI or a translation, and discarding a translation's changes no longer puts your skills back in the old language.",
+    'Umiejętności, których nie zmieniano, nie pojawiają się już jako zmienione po użyciu „Ulepsz za pomocą AI” lub po tłumaczeniu, a odrzucenie zmian tłumaczenia nie cofa już Twoich umiejętności do starego języka.',
 };

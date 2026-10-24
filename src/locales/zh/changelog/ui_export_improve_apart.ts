@@ -1,4 +1,4 @@
 export const ui_export_improve_apart = {
   ui_export_improve_apart:
-    'Export and Improve my CV are easier to tell apart: Improve now sits at the start of the AI bar, and the Export button in the header is no longer green. When you work from a job ad or your own instructions, Improve waits until the bar is open, so it never runs on text you cannot see.',
+    '“导出”和“优化我的简历”现在更容易区分：“优化”位于 AI 栏的开头，页眉中的“导出”按钮也不再是绿色。当你基于职位描述或自己的指令工作时，“优化”会等到 AI 栏打开后再运行，不会对你看不到的文本执行。',
 };

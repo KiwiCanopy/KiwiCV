@@ -1,4 +1,4 @@
 export const ui_export_closes_on_success = {
   ui_export_closes_on_success:
-    'After a fully successful export, the Export dialog now closes by itself and a notice confirms it for ten seconds. If any destination fails, the dialog stays open so you can retry.',
+    'Tamamen başarılı bir dışa aktarmadan sonra dışa aktarma penceresi artık kendiliğinden kapanıyor ve bir bildirim bunu on saniye boyunca doğruluyor. Herhangi bir hedef başarısız olursa pencere açık kalır, böylece yeniden deneyebilirsin.',
 };

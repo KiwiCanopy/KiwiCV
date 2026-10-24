@@ -40,7 +40,6 @@ export interface UseExportRun {
   /** Polite live-region text. Empty while nothing has happened. */
   announcement: string;
   run: (ids: DestinationId[], projectName: string) => Promise<void>;
-  reset: () => void;
 }
 
 /**
@@ -172,11 +171,6 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
     [addToast, formats, handleSync, resume, t],
   );
 
-  const reset = useCallback(() => {
-    setState(IDLE_STATE);
-    setAnnouncement('');
-  }, []);
-
   const entries = Object.entries(state.rows) as [DestinationId, { status: string }][];
 
   return {
@@ -185,6 +179,5 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
     failed: entries.filter(([, row]) => row.status === 'failed').map(([id]) => id),
     announcement,
     run,
-    reset,
   };
 }

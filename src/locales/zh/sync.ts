@@ -12,9 +12,6 @@ export const sync: Translations['sync'] = {
   checking: '正在检查备份...',
   checking_connection: '正在检查连接...',
   checking_locale_msg: '正在已连接的云端服务中查找你所选语言的简历。',
-  collision_message:
-    '文件夹 {{name}} 已存在。为 avoidance 覆盖之前的数据，已创建一个新文件夹： {{newName}} 。',
-  collision_title: '文件夹名称冲突',
   commit_config: '更新配置',
   commit_config_at_export: '根据 {{name}} 更新配置',
   commit_delete: '删除备份：{{name}}',

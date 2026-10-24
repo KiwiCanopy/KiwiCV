@@ -15,9 +15,6 @@ export const sync: Translations['sync'] = {
   checking_connection: 'Sprawdzanie połączenia...',
   checking_locale_msg:
     'Przeszukiwanie połączonych usług w chmurze w poszukiwaniu CV w wybranym języku.',
-  collision_message:
-    'Folder o nazwie {{name}} już istnieje. Aby uniknąć nadpisania poprzednich danych, utworzono nowy folder: {{newName}}.',
-  collision_title: 'Konflikt nazw folderów',
   commit_config: 'Aktualizuj konfigurację',
   commit_config_at_export: 'Aktualizacja konfiguracji wg {{name}}',
   commit_delete: 'Usuń kopię zapasową: {{name}}',

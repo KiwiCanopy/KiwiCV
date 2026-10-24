@@ -14,9 +14,6 @@ export const sync: Translations['sync'] = {
   checking: 'Söker efter säkerhetskopior...',
   checking_connection: 'Kontrollerar anslutningen...',
   checking_locale_msg: 'Söker i dina anslutna molntjänster efter ett CV på det valda språket.',
-  collision_message:
-    'En mapp med namnet {{name}} finns redan. För att undvika att skriva över din tidigare data skapades en ny mapp: {{newName}}.',
-  collision_title: 'Namnkonflikt för mapp',
   commit_config: 'Uppdatera konfiguration',
   commit_config_at_export: 'Uppdatera konfiguration enligt {{name}}',
   commit_delete: 'Radera säkerhetskopia: {{name}}',

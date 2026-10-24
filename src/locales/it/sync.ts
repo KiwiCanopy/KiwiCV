@@ -15,9 +15,6 @@ export const sync: Translations['sync'] = {
   checking_connection: 'Verifica della connessione...',
   checking_locale_msg:
     'Ricerca nei tuoi servizi cloud collegati di un CV nella lingua selezionata.',
-  collision_message:
-    'Esiste già una cartella chiamata {{name}}. Per evitare di sovrascrivere i dati precedenti, è stata creata una nuova cartella: {{newName}}.',
-  collision_title: 'Conflitto nome cartella',
   commit_config: 'Aggiorna configurazione',
   commit_config_at_export: 'Aggiorna configurazione secondo {{name}}',
   commit_delete: 'Elimina backup: {{name}}',

@@ -13,9 +13,6 @@ export const sync: Translations['sync'] = {
   checking: 'Yedekler kontrol ediliyor...',
   checking_connection: 'Bağlantı kontrol ediliyor...',
   checking_locale_msg: 'Bağlı bulut hizmetlerinde seçtiğin dilde bir CV aranıyor.',
-  collision_message:
-    ' {{name}} adında bir klasör zaten mevcut. Önceki verilerinin üzerine yazılmasını önlemek için yeni bir klasör oluşturuldu: {{newName}} .',
-  collision_title: 'Klasör Adı Çakışması',
   commit_config: 'Yapılandırmayı güncelle',
   commit_config_at_export: '{{name}} uyarınca Yapılandırmayı Güncelle',
   commit_delete: 'Yedeği sil: {{name}}',

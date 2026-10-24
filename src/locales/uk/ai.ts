@@ -9,6 +9,9 @@ export const ai: Translations['ai'] = {
   char_limit_reached:
     'Це поле досягло ліміту в {{limit}} символів. Додатковий текст не буде додано.',
   chars_used: 'Використано {{used}} із {{limit}} символів',
+  composer_addon_translate: 'Перекласти → {{language}}',
+  composer_addons_count_one: 'Параметри: +1',
+  composer_addons_count_other: 'Параметри: +{{count}}',
   composer_custom_empty: 'Опиши, як ти хочеш переписати своє резюме',
   composer_mode_custom: 'Своє',
   composer_mode_job: 'Під вакансію',

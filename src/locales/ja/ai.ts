@@ -9,6 +9,9 @@ export const ai: Translations['ai'] = {
   char_limit_reached:
     'このフィールドが文字数制限（{{limit}}文字）に達しました。これ以上は追加されません。',
   chars_used: '{{limit}} 文字中 {{used}} 文字を使用',
+  composer_addon_translate: '翻訳 → {{language}}',
+  composer_addons_count_one: 'オプション +1',
+  composer_addons_count_other: 'オプション +{{count}}',
   composer_custom_empty: '履歴書をどのようにリライトしたいか記述してください',
   composer_mode_custom: 'カスタム',
   composer_mode_job: '求人最適化',

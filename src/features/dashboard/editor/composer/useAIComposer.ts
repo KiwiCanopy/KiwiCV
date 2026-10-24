@@ -190,6 +190,13 @@ export function useAIComposer() {
    */
   const runBlocked = coverLetter.enabled && coverLetter.needsSample;
 
+  /** What a run carries beside the improvement — the one value `run()` sends and the closed row names (#31). */
+  const addons = {
+    reorg: isReorgEligible && allowReorg,
+    translateTo: translate ? targetLang : null,
+    coverLetter: coverLetter.enabled,
+  };
+
   /** Returns whether the run actually launched — false when refused or bounced by the guard. */
   const run = (): boolean => {
     if (!canRun || runBlocked) return false;
@@ -219,7 +226,10 @@ export function useAIComposer() {
     // the selected mode and the pasted job ad — the backend has a branch written
     // for exactly the combined case, and the dialog it detoured through only
     // re-asked for the language the bar had already collected.
-    openAIModal('cv', { autoRun: true, ...(translate ? { translateTo: targetLang } : {}) });
+    openAIModal('cv', {
+      autoRun: true,
+      ...(addons.translateTo ? { translateTo: addons.translateTo } : {}),
+    });
     return true;
   };
 
@@ -247,6 +257,7 @@ export function useAIComposer() {
     setAllowReorg: updateAllowReorg,
     coverLetter,
     isReorgEligible,
+    addons,
     translate,
     setTranslate,
     targetLang,

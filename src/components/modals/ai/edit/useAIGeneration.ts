@@ -79,6 +79,7 @@ export const useAIGeneration = ({
 
   const applyAISuggestion = useResumeStore((state) => state.applyAISuggestion);
   const applyReorgSuggestion = useResumeStore((state) => state.applyReorgSuggestion);
+  const acceptReorg = useResumeStore((state) => state.acceptReorg);
   const updateMeta = useResumeStore((state) => state.updateMeta);
   const updateCoverLetter = useResumeStore((state) => state.updateCoverLetter);
 
@@ -235,7 +236,12 @@ export const useAIGeneration = ({
               markUnsourced,
             });
           }
-          if (reorgSkills) applyReorgSuggestion('skills', reorgSkills);
+          if (reorgSkills) {
+            applyReorgSuggestion('skills', reorgSkills);
+            // ⚠️ A translation applies directly, with nothing to discard; a skills
+            // proposal left open would revert alone into the old language (#26).
+            if (isTranslation) acceptReorg();
+          }
 
           if (isTranslation) {
             updateMeta({

@@ -151,6 +151,14 @@ such run completes as `isNoOp` and the client says "No changes" after spending a
 `areValuesEqualParity.test.ts` drives both over one table, so a run billed as a change always
 writes something.
 
+⚠️ **Nullish also equals `0`** (2026-10-24, #26). The schema requires a level on every skill and
+language entry, where `0` means "Not specified" — measured: a Vertex run answered `level: 0` for
+every skill stored without one in every recorded call — improve, improve with restructure, and translate (evidence on #26). Without the rule an
+untouched skill was billed and shown as changed ("Not specified → Not specified"). The levels are
+the only numeric fields (`numeric-fields.test.mjs` pins that). The skills restructure classifies with the same comparator, a restructure
+whose entries all come back unchanged and in place is dropped, and a translation's restructure is
+accepted at once, since nothing else in a translation is left to discard.
+
 ### Custom sections are addressed by token, never by name
 
 A user-defined section is `custom:<uuid>` everywhere the layout names it, so its AI targets

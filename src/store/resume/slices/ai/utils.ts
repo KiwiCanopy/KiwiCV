@@ -11,6 +11,11 @@ export const areValuesEqual = (a: unknown, b: unknown): boolean => {
   const normA = a === null || a === undefined ? '' : a;
   const normB = b === null || b === undefined ? '' : b;
 
+  // ⚠️ 0 is "Not specified" on both level scales, the only numeric fields, and
+  // the schema makes the model return one for every entry — so an absent level
+  // came back as 0 and an untouched skill read as changed (#26).
+  if ((normA === '' && normB === 0) || (normA === 0 && normB === '')) return true;
+
   // Trim strings to ignore insignificant whitespace changes
   if (typeof normA === 'string' && typeof normB === 'string') {
     return normA.trim() === normB.trim();

@@ -39,6 +39,10 @@ const PAIRS: Array<[label: string, a: unknown, b: unknown]> = [
   ['arrays of objects', [{ name: 'SEPA' }], [{ name: 'SEPA' }]],
   ['number vs its string', 3, '3'],
   ['equal numbers', 3, 3],
+  ['absent level vs 0 ("Not specified")', UNDEFINED, 0],
+  ['null level vs 0', null, 0],
+  ['absent level vs a real level', UNDEFINED, 2],
+  ['0 vs a real level', 0, 2],
   ['boolean vs string', true, 'true'],
 ];
 
@@ -80,5 +84,7 @@ describe('the two areValuesEqual copies agree', () => {
     expect(verdict('whitespace-only array change')).toBe(true);
     expect(verdict('real string change')).toBe(false);
     expect(verdict('reordered array')).toBe(false);
+    expect(verdict('absent level vs 0 ("Not specified")')).toBe(true);
+    expect(verdict('absent level vs a real level')).toBe(false);
   });
 });

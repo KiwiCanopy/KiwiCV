@@ -15,9 +15,6 @@ export const sync: Translations['sync'] = {
   checking_connection: 'Verbindung wird geprüft...',
   checking_locale_msg:
     'Suche in deinen verbundenen Cloud-Diensten nach einem Lebenslauf in der gewählten Sprache.',
-  collision_message:
-    'Ein Ordner mit dem Namen {{name}} existiert bereits. Um das Überschreiben deiner vorherigen Daten zu vermeiden, wurde ein neuer Ordner erstellt: {{newName}}.',
-  collision_title: 'Konflikt beim Ordnernamen',
   commit_config: 'Konfiguration aktualisieren',
   commit_config_at_export: 'Aktualisiere Konfiguration gemäß {{name}}',
   commit_delete: 'Backup löschen: {{name}}',

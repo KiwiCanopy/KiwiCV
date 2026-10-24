@@ -13,9 +13,6 @@ export const sync = {
   checking_connection: 'Checking connection...',
   checking_locale_msg:
     'Looking through your connected cloud services for a CV in the language you picked.',
-  collision_message:
-    'A folder named {{name}} already exists. To avoid overwriting your previous data, a new folder was created: {{newName}}.',
-  collision_title: 'Folder Name Conflict',
   commit_config: 'Update Config',
   commit_config_at_export: 'Update configuration according to {{name}}',
   commit_delete: 'Delete backup: {{name}}',

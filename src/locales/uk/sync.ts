@@ -14,9 +14,6 @@ export const sync: Translations['sync'] = {
   checking: 'Пошук резервних копій...',
   checking_connection: "Перевірка з'єднання...",
   checking_locale_msg: 'Пошук у підключених хмарних службах резюме вибраною мовою.',
-  collision_message:
-    'Папка з назвою {{name}} вже існує. Щоб уникнути перезапису твоїх попередніх даних, було створено нову папку: {{newName}}.',
-  collision_title: 'Конфлікт назв папок',
   commit_config: 'Оновити конфігурацію',
   commit_config_at_export: 'Оновити конфігурацію відповідно до {{name}}',
   commit_delete: 'Видалити резервну копію: {{name}}',

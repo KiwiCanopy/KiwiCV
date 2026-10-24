@@ -70,14 +70,15 @@ vi.mock('@/hooks/export/destinationAdapters', () => ({
   runDestination: (...args: unknown[]) => runDestination(...(args as [])),
 }));
 
+const buildExportArtifacts = vi.fn(async () => ({
+  folderName: 'my-cv',
+  backupFileName: 'my-cv',
+  json: '{}',
+  html: null,
+  pdf: null,
+}));
 vi.mock('@/hooks/export/buildExportArtifacts', () => ({
-  buildExportArtifacts: async () => ({
-    folderName: 'my-cv',
-    backupFileName: 'my-cv',
-    json: '{}',
-    html: null,
-    pdf: null,
-  }),
+  buildExportArtifacts: (...args: unknown[]) => buildExportArtifacts(...(args as [])),
 }));
 
 vi.mock('@/hooks/useCloudSync', () => ({
@@ -208,6 +209,30 @@ describe('ExportModal', () => {
     await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
 
     await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('closes once a retry clears the last failure', async () => {
+    runDestination.mockResolvedValueOnce({ success: false, error: 'disk full' } as never);
+    const user = userEvent.setup();
+    const props = renderModal();
+
+    await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
+    await user.click(await screen.findByRole('button', { name: /sync\.export_dialog\.retry_one/ }));
+
+    await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('stays open when the package cannot be built', async () => {
+    buildExportArtifacts.mockRejectedValueOnce(new Error('Serializer not found'));
+    const user = userEvent.setup();
+    const props = renderModal();
+
+    await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
+
+    await waitFor(() =>
+      expect(screen.getByText('sync.export_dialog.build_failed_hint')).toBeTruthy(),
+    );
+    expect(props.onClose).not.toHaveBeenCalled();
   });
 
   it('reports a failed destination in its row and relabels the trigger as a retry', async () => {

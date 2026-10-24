@@ -115,8 +115,8 @@ export function SyncWorkflowModals() {
       />
 
       {/* The export dialog runs every selected destination itself and reports
-          inside its own surface, so it neither confirms out to `performSync`
-          nor closes on success. */}
+          inside its own surface, so it never confirms out to `performSync`; it
+          closes on its own only after a fully successful run (#34). */}
       <ExportModal
         isOpen={activeSyncModal === 'name'}
         onClose={onClose}

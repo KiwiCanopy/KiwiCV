@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ExportNameFields } from '@/components/modals/export/ExportNameFields';
@@ -37,8 +37,8 @@ interface ExportModalBodyProps {
 /**
  * Configure, then one trigger.
  *
- * ⚠️ Closes on its own only when every destination succeeded; the 10-second
- * toast carries the result (owner, 2026-10-24, #34). Any failure keeps the
+ * ⚠️ Closes on its own only when every destination succeeded; the toast,
+ * kept `ALL_OK_TOAST_MS`, carries the result (owner, 2026-10-24, #34). Any failure keeps the
  * per-destination report and Retry on screen.
  */
 export function ExportModalBody({
@@ -87,7 +87,6 @@ export function ExportModalBody({
   const finished = Object.values(state.rows).filter(
     (row) => row?.status === 'done' || row?.status === 'failed',
   ).length;
-  const isComplete = state.hasRun && attempted > 0 && failed.length === 0;
   const isRetry = state.hasRun && failed.length > 0;
   const targets = isRetry ? failed : selected.filter((id) => !succeeded.includes(id));
 
@@ -113,12 +112,17 @@ export function ExportModalBody({
     onClose();
   };
 
-  // Layout, not passive: the completed footer must never paint before the close.
+  // Layout, not passive: the idle footer must never paint over all-done rows.
+  // Once only — callers pass a fresh `onClose` each render, which would re-fire
+  // this in the commit that unmounts the body.
+  const closedRef = useRef(false);
+  const allOk = state.outcome === 'all_ok';
   useLayoutEffect(() => {
-    if (!isComplete) return;
+    if (!allOk || closedRef.current) return;
+    closedRef.current = true;
     clearExportDraft();
     onClose();
-  }, [isComplete, onClose]);
+  }, [allOk, onClose]);
 
   return (
     <div className="space-y-4">

@@ -64,13 +64,13 @@ become a patch — the count is of what ships, not of what was staged.
 The primary release mechanism is the integrated release script:
 
 ```bash
-npm run release [patch|minor|major] [-- --legal] [-- --update-deps]
+npm run release -- <patch|minor|major> [--legal] [--no-update-deps]
 ```
 
 ### Options
 
 - `--legal`: Triggers a legal re-consent prompt for all users by automatically updating the `LAST_LEGAL_UPDATE` timestamp in `src/constants/auth.ts` to the current date and time. Use this flag whenever the release updates the Terms of Service or Privacy Policy.
-- `--update-deps`: Runs `scripts/update-minor.cjs` (minor dependency upgrades plus a license audit) **before** the pre-flight, so `npm test` runs against the upgraded tree rather than the one you started with.
+- Minor dependency updates run **by default**: `scripts/update-minor.cjs` (minor upgrades plus a license audit) runs **before** the pre-flight, so `npm test` runs against the upgraded tree. `--no-update-deps` opts out. A minor update that breaks a test aborts the release before the bump — land the updates and their fix as their own PR, then re-run (5.0.2: lucide 1.61 redrew `brain`, #52).
 
 ### What the script does:
 

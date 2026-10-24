@@ -6,6 +6,7 @@ import { AISuggestButton } from '@/components/ui/AISuggestButton';
 import { AIComposerBar } from '@/features/dashboard/editor/composer/AIComposerBar';
 import { useTranslationInvite } from '@/hooks/useTranslationInvite';
 import { useFlowStore } from '@/store/ui/useFlowStore';
+import { useUIStore } from '@/store/ui/useUIStore';
 import { sectionTarget } from '@/utils/aiTarget';
 import { act, renderHook, render as rtlRender, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -63,6 +64,8 @@ const authState = () => useFlowStore.getState().auth;
 
 /** `run()` returns early on `!canRun`, so seed the draft before the bar mounts. */
 function giveTheComposerSomethingToRun() {
+  // Open: closed, a job-ad run shows only the entry button (#27).
+  useUIStore.setState({ aiComposerCollapsed: false });
   useFlowStore.getState().setPromptMode('job_description');
   useFlowStore.getState().setJobDescription('Senior Frontend Engineer, React, TypeScript.');
 }

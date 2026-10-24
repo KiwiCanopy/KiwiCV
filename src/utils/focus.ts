@@ -1,4 +1,5 @@
 import {
+  COMPOSER_ENTRY_ANCHOR_ID,
   COMPOSER_RUN_ANCHOR_ID,
   CV_LIBRARY_LIST_ID,
   ENTRY_DELETE_ATTR,
@@ -162,17 +163,20 @@ export const cvLibraryDeleteAnchor =
 export const sectionHeadingAnchor = anchorById(SECTION_HEADING_ANCHOR_ID);
 
 const composerRunAnchor = anchorById(COMPOSER_RUN_ANCHOR_ID);
+const composerEntryAnchor = anchorById(COMPOSER_ENTRY_ANCHOR_ID);
 const reviewNextAnchor = anchorById(REVIEW_NEXT_ANCHOR_ID);
 
 /**
  * Where the AI dialog sends focus when its opener is gone: the composer's run
  * button unmounts for the length of the run, and a successful run hides the
- * whole band behind the pending bar. The run button if it is back, then
- * the pending bar's Next section, then the section heading — the first that can
+ * whole band behind the pending bar. The run button if it is back, then its
+ * collapsed stand-in, then the pending bar's Next section, then the section heading — the first that can
  * take focus, since `DialogFrame` tries the anchor once.
  */
 export const aiDialogCloseAnchor: FocusAnchor = () =>
-  [composerRunAnchor(), reviewNextAnchor(), sectionHeadingAnchor()].find(canTakeFocus);
+  [composerRunAnchor(), composerEntryAnchor(), reviewNextAnchor(), sectionHeadingAnchor()].find(
+    canTakeFocus,
+  );
 
 /**
  * The control Tab would reach after `node` if `skip` were not in the document —

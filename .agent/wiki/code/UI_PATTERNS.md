@@ -149,6 +149,11 @@ Amber is reserved for warning and paid/premium — the AI trigger must not borro
 it, because the paywall a visitor hits right after pressing that trigger is
 amber.
 
+⚠️ **Lime belongs to the AI run, not to Export** (owner, 2026-10-24, #27). The
+header's Export button is ink (`bg-foreground text-background`), because a lime
+Export stacked one row above the lime Improve button was pressed for it. A new
+primary action placed near the composer must not take lime either.
+
 Files that predate the guards are frozen in `eslint-legacy-baseline.js`. **Those
 lists only shrink** — delete a file's entry in the same commit that migrates it.
 `tests/lint/legacy-baseline.test.mjs` fails if an entry is stale, so a migrated
@@ -489,16 +494,25 @@ never a `lg:` breakpoint.
 
 ### The AI composer bar (owner review, 2026-08-09)
 
-Three short rows at rest: tile/title/subtitle + mode `SegmentedToggle` + cost chip; the
-one-line job-ad field; then the add-ons and the run button. `professional` has no field and so
-has two rows.
+Three short rows when open: chevron, tile, run button, mode `SegmentedToggle` and cost chip;
+the one-line job-ad field; then the add-ons. `professional` has no field and so has two rows.
 
+- ⚠️ **Row 1's action slot follows the tile**: chevron, tile, then the run button (or the
+  job-ad entry button standing in for it), then the spacer, mode toggle and chip (owner,
+  2026-10-24, #27). At the row's end it sat directly under the header's Export button. Tab
+  order follows: the action comes before the mode toggle.
+- ⚠️ **Closed, a mode that takes text shows the entry button only — never the run** (owner,
+  2026-10-24, #27). A run from the closed band used a job ad and add-ons nobody could see. The
+  entry button is `primary` whether or not a draft exists, since it is the one way to a run
+  there; `professional` keeps its one-click run.
+- ⚠️ **The "Improve with AI" title is `sr-only`** — beside "Improve my CV" it read as the
+  same words twice (owner, 2026-10-24). It still names the disclosure button.
 - ⚠️ **Row 1's height comes from the 40px tile and the 44px mode toggle**, never from anything
   below, so opening the field moves only the rows under it.
-- ⚠️ **The options row pins its right side and lets its left side flow.** The run button keeps
-  the same DOM node, parent and index in every state; the language select and the second
-  checkbox wrap inside the options group. A primary action that moves because of an unrelated
-  checkbox is the same defect class as a drag handle that does not stay put.
+- ⚠️ **While shown, the run button keeps the same DOM node, parent and index.** The language
+  select and the second checkbox wrap inside the options group below it. A primary action that
+  moves because of an unrelated checkbox is the same defect class as a drag handle that does
+  not stay put.
 - ⚠️ **A field that collapses on blur will eat the click that caused the blur.** Blur fires on
   mousedown; collapsing there pulls everything below up before mouseup arrives. The Collapse
   control therefore sits **above** the textarea (only the rows below move) with its
@@ -587,7 +601,7 @@ back to a default would delete an intent the user is in the middle of expressing
 kind a new refusal is before choosing where it bites.
 
 ⚠️ **Blocking a run is not the same as making it impossible**, and the composer bar punishes
-the confusion. It renders its primary action as `{canRunNow && …}` — **absent**, not disabled —
+the confusion. It renders its primary action as `{runIsShown && …}` — **absent**, not disabled —
 so folding an add-on's precondition into `canRun` makes the Improve button _vanish because of a
 cover-letter dropdown_. Keep `canRun` for "is a run possible at all" and carry the refusal
 separately, demoting the button to `secondary` with `aria-disabled` and an `aria-describedby`
@@ -685,8 +699,7 @@ contract, the dismissal policy, and the z-index hierarchy.
 - `MainLayout`: The primary shell containing the Header, Sidebar, and Page content.
 - `Header`: Contains global actions (Save, Export, Sync). Automatically hidden on desktop for non-dashboard pages to optimize vertical space.
   Below `lg` its drawer trigger is a `Menu` glyph in `text-foreground`, not the logo:
-  the logo read as brand, not as a menu, and in dark its green disc mirrored the
-  Export button (ui-designer, 2026-10-08). Off the dashboard the logo and name sit
+  the logo read as brand, not as a menu (ui-designer, 2026-10-08). Off the dashboard the logo and name sit
   beside it (`showBrand`), and the hero's own KiwiCV eyebrow is desktop-only so the
   name is not shown twice (owner, 2026-10-08). The dashboard bar has no room for it.
 - `Sidebar`: Manages navigation between dashboard features (Editor, Design, Settings).
@@ -1008,7 +1021,8 @@ last rung — see below. `AIEditModal` passes `aiDialogCloseAnchor`: its usual
 opener, the composer's run button, is absent while the run is in flight and the
 whole band is replaced by the pending bar once proposals land, so a run's close
 finds the opener dead on **every** path, cancelled or not. The cascade is the
-run button (re-created after a failed run), then **Next section**, then the
+run button (re-created after a failed run), then the entry button standing in for it on a
+closed band in a text mode, then **Next section**, then the
 section heading — rungs 3 and 4 above, with the composer on top.
 
 ⚠️ **A menu row is never an opener.** The cover letter's AI chooser launches the

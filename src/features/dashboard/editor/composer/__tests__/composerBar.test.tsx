@@ -92,6 +92,17 @@ const fillDraft = () => {
 };
 
 describe('the AI composer bar', () => {
+  // At the row's end the run button sat right under the header's Export (#27).
+  it('puts the run button before the mode toggle on row 1', () => {
+    render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+    fireEvent.click(mode('Professional'));
+
+    const modes = screen.getByRole('group', { name: 'What should the AI do?' });
+    expect(
+      runContainer()!.compareDocumentPosition(modes) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
   it('offers the three modes, and the run action once a run is possible', () => {
     render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
 
@@ -195,10 +206,13 @@ describe('the AI composer bar', () => {
 
     fireEvent.click(entry);
     fireEvent.change(field(), { target: { value: 'Senior React engineer, remote' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Improve with AI' }));
-
     expect(screen.getByRole('button', { name: 'Improve my CV' }).className).toContain('bg-primary');
-    expect(screen.getByRole('button', { name: 'Job Description' }).className).not.toContain(
+
+    // ⚠️ Folded with a draft, the run does not come along: it would use an ad
+    // the user cannot see (#27). The entry control is the one way back to it.
+    fireEvent.click(screen.getByRole('button', { name: 'Improve with AI' }));
+    expect(screen.queryByRole('button', { name: 'Improve my CV' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Job Description' }).className).toContain(
       'bg-primary',
     );
   });
@@ -346,13 +360,12 @@ describe("the composer's options row", () => {
   });
 
   /**
-   * The collapse is a region toggle, so the run button has to survive it — a
-   * user who has typed a job ad, collapsed the bar and come back must still be
-   * able to press the same button.
+   * The collapse is a region toggle, so the run button has to survive it in
+   * the mode that takes no text — there is nothing hidden for it to use.
    */
   it('keeps the run button on the resting row when the bar is collapsed', () => {
     render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
-    fillDraft();
+    fireEvent.click(mode('Professional'));
 
     const before = runContainer();
     // ⚠️ Found by role, not by a "Show"/"Hide" label. The toggle is named for

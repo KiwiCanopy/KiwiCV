@@ -102,17 +102,15 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
   const runIsShown = canRunNow && !entryStandsIn;
 
   // ⚠️ The add-ons a closed band would otherwise run unseen (#31, the class of
-  // #25). Only Professional runs closed, and the cover letter needs a job ad.
+  // #25), named from the same value the run sends.
+  const { addons } = composer;
   const activeAddons = [
-    composer.isReorgEligible &&
-      composer.allowReorg &&
-      t('ai.allow_restructuring', { SectionName: t('editor.sections.skills') }),
-    composer.translate &&
+    addons.reorg && t('ai.allow_restructuring', { SectionName: t('editor.sections.skills') }),
+    addons.translateTo &&
       t('ai.composer_addon_translate', {
-        language:
-          LANGUAGES.find((language) => language.code === composer.targetLang)?.label ??
-          composer.targetLang,
+        language: LANGUAGES.find((language) => language.code === addons.translateTo)!.label,
       }),
+    addons.coverLetter && t('editor.coverLetter.title'),
   ].filter((label): label is string => Boolean(label));
   const addonSummaryIsShown = isCollapsed && runIsShown && activeAddons.length > 0;
 
@@ -121,13 +119,13 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
    * time and stops the moment the row fits, rather than comparing against magic
    * thresholds that assumed a worst case the row is often not carrying.
    *
-   *   1. the add-on **names**, which become a count ("+2 add-ons") — never
-   *      gone, since naming them is the point (#31).
-   *   2. the run button's **label**, which drops its object: "Improve my CV"
-   *      becomes "Improve". German is why this step exists — "Lebenslauf
-   *      verbessern" is ~205px against English's 137px, which was the only
-   *      thing still pushing the toggle off the row in any language.
-   *   3. the **mode toggle** — last, and in practice never.
+   *   - `addonNames`: the add-on names become a count ("+2 options") — never
+   *     gone, since naming them is the point (#31).
+   *   - `runLabel`: the run button drops its object: "Improve my CV"
+   *     becomes "Improve". German is why this step exists — "Lebenslauf
+   *     verbessern" is ~205px against English's 137px, which was the only
+   *     thing still pushing the toggle off the row in any language.
+   *   - `modes`: the mode toggle — last, and in practice never.
    *
    * ⚠️ The edit button is icon-only whenever the toggle is visible, in **both**
    * states. It used to show the start of the pasted ad, which took 190px and was
@@ -551,10 +549,16 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
         {/* After the run, never before it: the run keeps its index (#27). */}
         {addonSummaryIsShown && (
           <Button
+            data-composer-addons=""
             variant="quiet"
             size="md"
-            aria-expanded={false}
-            onClick={() => setIsCollapsed(false)}
+            // ⚠️ It unmounts the moment the band opens, so focus moves to the
+            // disclosure, which stays — and announces "expanded" as the result.
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => {
+              setIsCollapsed(false);
+              toggleRef.current?.focus();
+            }}
             className="text-muted-foreground min-w-0 shrink-0 font-normal"
           >
             {showAddonNames

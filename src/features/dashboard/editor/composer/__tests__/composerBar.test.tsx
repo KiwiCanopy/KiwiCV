@@ -393,19 +393,32 @@ describe("the composer's options row", () => {
       });
     };
 
-    it('shows them after the run button, and opens the band when pressed', () => {
+    const summary = () => document.querySelector<HTMLElement>('[data-composer-addons]');
+
+    it('names every active add-on after the run button', () => {
+      render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+      fireEvent.click(mode('Professional'));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Restructure Skills' }));
+      tickTranslate('fr');
+      closeBand();
+
+      expect(summary()?.textContent).toBe('Restructure Skills · Translate → Français');
+      expect(
+        runContainer()!.compareDocumentPosition(summary()!) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+    });
+
+    // It unmounts as the band opens; focus must not fall to the page.
+    it('opens the band and leaves focus on the disclosure', () => {
       render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
       fireEvent.click(mode('Professional'));
       tickTranslate('fr');
       closeBand();
 
-      const summary = screen.getByRole('button', { name: 'Translate → Français' });
-      expect(
-        runContainer()!.compareDocumentPosition(summary) & Node.DOCUMENT_POSITION_FOLLOWING,
-      ).toBeTruthy();
-
-      fireEvent.click(summary);
-      expect(screen.getByRole('checkbox', { name: 'Also translate my CV' })).toBeTruthy();
+      fireEvent.click(summary()!);
+      const toggle = screen.getByRole('button', { name: 'Improve with AI' });
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+      expect(document.activeElement).toBe(toggle);
     });
 
     it('shows nothing when no add-on is active', () => {
@@ -413,7 +426,7 @@ describe("the composer's options row", () => {
       fireEvent.click(mode('Professional'));
       closeBand();
 
-      expect(screen.queryByRole('button', { name: /Translate →/ })).toBeNull();
+      expect(summary()).toBeNull();
     });
 
     it('shows nothing in a text mode, where the entry button stands in for the run', () => {
@@ -422,7 +435,7 @@ describe("the composer's options row", () => {
       tickTranslate('fr');
       closeBand();
 
-      expect(screen.queryByRole('button', { name: /Translate →/ })).toBeNull();
+      expect(summary()).toBeNull();
     });
   });
 

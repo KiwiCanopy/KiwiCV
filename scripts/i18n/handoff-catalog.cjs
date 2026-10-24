@@ -2562,19 +2562,19 @@ const entries = [
     'ai',
     'composer_addon_translate',
     'Translate → {{language}}',
-    'Closed composer row: names the active translate add-on; {{language}} is the target language in its own name (Deutsch, Français). Imperative verb as in composer_translate_addon, kept short.',
+    'Closed AI bar: names the translation that will run along with Improve. Shown in one button with ai.allow_restructuring, joined by " · " — use the same verb form as that key in this language. The button only opens the bar; it translates nothing itself. {{language}} is the target language in its own name (Deutsch, Français).',
   ],
   [
     'ai',
     'composer_addons_count_one',
     '+1 option',
-    'Closed composer row, narrow width: one active add-on, shown instead of its name. Noun from cover_letter_choose; keep it this short.',
+    'Closed AI bar, narrow width: counts the extras that will run along with Improve (a translation, a skills restructure), shown instead of their names; "+" means on top of Improve. Noun from cover_letter_choose; keep it this short.',
   ],
   [
     'ai',
     'composer_addons_count_other',
     '+{{count}} options',
-    'Closed composer row, narrow width: several active add-ons, shown instead of their names. Locales without a fitting plural may use "Options: +{{count}}" (cf. diff_fields_other).',
+    'Closed AI bar, narrow width: counts the extras that will run along with Improve, shown instead of their names; "+" means on top of Improve. Locales whose plural changes past 4 use "Options: +{{count}}" (cf. diff_fields_other); only _one and _other exist.',
   ],
 
   // CV-wide pending-proposals bar (station 1a, phase 3). Flat keys for the same

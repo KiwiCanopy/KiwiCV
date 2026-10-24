@@ -70,14 +70,15 @@ vi.mock('@/hooks/export/destinationAdapters', () => ({
   runDestination: (...args: unknown[]) => runDestination(...(args as [])),
 }));
 
+const buildExportArtifacts = vi.fn(async () => ({
+  folderName: 'my-cv',
+  backupFileName: 'my-cv',
+  json: '{}',
+  html: null,
+  pdf: null,
+}));
 vi.mock('@/hooks/export/buildExportArtifacts', () => ({
-  buildExportArtifacts: async () => ({
-    folderName: 'my-cv',
-    backupFileName: 'my-cv',
-    json: '{}',
-    html: null,
-    pdf: null,
-  }),
+  buildExportArtifacts: (...args: unknown[]) => buildExportArtifacts(...(args as [])),
 }));
 
 vi.mock('@/hooks/useCloudSync', () => ({
@@ -200,28 +201,50 @@ describe('ExportModal', () => {
     expect(ensureConnected).toHaveBeenCalledWith(expect.objectContaining({ mode: 'push' }));
   });
 
-  it('keeps the dialog open after a fully successful run and offers Done', async () => {
+  // The toast carries the result; only a failure keeps the report on screen (#34).
+  it('closes on its own after a fully successful run', async () => {
+    const user = userEvent.setup();
+    const props = renderModal();
+
+    await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
+
+    await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('closes once a retry clears the last failure', async () => {
+    runDestination.mockResolvedValueOnce({ success: false, error: 'disk full' } as never);
+    const user = userEvent.setup();
+    const props = renderModal();
+
+    await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
+    await user.click(await screen.findByRole('button', { name: /sync\.export_dialog\.retry_one/ }));
+
+    await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('stays open when the package cannot be built', async () => {
+    buildExportArtifacts.mockRejectedValueOnce(new Error('Serializer not found'));
     const user = userEvent.setup();
     const props = renderModal();
 
     await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
 
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'sync.export_dialog.done' })).toBeTruthy(),
+      expect(screen.getByText('sync.export_dialog.build_failed_hint')).toBeTruthy(),
     );
     expect(props.onClose).not.toHaveBeenCalled();
-    expect(screen.getByRole('dialog')).toBeTruthy();
   });
 
   it('reports a failed destination in its row and relabels the trigger as a retry', async () => {
     runDestination.mockResolvedValueOnce({ success: false, error: 'disk full' } as never);
     const user = userEvent.setup();
-    renderModal();
+    const props = renderModal();
 
     await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
 
     await waitFor(() => expect(screen.getByText('disk full')).toBeTruthy());
     expect(screen.getByRole('button', { name: /sync\.export_dialog\.retry_one/ })).toBeTruthy();
+    expect(props.onClose).not.toHaveBeenCalled();
   });
 
   it('mounts the live region before it has anything to say', () => {

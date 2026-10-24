@@ -15,7 +15,16 @@ import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useToastStore } from '@/store/ui/useToastStore';
 import { type ResumeData } from '@/types/resume';
 
-const IDLE_STATE: ExportRunState = { isRunning: false, rows: {}, buildError: null, hasRun: false };
+/** How long a fully successful export's toast stays, the dialog having closed (#34). */
+export const ALL_OK_TOAST_MS = 10_000;
+
+const IDLE_STATE: ExportRunState = {
+  isRunning: false,
+  rows: {},
+  buildError: null,
+  hasRun: false,
+  outcome: null,
+};
 
 export interface UseExportRunParams {
   resume: ResumeData;
@@ -69,6 +78,7 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
         rows: Object.fromEntries(ids.map((id) => [id, { status: 'idle' as const }])),
         buildError: null,
         hasRun: false,
+        outcome: null,
       });
       setAnnouncement(t('sync.export_dialog.progress', { done: 0, total }));
 
@@ -132,9 +142,13 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
         // Exactly one toast per run, so the result survives the user closing
         // the dialog. Every argument is a `t()` call — `i18n:literals` and the
         // bare-literal test both hunt `addToast` announcers.
-        addToast(summary, done === total ? 'success' : done === 0 ? 'error' : 'warning');
+        const outcome = done === total ? 'all_ok' : done === 0 ? 'failed' : 'partial';
+        // The full success outlives the dialog, which closes on it (#34). The
+        // toast regions stay audible under the modal: `aria-hidden` skips `[aria-live]`.
+        if (outcome === 'all_ok') addToast(summary, 'success', ALL_OK_TOAST_MS);
+        else addToast(summary, outcome === 'failed' ? 'error' : 'warning');
         setAnnouncement(summary);
-        setState((prev) => ({ ...prev, isRunning: false, hasRun: true }));
+        setState((prev) => ({ ...prev, isRunning: false, hasRun: true, outcome }));
       } catch (error) {
         // Act 1 failed: nothing was written anywhere, so every selected row
         // carries the same reason.
@@ -143,6 +157,7 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
         setState({
           isRunning: false,
           hasRun: true,
+          outcome: 'failed',
           buildError: detail,
           rows: Object.fromEntries(
             ids.map((id) => [id, { status: 'failed' as const, error: message }]),

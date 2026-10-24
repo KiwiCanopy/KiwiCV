@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { useExportRun } from '@/components/modals/export/useExportRun';
+import { ALL_OK_TOAST_MS, useExportRun } from '@/components/modals/export/useExportRun';
 import { type ExportArtifacts } from '@/hooks/export/types';
 import { type ResumeData, initialResumeState } from '@/types/resume';
 import { act, renderHook } from '@testing-library/react';
@@ -210,6 +210,16 @@ describe('useExportRun', () => {
 
     expect(addToast).toHaveBeenCalledTimes(1);
     expect(addToast.mock.calls[0][0]).toMatch(/^sync\.export_dialog\./);
+  });
+
+  // The dialog closes on a full success, so its toast is the whole report (#34).
+  it('keeps a full success on screen for ten seconds', async () => {
+    const { result } = renderRun();
+    await act(async () => {
+      await result.current.run(['zip'], 'Ada');
+    });
+    expect(addToast).toHaveBeenLastCalledWith(expect.any(String), 'success', ALL_OK_TOAST_MS);
+    expect(ALL_OK_TOAST_MS).toBe(10_000);
   });
 
   it('does nothing at all when no destination is selected', async () => {

@@ -80,7 +80,6 @@ export const sync = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'One archive, straight to this device.',
     dest_zip_label: 'Download as ZIP',
-    done: 'Done',
     filename_only: 'Company and position only affect the exported name. They are not saved.',
     manage_link: 'manage in Settings',
     one_run_one: 'One run, one destination.',

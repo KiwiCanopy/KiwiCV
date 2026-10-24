@@ -82,7 +82,6 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Één archief, rechtstreeks naar dit apparaat.',
     dest_zip_label: 'Downloaden als ZIP',
-    done: 'Klaar',
     filename_only:
       'Bedrijf en functie zijn alleen van invloed op de geëxporteerde naam. Ze worden niet opgeslagen.',
     manage_link: 'beheren in Instellingen',

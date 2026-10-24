@@ -2329,12 +2329,6 @@ const entries = [
   ],
   [
     'sync',
-    'export_dialog.done',
-    'Done',
-    'Export dialog: button that closes the dialog after a successful run',
-  ],
-  [
-    'sync',
     'export_dialog.filename_only',
     'Company and position only affect the exported name. They are not saved.',
     'Export dialog: note that company and position only affect the exported name',

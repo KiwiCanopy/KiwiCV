@@ -83,7 +83,6 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Ett arkiv, direkt till denna enhet.',
     dest_zip_label: 'Ladda ned som ZIP',
-    done: 'Klar',
     filename_only: 'Företag och befattning påverkar endast det exporterade namnet. De sparas inte.',
     manage_link: 'hantera i Inställningar',
     one_run_one: 'En körning, en destination.',

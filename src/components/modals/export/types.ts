@@ -47,6 +47,11 @@ export interface ExportRunState {
   buildError: string | null;
   /** True once a run has finished, so the footer can report a result. */
   hasRun: boolean;
+  /**
+   * The finished run's result, decided once by the run itself: the toast and
+   * the dialog's own close (#34) both read it. `null` until a run finishes.
+   */
+  outcome: 'all_ok' | 'partial' | 'failed' | null;
 }
 
 /** The device-local shape written to `BRAND_STORAGE_KEYS.exportPreferences`. */

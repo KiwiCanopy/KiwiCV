@@ -94,8 +94,10 @@ Afterwards the trigger relabels to **Retry** over exactly the failed ids; succee
 with a check. A failure in act 1 fails every selected row with the same reason and surfaces
 the "switch the PDF off under Change" recovery, which is why the format choice stays
 reachable. One `EXPORT_PERFORMED` event and one toast per run; `syncVersion()` once, not once
-per destination. **The dialog never closes on its own** — `DialogFrame busy` blocks Escape
-while in flight, and a fully successful run ends on a `Done` button.
+per destination. `DialogFrame busy` blocks Escape while in flight. ⚠️ **The dialog closes on its
+own only when every destination succeeded** (owner, 2026-10-24, #34): its success toast stays
+10 s (`ALL_OK_TOAST_MS`) and carries the result. A partial or failed run keeps the dialog open on
+the per-destination report and Retry.
 
 | Destination    | Adapter                                     | Available when                                 |
 | :------------- | :------------------------------------------ | :--------------------------------------------- |

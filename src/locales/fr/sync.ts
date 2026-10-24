@@ -83,7 +83,6 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Une archive, directement sur cet appareil.',
     dest_zip_label: 'Télécharger en ZIP',
-    done: 'Terminé',
     filename_only:
       "L'entreprise et le poste influent uniquement sur le nom exporté. Ils ne sont pas enregistrés.",
     manage_link: 'gérer dans les Paramètres',

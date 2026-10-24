@@ -4789,6 +4789,138 @@ const VERBATIM = new Set([
 ]);
 
 /**
+ * Cells whose shipped value is the English on purpose in SOME locales — a
+ * cognate (`Design`), a date pattern, a sample name. Equal in all fourteen
+ * belongs in VERBATIM instead. The generator pre-fills these rather than
+ * blanking them: the packet that once recorded the choice is deleted after
+ * every import, so without this record each packet reopened ~200 cells (#39).
+ * `english-in-locales.test.cjs` keeps every entry still equal to the English.
+ */
+const ENGLISH_IN = {
+  'ai.composer_addons_count_one': ['fr'],
+  'ai.composer_addons_count_other': ['fr'],
+  'ai.cover_letter_tone_formal': ['es', 'pt'],
+  'ai.cover_letter_tone_warm': ['nl'],
+  'ai.import_max_size': ['it', 'sv'],
+  'common.footer.open_source': ['fr', 'it', 'nl', 'pl'],
+  'common.pages.json': ['de'],
+  'cvs.chip_theme': ['de', 'it', 'pt', 'sv'],
+  'cvs.col_actions': ['fr'],
+  'cvs.col_version': ['de', 'fr', 'sv'],
+  'cvs.filters': ['nl'],
+  'cvs.filters_active': ['nl'],
+  'dashboard.design': ['de', 'fr', 'it', 'pt', 'sv'],
+  'design.groups.details': ['de', 'nl'],
+  'design.groups.layout': ['de', 'it', 'pt', 'sv'],
+  'design.template': ['de'],
+  'editor.basics.profiles.suggestions_one': ['fr'],
+  'editor.basics.profiles.suggestions_other': ['fr'],
+  'editor.coverLetter.date': ['fr'],
+  'editor.coverLetter.layout': ['de', 'it', 'pt', 'sv'],
+  'examples.basics.address': ['bg'],
+  'examples.basics.email': ['bg'],
+  'examples.basics.label': ['nl'],
+  'examples.basics.phone': ['bg'],
+  'examples.basics.postal_code': ['bg'],
+  'examples.basics.url': ['bg'],
+  'examples.basics.username': ['bg'],
+  'examples.certificates.issuer': [
+    'bg',
+    'de',
+    'es',
+    'fr',
+    'it',
+    'ja',
+    'nl',
+    'pl',
+    'pt',
+    'ru',
+    'sv',
+    'uk',
+    'zh',
+  ],
+  'examples.common.date_format': ['bg', 'de', 'ja', 'nl', 'pl', 'pt', 'ru', 'tr', 'zh'],
+  'examples.education.score': ['bg', 'ja', 'tr'],
+  'examples.education.study_type': ['de'],
+  'examples.private_projects.location': ['de'],
+  'examples.private_projects.name': ['nl'],
+  'examples.projects.entity': ['sv'],
+  'examples.projects.location': ['de'],
+  'examples.publications.title': ['bg', 'de', 'nl', 'pl', 'pt', 'ru', 'tr', 'uk'],
+  'examples.work.company': ['bg', 'de', 'fr', 'ja', 'nl', 'pl', 'pt', 'sv', 'uk'],
+  'examples.work.position': ['nl'],
+  'legal.privacy.tabLabel': ['it', 'nl'],
+  'legal.terms.tabLabel': ['es', 'it', 'pt'],
+  'placeholders.basics.address': ['bg'],
+  'placeholders.basics.email': ['bg'],
+  'placeholders.basics.label': ['nl'],
+  'placeholders.basics.phone': ['bg'],
+  'placeholders.basics.postal_code': ['bg'],
+  'placeholders.certificates.issuer': [
+    'bg',
+    'de',
+    'es',
+    'fr',
+    'it',
+    'ja',
+    'pl',
+    'pt',
+    'ru',
+    'sv',
+    'uk',
+  ],
+  'placeholders.certificates.name': [
+    'bg',
+    'de',
+    'es',
+    'fr',
+    'it',
+    'ja',
+    'pl',
+    'pt',
+    'ru',
+    'sv',
+    'uk',
+  ],
+  'placeholders.common.date_format': ['bg', 'de', 'ja', 'nl', 'pl', 'pt', 'ru', 'tr', 'zh'],
+  'placeholders.education.score': ['bg', 'ja', 'tr'],
+  'placeholders.education.study_type': ['de'],
+  'placeholders.private_projects.name': ['nl'],
+  'placeholders.projects.entity': ['sv'],
+  'placeholders.publications.title': ['bg', 'de', 'pl', 'pt', 'ru', 'uk'],
+  'placeholders.work.company': ['bg', 'de', 'fr', 'ja', 'nl', 'pl', 'pt', 'sv', 'uk'],
+  'placeholders.work.position': ['nl'],
+  'preview.fits_pages_other': ['fr'],
+  'preview.pdf_render_error_pro_tip': ['nl'],
+  'settings.github.modal_repo_placeholder': ['it'],
+  'settings.github.personal_token': [
+    'bg',
+    'de',
+    'es',
+    'fr',
+    'it',
+    'ja',
+    'nl',
+    'pl',
+    'pt',
+    'ru',
+    'sv',
+    'uk',
+  ],
+  'settings.interface.install.label': ['de', 'it', 'nl', 'sv'],
+  'sidebar.menu_title': ['fr', 'it', 'nl', 'pl', 'pt'],
+  'sync.export_dialog.package_backup_label': ['it'],
+  'theme_translations.sections.contact': ['fr', 'nl'],
+  'theme_translations.sections.publications': ['fr'],
+  'themes.palettes.foggy.ocean': ['pl'],
+  'themes.palettes.lunar.cyan': ['de', 'fr', 'sv'],
+  'themes.palettes.misty.ocean': ['pl'],
+  'themes.palettes.soft.ocean': ['pl'],
+  'themes.palettes.swiss_grid.rose': ['fr'],
+  'themes.palettes.timeless.default': ['de', 'fr', 'it', 'sv'],
+};
+
+/**
  * Owner, 2026-10-08: legal text is formal wherever the locale distinguishes.
  * Appended to every `legal` row outside the withdrawal instruction (official wording)
  * so no row's own context has to repeat it.
@@ -4815,10 +4947,12 @@ const rows = entries.map(([moduleSpec, path, source, context, protectedTokens = 
     protectedTokens,
     source,
     verbatim: VERBATIM.has(`${exportName}.${path}`),
+    englishIn: ENGLISH_IN[`${exportName}.${path}`] || [],
   };
 });
 
 // Exposed so a test can prove every key of each map resolves to a row.
 Object.defineProperty(rows, 'orderedPlaceholderKeys', { value: Object.keys(ORDERED_PLACEHOLDERS) });
 Object.defineProperty(rows, 'verbatimKeys', { value: [...VERBATIM] });
+Object.defineProperty(rows, 'englishInKeys', { value: Object.keys(ENGLISH_IN) });
 module.exports = rows;

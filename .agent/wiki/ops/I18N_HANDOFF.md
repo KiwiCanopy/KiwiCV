@@ -99,6 +99,15 @@ roughly one in 15,000 per hash across ~120 hashes per file and 15 files, and it
 failed three deploy previews on 2026-07-21. Deleting the packets was the fix
 that kept undoing itself, because the next generate brought them back.
 
+⚠️ **A value that is English on purpose in some locales is recorded in `ENGLISH_IN`**
+(`handoff-catalog.cjs`, 2026-10-24, #39) — a cognate, a date pattern, a sample name. The
+generator blanks any stored value equal to the English so a placeholder cannot pass for a
+translation, and the packet that once remembered the choice is deleted after every import; so
+until this record existed every packet reopened ~200 such cells and the importer refused them.
+When a translation legitimately equals the English, add the locale there in the same change.
+`english-in-locales.test.cjs` fails if a recorded cell stops equalling the English, and if a
+packet built from the committed tree would open any cell. All fourteen alike is `VERBATIM`.
+
 One caveat the recovery cannot remove: if the catalog's English changes after an
 `--apply`, the value in `src/locales/` is a translation of the **previous**
 source. The packet shows the current `source` beside it so a review catches it,

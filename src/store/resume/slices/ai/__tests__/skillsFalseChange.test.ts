@@ -54,16 +54,6 @@ describe('an AI run that returns a stored skill unchanged', () => {
     expect(store().ai.suggestions['item:skills:s2']?.improvedValue).toEqual({ level: 2 });
   });
 
-  it('offers no restructure when every skill comes back unchanged and in place', () => {
-    store().applyReorgSuggestion('skills', [
-      { name: 'Frontend', level: 3, keywords: ['React', 'TypeScript'], _sourceVIds: ['s1'] },
-      { name: 'Testing', level: 0, keywords: ['Vitest', 'Playwright'], _sourceVIds: ['s2'] },
-    ]);
-
-    expect(store().ai.reorgSuggestion).toBeNull();
-    expect(store().resume.skills).toEqual(SKILLS);
-  });
-
   it('still offers a restructure that renames a skill, and grades the 0 level as unchanged', () => {
     store().applyReorgSuggestion('skills', [
       { name: 'Frontend', level: 3, keywords: ['React', 'TypeScript'], _sourceVIds: ['s1'] },
@@ -76,12 +66,16 @@ describe('an AI run that returns a stored skill unchanged', () => {
     });
   });
 
-  it('offers a restructure that only reorders', () => {
+  // A reorder is a change the server offers, so its entries read as changed too (#32).
+  it('marks a moved skill as modified', () => {
     store().applyReorgSuggestion('skills', [
       { name: 'Testing', keywords: ['Vitest', 'Playwright'], _sourceVIds: ['s2'] },
       { name: 'Frontend', level: 3, keywords: ['React', 'TypeScript'], _sourceVIds: ['s1'] },
     ]);
 
-    expect(store().ai.reorgSuggestion).not.toBeNull();
+    expect(store().ai.reorgSuggestion?.classification).toEqual({
+      proposed_0: 'modified',
+      proposed_1: 'modified',
+    });
   });
 });

@@ -258,6 +258,38 @@ export const areValuesEqual = (a, b) => {
   return normA === normB;
 };
 
+/**
+ * Whether a restructured skills list changes anything. Only every entry from
+ * its own single source, in that source's place, with equal fields is no change;
+ * a reorder is a change, since the user sees it (owner, 2026-10-24, #32).
+ */
+export const skillsReorgChanged = (source, items) => {
+  const sourceArr = Array.isArray(source) ? source : [];
+  if (!Array.isArray(items) || items.length !== sourceArr.length) return true;
+  return items.some((item, index) => {
+    const sourceVIds = item?._sourceVIds || [];
+    const orig = sourceArr[index];
+    if (sourceVIds.length !== 1 || !orig || sourceVIds[0] !== orig._vId) return true;
+    return (
+      !areValuesEqual(orig.name, item.name) ||
+      !areValuesEqual(orig.keywords, item.keywords) ||
+      !areValuesEqual(orig.level, item.level)
+    );
+  });
+};
+
+/**
+ * A whole-CV answer whose restructure changes nothing, minus that restructure,
+ * so the client — which routes on `isReorg` alone — never offers it (#32).
+ */
+export const dropUnchangedSkillsReorg = ({ granularity, source, improved, isReorg }) => {
+  if (!isReorg || granularity !== 'cv' || skillsReorgChanged(source?.skills, improved?.skills)) {
+    return { improved, isReorg };
+  }
+  const { skills: _unchanged, ...rest } = improved;
+  return { improved: rest, isReorg: false };
+};
+
 /** Whether any source item's `matchResponseEntry` answer differs from it. */
 const itemsChanged = (sourceItems, improvedItems) =>
   (Array.isArray(sourceItems) ? sourceItems : []).some((sourceItem, index) => {
@@ -285,25 +317,8 @@ export const hasActualChanges = ({ granularity, source, improved, allowReorg, id
   if (granularity === 'section') {
     if (isCustomSectionKey(id)) return customSectionChanged(source, improved);
 
-    // Reorg mode: structural changes (different count, new items) = has changes
     if (isReorgResult({ granularity, id, improved, allowReorg })) {
-      const items = improved.items;
-      const sourceArr = Array.isArray(source) ? source : [];
-      if (items.length !== sourceArr.length) return true;
-      const origVIds = new Set(sourceArr.map((s) => s._vId));
-      if (items.some((i) => !(i._sourceVIds || []).some((vid) => origVIds.has(vid)))) return true;
-      // Also check if any field content actually changed
-      return items.some((item) => {
-        const sourceVIds = item._sourceVIds || [];
-        if (sourceVIds.length !== 1) return true; // merged or new
-        const orig = sourceArr.find((s) => s._vId === sourceVIds[0]);
-        if (!orig) return true;
-        return (
-          !areValuesEqual(orig.name, item.name) ||
-          !areValuesEqual(orig.keywords, item.keywords) ||
-          !areValuesEqual(orig.level, item.level)
-        );
-      });
+      return skillsReorgChanged(source, improved.items);
     }
     // A section that is ONE object — the cover letter, and `basics`. Both
     // answer with `improvedFields` and no `items`, so the array walk below sees
@@ -350,19 +365,7 @@ export const hasActualChanges = ({ granularity, source, improved, allowReorg, id
           sectionKey === 'skills' &&
           isReorgResult({ granularity: 'cv', improved: { skills: sectionValue }, allowReorg })
         ) {
-          const sourceArr = source[sectionKey] || [];
-          if (sectionValue.length !== sourceArr.length) return true;
-          return sectionValue.some((item) => {
-            const sourceVIds = item._sourceVIds || [];
-            if (sourceVIds.length !== 1) return true;
-            const orig = sourceArr.find((s) => s._vId === sourceVIds[0]);
-            if (!orig) return true;
-            return (
-              !areValuesEqual(orig.name, item.name) ||
-              !areValuesEqual(orig.keywords, item.keywords) ||
-              !areValuesEqual(orig.level, item.level)
-            );
-          });
+          return skillsReorgChanged(source[sectionKey], sectionValue);
         }
         return itemsChanged(source[sectionKey], sectionValue);
       }

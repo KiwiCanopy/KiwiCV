@@ -30,9 +30,11 @@ export const applyReorgSuggestion = (
     } else if (validSourceVIds.length === 1) {
       const orig = originalItems.find((o) => o._vId === validSourceVIds[0]);
       // The comparator the backend grades with, so a level the model fills in
-      // as 0 or a trailing space is not a change here either (#26).
+      // as 0 or a trailing space is not a change here either (#26). A moved
+      // entry is a change — the user sees it, as the server grades it (#32).
       if (
         orig &&
+        originalItems.indexOf(orig) === i &&
         areValuesEqual(orig.name, item.name) &&
         areValuesEqual(orig.keywords, item.keywords) &&
         areValuesEqual(orig.level, item.level)
@@ -52,19 +54,6 @@ export const applyReorgSuggestion = (
       classification[`original_${item._vId}`] = 'removed';
     }
   });
-
-  // Every entry back unchanged, in its own place: nothing to review, so no
-  // proposal and no write — a reorg-allowed run that left skills alone (#26).
-  const isNoOp =
-    proposedItems.length === originalItems.length &&
-    proposedItems.every((item, i) => {
-      const sources = (item._sourceVIds as string[]) || [];
-      return (
-        classification[`proposed_${i}`] === 'unchanged' &&
-        sources.every((id) => id === originalItems[i]._vId)
-      );
-    });
-  if (isNoOp) return;
 
   // ⚠️ An item whose ONLY source is an entry, and the only item for which that
   // is so, IS that entry: it keeps its `_vId`, which `hiddenIds` addresses —

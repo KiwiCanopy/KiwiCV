@@ -16,6 +16,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import {
+  dropUnchangedSkillsReorg,
   hasActualChanges,
   isReorgResult,
   mergeImprovedIntoCv,
@@ -222,6 +223,49 @@ test('a real reorganisation still grades as a change, and an echo still does not
   ];
   assert.equal(gradeReorgCv({ skills: echo }), false);
   assert.equal(gradeReorgSection(echo), false);
+});
+
+// A reorder is a change: the user sees the order differ (owner, 2026-10-24, #32).
+test('a restructure that only reorders is a change, at either granularity', () => {
+  const reordered = [
+    { name: 'Backend', keywords: ['Node'], _sourceVIds: ['s2'] },
+    { name: 'Frontend', keywords: ['React'], _sourceVIds: ['s1'] },
+  ];
+  assert.equal(gradeReorgCv({ skills: reordered }), true);
+  assert.equal(gradeReorgSection(reordered), true);
+});
+
+test('one entry claimed twice while another is dropped is a change', () => {
+  const twice = [
+    { name: 'Frontend', keywords: ['React'], _sourceVIds: ['s1'] },
+    { name: 'Frontend', keywords: ['React'], _sourceVIds: ['s1'] },
+  ];
+  assert.equal(gradeReorgSection(twice), true);
+});
+
+test('an unchanged whole-CV restructure leaves the answer, so the client never offers it', () => {
+  const echo = [
+    { name: 'Frontend', keywords: ['React'], _sourceVIds: ['s1'] },
+    { name: 'Backend', keywords: ['Node'], _sourceVIds: ['s2'] },
+  ];
+  const work = [{ _vId: 'w1', improvedFields: { position: 'Staff Engineer' } }];
+  const dropped = dropUnchangedSkillsReorg({
+    granularity: 'cv',
+    source: REORG_SOURCE,
+    improved: { skills: echo, work },
+    isReorg: true,
+  });
+  assert.deepEqual(dropped, { improved: { work }, isReorg: false });
+
+  const reordered = [echo[1], echo[0]];
+  const kept = dropUnchangedSkillsReorg({
+    granularity: 'cv',
+    source: REORG_SOURCE,
+    improved: { skills: reordered, work },
+    isReorg: true,
+  });
+  assert.equal(kept.isReorg, true);
+  assert.deepEqual(kept.improved.skills, reordered);
 });
 
 test('the letter merge keeps every skill for an empty reorganisation', () => {

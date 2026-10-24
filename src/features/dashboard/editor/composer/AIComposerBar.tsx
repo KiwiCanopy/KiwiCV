@@ -95,7 +95,10 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
   //   >= 1000  everything
   //   < 1000   the modes go, and the entry control's label names the mode
   const canRunNow = composer.canRun;
-  const runIsShown = canRunNow && !(isCollapsed && composer.needsDraft);
+  // Exactly one of the two holds the action slot: closed in a text mode the
+  // entry button stands in, and the run is absent (#27).
+  const entryStandsIn = isCollapsed && composer.needsDraft;
+  const runIsShown = canRunNow && !entryStandsIn;
 
   /**
    * What the resting row gives up, and in what order. It drops one thing at a
@@ -219,9 +222,8 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
   const entryText = entryLabel;
 
   // ⚠️ The row has ONE loud thing, and which one it is follows what the user
-  // still has to do. With no draft the next step is supplying it, so the entry
-  // control takes the fill and this demotes; once there is a draft this takes it
-  // back. A dark filled button held at `opacity-60` is simultaneously the
+  // still has to do: the entry button while it stands in, this otherwise — never
+  // both. This demotes only when `runBlocked`. A dark filled button held at `opacity-60` is simultaneously the
   // loudest object on the row and the one thing that does nothing, which is the
   // defect this replaces.
   //
@@ -240,7 +242,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
       // the one it re-creates after the run.
       id={COMPOSER_RUN_ANCHOR_ID}
       // ⚠️ `runBlocked` is NOT folded into `canRunNow`. This button is rendered
-      // conditionally on `canRunNow` below — absent, not disabled — so folding
+      // conditionally on `runIsShown` below — absent, not disabled — so folding
       // them would make the primary action disappear because of a cover-letter
       // dropdown. Blocked, it stays put, demotes, and names its reason.
       variant={canRunNow && !composer.runBlocked ? 'primary' : 'secondary'}
@@ -251,10 +253,9 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
         if (composer.run()) setIsCollapsed(true);
       }}
       aria-disabled={canRunNow && !composer.runBlocked ? undefined : true}
-      // The reason lives in the add-ons strip. A block needs the cover letter,
-      // which needs `job_description`, and there the run renders only with the
-      // band open — so the strip is mounted whenever this points at it.
-      aria-describedby={composer.runBlocked ? COVER_LETTER_REASON_ID : undefined}
+      // The reason lives in the add-ons strip, mounted only while the band is
+      // open — so the reference is gated on the same fact, never left dangling.
+      aria-describedby={composer.runBlocked && !isCollapsed ? COVER_LETTER_REASON_ID : undefined}
       loading={composer.isGenerating}
       loadingLabel={t('ai.optimizing')}
       className="shrink-0"
@@ -291,7 +292,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
   // into the textarea instead of leaving it on the control the user just
   // pressed. A disclosure must not move focus.
   const toggleCollapsed = () => {
-    if (isCollapsed && composer.needsDraft) requestFieldFocus();
+    if (entryStandsIn) requestFieldFocus();
     setIsCollapsed(!isCollapsed);
     // ⚠️ Focus has to be put back by hand. `onMouseDown` is prevented so the
     // click cannot pull focus out of the field on the way, and that also stops
@@ -302,8 +303,8 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
 
   // ⚠️ A mode that needs a draft has nowhere to type while the band is closed,
   // and `canRun` is false without one — so a collapsed band on `job_description`
-  // or `custom` with an empty draft is a dead end: a disabled button and no
-  // field. Choosing such a mode reopens the band rather than adding a second
+  // or `custom` with an empty draft has no field to type in, only the entry
+  // button. Choosing such a mode reopens the band rather than adding a second
   // control that means "open the thing you just asked for".
   const selectMode = (mode: Parameters<typeof composer.setMode>[0]) => {
     composer.setMode(mode);
@@ -480,7 +481,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
             is a thing the user was actually thinking about.
             ⚠️ Only for the modes that take text — `professional` needs none, so
             offering it there would promise a field that will not appear. */}
-        {isCollapsed && composer.needsDraft && (
+        {entryStandsIn && (
           <Button
             id={COMPOSER_ENTRY_ANCHOR_ID}
             variant="primary"
@@ -559,7 +560,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
           </>
         )}
 
-        {/* The tight resting row drops the subtitle and the modes but never a
+        {/* The tight resting row drops the modes but never a
             blocker — a run button that will bounce with nothing saying so is the
             defect the band was built to fix. */}
         {restingRowIsTight && (

@@ -75,7 +75,7 @@
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
-    "stripe": "^22.6.2",
+    "stripe": "^23.0.1",
     "tailwind-merge": "^3.7.0",
     "zustand": "^5.0.15"
   },

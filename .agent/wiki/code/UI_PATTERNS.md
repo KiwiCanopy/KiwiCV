@@ -494,19 +494,25 @@ never a `lg:` breakpoint.
 
 ### The AI composer bar (owner review, 2026-08-09)
 
-Three short rows at rest: tile/title/subtitle + mode `SegmentedToggle` + cost chip; the
-one-line job-ad field; then the add-ons and the run button. `professional` has no field and so
-has two rows.
+Three short rows when open: chevron, tile, run button, mode `SegmentedToggle` and cost chip;
+the one-line job-ad field; then the add-ons. `professional` has no field and so has two rows.
 
-- ⚠️ **Row 1's action slot follows the title**: chevron, tile, title, then the run button (or
-  the job-ad entry button standing in for it), then the spacer, mode toggle and chip (owner,
-  2026-10-24, #27). At the row's end it sat directly under the header's Export button.
+- ⚠️ **Row 1's action slot follows the tile**: chevron, tile, then the run button (or the
+  job-ad entry button standing in for it), then the spacer, mode toggle and chip (owner,
+  2026-10-24, #27). At the row's end it sat directly under the header's Export button. Tab
+  order follows: the action comes before the mode toggle.
+- ⚠️ **Closed, a mode that takes text shows the entry button only — never the run** (owner,
+  2026-10-24, #27). A run from the closed band used a job ad and add-ons nobody could see. The
+  entry button is `primary` whether or not a draft exists, since it is the one way to a run
+  there; `professional` keeps its one-click run.
+- ⚠️ **The "Improve with AI" title is `sr-only`** — beside "Improve my CV" it read as the
+  same words twice (owner, 2026-10-24). It still names the disclosure button.
 - ⚠️ **Row 1's height comes from the 40px tile and the 44px mode toggle**, never from anything
   below, so opening the field moves only the rows under it.
-- ⚠️ **The options row pins its right side and lets its left side flow.** The run button keeps
-  the same DOM node, parent and index in every state; the language select and the second
-  checkbox wrap inside the options group. A primary action that moves because of an unrelated
-  checkbox is the same defect class as a drag handle that does not stay put.
+- ⚠️ **The run button keeps the same DOM node, parent and index in every state.** The language
+  select and the second checkbox wrap inside the options group below it. A primary action that
+  moves because of an unrelated checkbox is the same defect class as a drag handle that does
+  not stay put.
 - ⚠️ **A field that collapses on blur will eat the click that caused the blur.** Blur fires on
   mousedown; collapsing there pulls everything below up before mouseup arrives. The Collapse
   control therefore sits **above** the textarea (only the rows below move) with its
@@ -693,8 +699,7 @@ contract, the dismissal policy, and the z-index hierarchy.
 - `MainLayout`: The primary shell containing the Header, Sidebar, and Page content.
 - `Header`: Contains global actions (Save, Export, Sync). Automatically hidden on desktop for non-dashboard pages to optimize vertical space.
   Below `lg` its drawer trigger is a `Menu` glyph in `text-foreground`, not the logo:
-  the logo read as brand, not as a menu, and in dark its green disc mirrored the
-  Export button (ui-designer, 2026-10-08). Off the dashboard the logo and name sit
+  the logo read as brand, not as a menu (ui-designer, 2026-10-08). Off the dashboard the logo and name sit
   beside it (`showBrand`), and the hero's own KiwiCV eyebrow is desktop-only so the
   name is not shown twice (owner, 2026-10-08). The dashboard bar has no room for it.
 - `Sidebar`: Manages navigation between dashboard features (Editor, Design, Settings).

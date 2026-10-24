@@ -101,6 +101,10 @@ only the old name lets the same glyph back in under the new one.
 borrow it — the paywall a visitor hits right after pressing that trigger is
 amber.
 
+**Lime is the AI run's, not Export's.** The header Export button is ink
+(`bg-foreground`); a lime primary near the composer gets pressed for Improve
+(#27, `UI_PATTERNS.md`).
+
 **The legacy baseline only shrinks.** Delete a file's entry in the same commit
 that migrates it; `tests/lint/legacy-baseline.test.mjs` fails on a stale entry,
 so a migrated file cannot keep its exemption.

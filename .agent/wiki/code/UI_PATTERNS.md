@@ -509,7 +509,7 @@ the one-line job-ad field; then the add-ons. `professional` has no field and so 
   same words twice (owner, 2026-10-24). It still names the disclosure button.
 - ⚠️ **Row 1's height comes from the 40px tile and the 44px mode toggle**, never from anything
   below, so opening the field moves only the rows under it.
-- ⚠️ **The run button keeps the same DOM node, parent and index in every state.** The language
+- ⚠️ **While shown, the run button keeps the same DOM node, parent and index.** The language
   select and the second checkbox wrap inside the options group below it. A primary action that
   moves because of an unrelated checkbox is the same defect class as a drag handle that does
   not stay put.
@@ -601,7 +601,7 @@ back to a default would delete an intent the user is in the middle of expressing
 kind a new refusal is before choosing where it bites.
 
 ⚠️ **Blocking a run is not the same as making it impossible**, and the composer bar punishes
-the confusion. It renders its primary action as `{canRunNow && …}` — **absent**, not disabled —
+the confusion. It renders its primary action as `{runIsShown && …}` — **absent**, not disabled —
 so folding an add-on's precondition into `canRun` makes the Improve button _vanish because of a
 cover-letter dropdown_. Keep `canRun` for "is a run possible at all" and carry the refusal
 separately, demoting the button to `secondary` with `aria-disabled` and an `aria-describedby`
@@ -1021,7 +1021,8 @@ last rung — see below. `AIEditModal` passes `aiDialogCloseAnchor`: its usual
 opener, the composer's run button, is absent while the run is in flight and the
 whole band is replaced by the pending bar once proposals land, so a run's close
 finds the opener dead on **every** path, cancelled or not. The cascade is the
-run button (re-created after a failed run), then **Next section**, then the
+run button (re-created after a failed run), then the entry button standing in for it on a
+closed band in a text mode, then **Next section**, then the
 section heading — rungs 3 and 4 above, with the composer on top.
 
 ⚠️ **A menu row is never an opener.** The cover letter's AI chooser launches the

@@ -116,7 +116,8 @@ focus. Then verify mobile, narrow editor, tablet and desktop; dark mode; reduced
 motion; contrast; screen-reader names; keyboard navigation.
 
 **Keep unavailable controls visible and disabled with a concise reason** rather
-than hiding them. Place a control beside the thing it affects. Animate transforms
+than hiding them — unless another control takes the slot, as the composer's
+entry button does for its run (#27, `UI_PATTERNS.md` § AI composer bar). Place a control beside the thing it affects. Animate transforms
 and opacity, never layout properties, and never make perpetual decoration a
 prerequisite for understanding the product.
 

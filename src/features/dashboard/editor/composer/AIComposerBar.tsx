@@ -17,17 +17,18 @@ import {
 import { useAIComposer } from '@/features/dashboard/editor/composer/useAIComposer';
 import { usePendingProposals } from '@/features/dashboard/editor/proposals/usePendingProposals';
 import { useTranslation } from '@/hooks/useTranslation';
+import { LANGUAGES } from '@/locales';
 import { useUIStore } from '@/store/ui/useUIStore';
 import { cn } from '@/utils/cn';
 import { ChevronDown, ChevronRight, ChevronUp, Pencil, Sparkles } from 'lucide-react';
 
 /**
- * The last index in the resting row's drop order. The order itself is spelled
- * out where the levels are consumed; this only bounds the escalation loop so a
- * row that cannot fit at any level stops trying rather than re-rendering
- * forever.
+ * What the resting row gives up, in order; the argument for the order is where
+ * the levels are consumed. Its length bounds the escalation loop, so a row
+ * that cannot fit at any level stops trying rather than re-rendering forever.
  */
-const LAST_DROP_LEVEL = 2;
+const DROP_ORDER = ['addonNames', 'runLabel', 'modes'] as const;
+const LAST_DROP_LEVEL = DROP_ORDER.length;
 
 /** The cover-letter control's id in this chrome, and the reason id derived from it. */
 const COVER_LETTER_CONTROL_ID = 'composer-cover-letter';
@@ -100,16 +101,33 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
   const entryStandsIn = isCollapsed && composer.needsDraft;
   const runIsShown = canRunNow && !entryStandsIn;
 
+  // ⚠️ The add-ons a closed band would otherwise run unseen (#31, the class of
+  // #25). Only Professional runs closed, and the cover letter needs a job ad.
+  const activeAddons = [
+    composer.isReorgEligible &&
+      composer.allowReorg &&
+      t('ai.allow_restructuring', { SectionName: t('editor.sections.skills') }),
+    composer.translate &&
+      t('ai.composer_addon_translate', {
+        language:
+          LANGUAGES.find((language) => language.code === composer.targetLang)?.label ??
+          composer.targetLang,
+      }),
+  ].filter((label): label is string => Boolean(label));
+  const addonSummaryIsShown = isCollapsed && runIsShown && activeAddons.length > 0;
+
   /**
    * What the resting row gives up, and in what order. It drops one thing at a
    * time and stops the moment the row fits, rather than comparing against magic
    * thresholds that assumed a worst case the row is often not carrying.
    *
-   *   1. the run button's **label**, which drops its object: "Improve my CV"
+   *   1. the add-on **names**, which become a count ("+2 add-ons") — never
+   *      gone, since naming them is the point (#31).
+   *   2. the run button's **label**, which drops its object: "Improve my CV"
    *      becomes "Improve". German is why this step exists — "Lebenslauf
    *      verbessern" is ~205px against English's 137px, which was the only
    *      thing still pushing the toggle off the row in any language.
-   *   2. the **mode toggle** — last, and in practice never.
+   *   3. the **mode toggle** — last, and in practice never.
    *
    * ⚠️ The edit button is icon-only whenever the toggle is visible, in **both**
    * states. It used to show the start of the pasted ad, which took 190px and was
@@ -167,6 +185,8 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
     // increments), only the shrink-back was stuck until some other entry moved
     // (code-reviewer, 2026-09-08).
     composer.coverLetter.enabled,
+    // The summary's names change how much the row needs.
+    activeAddons.join(' · '),
   ].join('|');
   const [measuredFor, setMeasuredFor] = useState(rowSignature);
 
@@ -194,8 +214,11 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
     setDropLevel(currentDropLevel + 1);
   }, [relaxed, currentDropLevel, rowSignature]);
 
-  const showFullRunLabel = relaxed || currentDropLevel < 1;
-  const showModes = relaxed || currentDropLevel < 2;
+  const keeps = (step: (typeof DROP_ORDER)[number]) =>
+    relaxed || currentDropLevel <= DROP_ORDER.indexOf(step);
+  const showAddonNames = keeps('addonNames');
+  const showFullRunLabel = keeps('runLabel');
+  const showModes = keeps('modes');
 
   const restingRowIsTight = !showModes;
 
@@ -524,6 +547,21 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
             could not see (owner, 2026-10-24, #27). `professional` needs no
             draft, so there it always renders. */}
         {runIsShown && <div data-composer-run="">{runButton}</div>}
+
+        {/* After the run, never before it: the run keeps its index (#27). */}
+        {addonSummaryIsShown && (
+          <Button
+            variant="quiet"
+            size="md"
+            aria-expanded={false}
+            onClick={() => setIsCollapsed(false)}
+            className="text-muted-foreground min-w-0 shrink-0 font-normal"
+          >
+            {showAddonNames
+              ? activeAddons.join(' · ')
+              : t('ai.composer_addons_count', { count: activeAddons.length })}
+          </Button>
+        )}
 
         {/* ⚠️ The slack goes HERE, on purpose. It used to sit on the title block
             as `flex-1`, which absorbed 348px when the title needs ~110 and

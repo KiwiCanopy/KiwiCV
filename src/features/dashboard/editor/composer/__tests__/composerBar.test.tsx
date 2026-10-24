@@ -381,6 +381,51 @@ describe("the composer's options row", () => {
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
   });
 
+  // A closed band in Professional runs in one click, so it names what rides
+  // along — the hidden translate tick re-translated a CV unseen (#25, #31).
+  describe('the closed row names the active add-ons', () => {
+    const closeBand = () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Improve with AI' }));
+    const tickTranslate = (language: string) => {
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Also translate my CV' }));
+      fireEvent.change(screen.getByRole('combobox', { name: 'Also translate my CV' }), {
+        target: { value: language },
+      });
+    };
+
+    it('shows them after the run button, and opens the band when pressed', () => {
+      render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+      fireEvent.click(mode('Professional'));
+      tickTranslate('fr');
+      closeBand();
+
+      const summary = screen.getByRole('button', { name: 'Translate → Français' });
+      expect(
+        runContainer()!.compareDocumentPosition(summary) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+
+      fireEvent.click(summary);
+      expect(screen.getByRole('checkbox', { name: 'Also translate my CV' })).toBeTruthy();
+    });
+
+    it('shows nothing when no add-on is active', () => {
+      render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+      fireEvent.click(mode('Professional'));
+      closeBand();
+
+      expect(screen.queryByRole('button', { name: /Translate →/ })).toBeNull();
+    });
+
+    it('shows nothing in a text mode, where the entry button stands in for the run', () => {
+      render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+      fillDraft();
+      tickTranslate('fr');
+      closeBand();
+
+      expect(screen.queryByRole('button', { name: /Translate →/ })).toBeNull();
+    });
+  });
+
   /**
    * A launched run folds the band: the result is reviewed below it, so the
    * pasted ad would only push the editor down once the proposals are handled.

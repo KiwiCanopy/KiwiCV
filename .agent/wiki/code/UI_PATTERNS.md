@@ -505,6 +505,10 @@ the one-line job-ad field; then the add-ons. `professional` has no field and so 
   2026-10-24, #27). A run from the closed band used a job ad and add-ons nobody could see. The
   entry button is `primary` whether or not a draft exists, since it is the one way to a run
   there; `professional` keeps its one-click run.
+- ⚠️ **Closed in Professional, the row names the active add-ons** (owner, 2026-10-24, #31) — a
+  quiet button after the run ("Restructure Skills · Translate → Français") that opens the band.
+  It is the one mode that runs from the closed band, so nothing it carries may be invisible
+  (#25). First to yield on a tight row, to a count ("+2 options"), never to nothing.
 - ⚠️ **The "Improve with AI" title is `sr-only`** — beside "Improve my CV" it read as the
   same words twice (owner, 2026-10-24). It still names the disclosure button.
 - ⚠️ **Row 1's height comes from the 40px tile and the 44px mode toggle**, never from anything

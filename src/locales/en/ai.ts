@@ -7,6 +7,9 @@ export const ai = {
   char_limit_reached:
     'This field has reached its {{limit}}-character limit. Anything more is not added.',
   chars_used: '{{used}} of {{limit}} characters used',
+  composer_addon_translate: 'Translate → {{language}}',
+  composer_addons_count_one: '+1 option',
+  composer_addons_count_other: '+{{count}} options',
   composer_custom_empty: 'Describe how you want your CV rewritten',
   composer_mode_custom: 'Custom',
   composer_mode_job: 'Job tailoring',

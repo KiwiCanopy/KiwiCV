@@ -2558,6 +2558,24 @@ const entries = [
     'Composer primary action, short form. Shown ONLY when the collapsed bar is too narrow for the full label, so it must be a single short verb — an imperative that stands alone on a button. It replaces "Improve my CV", so the object is dropped, not abbreviated',
   ],
   ['ai', 'composer_translate_addon', 'Also translate my CV', 'Composer translate add-on checkbox'],
+  [
+    'ai',
+    'composer_addon_translate',
+    'Translate → {{language}}',
+    'Closed composer row: names the active translate add-on; {{language}} is the target language in its own name (Deutsch, Français). Imperative verb as in composer_translate_addon, kept short.',
+  ],
+  [
+    'ai',
+    'composer_addons_count_one',
+    '+1 option',
+    'Closed composer row, narrow width: one active add-on, shown instead of its name. Noun from cover_letter_choose; keep it this short.',
+  ],
+  [
+    'ai',
+    'composer_addons_count_other',
+    '+{{count}} options',
+    'Closed composer row, narrow width: several active add-ons, shown instead of their names. Locales without a fitting plural may use "Options: +{{count}}" (cf. diff_fields_other).',
+  ],
 
   // CV-wide pending-proposals bar (station 1a, phase 3). Flat keys for the same
   // reason as the composer block above.

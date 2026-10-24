@@ -119,7 +119,7 @@ export function EntryDiffPanel<T extends object>({
             "Use the proposal" controls, one of which quietly means "and
             everything else too". */}
           {rows.length > 1 && (
-            <div className="flex shrink-0 flex-wrap gap-2">
+            <div className="flex min-w-0 flex-wrap gap-2">
               {/* Same order and same variants as the row buttons below, so one panel
                 teaches one colour for one meaning (`.claude/rules/ui.md`). */}
               {/* ⚠️ "Keep all N", not "Keep mine". With two rewritten fields the

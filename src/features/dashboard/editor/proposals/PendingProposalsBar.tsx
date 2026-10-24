@@ -65,7 +65,9 @@ export function PendingProposalsBar() {
         </span>
       </p>
 
-      <div className="flex shrink-0 flex-wrap items-center gap-2">
+      {/* ⚠️ `min-w-0`, not `shrink-0`: a container that cannot shrink cannot
+          wrap, and on a narrow editor German pushed Discard all off the edge. */}
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
         {/* ⚠️ NOT primary. Green means "take the proposal" everywhere else in
             this flow — the row accept, the panel's accept-all, this bar's
             accept-all — and this button takes nothing, it only moves to the

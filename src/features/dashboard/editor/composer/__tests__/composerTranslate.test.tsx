@@ -112,9 +112,10 @@ describe('the composer translate add-on', () => {
     expect(targetLang).not.toBe(useResumeStore.getState().resume.meta.theme.locale ?? 'en');
   });
 
-  // The derived half of the guard: a pick the option list no longer offers must
-  // fall back rather than ride through as `targetLang === currentLang`.
-  it('drops a picked target once the CV itself switches into that language', () => {
+  // ⚠️ The regression: the tick outlived the translation it asked for. The
+  // band folds on run, hiding the strip, so the next Improve translated the CV
+  // again — into the next language the picker offered.
+  it('unticks the add-on once the CV switches language', () => {
     render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
 
     pasteJobAd('Senior React engineer, remote');
@@ -129,9 +130,12 @@ describe('the composer translate add-on', () => {
       updateMeta({ theme: { ...resume.meta.theme, locale: 'fr' } });
     });
 
+    expect(
+      screen.getByRole<HTMLInputElement>('checkbox', { name: 'Also translate my CV' }).checked,
+    ).toBe(false);
     fireEvent.click(screen.getByRole('button', { name: 'Improve my CV' }));
 
-    expect(useResumeStore.getState().ai.translationTargetLang).not.toBe('fr');
+    expect(useResumeStore.getState().ai.translationTargetLang).toBeNull();
   });
 
   it('names no language when the add-on is left alone', () => {

@@ -485,47 +485,9 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
             the region does. */}
         {collapseToggle}
 
-        {/* ⚠️ The slack goes HERE, on purpose. It used to sit on the title block
-            as `flex-1`, which absorbed 348px when the title needs ~110 and
-            wedged the empty space into the middle of the row. One flexible
-            spacer between the identity group and the controls puts it in one
-            place. */}
-        <div className="flex-1" aria-hidden="true" />
-
-        {!restingRowIsTight && (
-          <>
-            {/* The app's own segmented control, as the Edit/Design tabs use:
-                it carries the sliding thumb the redesign specifies, so a
-                bespoke radio group here would be a second spelling of a
-                pattern that already exists. It renders plain buttons, so the
-                group name the replaced `fieldset`/`legend` gave for free has to
-                be supplied here. */}
-            <div role="group" aria-label={t('ai.composer_mode_label')} className="min-w-0 shrink">
-              <SegmentedToggle
-                value={composer.mode}
-                onChange={selectMode}
-                options={COMPOSER_MODES.map((mode) => ({
-                  value: mode,
-                  label: t(COMPOSER_MODE_LABEL_KEYS[mode]),
-                  hint: t(COMPOSER_MODE_LABEL_KEYS[mode]),
-                }))}
-              />
-            </div>
-
-            {/* ⚠️ Compact while resting. The full chip spells the blocked state
-                as a whole sentence — 224px of a 1324px row, which is what tipped
-                the row into wrapping at anything under 1440. Expanded there is
-                room for the sentence. */}
-            <AIAccessChip state={composer.accessState} compact={isCollapsed} />
-          </>
-        )}
-
-        {/* The tight resting row drops the subtitle and the modes but never a
-            blocker — a run button that will bounce with nothing saying so is the
-            defect the band was built to fix. */}
-        {restingRowIsTight && (
-          <AIAccessChip state={composer.accessState} compact className="min-w-0 shrink" />
-        )}
+        {/* ⚠️ The action slot follows the title, not the row's end. At the end
+            it sat right under the header's Export button, and the two were
+            pressed for each other (#27). */}
 
         {/* The way into the text while the band is closed. It is a real,
             labelled control rather than only the chevron: "open the region" and
@@ -542,7 +504,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
               requestFieldFocus();
             }}
             // ⚠️ The real `Button`, not a bespoke pill. It sits in the action
-            // slot — last on the row, where the run button goes — so it has to
+            // slot — beside the title, where the run button goes — so it has to
             // *be* an action: same height, radius, padding and type as the
             // button it stands in for. A rounded pill of its own invention read
             // as a different class of thing in the one place it must not.
@@ -590,10 +552,51 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
 
         {/* ⚠️ Absent, not disabled. A button you cannot press is clutter on a
             row whose whole job is to be one line — and with it gone the entry
-            control falls into the last slot, which is where the eye looks for
-            the action. `professional` needs no draft, so `canRunNow` is always
+            control takes the action slot. `professional` needs no draft, so `canRunNow` is always
             true there and this always renders. */}
         {canRunNow && <div data-composer-run="">{runButton}</div>}
+
+        {/* ⚠️ The slack goes HERE, on purpose. It used to sit on the title block
+            as `flex-1`, which absorbed 348px when the title needs ~110 and
+            wedged the empty space into the middle of the row. One flexible
+            spacer between the identity-and-action group and the controls puts it in one
+            place. */}
+        <div className="flex-1" aria-hidden="true" />
+
+        {!restingRowIsTight && (
+          <>
+            {/* The app's own segmented control, as the Edit/Design tabs use:
+                it carries the sliding thumb the redesign specifies, so a
+                bespoke radio group here would be a second spelling of a
+                pattern that already exists. It renders plain buttons, so the
+                group name the replaced `fieldset`/`legend` gave for free has to
+                be supplied here. */}
+            <div role="group" aria-label={t('ai.composer_mode_label')} className="min-w-0 shrink">
+              <SegmentedToggle
+                value={composer.mode}
+                onChange={selectMode}
+                options={COMPOSER_MODES.map((mode) => ({
+                  value: mode,
+                  label: t(COMPOSER_MODE_LABEL_KEYS[mode]),
+                  hint: t(COMPOSER_MODE_LABEL_KEYS[mode]),
+                }))}
+              />
+            </div>
+
+            {/* ⚠️ Compact while resting. The full chip spells the blocked state
+                as a whole sentence — 224px of a 1324px row, which is what tipped
+                the row into wrapping at anything under 1440. Expanded there is
+                room for the sentence. */}
+            <AIAccessChip state={composer.accessState} compact={isCollapsed} />
+          </>
+        )}
+
+        {/* The tight resting row drops the subtitle and the modes but never a
+            blocker — a run button that will bounce with nothing saying so is the
+            defect the band was built to fix. */}
+        {restingRowIsTight && (
+          <AIAccessChip state={composer.accessState} compact className="min-w-0 shrink" />
+        )}
 
         {/* The reason, for the state where the visible one is not mounted. The
             strip renders under `!isCollapsed`, so this and it are mutually

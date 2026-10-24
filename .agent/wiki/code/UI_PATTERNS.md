@@ -149,6 +149,11 @@ Amber is reserved for warning and paid/premium — the AI trigger must not borro
 it, because the paywall a visitor hits right after pressing that trigger is
 amber.
 
+⚠️ **Lime belongs to the AI run, not to Export** (owner, 2026-10-24, #27). The
+header's Export button is ink (`bg-foreground text-background`), because a lime
+Export stacked one row above the lime Improve button was pressed for it. A new
+primary action placed near the composer must not take lime either.
+
 Files that predate the guards are frozen in `eslint-legacy-baseline.js`. **Those
 lists only shrink** — delete a file's entry in the same commit that migrates it.
 `tests/lint/legacy-baseline.test.mjs` fails if an entry is stale, so a migrated
@@ -493,6 +498,9 @@ Three short rows at rest: tile/title/subtitle + mode `SegmentedToggle` + cost ch
 one-line job-ad field; then the add-ons and the run button. `professional` has no field and so
 has two rows.
 
+- ⚠️ **Row 1's action slot follows the title**: chevron, tile, title, then the run button (or
+  the job-ad entry button standing in for it), then the spacer, mode toggle and chip (owner,
+  2026-10-24, #27). At the row's end it sat directly under the header's Export button.
 - ⚠️ **Row 1's height comes from the 40px tile and the 44px mode toggle**, never from anything
   below, so opening the field moves only the rows under it.
 - ⚠️ **The options row pins its right side and lets its left side flow.** The run button keeps

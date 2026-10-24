@@ -145,9 +145,11 @@ export function ExportButton({
           isActuallyDisabled
             ? 'cursor-not-allowed opacity-50'
             : 'disabled:cursor-not-allowed disabled:opacity-80',
+          // ⚠️ Ink, not lime: lime is the AI run button's, and two lime
+          // buttons stacked at the right edge were pressed for each other (#27).
           syncStatus === 'success'
             ? 'bg-success text-success-foreground'
-            : 'bg-primary text-primary-foreground hover:bg-primary/90',
+            : 'bg-foreground text-background hover:bg-foreground/90',
         )}
       >
         {syncStatus === 'loading' && <LoaderCircle className="h-4 w-4 shrink-0 animate-spin" />}

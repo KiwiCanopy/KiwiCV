@@ -275,11 +275,7 @@ describe('the composer cover-letter add-on', () => {
    * already carries this exact lesson for `aria-controls`; the run button
    * repeated it, and it was caught by a mis-click rather than by a test.
    */
-  it.each([
-    ['expanded', false],
-    ['collapsed', true],
-  ])('keeps the run button reason resolvable while the band is %s', (_label, collapsed) => {
-    useUIStore.setState({ aiComposerCollapsed: collapsed });
+  const blockedDraft = () =>
     useFlowStore.setState((state) => ({
       prompt: {
         ...state.prompt,
@@ -288,6 +284,10 @@ describe('the composer cover-letter add-on', () => {
         jobDescription: 'Senior Frontend Engineer, Berlin.',
       },
     }));
+
+  it('keeps the run button reason resolvable while the band is open', () => {
+    useUIStore.setState({ aiComposerCollapsed: false });
+    blockedDraft();
     render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
 
     const runButton = screen.getByRole('button', { name: en.ai.composer_run_documents });
@@ -297,8 +297,17 @@ describe('the composer cover-letter add-on', () => {
     const target = document.getElementById(describedBy);
     expect(target).not.toBeNull();
     expect(target?.textContent).toBe(en.ai.cover_letter_needs_sample);
-    // Exactly one element owns the id, in either state.
     expect(document.querySelectorAll(`[id="${describedBy}"]`)).toHaveLength(1);
+  });
+
+  // Closed, the run is absent in this mode (#27), so nothing references a reason.
+  it('shows no run button, and so no dangling reason, while the band is closed', () => {
+    useUIStore.setState({ aiComposerCollapsed: true });
+    blockedDraft();
+    render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+
+    expect(screen.queryByRole('button', { name: en.ai.composer_run_documents })).toBeNull();
+    expect(document.querySelector('[aria-describedby]')).toBeNull();
   });
 
   /**

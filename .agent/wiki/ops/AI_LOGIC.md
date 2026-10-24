@@ -155,9 +155,15 @@ writes something.
 language entry, where `0` means "Not specified" — measured: a Vertex run answered `level: 0` for
 every skill stored without one in every recorded call — improve, improve with restructure, and translate (evidence on #26). Without the rule an
 untouched skill was billed and shown as changed ("Not specified → Not specified"). The levels are
-the only numeric fields (`numeric-fields.test.mjs` pins that). The skills restructure classifies with the same comparator, a restructure
-whose entries all come back unchanged and in place is dropped, and a translation's restructure is
+the only numeric fields (`numeric-fields.test.mjs` pins that). The skills restructure classifies with the same comparator, and a translation's restructure is
 accepted at once, since nothing else in a translation is left to discard.
+
+⚠️ **Whether a skills restructure changes anything is the server's call, once** (#32):
+`skillsReorgChanged` in `lib/ai/utils.js` grades both `hasActualChanges` branches, and
+`dropUnchangedSkillsReorg` strips an unchanged one from a whole-CV answer, so the client — which
+routes on `isReorg` alone — never sees it. **A reorder is a change** (owner, 2026-10-24): the user
+sees the order differ. Only every entry from its own single source, in that source's place, with
+equal fields, is no change. The review panel agrees: `reorgActions.ts` marks a moved entry `modified`.
 
 ### Custom sections are addressed by token, never by name
 

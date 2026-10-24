@@ -32,6 +32,7 @@ import {
 } from './lib/ai/responseChecks.js';
 import { createUsageHold } from './lib/ai/usage.js';
 import {
+  dropUnchangedSkillsReorg,
   hasActualChanges,
   isReorgResult,
   mergeImprovedIntoCv,
@@ -301,6 +302,12 @@ export const handler = async (event) => {
         id,
       });
       isReorg = isReorgResult({ granularity, id, improved: parsedContent, allowReorg });
+      ({ improved: parsedContent, isReorg } = dropUnchangedSkillsReorg({
+        granularity,
+        source: sanitizedResumeData,
+        improved: parsedContent,
+        isReorg,
+      }));
 
       const cvUsage = {
         tokens_input: data.usageMetadata?.promptTokenCount || 0,

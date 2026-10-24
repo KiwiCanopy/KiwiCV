@@ -14,9 +14,6 @@ export const sync: Translations['sync'] = {
   checking: 'バックアップを確認中...',
   checking_connection: '接続を確認中...',
   checking_locale_msg: '接続済みのクラウド サービスから、選択した言語の履歴書を探しています。',
-  collision_message:
-    ' {{name}} という名前のフォルダが既に存在します。以前のデータを上書きしないように、新しいフォルダ {{newName}} が作成されました。',
-  collision_title: 'フォルダ名の競合',
   commit_config: '設定を更新',
   commit_config_at_export: '{{name}} に基づいて設定を更新',
   commit_delete: 'バックアップを削除：{{name}}',

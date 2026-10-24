@@ -15,9 +15,6 @@ export const sync: Translations['sync'] = {
   checking_connection: 'Vérification de la connexion...',
   checking_locale_msg:
     "Recherche dans tes services cloud connectés d'un CV dans la langue choisie.",
-  collision_message:
-    "Un dossier nommé {{name}} existe déjà. Pour éviter d'écraser tes données précédentes, un nouveau dossier a été créé : {{newName}}.",
-  collision_title: 'Conflit de nom de dossier',
   commit_config: 'Mettre à jour la config',
   commit_config_at_export: 'Mise à jour de la configuration selon {{name}}',
   commit_delete: 'Supprimer la sauvegarde : {{name}}',

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { getThemeMeta } from '@/components/preview/ThemeRegistry';
 import { useSyncAuthGateway } from '@/hooks/sync/useSyncAuthGateway';
 import { useAuth } from '@/hooks/useAuth';
 import { type SyncVariant, useCloudSync } from '@/hooks/useCloudSync';
@@ -13,7 +12,6 @@ import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { useFlowStore } from '@/store/ui/useFlowStore';
 import { useUIStore } from '@/store/ui/useUIStore';
 import type { SyncConfig } from '@/types/resume';
-import { getCleanProjectName } from '@/utils/export';
 import type { User } from '@supabase/supabase-js';
 
 export type SyncStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -47,197 +45,158 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
   const confirm = useConfirmStore((state) => state.confirm);
   const sync = useResumeStore((state) => state.sync);
 
-  const performSync = useCallback(
-    async (projectName?: string) => {
-      if (mode === 'manage') return;
+  const performSync = useCallback(async () => {
+    if (mode === 'manage') return;
 
-      const syncConfig = useResumeStore.getState().sync;
+    const syncConfig = useResumeStore.getState().sync;
 
-      if (variant === 'hosting' && !syncConfig?.github?.enabled) {
-        useFlowStore.getState().openGitHubLogin({ source: 'sync', syncMode: mode });
-        return;
-      }
+    if (variant === 'hosting' && !syncConfig?.github?.enabled) {
+      useFlowStore.getState().openGitHubLogin({ source: 'sync', syncMode: mode });
+      return;
+    }
 
-      const hasDriveCreds = hasStoredGoogleDriveCreds();
-      if (hasDrivePermission === true && hasDriveCreds && !syncConfig?.googleDrive?.enabled) {
-        useResumeStore.getState().updateSync({
-          googleDrive: { ...syncConfig?.googleDrive, enabled: true },
-        });
-      }
-
-      useResumeStore.getState().syncVersion();
-
-      // Start Loading Modal
-      confirm({
-        title: t('sync.pushing'),
-        message: t('sync.backing_up'),
-        isLoading: true,
-        confirmText: '',
-        cancelText: '',
-        showCloseButton: false,
-        closeOnConfirm: false,
+    const hasDriveCreds = hasStoredGoogleDriveCreds();
+    if (hasDrivePermission === true && hasDriveCreds && !syncConfig?.googleDrive?.enabled) {
+      useResumeStore.getState().updateSync({
+        googleDrive: { ...syncConfig?.googleDrive, enabled: true },
       });
+    }
 
-      try {
-        const cloudVariant: SyncVariant = projectName
-          ? 'full'
-          : variant === 'root'
-            ? 'config'
-            : variant;
-        const { success, results, error } = await triggerCloudSync(
-          cloudVariant,
-          projectName,
-          mode as 'sync' | 'push',
-        );
+    useResumeStore.getState().syncVersion();
 
-        if (success) {
-          if (results.length === 0) {
-            useConfirmStore.getState().close();
-            setSyncStatus('idle');
-            const hasPat = !!(
-              localStorage.getItem('github_pat') || sessionStorage.getItem('github_pat')
-            );
-            if (!hasPat && !hasDriveCreds) {
-              useFlowStore.getState().openGoogleLogin({
-                description: t('auth.sync_login_required'),
-                source: 'sync',
-                allowGitHub: true,
-                syncMode: mode as 'sync' | 'push',
-                requireDrive: true,
-              });
-            } else {
-              setActiveModal('gateway');
-            }
-            return;
-          }
+    // Start Loading Modal
+    confirm({
+      title: t('sync.pushing'),
+      message: t('sync.backing_up'),
+      isLoading: true,
+      confirmText: '',
+      cancelText: '',
+      showCloseButton: false,
+      closeOnConfirm: false,
+    });
 
-          let alreadySynced = false;
-          if (results.length > 0 && results.every((r) => r.alreadySynced)) {
-            alreadySynced = true;
-            setIsAlreadySynced(true);
-          }
+    try {
+      const cloudVariant: SyncVariant = variant === 'root' ? 'config' : variant;
+      const { success, results, error } = await triggerCloudSync(
+        cloudVariant,
+        undefined,
+        mode as 'sync' | 'push',
+      );
 
-          setSyncStatus('success');
-
-          // Show Success Modal
-          useConfirmStore.getState().setOptions({
-            title: alreadySynced ? t('sync.up_to_date') : t('sync.push_success_title'),
-            message: t('sync.push_success_msg'),
-            isLoading: false,
-            confirmText: t('common.ok'),
-            cancelText: '',
-            showCloseButton: true,
-            closeOnConfirm: true,
-            variant: 'primary',
-          });
-
-          setTimeout(() => {
-            setSyncStatus('idle');
-            setIsAlreadySynced(false);
-          }, 3000);
-
-          // Track Success
-          const resume = useResumeStore.getState().resume;
-          const themeMeta = getThemeMeta(resume.meta.theme.name);
-          const providers = results.filter((r) => r.success).map((r) => r.service);
-
-          if (projectName) {
-            analytics.track(ANALYTICS_EVENTS.EXPORT_PERFORMED, {
-              type: 'cloud',
-              formats: ['pdf', 'html', 'json'],
-              providers,
-              language: resume.meta.theme.locale,
-              themeId: resume.meta.theme.name,
-              paletteId: resume.meta.theme.params.palette,
-              ...(themeMeta?.layout === 'two-column' && {
-                sidebarPosition: resume.meta.content.order.twoColumn.sidebarPosition,
-              }),
-            });
-          } else {
-            analytics.track(ANALYTICS_EVENTS.BACKUP_PERFORMED, {
-              type: 'manual',
-              providers,
-            });
-          }
-
-          const driveResult = results.find((r) => r.service === 'google_drive' && r.folderName);
-          if (driveResult && projectName) {
-            const expectedFolderName = getCleanProjectName(projectName);
-            if (driveResult.folderName !== expectedFolderName) {
-              // Collision logic...
-              confirm({
-                title: t('sync.collision_title'),
-                message: t('sync.collision_message', {
-                  name: expectedFolderName,
-                  newName: String(driveResult.folderName),
-                }),
-                confirmText: t('common.ok'),
-                cancelText: '',
-              });
-            }
-          }
-        } else {
-          const atLeastOneSuccess = results.some((r) => r.success);
-          if (atLeastOneSuccess) {
-            setSyncStatus('success');
-            setTimeout(() => {
-              setSyncStatus('idle');
-              setIsAlreadySynced(false);
-            }, 3000);
-            return;
-          }
-
-          setSyncStatus('error');
-          const firstError = results.find((r) => !r.success)?.error || error || t('common.error');
-          setErrorMessage(firstError);
-
-          const needsConfig =
-            results.length === 0 ||
-            results.every((r) => r.error?.includes('config') || r.error?.includes('PAT'));
-          const googleAuthError = results.some(
-            (r) => r.service === 'google_drive' && r.error?.includes('connection missing'),
+      if (success) {
+        if (results.length === 0) {
+          useConfirmStore.getState().close();
+          setSyncStatus('idle');
+          const hasPat = !!(
+            localStorage.getItem('github_pat') || sessionStorage.getItem('github_pat')
           );
-
-          if ((needsConfig || googleAuthError) && location.pathname !== '/settings') {
+          if (!hasPat && !hasDriveCreds) {
             useFlowStore.getState().openGoogleLogin({
               description: t('auth.sync_login_required'),
               source: 'sync',
+              allowGitHub: true,
               syncMode: mode as 'sync' | 'push',
               requireDrive: true,
             });
+          } else {
+            setActiveModal('gateway');
           }
-          setTimeout(() => setSyncStatus('idle'), 5000);
+          return;
         }
-      } catch (err: unknown) {
-        const errorMsg = err instanceof Error ? err.message : 'Sync failed';
-        setSyncStatus('error');
-        setErrorMessage(errorMsg);
 
-        // Show Error Modal
+        let alreadySynced = false;
+        if (results.length > 0 && results.every((r) => r.alreadySynced)) {
+          alreadySynced = true;
+          setIsAlreadySynced(true);
+        }
+
+        setSyncStatus('success');
+
+        // Show Success Modal
         useConfirmStore.getState().setOptions({
-          title: t('common.error'),
-          message: errorMsg || t('common.error_occurred'),
+          title: alreadySynced ? t('sync.up_to_date') : t('sync.push_success_title'),
+          message: t('sync.push_success_msg'),
           isLoading: false,
           confirmText: t('common.ok'),
           cancelText: '',
           showCloseButton: true,
           closeOnConfirm: true,
-          variant: 'destructive',
+          variant: 'primary',
         });
+
+        setTimeout(() => {
+          setSyncStatus('idle');
+          setIsAlreadySynced(false);
+        }, 3000);
+
+        const providers = results.filter((r) => r.success).map((r) => r.service);
+
+        // Backup only: the Export dialog runs its own destinations and
+        // reports EXPORT_PERFORMED from `useExportRun` (#35).
+        analytics.track(ANALYTICS_EVENTS.BACKUP_PERFORMED, {
+          type: 'manual',
+          providers,
+        });
+      } else {
+        const atLeastOneSuccess = results.some((r) => r.success);
+        if (atLeastOneSuccess) {
+          setSyncStatus('success');
+          setTimeout(() => {
+            setSyncStatus('idle');
+            setIsAlreadySynced(false);
+          }, 3000);
+          return;
+        }
+
+        setSyncStatus('error');
+        const firstError = results.find((r) => !r.success)?.error || error || t('common.error');
+        setErrorMessage(firstError);
+
+        const needsConfig =
+          results.length === 0 ||
+          results.every((r) => r.error?.includes('config') || r.error?.includes('PAT'));
+        const googleAuthError = results.some(
+          (r) => r.service === 'google_drive' && r.error?.includes('connection missing'),
+        );
+
+        if ((needsConfig || googleAuthError) && location.pathname !== '/settings') {
+          useFlowStore.getState().openGoogleLogin({
+            description: t('auth.sync_login_required'),
+            source: 'sync',
+            syncMode: mode as 'sync' | 'push',
+            requireDrive: true,
+          });
+        }
         setTimeout(() => setSyncStatus('idle'), 5000);
       }
-    },
-    [
-      variant,
-      mode,
-      hasDrivePermission,
-      triggerCloudSync,
-      t,
-      confirm,
-      location.pathname,
-      setActiveModal,
-    ],
-  );
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : 'Sync failed';
+      setSyncStatus('error');
+      setErrorMessage(errorMsg);
+
+      // Show Error Modal
+      useConfirmStore.getState().setOptions({
+        title: t('common.error'),
+        message: errorMsg || t('common.error_occurred'),
+        isLoading: false,
+        confirmText: t('common.ok'),
+        cancelText: '',
+        showCloseButton: true,
+        closeOnConfirm: true,
+        variant: 'destructive',
+      });
+      setTimeout(() => setSyncStatus('idle'), 5000);
+    }
+  }, [
+    variant,
+    mode,
+    hasDrivePermission,
+    triggerCloudSync,
+    t,
+    confirm,
+    location.pathname,
+    setActiveModal,
+  ]);
 
   const { ensureConnected } = useSyncAuthGateway();
 

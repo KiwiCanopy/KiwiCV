@@ -28,7 +28,7 @@ All events are centrally managed in [analytics.ts](../../../src/services/analyti
 
 - **Exports & Backups**: Workflow-based tracking for success actions.
   - `EXPORT_MODAL_OPENED`: Entry into the unified Export/Cloud Hybrid modal.
-  - `EXPORT_PERFORMED`: Tracks explicit user actions (Downloads vs. Cloud Uploads). Includes `type`, `formats`, `language`, `themeId`, `paletteId`, and — for two-column themes only — `sidebarPosition` (`useDownloadWorkflow.ts:110-119`).
+  - `EXPORT_PERFORMED`: One per Export-dialog run, fired only from `useExportRun.ts` (`type: 'export'`). Includes `formats`, `providers` (the destinations that succeeded), `language`, `themeId`, `paletteId`, and — for two-column themes only — `sidebarPosition`.
   - `BACKUP_PERFORMED`: Tracks background "Save" actions to distinguish them from user-initiated exports.
 - **Cloud Sync & Management**: Tracks the lifecycle of cloud data.
   - `MANAGEMENT_MODAL_OPENED`: Entry into the backup history selector.
@@ -55,10 +55,11 @@ The `AnalyticsService` singleton (`src/services/analytics.ts`) acts as the centr
 ```typescript
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 
-// Example usage (from useDownloadWorkflow.ts)
+// Example usage (from useExportRun.ts)
 analytics.track(ANALYTICS_EVENTS.EXPORT_PERFORMED, {
-  type: 'download',
-  formats: ['pdf', 'html', 'json'],
+  type: 'export',
+  formats: ['json', 'pdf'],
+  providers: ['zip', 'google_drive'],
   themeId: 'lunar',
 });
 ```

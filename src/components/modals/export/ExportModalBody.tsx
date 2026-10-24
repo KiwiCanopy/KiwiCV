@@ -65,7 +65,7 @@ export function ExportModalBody({
   const projectName = constructBackupFilename(base, company, position, resume.meta.theme.name);
   const preview = getCleanProjectName(projectName);
 
-  const { state, succeeded, failed, announcement, run } = useExportRun({ resume, formats });
+  const { state, failed, announcement, run } = useExportRun({ resume, formats });
 
   // Mounts only while the dialog is open (rendered inside DialogFrame's
   // portal), so this fires once per open.
@@ -88,7 +88,7 @@ export function ExportModalBody({
     (row) => row?.status === 'done' || row?.status === 'failed',
   ).length;
   const isRetry = state.hasRun && failed.length > 0;
-  const targets = isRetry ? failed : selected.filter((id) => !succeeded.includes(id));
+  const targets = isRetry ? failed : selected;
 
   const handleSetup = () => {
     ensureConnected({

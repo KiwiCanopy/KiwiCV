@@ -14,9 +14,6 @@ export const sync: Translations['sync'] = {
   checking: 'Back-ups controleren...',
   checking_connection: 'Verbinding controleren...',
   checking_locale_msg: 'Zoeken in je gekoppelde cloudservices naar een CV in de gekozen taal.',
-  collision_message:
-    'Er bestaat al een map met de naam {{name}}. Om te voorkomen dat je eerdere gegevens worden overschreven, is er een nieuwe map gemaakt: {{newName}}.',
-  collision_title: 'Conflict in mapnaam',
   commit_config: 'Configuratie bijwerken',
   commit_config_at_export: 'Configuratie bijwerken volgens {{name}}',
   commit_delete: 'Back-up verwijderen: {{name}}',

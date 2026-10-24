@@ -15,9 +15,6 @@ export const sync: Translations['sync'] = {
   checking_connection: 'A verificar a ligação...',
   checking_locale_msg:
     'A procurar nos teus serviços na nuvem ligados por um CV no idioma selecionado.',
-  collision_message:
-    'Já existe uma pasta chamada {{name}}. Para evitar substituir os teus dados anteriores, foi criada uma nova pasta: {{newName}}.',
-  collision_title: 'Conflito de nome de pasta',
   commit_config: 'Atualizar configuração',
   commit_config_at_export: 'Atualizar configuração conforme {{name}}',
   commit_delete: 'Eliminar backup: {{name}}',

@@ -14,9 +14,6 @@ export const sync: Translations['sync'] = {
   checking: 'Проверка за архиви...',
   checking_connection: 'Проверка на връзката...',
   checking_locale_msg: 'Търсене в свързаните ти облачни услуги за CV на избрания език.',
-  collision_message:
-    'Вече съществува папка с име {{name}} . За да избегнеш презаписване на предишните ти данни, беше създадена нова папка: {{newName}} .',
-  collision_title: 'Конфликт в името на папка',
   commit_config: 'Актуализиране на конфигурацията',
   commit_config_at_export: 'Обновяване на конфигурацията според {{name}}',
   commit_delete: 'Изтриване на архив: {{name}}',

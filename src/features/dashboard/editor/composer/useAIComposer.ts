@@ -65,15 +65,18 @@ export function useAIComposer() {
     () => useFlowStore.getState().prompt.allowReorg,
   );
   const [translate, setTranslate] = useState(false);
-  // ⚠️ A target the picker does not offer is a silent no-op: both ends read
-  // `targetLang === currentLang` as "not a translation". Seed and value both
-  // come off `translationTargets`, so they cannot disagree with the options.
   const [targetLangChoice, setTargetLang] = useState<LocaleCode | null>(null);
+  // ⚠️ The tick and the pick are spent once the CV changes language (#25). The
+  // strip unmounts when the band folds, so a stale tick re-translated the CV
+  // unseen; and a pick equal to the new language would send a silent no-op.
+  const [tickedFor, setTickedFor] = useState(cvLanguage);
+  if (tickedFor !== cvLanguage) {
+    setTickedFor(cvLanguage);
+    setTranslate(false);
+    setTargetLang(null);
+  }
   const targetLangOptions = translationTargets(cvLanguage);
-  const targetLang =
-    targetLangChoice && targetLangOptions.includes(targetLangChoice)
-      ? targetLangChoice
-      : targetLangOptions[0];
+  const targetLang = targetLangChoice ?? targetLangOptions[0];
   // The sign-in-then-pass chain, and the paywall's JSX with it — a consumer that
   // got a boolean and had to remember its own modal would leave a user without a
   // pass pressing a button that does nothing.

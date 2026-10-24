@@ -28,6 +28,7 @@ vi.mock('@/lib/supabase', () => ({
 
 const applyAISuggestion = vi.fn();
 const applyReorgSuggestion = vi.fn();
+const acceptReorg = vi.fn();
 
 const mount = () =>
   renderHook(() =>
@@ -55,10 +56,10 @@ const RUN = {
   coverLetter: null,
 };
 
-const runTo = async (result: unknown) => {
+const runTo = async (result: unknown, run: Partial<typeof RUN> = {}) => {
   const { result: hook } = mount();
   await act(async () => {
-    void hook.current.handleGenerate(RUN);
+    void hook.current.handleGenerate({ ...RUN, ...run } as typeof RUN);
   });
   pollRow = { status: 'completed', result };
   await act(async () => {
@@ -74,11 +75,12 @@ beforeEach(() => {
   pollRow = { status: 'processing' };
   applyAISuggestion.mockClear();
   applyReorgSuggestion.mockClear();
+  acceptReorg.mockClear();
   vi.stubGlobal(
     'fetch',
     vi.fn(async () => ({ ok: true, status: 200 })),
   );
-  useResumeStore.setState({ applyAISuggestion, applyReorgSuggestion });
+  useResumeStore.setState({ applyAISuggestion, applyReorgSuggestion, acceptReorg });
 });
 
 afterEach(() => {
@@ -104,6 +106,20 @@ describe('a whole-CV reorg run whose skills came back empty', () => {
 
     expect(applyReorgSuggestion).toHaveBeenCalledWith('skills', skills);
     expect(applyAISuggestion.mock.calls[0]?.[1]).toEqual({ work: WORK });
+    expect(acceptReorg).not.toHaveBeenCalled();
+  });
+
+  // A translation has nothing to discard; a skills proposal left open would
+  // revert alone into the old language on Discard all (#26).
+  it('accepts the restructure of a translation at once', async () => {
+    const skills = [{ name: 'Frontend-Entwicklung', keywords: ['React'], _sourceVIds: ['s1'] }];
+    await runTo(
+      { isNoOp: false, isReorg: true, skills, work: WORK },
+      { translateToAnotherLanguage: true, targetLang: 'de' as never },
+    );
+
+    expect(applyReorgSuggestion).toHaveBeenCalledWith('skills', skills);
+    expect(acceptReorg).toHaveBeenCalledTimes(1);
   });
 
   /** Skills the server did not flag never reach the reorg path, whatever they hold. */

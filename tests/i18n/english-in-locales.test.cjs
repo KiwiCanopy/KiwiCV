@@ -12,17 +12,25 @@ const { buildEntries, localeValues } = require('../../scripts/generate-i18n-hand
  * has to stay a true claim about src/locales, or it would hide a placeholder.
  */
 const rowsById = new Map(catalog.map((row) => [catalogId(row), row]));
+const records = Object.entries(catalog.englishIn);
 
-test('every ENGLISH_IN key resolves to a catalog row that is not VERBATIM', () => {
-  assert.ok(catalog.englishInKeys.length > 0, 'nothing is recorded, so nothing below runs');
-  for (const key of catalog.englishInKeys) {
+test('every ENGLISH_IN entry names a catalog row, its current English, and real locales', () => {
+  assert.ok(records.length > 0, 'nothing is recorded, so nothing below runs');
+  for (const [key, { english, locales }] of records) {
     const row = rowsById.get(key);
     assert.ok(row, `${key}: no catalog row, so the record marks nothing`);
     assert.equal(row.verbatim, false, `${key}: VERBATIM already covers every locale`);
-    assert.ok(
-      row.englishIn.length < NON_ENGLISH_LOCALES.length,
-      `${key}: English in all fourteen belongs in VERBATIM`,
+    // A changed source stops the record applying; this makes the change loud.
+    assert.equal(
+      english,
+      row.source,
+      `${key}: the English changed since these locales were approved — re-check ${locales} and update or drop the entry`,
     );
+    assert.ok(locales.length < NON_ENGLISH_LOCALES.length, `${key}: all fourteen is VERBATIM`);
+    assert.equal(new Set(locales).size, locales.length, `${key}: a locale repeats`);
+    for (const locale of locales) {
+      assert.ok(NON_ENGLISH_LOCALES.includes(locale), `${key}: ${locale} is not a locale`);
+    }
   }
 });
 
@@ -30,9 +38,9 @@ test('every recorded cell still holds exactly its English', () => {
   const drifted = [];
   for (const locale of NON_ENGLISH_LOCALES) {
     const stored = localeValues(locale);
-    for (const key of catalog.englishInKeys) {
+    for (const [key, { locales }] of records) {
       const row = rowsById.get(key);
-      if (!row.englishIn.includes(locale)) continue;
+      if (!locales.includes(locale)) continue;
       const value = stored.get(key);
       if (value !== row.source) drifted.push(`${locale}:${key} = ${JSON.stringify(value)}`);
     }
@@ -57,7 +65,7 @@ test('a packet built from the committed tree opens no cell', () => {
 });
 
 test('an unrecorded locale holding the English still opens the cell', () => {
-  const key = catalog.englishInKeys[0];
+  const [key] = records[0];
   const row = rowsById.get(key);
   const other = NON_ENGLISH_LOCALES.find((locale) => !row.englishIn.includes(locale));
   assert.equal(buildEntries(other, {}, new Map([[key, row.source]]))[key].translation, '');

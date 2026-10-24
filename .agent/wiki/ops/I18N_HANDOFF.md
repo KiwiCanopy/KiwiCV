@@ -34,10 +34,9 @@ Phase 6 uses an English-first, all-or-nothing workflow:
    the English in all fourteen locales, which is pre-filled from `source`; the
    importer then rejects any other value for it, and
    `tests/i18n/verbatim-rows.test.cjs` fails if a locale drifts. This took a
-   fresh packet from 313 blank cells to 173. The rest are rows equal to the
-   English in only some locales (cognates, date patterns, local sample
-   employers); a per-row marker cannot say that, so they are still refilled
-   by hand.
+   fresh packet from 313 blank cells to 173. The rest — equal to the English in
+   only some locales — are recorded per locale in `ENGLISH_IN` (see below), so a
+   packet from a clean tree now opens none.
 3. Each non-English `translation` value is filled **in place, in the working
    tree** — by the agent since 2026-09-07 (`.claude/rules/i18n.md`), deriving
    from strings the locale already ships. Nothing else in the entry is touched.

@@ -69,6 +69,15 @@ export function useAIComposer() {
   // `targetLang === currentLang` as "not a translation". Seed and value both
   // come off `translationTargets`, so they cannot disagree with the options.
   const [targetLangChoice, setTargetLang] = useState<LocaleCode | null>(null);
+  // ⚠️ The tick is spent once the CV changes language. The add-ons strip
+  // unmounts when the band folds, so a tick left on is invisible — and the next
+  // run translated the CV again, into the next language the picker offered.
+  const [tickedFor, setTickedFor] = useState(cvLanguage);
+  if (tickedFor !== cvLanguage) {
+    setTickedFor(cvLanguage);
+    setTranslate(false);
+    setTargetLang(null);
+  }
   const targetLangOptions = translationTargets(cvLanguage);
   const targetLang =
     targetLangChoice && targetLangOptions.includes(targetLangChoice)

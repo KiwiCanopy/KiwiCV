@@ -1,4 +1,4 @@
 export const fix_skills_reorder_is_change = {
   fix_skills_reorder_is_change:
-    'When Improve with AI only reorders your skills, that is now offered as a change you can review, with the moved skills marked, instead of being reported as "no changes".',
+    'Когато Подобри с ИИ само пренарежда уменията ти, това вече се предлага като промяна за преглед, с отбелязани преместени умения, вместо да се съобщава „Без промяна“.',
 };

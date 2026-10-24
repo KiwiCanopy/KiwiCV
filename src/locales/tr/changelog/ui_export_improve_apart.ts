@@ -1,4 +1,4 @@
 export const ui_export_improve_apart = {
   ui_export_improve_apart:
-    'Export and Improve my CV are easier to tell apart: Improve now sits at the start of the AI bar, and the Export button in the header is no longer green. When you work from a job ad or your own instructions, Improve waits until the bar is open, so it never runs on text you cannot see.',
+    "Dışa aktar ve CV'mi geliştir artık daha kolay ayırt ediliyor: Geliştir artık yapay zeka çubuğunun başında yer alıyor ve üst bölümdeki Dışa aktar düğmesi artık yeşil değil. Bir iş ilanından veya kendi yönergelerinden çalışırken Geliştir, çubuk açılana kadar bekliyor; böylece görmediğin bir metin üzerinde asla çalışmıyor.",
 };

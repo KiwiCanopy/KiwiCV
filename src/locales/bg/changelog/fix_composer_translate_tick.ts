@@ -1,4 +1,4 @@
 export const fix_composer_translate_tick = {
   fix_composer_translate_tick:
-    'After Improve with AI translates your CV, the next run no longer translates it again: "Also translate my CV" now turns itself off once the translation lands.',
+    'След като Подобри с ИИ преведе твоето CV, следващото изпълнение вече не го превежда отново: „Преведи също и моя CV“ сега се изключва от само себе си, щом преводът е готов.',
 };

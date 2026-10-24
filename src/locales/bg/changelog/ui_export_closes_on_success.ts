@@ -1,4 +1,4 @@
 export const ui_export_closes_on_success = {
   ui_export_closes_on_success:
-    'After a fully successful export, the Export dialog now closes by itself and a notice confirms it for ten seconds. If any destination fails, the dialog stays open so you can retry.',
+    'След напълно успешен експорт диалоговият прозорец за експорт вече се затваря сам, а известие го потвърждава за десет секунди. Ако някоя дестинация се провали, прозорецът остава отворен, за да опиташ отново.',
 };

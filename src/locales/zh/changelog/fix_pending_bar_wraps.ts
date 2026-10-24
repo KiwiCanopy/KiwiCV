@@ -1,4 +1,4 @@
 export const fix_pending_bar_wraps = {
   fix_pending_bar_wraps:
-    'On a narrow editor, the bar of AI proposals to review now wraps its buttons, so Discard all is no longer cut off.',
+    '在较窄的编辑器中，待审阅的 AI 建议栏现在会让按钮自动换行，放弃全部不再被截断。',
 };

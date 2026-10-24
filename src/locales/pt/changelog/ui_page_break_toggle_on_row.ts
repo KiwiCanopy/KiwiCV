@@ -1,4 +1,4 @@
 export const ui_page_break_toggle_on_row = {
   ui_page_break_toggle_on_row:
-    'The page break button is back on every section row in the Design tab, so you can see at a glance where a new PDF page starts.',
+    'O botão de quebra de página voltou a estar em cada linha de secção no separador Design, para veres de relance onde começa uma nova página do PDF.',
 };

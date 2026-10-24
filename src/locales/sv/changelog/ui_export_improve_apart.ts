@@ -1,4 +1,4 @@
 export const ui_export_improve_apart = {
   ui_export_improve_apart:
-    'Export and Improve my CV are easier to tell apart: Improve now sits at the start of the AI bar, and the Export button in the header is no longer green. When you work from a job ad or your own instructions, Improve waits until the bar is open, so it never runs on text you cannot see.',
+    'Exportera och Förbättra mitt CV är nu lättare att skilja åt: Förbättra sitter nu först i AI-fältet, och knappen Exportera i sidhuvudet är inte längre grön. När du arbetar utifrån en jobbannons eller egna instruktioner väntar Förbättra tills fältet är öppet, så att det aldrig körs på text du inte kan se.',
 };

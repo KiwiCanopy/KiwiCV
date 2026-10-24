@@ -184,7 +184,7 @@ export function useAIComposer() {
    * `canRun`, which is about whether a run is possible at all.
    *
    * ⚠️ **Kept separate on purpose.** `AIComposerBar` renders the run button as
-   * `{canRunNow && …}` — absent, not disabled — so folding this into `canRun`
+   * `{runIsShown && …}` (built on `canRun`) — absent, not disabled — so folding this into `canRun`
    * would make the Improve button VANISH because of a cover-letter dropdown.
    * The button stays, demotes to `secondary`, and states why.
    */

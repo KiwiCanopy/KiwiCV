@@ -54,6 +54,7 @@ const SINGLETON_ANCHORS = {
   SECTION_HEADING_ANCHOR_ID: 'src/components/ui/section/SectionPage.tsx',
   REVIEW_NEXT_ANCHOR_ID: 'src/features/dashboard/editor/proposals/PendingProposalsBar.tsx',
   COMPOSER_RUN_ANCHOR_ID: 'src/features/dashboard/editor/composer/AIComposerBar.tsx',
+  COMPOSER_ENTRY_ANCHOR_ID: 'src/features/dashboard/editor/composer/AIComposerBar.tsx',
 };
 
 for (const [name, owner] of Object.entries(SINGLETON_ANCHORS)) {

@@ -21,6 +21,11 @@ export const SECTION_HEADING_ANCHOR_ID = 'editor-section-heading';
  * `AIComposerBar`, and only its desktop shape renders the button.
  */
 export const COMPOSER_RUN_ANCHOR_ID = 'ai-composer-run';
+/**
+ * The composer's entry button, the run's stand-in while the band is closed in a
+ * text mode. Singleton for the same reason as the run button.
+ */
+export const COMPOSER_ENTRY_ANCHOR_ID = 'ai-composer-entry';
 
 /**
  * Marks the control through which one list entry's delete is **reached**,

@@ -101,6 +101,10 @@ only the old name lets the same glyph back in under the new one.
 borrow it — the paywall a visitor hits right after pressing that trigger is
 amber.
 
+**Lime is the AI run's, not Export's.** The header Export button is ink
+(`bg-foreground`); a lime primary near the composer gets pressed for Improve
+(#27, `UI_PATTERNS.md`).
+
 **The legacy baseline only shrinks.** Delete a file's entry in the same commit
 that migrates it; `tests/lint/legacy-baseline.test.mjs` fails on a stale entry,
 so a migrated file cannot keep its exemption.
@@ -112,7 +116,8 @@ focus. Then verify mobile, narrow editor, tablet and desktop; dark mode; reduced
 motion; contrast; screen-reader names; keyboard navigation.
 
 **Keep unavailable controls visible and disabled with a concise reason** rather
-than hiding them. Place a control beside the thing it affects. Animate transforms
+than hiding them — unless another control takes the slot, as the composer's
+entry button does for its run (#27, `UI_PATTERNS.md` § AI composer bar). Place a control beside the thing it affects. Animate transforms
 and opacity, never layout properties, and never make perpetual decoration a
 prerequisite for understanding the product.
 

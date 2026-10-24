@@ -6,7 +6,7 @@ import { coverLetterSampleReasonId } from '@/components/modals/ai/template/cover
 import { Button } from '@/components/ui/Button';
 import { LocaleSelect } from '@/components/ui/LocaleSelect';
 import { SegmentedToggle } from '@/components/ui/SegmentedToggle';
-import { COMPOSER_RUN_ANCHOR_ID } from '@/constants/focusAnchors';
+import { COMPOSER_ENTRY_ANCHOR_ID, COMPOSER_RUN_ANCHOR_ID } from '@/constants/focusAnchors';
 import { AIAccessChip } from '@/features/dashboard/editor/composer/AIAccessChip';
 import { AIComposerField } from '@/features/dashboard/editor/composer/AIComposerField';
 import { rowHasWrapped } from '@/features/dashboard/editor/composer/rowHasWrapped';
@@ -27,7 +27,7 @@ import { ChevronDown, ChevronRight, ChevronUp, Pencil, Sparkles } from 'lucide-r
  * row that cannot fit at any level stops trying rather than re-rendering
  * forever.
  */
-const LAST_DROP_LEVEL = 3;
+const LAST_DROP_LEVEL = 2;
 
 /** The cover-letter control's id in this chrome, and the reason id derived from it. */
 const COVER_LETTER_CONTROL_ID = 'composer-cover-letter';
@@ -81,7 +81,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
    */
   // ⚠️ The cascade below bounds the RESTING row only. Expanded is free to wrap;
   // it is already several rows tall.
-  // ⚠️ The **title yields first**, and the modes are never squeezed — full or
+  // ⚠️ The modes are never squeezed — full or
   // gone. A toggle truncated to "Stell… / Prof… / Benu…" is present but
   // unreadable, which is worse than absent: it takes the space *and* fails to
   // inform. A narrowing step was tried and removed for that reason — at 224px
@@ -92,25 +92,24 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
   // and below the last tier its label names the active mode in the toggle's
   // place.
   //
-  //   >= 1150  everything
-  //   < 1150   the title goes — the cheapest thing here, since the tile already
-  //            identifies the band, and its 117px is what keeps the toggle at
-  //            full width down to the last tier
+  //   >= 1000  everything
   //   < 1000   the modes go, and the entry control's label names the mode
-  const hasDraft = composer.draft.trim().length > 0;
   const canRunNow = composer.canRun;
+  // Exactly one of the two holds the action slot: closed in a text mode the
+  // entry button stands in, and the run is absent (#27).
+  const entryStandsIn = isCollapsed && composer.needsDraft;
+  const runIsShown = canRunNow && !entryStandsIn;
 
   /**
    * What the resting row gives up, and in what order. It drops one thing at a
    * time and stops the moment the row fits, rather than comparing against magic
    * thresholds that assumed a worst case the row is often not carrying.
    *
-   *   1. the **title** ("Improve with AI")
-   *   2. the run button's **label**, which drops its object: "Improve my CV"
+   *   1. the run button's **label**, which drops its object: "Improve my CV"
    *      becomes "Improve". German is why this step exists — "Lebenslauf
    *      verbessern" is ~205px against English's 137px, which was the only
    *      thing still pushing the toggle off the row in any language.
-   *   3. the **mode toggle** — last, and in practice never.
+   *   2. the **mode toggle** — last, and in practice never.
    *
    * ⚠️ The edit button is icon-only whenever the toggle is visible, in **both**
    * states. It used to show the start of the pasted ad, which took 190px and was
@@ -195,11 +194,9 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
     setDropLevel(currentDropLevel + 1);
   }, [relaxed, currentDropLevel, rowSignature]);
 
-  const showTitle = relaxed || currentDropLevel < 1;
-  const showFullRunLabel = relaxed || currentDropLevel < 2;
-  const showModes = relaxed || currentDropLevel < 3;
+  const showFullRunLabel = relaxed || currentDropLevel < 1;
+  const showModes = relaxed || currentDropLevel < 2;
 
-  const hideTitle = !showTitle;
   const restingRowIsTight = !showModes;
 
   if (pendingCount > 0) return null;
@@ -220,15 +217,13 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
   // ("Stellenbeschreibung"). Different words for different things, and the
   // pencil alone never said which.
   //
-  // The row still yields in the same order — title first, then the run label,
-  // then the modes — so the words that go are the ones the tile beside them
-  // already covers.
+  // The row still yields in the same order — the run label, then the modes —
+  // so the words that go are the ones the tile beside them already covers.
   const entryText = entryLabel;
 
   // ⚠️ The row has ONE loud thing, and which one it is follows what the user
-  // still has to do. With no draft the next step is supplying it, so the entry
-  // control takes the fill and this demotes; once there is a draft this takes it
-  // back. A dark filled button held at `opacity-60` is simultaneously the
+  // still has to do: the entry button while it stands in, this otherwise — never
+  // both. This demotes only when `runBlocked`. A dark filled button held at `opacity-60` is simultaneously the
   // loudest object on the row and the one thing that does nothing, which is the
   // defect this replaces.
   //
@@ -247,7 +242,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
       // the one it re-creates after the run.
       id={COMPOSER_RUN_ANCHOR_ID}
       // ⚠️ `runBlocked` is NOT folded into `canRunNow`. This button is rendered
-      // conditionally on `canRunNow` below — absent, not disabled — so folding
+      // conditionally on `runIsShown` below — absent, not disabled — so folding
       // them would make the primary action disappear because of a cover-letter
       // dropdown. Blocked, it stays put, demotes, and names its reason.
       variant={canRunNow && !composer.runBlocked ? 'primary' : 'secondary'}
@@ -258,14 +253,9 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
         if (composer.run()) setIsCollapsed(true);
       }}
       aria-disabled={canRunNow && !composer.runBlocked ? undefined : true}
-      // ⚠️ Points at the reason only while SOMETHING carries it. The visible
-      // one lives in the add-ons strip, which unmounts with the band — and the
-      // band rests closed, so an unconditional reference names a missing
-      // element for most of the session. That is an invalid ARIA reference
-      // (4.1.2), the same trap `aria-controls` above documents. The collapsed
-      // case is covered by the `sr-only` copy below, so exactly one element
-      // holds this id at any moment.
-      aria-describedby={composer.runBlocked ? COVER_LETTER_REASON_ID : undefined}
+      // The reason lives in the add-ons strip, mounted only while the band is
+      // open — so the reference is gated on the same fact, never left dangling.
+      aria-describedby={composer.runBlocked && !isCollapsed ? COVER_LETTER_REASON_ID : undefined}
       loading={composer.isGenerating}
       loadingLabel={t('ai.optimizing')}
       className="shrink-0"
@@ -302,7 +292,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
   // into the textarea instead of leaving it on the control the user just
   // pressed. A disclosure must not move focus.
   const toggleCollapsed = () => {
-    if (isCollapsed && composer.needsDraft) requestFieldFocus();
+    if (entryStandsIn) requestFieldFocus();
     setIsCollapsed(!isCollapsed);
     // ⚠️ Focus has to be put back by hand. `onMouseDown` is prevented so the
     // click cannot pull focus out of the field on the way, and that also stops
@@ -313,8 +303,8 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
 
   // ⚠️ A mode that needs a draft has nowhere to type while the band is closed,
   // and `canRun` is false without one — so a collapsed band on `job_description`
-  // or `custom` with an empty draft is a dead end: a disabled button and no
-  // field. Choosing such a mode reopens the band rather than adding a second
+  // or `custom` with an empty draft has no field to type in, only the entry
+  // button. Choosing such a mode reopens the band rather than adding a second
   // control that means "open the thing you just asked for".
   const selectMode = (mode: Parameters<typeof composer.setMode>[0]) => {
     composer.setMode(mode);
@@ -351,12 +341,9 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
       // fifteen locales. Safe only because this control is desktop-only: on a
       // phone `ai.suggest` is *also* "Improve with AI", and two identically
       // named buttons in one row is a real defect, not just a test failure.
-      // ⚠️ No `aria-label`. The button now CONTAINS the visible title, so the
-      // title is its accessible name — which is what a voice-control user says
-      // ("click Improve with AI"). An aria-label would override the words on
-      // screen with an identical string and break that match for no gain.
-      // Still safe on phones: this control is desktop-only, and the phone band
-      // has its own single button.
+      // ⚠️ No `aria-label`: the `sr-only` title inside names it, so the name
+      // stays in the content where it always was. Desktop-only, so the phone
+      // band's own button never sits beside it.
       // ⚠️ `-ml-3.5` pulls the 44px hit area left so the CHEVRON GLYPH lands on
       // the same vertical as the section rail's icons directly below it —
       // measured, both at x=100. Without it the band's `px-6` and the rail's
@@ -365,10 +352,9 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
       //
       // The margin moves the box, not the glyph inside it: the touch target
       // stays 44px, it just starts at 78 instead of 92.
-      // ⚠️ The hit area runs chevron → tile → title, not just the 44px chevron.
-      // A 44px target for a disclosure whose own heading sits two elements to
-      // the right is a target most people aim at and miss; an accordion header
-      // is conventionally clickable across its label. The chevron keeps its own
+      // ⚠️ The hit area runs chevron → tile, not just the 44px chevron: the tile
+      // is the band's visible heading, and an accordion header is clickable
+      // across its label. The chevron keeps its own
       // 44px box INSIDE this one so the glyph still lands on the rail icons
       // below it — that alignment is measured, and `-ml-3.5` still moves the
       // outer box rather than the glyph.
@@ -393,10 +379,10 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
         <Sparkles className="h-4 w-4" />
       </span>
 
-      {/* ⚠️ The first thing to go when the row runs out of room — `sr-only`
-          rather than removed, so it still names this button when the words are
-          gone. The tile beside it already identifies the band. */}
-      <span className={cn('min-w-0', hideTitle && 'sr-only')}>
+      {/* ⚠️ Never visible: beside "Improve my CV" it read as the same words
+          twice (owner, 2026-10-24, #27). `sr-only` keeps it as this button's
+          name; the tile identifies the band. */}
+      <span className="sr-only">
         <span className="text-foreground text-sm font-semibold">{t('ai.composer_title')}</span>
       </span>
     </button>
@@ -485,10 +471,64 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
             the region does. */}
         {collapseToggle}
 
+        {/* ⚠️ The action slot follows the tile, not the row's end. At the end
+            it sat right under the header's Export button, and the two were
+            pressed for each other (#27). */}
+
+        {/* The way into the text while the band is closed. It is a real,
+            labelled control rather than only the chevron: "open the region" and
+            "let me paste the ad" are the same click here, but only one of them
+            is a thing the user was actually thinking about.
+            ⚠️ Only for the modes that take text — `professional` needs none, so
+            offering it there would promise a field that will not appear. */}
+        {entryStandsIn && (
+          <Button
+            id={COMPOSER_ENTRY_ANCHOR_ID}
+            variant="primary"
+            size="md"
+            onClick={() => {
+              setIsCollapsed(false);
+              requestFieldFocus();
+            }}
+            // ⚠️ The real `Button`, not a bespoke pill. It sits in the action
+            // slot — beside the tile, where the run button goes — so it has to
+            // *be* an action: same height, radius, padding and type as the
+            // button it stands in for. A rounded pill of its own invention read
+            // as a different class of thing in the one place it must not.
+            //
+            // Width follows content rather than a fixed slot. The fixed slot
+            // existed to stop the row shifting when the two swapped; the run
+            // button is now absent entirely while it cannot run, so the row
+            // already rearranges at that exact moment and a width change adds
+            // no new jump.
+            // ⚠️ No `max-w-60`: 240px clips French ("Instructions
+            // personnalisées"), and a clipped label is present but unreadable.
+            className="shrink-0"
+          >
+            <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
+            {/* ⚠️ Primary whether or not a draft exists: while collapsed it is
+                the only way to a run in these modes (see the run slot below).
+
+                The label is permanent. It names the thing you would type —
+                "Job Description", "Custom Instructions" — which is what an
+                unlabelled pencil never told anyone, and which the mode toggle
+                beside it does not say either. */}
+            <span className="min-w-0 truncate">{entryText}</span>
+          </Button>
+        )}
+
+        {/* ⚠️ Absent, not disabled. A button you cannot press is clutter on a
+            row whose whole job is to be one line — and with it gone the entry
+            control takes the action slot. ⚠️ Also absent while collapsed in a
+            mode that takes text: a run there used a job ad and add-ons the user
+            could not see (owner, 2026-10-24, #27). `professional` needs no
+            draft, so there it always renders. */}
+        {runIsShown && <div data-composer-run="">{runButton}</div>}
+
         {/* ⚠️ The slack goes HERE, on purpose. It used to sit on the title block
             as `flex-1`, which absorbed 348px when the title needs ~110 and
             wedged the empty space into the middle of the row. One flexible
-            spacer between the identity group and the controls puts it in one
+            spacer between the identity-and-action group and the controls puts it in one
             place. */}
         <div className="flex-1" aria-hidden="true" />
 
@@ -520,88 +560,11 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
           </>
         )}
 
-        {/* The tight resting row drops the subtitle and the modes but never a
+        {/* The tight resting row drops the modes but never a
             blocker — a run button that will bounce with nothing saying so is the
             defect the band was built to fix. */}
         {restingRowIsTight && (
           <AIAccessChip state={composer.accessState} compact className="min-w-0 shrink" />
-        )}
-
-        {/* The way into the text while the band is closed. It is a real,
-            labelled control rather than only the chevron: "open the region" and
-            "let me paste the ad" are the same click here, but only one of them
-            is a thing the user was actually thinking about.
-            ⚠️ Only for the modes that take text — `professional` needs none, so
-            offering it there would promise a field that will not appear. */}
-        {isCollapsed && composer.needsDraft && (
-          <Button
-            variant={hasDraft ? 'secondary' : 'primary'}
-            size="md"
-            onClick={() => {
-              setIsCollapsed(false);
-              requestFieldFocus();
-            }}
-            // ⚠️ The real `Button`, not a bespoke pill. It sits in the action
-            // slot — last on the row, where the run button goes — so it has to
-            // *be* an action: same height, radius, padding and type as the
-            // button it stands in for. A rounded pill of its own invention read
-            // as a different class of thing in the one place it must not.
-            //
-            // Width follows content rather than a fixed slot. The fixed slot
-            // existed to stop the row shifting when the two swapped; the run
-            // button is now absent entirely while it cannot run, so the row
-            // already rearranges at that exact moment and a width change adds
-            // no new jump. `max-w-60` only caps the filled state, where the
-            // content is the user's own prose.
-            className={cn(
-              'shrink-0',
-              // ⚠️ The done state keeps `--secondary` as its fill but NOT
-              // `border-transparent`. The claim that "the pale fill has a shape
-              // of its own at 1.17:1 and needs no edge" was measured only in
-              // light and is wrong in both: `--secondary` on `--card` is 1.18:1
-              // light and **1.12:1 dark**. With no edge and no visible fill the
-              // button simply was not there in dark mode.
-              //
-              // `border-input` is 3.83:1 light / 3.28:1 dark. This is the same
-              // rule the rest of the app follows — a fill that does not contrast
-              // with its surface means the EDGE is the control.
-              // ⚠️ No `max-w-60`. That cap existed when this button previewed the
-              // user's pasted prose; the content is a fixed locale string now, and
-              // 240px clips French — `Instructions personnalisées` needs ~196px
-              // against ~184px of budget. A clipped label is "present but
-              // unreadable", which is the defect that got the mode toggle's
-              // narrowing step deleted; it must not come back here.
-              hasDraft && 'bg-secondary hover:bg-secondary/80',
-            )}
-          >
-            <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
-            {/* ⚠️ Empty is LOUD and filled is QUIET — backwards from the usual
-                convention, and right here: emptiness is the state that needs
-                action, so the step announces itself and then stops. Do not
-                "fix" this to match other buttons.
-
-                The label is permanent. It names the thing you would type —
-                "Job Description", "Custom Instructions" — which is what an
-                unlabelled pencil never told anyone, and which the mode toggle
-                beside it does not say either. */}
-            <span className="min-w-0 truncate">{entryText}</span>
-          </Button>
-        )}
-
-        {/* ⚠️ Absent, not disabled. A button you cannot press is clutter on a
-            row whose whole job is to be one line — and with it gone the entry
-            control falls into the last slot, which is where the eye looks for
-            the action. `professional` needs no draft, so `canRunNow` is always
-            true there and this always renders. */}
-        {canRunNow && <div data-composer-run="">{runButton}</div>}
-
-        {/* The reason, for the state where the visible one is not mounted. The
-            strip renders under `!isCollapsed`, so this and it are mutually
-            exclusive and the id is never duplicated nor dangling. */}
-        {composer.runBlocked && isCollapsed && (
-          <span id={COVER_LETTER_REASON_ID} className="sr-only">
-            {t('ai.cover_letter_needs_sample')}
-          </span>
         )}
       </div>
 
@@ -685,12 +648,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
         </>
       )}
 
-      {/* Row 2 — the input and the action, side by side. The button sits here
-          in every state and every mode, including `professional`, which has no
-          field: a primary action that changes position depending on the mode or
-          on whether options are showing is the defect this arrangement avoids.
-          `items-end` keeps the button on the field's last line once the field
-          grows into a textarea. */}
+      {/* Row 2 — the input. The run button stays on row 1 in every mode. */}
       {regionIsMounted && (
         <div id="ai-composer-body" className="mt-4 flex items-end gap-3">
           <div className="min-w-0 flex-1">

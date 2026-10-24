@@ -170,6 +170,7 @@ const dialogClosed = () =>
   waitFor(() => expect(useResumeStore.getState().ai.isModalOpen).toBe(false));
 
 const composerRun = () => screen.getByRole('button', { name: 'Improve my CV' });
+const composerEntry = () => screen.getByRole('button', { name: 'Job Description' });
 const sectionImprove = () => screen.getByRole('button', { name: 'Optimize Work experience' });
 const coverLetterButton = () => screen.getByRole('button', { name: 'Optimize Cover Letter' });
 const heading = () => screen.getByRole('heading', { name: 'Work experience' });
@@ -248,7 +249,9 @@ describe('focus after the AI dialog closes', () => {
     });
 
     it.each<CloseWay>(['escape', 'close-button'])(
-      'after a failed run, closed by %s, lands on the composer’s run button',
+      // The run folds the band, and closed in job mode the run is absent — its
+      // stand-in, the entry button, takes the focus (#27).
+      'after a failed run, closed by %s, lands on the composer’s entry button',
       async (way) => {
         const user = userEvent.setup();
         render(<Harness />);
@@ -258,7 +261,7 @@ describe('focus after the AI dialog closes', () => {
         finishRun('error');
         await closeDialog(user, way);
 
-        expectFocusOn(composerRun());
+        expectFocusOn(composerEntry());
       },
     );
   });

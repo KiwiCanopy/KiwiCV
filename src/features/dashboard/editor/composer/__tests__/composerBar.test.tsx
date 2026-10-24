@@ -381,6 +381,64 @@ describe("the composer's options row", () => {
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
   });
 
+  // A closed band in Professional runs in one click, so it names what rides
+  // along — the hidden translate tick re-translated a CV unseen (#25, #31).
+  describe('the closed row names the active add-ons', () => {
+    const closeBand = () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Improve with AI' }));
+    const tickTranslate = (language: string) => {
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Also translate my CV' }));
+      fireEvent.change(screen.getByRole('combobox', { name: 'Also translate my CV' }), {
+        target: { value: language },
+      });
+    };
+
+    const summary = () => document.querySelector<HTMLElement>('[data-composer-addons]');
+
+    it('names every active add-on after the run button', () => {
+      render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+      fireEvent.click(mode('Professional'));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Restructure Skills' }));
+      tickTranslate('fr');
+      closeBand();
+
+      expect(summary()?.textContent).toBe('Restructure Skills · Translate → Français');
+      expect(
+        runContainer()!.compareDocumentPosition(summary()!) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+    });
+
+    // It unmounts as the band opens; focus must not fall to the page.
+    it('opens the band and leaves focus on the disclosure', () => {
+      render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+      fireEvent.click(mode('Professional'));
+      tickTranslate('fr');
+      closeBand();
+
+      fireEvent.click(summary()!);
+      const toggle = screen.getByRole('button', { name: 'Improve with AI' });
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+      expect(document.activeElement).toBe(toggle);
+    });
+
+    it('shows nothing when no add-on is active', () => {
+      render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+      fireEvent.click(mode('Professional'));
+      closeBand();
+
+      expect(summary()).toBeNull();
+    });
+
+    it('shows nothing in a text mode, where the entry button stands in for the run', () => {
+      render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
+      fillDraft();
+      tickTranslate('fr');
+      closeBand();
+
+      expect(summary()).toBeNull();
+    });
+  });
+
   /**
    * A launched run folds the band: the result is reviewed below it, so the
    * pasted ad would only push the editor down once the proposals are handled.

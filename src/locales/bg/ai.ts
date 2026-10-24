@@ -9,6 +9,9 @@ export const ai: Translations['ai'] = {
   char_limit_reached:
     'Това поле достигна лимита от {{limit}} знака. Допълнителният текст няма да бъде добавен.',
   chars_used: 'Използвани {{used}} от {{limit}} знака',
+  composer_addon_translate: 'Превод → {{language}}',
+  composer_addons_count_one: '+1 опция',
+  composer_addons_count_other: '+{{count}} опции',
   composer_custom_empty: 'Опиши как искаш да бъде пренаписан твоят CV',
   composer_mode_custom: 'Персонализиран',
   composer_mode_job: 'Адаптиране за обява',

@@ -9,6 +9,9 @@ export const ai: Translations['ai'] = {
   char_limit_reached:
     'Este campo ha alcanzado el límite de {{limit}} caracteres. No se añadirá más texto.',
   chars_used: '{{used}} de {{limit}} caracteres utilizados',
+  composer_addon_translate: 'Traducir → {{language}}',
+  composer_addons_count_one: '+1 opción',
+  composer_addons_count_other: '+{{count}} opciones',
   composer_custom_empty: 'Describe cómo quieres que se reescriba tu CV',
   composer_mode_custom: 'Personalizado',
   composer_mode_job: 'Adaptación a oferta',

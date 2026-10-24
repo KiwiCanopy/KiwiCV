@@ -34,10 +34,9 @@ Phase 6 uses an English-first, all-or-nothing workflow:
    the English in all fourteen locales, which is pre-filled from `source`; the
    importer then rejects any other value for it, and
    `tests/i18n/verbatim-rows.test.cjs` fails if a locale drifts. This took a
-   fresh packet from 313 blank cells to 173. The rest are rows equal to the
-   English in only some locales (cognates, date patterns, local sample
-   employers); a per-row marker cannot say that, so they are still refilled
-   by hand.
+   fresh packet from 313 blank cells to 173. The rest — equal to the English in
+   only some locales — are recorded per locale in `ENGLISH_IN` (see below), so a
+   packet from a clean tree now opens none.
 3. Each non-English `translation` value is filled **in place, in the working
    tree** — by the agent since 2026-09-07 (`.claude/rules/i18n.md`), deriving
    from strings the locale already ships. Nothing else in the entry is touched.
@@ -98,6 +97,15 @@ environment values against the SHA-256 `fingerprint` each entry carries, at
 roughly one in 15,000 per hash across ~120 hashes per file and 15 files, and it
 failed three deploy previews on 2026-07-21. Deleting the packets was the fix
 that kept undoing itself, because the next generate brought them back.
+
+⚠️ **A value that is English on purpose in some locales is recorded in `ENGLISH_IN`**
+(`handoff-catalog.cjs`, 2026-10-24, #39) — a cognate, a date pattern, a sample name. The
+generator blanks any stored value equal to the English so a placeholder cannot pass for a
+translation, and the packet that once remembered the choice is deleted after every import; so
+until this record existed every packet reopened ~200 such cells and the importer refused them.
+When a translation legitimately equals the English, add the locale there in the same change.
+`english-in-locales.test.cjs` fails if a recorded cell stops equalling the English, and if a
+packet built from the committed tree would open any cell. All fourteen alike is `VERBATIM`.
 
 One caveat the recovery cannot remove: if the catalog's English changes after an
 `--apply`, the value in `src/locales/` is a translation of the **previous**

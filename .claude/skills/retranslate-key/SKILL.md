@@ -22,11 +22,12 @@ language but English.
 2. **Regeneration also preserves the existing packet.** Even after the
    locale files are cleaned, `i18n:handoff:generate` merges with whatever
    the packet directory already holds. The directory has to be deleted.
-3. **A fresh packet blanks cells that are correct.** Any locale whose value
-   legitimately equals the English — `PDF`, `Google Drive`, `Design`,
-   `Layout`, `Ocean`, `Cyan` — reads as untranslated. On 2026-08-28 that was
-   **78 cells**. Hand that packet over and the translator dutifully
-   translates "PDF".
+3. **A recorded English stops applying when the English changes.** Locales
+   whose value legitimately equals the English are recorded in `ENGLISH_IN`
+   (`handoff-catalog.cjs`) against that English. Change the key's English and
+   those locales reopen — correctly, since the old approval was for the old
+   words — and `english-in-locales.test.cjs` fails until the entry is updated
+   or dropped (#39).
 
 ## The sequence
 
@@ -61,10 +62,8 @@ step 5 is what stops it asking for nonsense.
    npm run i18n:handoff:generate
    ```
 
-5. **Restore the false blanks.** Every cell the generator blanked that is
-   _not_ your key is a locale whose word genuinely matches English. Refill
-   those with their own `source` value, so the packet asks for exactly the
-   cells you changed and nothing else. Confirm before handing over:
+5. **Check the packet asks for your key only.** A clean tree's packet opens no
+   cell (`english-in-locales.test.cjs` pins that), so every blank is yours:
 
    ```bash
    python3 -c "
@@ -74,7 +73,9 @@ step 5 is what stops it asking for nonsense.
    print('blank keys:', keys)"
    ```
 
-   It must print your key and nothing else.
+   It must print your key and nothing else. If your key had an `ENGLISH_IN`
+   entry, decide per locale whether the new English is still right there, and
+   update the entry's `english` or drop it in the same change.
 
 6. **Hand over the packet**, then `--check`, then `--apply`:
 

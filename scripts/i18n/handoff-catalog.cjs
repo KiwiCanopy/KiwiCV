@@ -4789,6 +4789,122 @@ const VERBATIM = new Set([
 ]);
 
 /**
+ * Cells whose shipped value is the English on purpose in SOME locales — a
+ * cognate (`Design`), a date pattern, a sample name. Equal in all fourteen
+ * belongs in VERBATIM instead. The generator pre-fills these rather than
+ * blanking them: the packet that once recorded the choice is deleted after
+ * every import, so without this record each packet reopened ~200 cells (#39).
+ * `english` is the source each entry approved: once the English changes, the
+ * record stops applying and those locales reopen, so a retranslation cannot
+ * keep the old placeholder. `english-in-locales.test.cjs` keeps it all true.
+ */
+const ENGLISH_IN = {
+  'ai.composer_addons_count_one': { english: '+1 option', locales: ['fr'] },
+  'ai.composer_addons_count_other': { english: '+{{count}} options', locales: ['fr'] },
+  'ai.cover_letter_tone_formal': { english: 'Formal', locales: ['es', 'pt'] },
+  'ai.cover_letter_tone_warm': { english: 'Warm', locales: ['nl'] },
+  'ai.import_max_size': { english: 'Max {{size}} MB', locales: ['it', 'sv'] },
+  'common.footer.open_source': {
+    english: 'Open source (AGPL-3.0)',
+    locales: ['fr', 'it', 'nl', 'pl'],
+  },
+  'common.pages.json': { english: 'JSON Editor', locales: ['de'] },
+  'cvs.chip_theme': { english: 'Design: {{value}}', locales: ['de', 'it', 'pt', 'sv'] },
+  'cvs.col_actions': { english: 'Actions', locales: ['fr'] },
+  'cvs.col_version': { english: 'Version', locales: ['de', 'fr', 'sv'] },
+  'cvs.filters': { english: 'Filters', locales: ['nl'] },
+  'cvs.filters_active': { english: 'Filters ({{n}})', locales: ['nl'] },
+  'dashboard.design': { english: 'Design', locales: ['de', 'fr', 'it', 'pt', 'sv'] },
+  'design.groups.details': { english: 'Details', locales: ['de', 'nl'] },
+  'design.groups.layout': { english: 'Layout', locales: ['de', 'it', 'pt', 'sv'] },
+  'design.template': { english: 'Template', locales: ['de'] },
+  'editor.basics.profiles.suggestions_one': { english: '1 suggestion', locales: ['fr'] },
+  'editor.basics.profiles.suggestions_other': { english: '{{count}} suggestions', locales: ['fr'] },
+  'editor.coverLetter.date': { english: 'Date', locales: ['fr'] },
+  'editor.coverLetter.layout': { english: 'Layout', locales: ['de', 'it', 'pt', 'sv'] },
+  'examples.basics.address': { english: '123 Main St', locales: ['bg'] },
+  'examples.basics.email': { english: 'john@example.com', locales: ['bg'] },
+  'examples.basics.label': { english: 'Software Engineer', locales: ['nl'] },
+  'examples.basics.phone': { english: '+1 (555) 123-4567', locales: ['bg'] },
+  'examples.basics.postal_code': { english: '10001', locales: ['bg'] },
+  'examples.basics.url': { english: 'https://www.google.com/search?q=John+Doe', locales: ['bg'] },
+  'examples.basics.username': { english: 'johndoe', locales: ['bg'] },
+  'examples.common.date_format': {
+    english: 'YYYY-MM-DD',
+    locales: ['bg', 'de', 'ja', 'nl', 'pl', 'pt', 'ru', 'tr', 'zh'],
+  },
+  'examples.education.score': { english: '3.8/4.0', locales: ['bg', 'ja', 'tr'] },
+  'examples.education.study_type': { english: 'Bachelor', locales: ['de'] },
+  'examples.private_projects.location': { english: 'Remote', locales: ['de'] },
+  'examples.private_projects.name': { english: 'Project Phoenix', locales: ['nl'] },
+  'examples.projects.entity': { english: 'Acme Corp', locales: ['sv'] },
+  'examples.projects.location': { english: 'Remote', locales: ['de'] },
+  'examples.publications.title': {
+    english: 'Nature, Medium, The New York Times',
+    locales: ['bg', 'de', 'nl', 'pl', 'pt', 'ru', 'tr', 'uk'],
+  },
+  'examples.work.company': {
+    english: 'Google',
+    locales: ['bg', 'de', 'fr', 'ja', 'nl', 'pl', 'pt', 'sv', 'uk'],
+  },
+  'examples.work.position': { english: 'Senior Software Engineer', locales: ['nl'] },
+  'legal.privacy.tabLabel': { english: 'Privacy', locales: ['it', 'nl'] },
+  'legal.terms.tabLabel': { english: 'T&C', locales: ['es', 'it', 'pt'] },
+  'placeholders.basics.address': { english: '123 Main St', locales: ['bg'] },
+  'placeholders.basics.email': { english: 'john@example.com', locales: ['bg'] },
+  'placeholders.basics.label': { english: 'Software Engineer', locales: ['nl'] },
+  'placeholders.basics.phone': { english: '+1 (555) 123-4567', locales: ['bg'] },
+  'placeholders.basics.postal_code': { english: '10001', locales: ['bg'] },
+  'placeholders.common.date_format': {
+    english: 'YYYY-MM-DD',
+    locales: ['bg', 'de', 'ja', 'nl', 'pl', 'pt', 'ru', 'tr', 'zh'],
+  },
+  'placeholders.education.score': { english: '3.8/4.0', locales: ['bg', 'ja', 'tr'] },
+  'placeholders.education.study_type': { english: 'Bachelor', locales: ['de'] },
+  'placeholders.private_projects.name': { english: 'Project Phoenix', locales: ['nl'] },
+  'placeholders.projects.entity': { english: 'Acme Corp', locales: ['sv'] },
+  'placeholders.publications.title': {
+    english: 'Nature, Medium, The New York Times',
+    locales: ['bg', 'de', 'pl', 'pt', 'ru', 'uk'],
+  },
+  'placeholders.work.company': {
+    english: 'Google',
+    locales: ['bg', 'de', 'fr', 'ja', 'nl', 'pl', 'pt', 'sv', 'uk'],
+  },
+  'placeholders.work.position': { english: 'Software Engineer', locales: ['nl'] },
+  'preview.fits_pages_other': { english: '{{count}} pages', locales: ['fr'] },
+  'preview.pdf_render_error_pro_tip': { english: 'Pro-tip', locales: ['nl'] },
+  'settings.github.modal_repo_placeholder': { english: 'username/repository', locales: ['it'] },
+  'settings.interface.install.label': { english: 'App', locales: ['de', 'it', 'nl', 'sv'] },
+  'sidebar.menu_title': { english: 'Menu', locales: ['fr', 'it', 'nl', 'pl', 'pt'] },
+  'sync.export_dialog.package_backup_label': { english: 'Backup', locales: ['it'] },
+  'theme_translations.sections.contact': { english: 'Contact', locales: ['fr', 'nl'] },
+  'theme_translations.sections.publications': { english: 'Publications', locales: ['fr'] },
+  'themes.palettes.foggy.ocean': { english: 'Ocean', locales: ['pl'] },
+  'themes.palettes.lunar.cyan': { english: 'Cyan', locales: ['de', 'fr', 'sv'] },
+  'themes.palettes.misty.ocean': { english: 'Ocean', locales: ['pl'] },
+  'themes.palettes.soft.ocean': { english: 'Ocean', locales: ['pl'] },
+  'themes.palettes.swiss_grid.rose': { english: 'Rose', locales: ['fr'] },
+  'themes.palettes.timeless.default': { english: 'Standard', locales: ['de', 'fr', 'it', 'sv'] },
+  'examples.certificates.issuer': {
+    english: 'Amazon Web Services, Coursera, Microsoft',
+    locales: ['bg', 'de', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt', 'ru', 'sv', 'uk', 'zh'],
+  },
+  'placeholders.certificates.issuer': {
+    english: 'Amazon Web Services, Coursera, Microsoft',
+    locales: ['bg', 'de', 'es', 'fr', 'it', 'ja', 'pl', 'pt', 'ru', 'sv', 'uk'],
+  },
+  'placeholders.certificates.name': {
+    english: 'AWS Certified Solutions Architect',
+    locales: ['bg', 'de', 'es', 'fr', 'it', 'ja', 'pl', 'pt', 'ru', 'sv', 'uk'],
+  },
+  'settings.github.personal_token': {
+    english: 'Personal Access Token',
+    locales: ['bg', 'de', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt', 'ru', 'sv', 'uk'],
+  },
+};
+
+/**
  * Owner, 2026-10-08: legal text is formal wherever the locale distinguishes.
  * Appended to every `legal` row outside the withdrawal instruction (official wording)
  * so no row's own context has to repeat it.
@@ -4815,10 +4931,16 @@ const rows = entries.map(([moduleSpec, path, source, context, protectedTokens = 
     protectedTokens,
     source,
     verbatim: VERBATIM.has(`${exportName}.${path}`),
+    // Only while the English is the one approved; a changed source reopens.
+    englishIn:
+      ENGLISH_IN[`${exportName}.${path}`]?.english === source
+        ? ENGLISH_IN[`${exportName}.${path}`].locales
+        : [],
   };
 });
 
 // Exposed so a test can prove every key of each map resolves to a row.
 Object.defineProperty(rows, 'orderedPlaceholderKeys', { value: Object.keys(ORDERED_PLACEHOLDERS) });
 Object.defineProperty(rows, 'verbatimKeys', { value: [...VERBATIM] });
+Object.defineProperty(rows, 'englishIn', { value: ENGLISH_IN });
 module.exports = rows;

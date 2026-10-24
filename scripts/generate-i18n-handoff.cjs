@@ -80,15 +80,17 @@ function buildEntries(locale, existingPacket = {}, stored = new Map()) {
       // the translator a cell that already looks done, so the placeholder
       // would survive every future packet.
       //
-      // A translator whose language really does use the English word
-      // (`Design`, `Import`) types it once; from then on `fromPacket` matches
-      // and this never asks again.
+      // A language that really does use the English word (`Design`, `Import`)
+      // records it in the catalog's ENGLISH_IN, so it is not asked again (#39).
       const fromLocales = storedValue === entry.source ? '' : storedValue;
       // A verbatim row's English is its translation. A stored value that
       // differs is kept, so the importer rejects it rather than this hiding it.
+      // English on purpose in this locale, recorded in the catalog (#39).
+      const keptEnglish =
+        entry.englishIn.includes(locale) && storedValue === entry.source ? storedValue : '';
       const preservedTranslation = entry.verbatim
         ? fromPacket || storedValue || entry.source
-        : fromPacket || fromLocales;
+        : fromPacket || fromLocales || keptEnglish;
 
       return [
         id,

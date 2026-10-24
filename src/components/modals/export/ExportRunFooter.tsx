@@ -9,8 +9,6 @@ interface ExportRunFooterProps {
   total: number;
   done: number;
   isRunning: boolean;
-  /** True once a run has finished with nothing left to retry. */
-  isComplete: boolean;
   /** True when the trigger should relabel to a retry over the failed set. */
   isRetry: boolean;
   canRun: boolean;
@@ -18,7 +16,6 @@ interface ExportRunFooterProps {
   buildFailed: boolean;
   onCancel: () => void;
   onRun: () => void;
-  onDone: () => void;
 }
 
 /**
@@ -33,14 +30,12 @@ export function ExportRunFooter({
   total,
   done,
   isRunning,
-  isComplete,
   isRetry,
   canRun,
   announcement,
   buildFailed,
   onCancel,
   onRun,
-  onDone,
 }: ExportRunFooterProps) {
   const { t } = useTranslation();
 
@@ -64,42 +59,34 @@ export function ExportRunFooter({
         </p>
       )}
 
-      {!isRunning && !isComplete && count > 0 && (
+      {!isRunning && count > 0 && (
         <p className="text-muted-foreground/70 px-1 text-[11px] leading-relaxed">
           {t('sync.export_dialog.one_run', { count })}
         </p>
       )}
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-stretch">
-        {isComplete ? (
-          <Button variant="primary" size="lg" className="flex-1" onClick={onDone}>
-            {t('sync.export_dialog.done')}
-          </Button>
-        ) : (
-          <>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="flex-1"
-              onClick={onCancel}
-              disabled={isRunning}
-            >
-              {isRunning ? t('sync.export_dialog.close_when_finished') : t('common.cancel')}
-            </Button>
-            <Button
-              variant="primary"
-              size="lg"
-              className="flex-1"
-              onClick={onRun}
-              disabled={!canRun || count === 0}
-              loading={isRunning}
-              loadingLabel={triggerLabel}
-            >
-              <CiExport className="h-5 w-5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{triggerLabel}</span>
-            </Button>
-          </>
-        )}
+        <Button
+          variant="secondary"
+          size="lg"
+          className="flex-1"
+          onClick={onCancel}
+          disabled={isRunning}
+        >
+          {isRunning ? t('sync.export_dialog.close_when_finished') : t('common.cancel')}
+        </Button>
+        <Button
+          variant="primary"
+          size="lg"
+          className="flex-1"
+          onClick={onRun}
+          disabled={!canRun || count === 0}
+          loading={isRunning}
+          loadingLabel={triggerLabel}
+        >
+          <CiExport className="h-5 w-5 shrink-0" aria-hidden="true" />
+          <span className="truncate">{triggerLabel}</span>
+        </Button>
       </div>
     </div>
   );

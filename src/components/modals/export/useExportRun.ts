@@ -15,6 +15,9 @@ import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useToastStore } from '@/store/ui/useToastStore';
 import { type ResumeData } from '@/types/resume';
 
+/** How long a fully successful export's toast stays, the dialog having closed (#34). */
+export const ALL_OK_TOAST_MS = 10_000;
+
 const IDLE_STATE: ExportRunState = { isRunning: false, rows: {}, buildError: null, hasRun: false };
 
 export interface UseExportRunParams {
@@ -132,7 +135,9 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
         // Exactly one toast per run, so the result survives the user closing
         // the dialog. Every argument is a `t()` call — `i18n:literals` and the
         // bare-literal test both hunt `addToast` announcers.
-        addToast(summary, done === total ? 'success' : done === 0 ? 'error' : 'warning');
+        // The full success outlives the dialog, which closes on it (#34).
+        if (done === total) addToast(summary, 'success', ALL_OK_TOAST_MS);
+        else addToast(summary, done === 0 ? 'error' : 'warning');
         setAnnouncement(summary);
         setState((prev) => ({ ...prev, isRunning: false, hasRun: true }));
       } catch (error) {

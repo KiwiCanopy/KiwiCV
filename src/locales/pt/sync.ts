@@ -85,7 +85,6 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Um ficheiro comprimido, diretamente para este dispositivo.',
     dest_zip_label: 'Transferir como ZIP',
-    done: 'Concluído',
     filename_only: 'A empresa e o cargo apenas afetam o nome exportado. Não são guardados.',
     manage_link: 'gerir nas Definições',
     one_run_one: 'Uma execução, um destino.',

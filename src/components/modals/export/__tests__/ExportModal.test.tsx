@@ -200,28 +200,26 @@ describe('ExportModal', () => {
     expect(ensureConnected).toHaveBeenCalledWith(expect.objectContaining({ mode: 'push' }));
   });
 
-  it('keeps the dialog open after a fully successful run and offers Done', async () => {
+  // The toast carries the result; only a failure keeps the report on screen (#34).
+  it('closes on its own after a fully successful run', async () => {
     const user = userEvent.setup();
     const props = renderModal();
 
     await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
 
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'sync.export_dialog.done' })).toBeTruthy(),
-    );
-    expect(props.onClose).not.toHaveBeenCalled();
-    expect(screen.getByRole('dialog')).toBeTruthy();
+    await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
   });
 
   it('reports a failed destination in its row and relabels the trigger as a retry', async () => {
     runDestination.mockResolvedValueOnce({ success: false, error: 'disk full' } as never);
     const user = userEvent.setup();
-    renderModal();
+    const props = renderModal();
 
     await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ }));
 
     await waitFor(() => expect(screen.getByText('disk full')).toBeTruthy());
     expect(screen.getByRole('button', { name: /sync\.export_dialog\.retry_one/ })).toBeTruthy();
+    expect(props.onClose).not.toHaveBeenCalled();
   });
 
   it('mounts the live region before it has anything to say', () => {

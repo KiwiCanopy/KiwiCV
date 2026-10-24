@@ -83,7 +83,6 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: '1 つのアーカイブをこのデバイスに直接保存。',
     dest_zip_label: 'ZIP としてダウンロード',
-    done: '完了',
     filename_only: '会社名と職種はエクスポート名にのみ影響します。保存はされません。',
     manage_link: '設定で管理',
     one_run_one: '1 回の実行で 1 つの送信先。',

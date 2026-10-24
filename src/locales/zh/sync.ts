@@ -77,7 +77,6 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: '一个压缩包，直接下载到此设备。',
     dest_zip_label: '下载为 ZIP',
-    done: '完成',
     filename_only: '公司和职位名称仅影响导出文件名，不会被保存。',
     manage_link: '在“设置”中管理',
     one_run_one: '一次运行，一个目的地。',

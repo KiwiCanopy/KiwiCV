@@ -81,7 +81,6 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Doğrudan bu cihaza tek bir arşiv.',
     dest_zip_label: 'ZIP olarak indir',
-    done: 'Bitti',
     filename_only: 'Şirket ve pozisyon yalnızca dışa aktarılan adı etkiler. Kaydedilmezler.',
     manage_link: "Ayarlar'dan yönet",
     one_run_one: 'Tek çalıştırma, tek hedef.',

@@ -82,7 +82,6 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Один архів безпосередньо на цей пристрій.',
     dest_zip_label: 'Завантажити як ZIP',
-    done: 'Готово',
     filename_only:
       'Компанія та посада впливають лише на назву експортованого файлу. Вони не зберігаються.',
     manage_link: 'керувати в Налаштуваннях',

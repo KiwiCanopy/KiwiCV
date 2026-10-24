@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ExportNameFields } from '@/components/modals/export/ExportNameFields';
@@ -37,9 +37,9 @@ interface ExportModalBodyProps {
 /**
  * Configure, then one trigger.
  *
- * The dialog never closes on its own. A ZIP download has just fired and a
- * per-destination report has just been written; vanishing it would repeat the
- * old auto-close defect in a new costume.
+ * ⚠️ Closes on its own only when every destination succeeded; the 10-second
+ * toast carries the result (owner, 2026-10-24, #34). Any failure keeps the
+ * per-destination report and Retry on screen.
  */
 export function ExportModalBody({
   onClose,
@@ -113,10 +113,12 @@ export function ExportModalBody({
     onClose();
   };
 
-  const handleDone = () => {
+  // Layout, not passive: the completed footer must never paint before the close.
+  useLayoutEffect(() => {
+    if (!isComplete) return;
     clearExportDraft();
     onClose();
-  };
+  }, [isComplete, onClose]);
 
   return (
     <div className="space-y-4">
@@ -167,14 +169,12 @@ export function ExportModalBody({
         total={attempted}
         done={finished}
         isRunning={state.isRunning}
-        isComplete={isComplete}
         isRetry={isRetry}
         canRun={preview.trim().length > 0}
         announcement={announcement}
         buildFailed={state.buildError !== null}
         onCancel={handleCancel}
         onRun={() => void run(targets, projectName)}
-        onDone={handleDone}
       />
     </div>
   );

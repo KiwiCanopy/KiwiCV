@@ -89,16 +89,7 @@ interface DialogFrameBaseProps {
    * close button and blocks Escape, without implying `aria-busy`.
    */
   dismissible?: boolean;
-  /**
-   * A blocking gate that must stay usable over anything (#9): painted on the top
-   * layer, and kept the dialog Radix treats as active — scroll lock, focus,
-   * pointer events — when another dialog opens after it, by remounting on each
-   * such open. Focus returns to the element that had it; scroll position and
-   * DOM state inside the content do not survive, so keep state above the frame.
-   */
-  staysOnTop?: boolean;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | 'none';
-  zIndexClassName?: string;
   className?: string;
   /**
    * False when the dialog owns its own scroll region instead of scrolling as a
@@ -111,7 +102,24 @@ interface DialogFrameBaseProps {
   innerClassName?: string;
 }
 
+/** The layer: a gate owns the top one, so it takes no z-index of its own. */
+type DialogFrameLayerProps =
+  | {
+      /**
+       * A blocking gate that must stay usable over anything (#9): painted on the
+       * top layer, and kept the dialog Radix treats as active — scroll lock,
+       * focus, pointer events — when another dialog opens after it, by remounting
+       * on each such open. Focus returns to the control that had it, by position
+       * among the tabbables; scroll position and DOM state inside the content do
+       * not survive, so keep state above the frame.
+       */
+      staysOnTop: true;
+      zIndexClassName?: never;
+    }
+  | { staysOnTop?: false; zIndexClassName?: string };
+
 type DialogFrameProps = DialogFrameBaseProps &
+  DialogFrameLayerProps &
   (
     | {
         /** Default flush shape: the frame renders the title/icon/description row. */
@@ -166,6 +174,8 @@ type DialogFrameProps = DialogFrameBaseProps &
 const DialogFrameRoleContext = createContext<'dialog' | 'alertdialog'>('dialog');
 /** Inside a `staysOnTop` frame: a nested dialog's open must not remount its own host. */
 const InsideStaysOnTopContext = createContext(false);
+/** For a dialog primitive other than this frame (`Sheet`) deciding whether to count its open. */
+export const useInsideStaysOnTop = (): boolean => useContext(InsideStaysOnTopContext);
 const noSubscription = () => () => {};
 const noOpens = () => 0;
 const TABBABLE =

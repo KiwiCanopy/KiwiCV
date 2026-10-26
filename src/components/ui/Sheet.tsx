@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { useInsideStaysOnTop } from '@/components/ui/DialogFrame';
 import { noteDialogOpened } from '@/components/ui/dialogStack';
 import { cn } from '@/utils/cn';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -55,6 +56,7 @@ export function Sheet({
   overlayClassName,
   children,
 }: SheetProps) {
+  const insideStaysOnTop = useInsideStaysOnTop();
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
@@ -66,7 +68,9 @@ export function Sheet({
         />
         <Dialog.Content
           // Lets a dialog that stays on top take its layer back (#9).
-          onOpenAutoFocus={() => queueMicrotask(noteDialogOpened)}
+          onOpenAutoFocus={() => {
+            if (!insideStaysOnTop) queueMicrotask(noteDialogOpened);
+          }}
           className={cn(
             'border-border data-[state=open]:animate-in fixed inset-y-0 z-50 shadow-[var(--elevation-2)] duration-200 focus:outline-none',
             SIDE_CLASSES[side],

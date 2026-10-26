@@ -80,7 +80,8 @@ under the 300-line wiki limit.
   out of an exempted file puts the legacy markup into a new, fully guarded path.
 - **Z-Index Strategy**: Standardized hierarchy to prevent overlapping conflicts.
   Every `zIndexClassName` in `src/`, highest first — grep
-  `zIndexClassName="z-\[` to regenerate this list rather than editing a row by hand:
+  `zIndexClassName="z-\[`, plus `staysOnTop$` for the top row, to regenerate this list rather
+  than editing a row by hand:
   - Blocking, must sit over everything: `LegalUpdateModal`, `LanguageOnboardingModal` —
     `staysOnTop`, which paints z-[9999] itself (no `zIndexClassName`)
   - Confirmations, raised over whatever they interrupt: `ConfirmModal` — z-[200]
@@ -101,8 +102,9 @@ under the 300-line wiki limit.
   `DialogFrame` counts every other dialog's open in `dialogStack.ts` and remounts the gate's
   Radix root on each, so it is last again; focus returns to the control the user had, but
   scroll position and any DOM state inside the content reset, so a gate keeps its state above
-  the frame. A dialog nested inside a gate does not count, or it would remount its own host
-  forever. The later dialog gets its layer back when the gate closes. `Sheet` counts its opens
+  the frame. A dialog in a gate's React tree (`DialogFrame` or `Sheet`) does not count, or it would
+  remount its own host forever; one a gate opens through a store is not nested and would end
+  up frozen under it. The later dialog gets its layer back when the gate closes. `Sheet` counts its opens
   too; a `Popover` with `modal` would not, so do not use one under a gate. No dialog needs to
   wait for consent to avoid the freeze; `VersionUpdateModal` still waits so What's New is not
   shown behind the gate.

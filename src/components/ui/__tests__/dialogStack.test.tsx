@@ -174,6 +174,80 @@ describe('a dialog that stays on top (#9)', () => {
     expect(renders).toBeLessThan(5);
   });
 
+  it('does not remount for a sheet nested in it', async () => {
+    let renders = 0;
+    function Counted() {
+      renders += 1;
+      return null;
+    }
+    render(
+      <DialogFrame open onOpenChange={() => {}} dismissible={false} staysOnTop title="Consent">
+        <Counted />
+        <Sheet open onOpenChange={() => {}} title="Menu" description="Nav">
+          <button type="button">Home</button>
+        </Sheet>
+      </DialogFrame>,
+    );
+    await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+    expect(renders).toBeLessThan(5);
+  });
+
+  function Reopenable({ open, later }: { open: boolean; later: boolean }) {
+    return (
+      <>
+        <DialogFrame
+          open={open}
+          onOpenChange={() => {}}
+          dismissible={false}
+          staysOnTop
+          title="Consent"
+        >
+          <button type="button">Read the terms</button>
+          <input type="checkbox" aria-label="I agree" />
+        </DialogFrame>
+        <DialogFrame open={later} onOpenChange={() => {}} title="Export">
+          <button type="button">Export now</button>
+        </DialogFrame>
+      </>
+    );
+  }
+
+  it('forgets the last focus once closed, so a reopen takes Radix’s first choice', async () => {
+    const { rerender } = render(<Reopenable open later={false} />);
+    await act(async () => screen.getByLabelText('I agree').focus());
+    await act(async () => rerender(<Reopenable open={false} later={false} />));
+
+    await act(async () => rerender(<Reopenable open later={false} />));
+    await act(async () => rerender(<Reopenable open later />));
+    await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+    expect(document.activeElement).toBe(screen.getByText('Read the terms'));
+  });
+
+  it('falls back to Radix’s first choice when the remembered control is gone', async () => {
+    function Shrinking({ later }: { later: boolean }) {
+      return (
+        <>
+          <DialogFrame open onOpenChange={() => {}} dismissible={false} staysOnTop title="Consent">
+            <button type="button">Read the terms</button>
+            {!later && <input type="checkbox" aria-label="I agree" />}
+          </DialogFrame>
+          <DialogFrame open={later} onOpenChange={() => {}} title="Export">
+            <button type="button">Export now</button>
+          </DialogFrame>
+        </>
+      );
+    }
+    const { rerender } = render(<Shrinking later={false} />);
+    await act(async () => screen.getByLabelText('I agree').focus());
+
+    await act(async () => rerender(<Shrinking later />));
+    await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+    expect(document.activeElement).toBe(screen.getByText('Read the terms'));
+  });
+
   // The other half: without the prop the later dialog takes over, which is the freeze.
   it('loses its layer to a later dialog without it', async () => {
     const { rerender } = render(<Scene staysOnTop={false} later={null} />);

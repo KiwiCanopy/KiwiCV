@@ -1,4 +1,4 @@
 export const fix_sign_out_forgets_export_details = {
   fix_sign_out_forgets_export_details:
-    'Signing out now also forgets the company, position and job posting link you typed in the export dialog, so the next person to sign in on this browser does not see them.',
+    'При изход KiwiCV вече забравя и компанията, позицията и линка към обявата, които са въведени от теб в прозореца за експорт, за да не ги види следващият човек, който влезе в този браузър.',
 };

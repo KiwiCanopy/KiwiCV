@@ -1,7 +1,20 @@
-import { type ReactNode, createContext, useContext, useEffect, useRef } from 'react';
+import {
+  type FocusEvent,
+  type ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from 'react';
 
 import { IconButton } from '@/components/ui/IconButton';
 import { ModalContainer } from '@/components/ui/ModalContainer';
+import {
+  getDialogOpens,
+  noteDialogOpened,
+  subscribeToDialogOpens,
+} from '@/components/ui/dialogStack';
 import { useTranslation } from '@/hooks/useTranslation';
 import { cn } from '@/utils/cn';
 import { type FocusAnchor, focusIfPossible } from '@/utils/focus';
@@ -77,7 +90,6 @@ interface DialogFrameBaseProps {
    */
   dismissible?: boolean;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | 'none';
-  zIndexClassName?: string;
   className?: string;
   /**
    * False when the dialog owns its own scroll region instead of scrolling as a
@@ -90,7 +102,24 @@ interface DialogFrameBaseProps {
   innerClassName?: string;
 }
 
+/** The layer: a gate owns the top one, so it takes no z-index of its own. */
+type DialogFrameLayerProps =
+  | {
+      /**
+       * A blocking gate that must stay usable over anything (#9): painted on the
+       * top layer, and kept the dialog Radix treats as active — scroll lock,
+       * focus, pointer events — when another dialog opens after it, by remounting
+       * on each such open. Focus returns to the control that had it, by position
+       * among the tabbables; scroll position and DOM state inside the content do
+       * not survive, so keep state above the frame.
+       */
+      staysOnTop: true;
+      zIndexClassName?: never;
+    }
+  | { staysOnTop?: false; zIndexClassName?: string };
+
 type DialogFrameProps = DialogFrameBaseProps &
+  DialogFrameLayerProps &
   (
     | {
         /** Default flush shape: the frame renders the title/icon/description row. */
@@ -143,6 +172,14 @@ type DialogFrameProps = DialogFrameBaseProps &
 // throws inside an `AlertDialog.Content` and vice versa. The frame publishes its
 // role so the title/description helpers reach for the matching primitive.
 const DialogFrameRoleContext = createContext<'dialog' | 'alertdialog'>('dialog');
+/** Inside a `staysOnTop` frame: a nested dialog's open must not remount its own host. */
+const InsideStaysOnTopContext = createContext(false);
+/** For a dialog primitive other than this frame (`Sheet`) deciding whether to count its open. */
+export const useInsideStaysOnTop = (): boolean => useContext(InsideStaysOnTopContext);
+const noSubscription = () => () => {};
+const noOpens = () => 0;
+const TABBABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /**
  * The dialog's accessible name, for use inside a `header`. This element is both
@@ -188,14 +225,23 @@ export function DialogFrame({
   footer,
   busy = false,
   dismissible = true,
+  staysOnTop = false,
   maxWidth = '3xl',
-  zIndexClassName = 'z-[100]',
+  zIndexClassName: zIndexClassNameProp = 'z-[100]',
   className,
   scrollable,
   innerClassName,
   ...rest
 }: DialogFrameProps) {
   const { t } = useTranslation();
+  const zIndexClassName = staysOnTop ? 'z-[9999]' : zIndexClassNameProp;
+  const insideStaysOnTop = useContext(InsideStaysOnTopContext);
+  const stackKey = useSyncExternalStore(
+    staysOnTop ? subscribeToDialogOpens : noSubscription,
+    staysOnTop ? getDialogOpens : noOpens,
+  );
+  /** The tabbable the user last focused inside a `staysOnTop` frame, by position. */
+  const lastFocusIndexRef = useRef<number | null>(null);
   const {
     header,
     title,
@@ -253,6 +299,18 @@ export function DialogFrame({
   // `busy`/`dismissible` and let Escape dismiss a dialog that has since become
   // busy (e.g. a delete in flight). Read the latest values off a ref so a
   // post-mount lock actually takes effect.
+  // Open and still mounted: a consumer that unmounts the frame while open is closing it.
+  const openRef = useRef(open);
+  useEffect(() => {
+    openRef.current = open;
+    if (!open) lastFocusIndexRef.current = null;
+  });
+  useEffect(
+    () => () => {
+      openRef.current = false;
+    },
+    [],
+  );
   const escapeStateRef = useRef({ busy, dismissible, onOpenChange });
   useEffect(() => {
     escapeStateRef.current = { busy, dismissible, onOpenChange };
@@ -294,7 +352,28 @@ export function DialogFrame({
     const active = document.activeElement;
     openerRef.current = active instanceof HTMLElement && active !== document.body ? active : null;
     restoreFocusToRef.current = restoreFocusTo;
+    // Counted once the content has mounted (Radix's Portal renders it a pass after
+    // `open` flips) and, via the microtask, after this dialog takes focus. A frame
+    // that stays on top does not count itself, or each remount would trigger the next.
+    if (!staysOnTop && !insideStaysOnTop) queueMicrotask(noteDialogOpened);
+    // A remount, not an open: put focus back where the user had it.
+    const container = event.currentTarget;
+    if (staysOnTop && lastFocusIndexRef.current !== null && container instanceof HTMLElement) {
+      const previous = container.querySelectorAll<HTMLElement>(TABBABLE)[lastFocusIndexRef.current];
+      if (focusIfPossible(previous)) {
+        event.preventDefault();
+        return;
+      }
+    }
     onOpenAutoFocus?.(event);
+  };
+
+  const handleFocusCapture = (event: FocusEvent<HTMLElement>) => {
+    if (!staysOnTop) return;
+    const index = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(TABBABLE)).indexOf(
+      event.target as HTMLElement,
+    );
+    if (index >= 0) lastFocusIndexRef.current = index;
   };
 
   /**
@@ -306,6 +385,9 @@ export function DialogFrame({
    */
   const handleCloseAutoFocus = (event: Event) => {
     event.preventDefault();
+    // A `staysOnTop` remount unmounts the old content while the dialog stays open;
+    // Radix runs this a tick later, after the new content took focus (#9).
+    if (openRef.current) return;
     const opener = openerRef.current;
     // ⚠️ No fallback to the live prop, and no clearing. Radix dispatches
     // open-autofocus on every mount — including a mount while already open — so
@@ -378,13 +460,14 @@ export function DialogFrame({
   // alert-dialog forwards its content props to the same modal `Dialog.Content`.
   const tree =
     role === 'alertdialog' ? (
-      <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
+      <AlertDialog.Root key={stackKey} open={open} onOpenChange={onOpenChange}>
         <AlertDialog.Portal>
           <AlertDialog.Overlay className={overlayClassName} />
           <AlertDialog.Content
             asChild
             onOpenAutoFocus={handleOpenAutoFocus}
             onCloseAutoFocus={handleCloseAutoFocus}
+            onFocusCapture={handleFocusCapture}
             onEscapeKeyDown={handleEscapeKeyDown}
           >
             {body}
@@ -392,13 +475,14 @@ export function DialogFrame({
         </AlertDialog.Portal>
       </AlertDialog.Root>
     ) : (
-      <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Root key={stackKey} open={open} onOpenChange={onOpenChange}>
         <Dialog.Portal>
           <Dialog.Overlay className={overlayClassName} />
           <Dialog.Content
             asChild
             onOpenAutoFocus={handleOpenAutoFocus}
             onCloseAutoFocus={handleCloseAutoFocus}
+            onFocusCapture={handleFocusCapture}
             onEscapeKeyDown={handleEscapeKeyDown}
             onInteractOutside={(event) => event.preventDefault()}
           >
@@ -408,5 +492,11 @@ export function DialogFrame({
       </Dialog.Root>
     );
 
-  return <DialogFrameRoleContext.Provider value={role}>{tree}</DialogFrameRoleContext.Provider>;
+  return (
+    <DialogFrameRoleContext.Provider value={role}>
+      <InsideStaysOnTopContext.Provider value={staysOnTop || insideStaysOnTop}>
+        {tree}
+      </InsideStaysOnTopContext.Provider>
+    </DialogFrameRoleContext.Provider>
+  );
 }

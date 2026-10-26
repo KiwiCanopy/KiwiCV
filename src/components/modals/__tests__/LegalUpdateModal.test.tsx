@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { LegalUpdateModal } from '@/components/modals/LegalUpdateModal';
-import { render, screen, waitFor } from '@testing-library/react';
+import { DialogFrame } from '@/components/ui/DialogFrame';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -83,5 +84,31 @@ describe('LegalUpdateModal', () => {
     );
     expect(eq).toHaveBeenCalledWith('id', 'user-1');
     await waitFor(() => expect(refreshProfile).toHaveBeenCalledTimes(1));
+  });
+
+  // #9: What's New, a post-sign-in export dialog or a restore prompt can open on
+  // their own after this gate; none may take its scroll lock and focus.
+  it('stays usable, and keeps the tick, when another dialog opens after it', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<LegalUpdateModal />);
+    await user.click(screen.getByRole('checkbox'));
+
+    await act(async () =>
+      rerender(
+        <>
+          <LegalUpdateModal />
+          <DialogFrame open onOpenChange={() => {}} title="Export">
+            <button type="button">Export now</button>
+          </DialogFrame>
+        </>,
+      ),
+    );
+
+    const gate = screen.getByRole('dialog', { name: /terms & privacy update/i });
+    expect(gate.closest('[aria-hidden="true"]')).toBeNull();
+    // Radix restores focus for the content a remount replaced a tick later.
+    await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+    expect(gate.contains(document.activeElement)).toBe(true);
+    expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toBe(true);
   });
 });

@@ -9,9 +9,9 @@ const EXCLUDED_SEGMENTS = ['privacy', 'terms', 'legal-notice', 'account', 'blog'
 
 /**
  * Whether the blocking re-consent modal shows on this route: `'unknown'` until
- * auth has resolved a signed-in user's profile. A modal that opens on load must
- * wait for `'clear'`: Radix locks scrolling to the most recently opened dialog,
- * so one opening after the consent modal freezes its text.
+ * auth has resolved a signed-in user's profile. The modal stays usable over a
+ * dialog that opens after it (`staysOnTop`, #9); wait for `'clear'` only to keep
+ * a dialog from appearing behind it.
  */
 export function useLegalConsentState(): 'pending' | 'clear' | 'unknown' {
   const { user, profile, loading } = useAuth();

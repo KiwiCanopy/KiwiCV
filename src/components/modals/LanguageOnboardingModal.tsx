@@ -51,6 +51,8 @@ export const LanguageOnboardingModal: React.FC = () => {
 
   return (
     <DialogFrame
+      // A blocking gate, like the consent modal: nothing opening after it may freeze it (#9).
+      staysOnTop
       open={true}
       // First-run language gate: never user-dismissible, so `dismissible={false}`
       // omits the close button and blocks Escape. Outside-click is always blocked.
@@ -58,7 +60,6 @@ export const LanguageOnboardingModal: React.FC = () => {
       dismissible={false}
       closeLabel={translate('common.close_dialog')}
       maxWidth="lg"
-      zIndexClassName="z-[9999]"
       header={
         <div className="flex items-start gap-4 p-5 pb-6 sm:p-6 sm:pb-6">
           <div className="bg-muted border-border flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border p-2.5">

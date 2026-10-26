@@ -58,8 +58,8 @@ export function MainLayoutOverlays(props: MainLayoutOverlaysProps) {
   return (
     <>
       <VersionUpdateModal
-        // Waits until consent is known to be clear: opened after the consent
-        // modal, this dialog would take Radix's scroll lock and freeze its text.
+        // Waits until consent is known to be clear, so What's New is not opened
+        // behind the consent modal, where nobody can read it.
         isOpen={props.isUpdateModalOpen && legalConsent === 'clear'}
         onClose={props.closeUpdateModal}
         version={props.currentVersion}

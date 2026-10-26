@@ -1,8 +1,8 @@
 import { GOOGLE_DRIVE_FOLDER } from '@/constants/cloud';
-import { wrapBackupJson } from '@/hooks/cloud/applicationMeta';
+import { toDriveAppProperties, wrapBackupJson } from '@/hooks/cloud/applicationMeta';
 import { buildExportArtifacts } from '@/hooks/export/buildExportArtifacts';
 import { type SyncParams, type SyncResult } from '@/hooks/sync/types';
-import { googleDriveService } from '@/services/google-drive';
+import { type DriveUploadFile, googleDriveService } from '@/services/google-drive';
 import {
   GOOGLE_LAST_FULL_PUSH_HASH_KEY,
   GOOGLE_LAST_SYNC_HASH_KEY,
@@ -119,12 +119,15 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
       }
 
       // --- Project Snapshot (JSON) to backups/{lang}/{finalBackupFileName}.json ---
+      // The link also goes in `appProperties`, which the library listing reads
+      // without opening the file (#54).
       const postingUrl = params.postingUrl ?? null;
-      const snapshotFiles: { name: string; content: string | Blob; contentType: string }[] = [];
+      const snapshotFiles: DriveUploadFile[] = [];
       snapshotFiles.push({
         name: `${finalBackupFileName}.json`,
         content: wrapBackupJson(artifacts.json, postingUrl),
         contentType: 'application/json',
+        appProperties: toDriveAppProperties(postingUrl),
       });
 
       const backupPath = [driveFolder, 'backups', lang];

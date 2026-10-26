@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { GoogleDriveRoot } from '@/constants/cloud';
+import { fromDriveAppProperties } from '@/hooks/cloud/applicationMeta';
 import { useTranslation } from '@/hooks/useTranslation';
 import { GitHubService } from '@/services/github';
 import { type DriveFile, googleDriveService } from '@/services/google-drive';
@@ -51,9 +52,11 @@ export function useCloudDiscovery() {
       id?: string;
       updatedAt?: string;
       driveRoot?: GoogleDriveRoot;
+      postingUrl?: string | null;
     }): BackupFile => {
       const meta = parseBackupFilename(file.name);
       return {
+        ...(file.postingUrl && { postingUrl: file.postingUrl }),
         id: file.id,
         name: file.name,
         label: getBackupLabel(file.name),
@@ -155,6 +158,7 @@ export function useCloudDiscovery() {
               name: f.name,
               updatedAt: f.modifiedTime,
               driveRoot: f.driveRoot,
+              postingUrl: fromDriveAppProperties(f.appProperties),
             }),
           );
         }

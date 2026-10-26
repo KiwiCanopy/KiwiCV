@@ -9,6 +9,7 @@ import {
   ensureFolderPath,
   escapeDriveQueryValue,
   getAccessToken,
+  isAppProperties,
   isDriveFileId,
   isInsufficientScope,
   isUploadContentType,
@@ -166,6 +167,9 @@ export const handler = async (event) => {
       ];
       if (!files.every((file) => isUploadContentType(file.contentType))) {
         return { statusCode: 400, body: JSON.stringify({ error: 'Unsupported contentType' }) };
+      }
+      if (!files.every((file) => isAppProperties(file.appProperties))) {
+        return { statusCode: 400, body: JSON.stringify({ error: 'Invalid appProperties' }) };
       }
 
       const folderInfo = await ensureFolderPath(accessToken, folderPath, true, body.unique);

@@ -9,7 +9,7 @@ import { CV_LIBRARY_LIST_ID } from '@/constants/focusAnchors';
 import { VersionThumbnail } from '@/features/cv-library/VersionThumbnail';
 import type { CvVersion } from '@/features/cv-library/types';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Download, EllipsisVertical, RotateCcw, Trash2 } from 'lucide-react';
+import { Download, EllipsisVertical, ExternalLink, RotateCcw, Trash2 } from 'lucide-react';
 
 interface VersionRowProps {
   version: CvVersion;
@@ -66,7 +66,20 @@ export function VersionRow({ version, index, onRestore, onDelete, onDownload }: 
       </div>
 
       <p className="text-muted-foreground hidden min-w-0 flex-1 truncate text-xs md:block">
-        {tailoredFor || t('cvs.no_target')}
+        {file.postingUrl ? (
+          <a
+            href={file.postingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t('cvs.open_posting_for', { name: file.label })}
+            className="text-primary-strong inline-flex max-w-full items-center gap-1 underline-offset-4 hover:underline"
+          >
+            <span className="truncate">{tailoredFor || t('cvs.open_posting')}</span>
+            <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+          </a>
+        ) : (
+          tailoredFor || t('cvs.no_target')
+        )}
       </p>
 
       <p className="text-muted-foreground w-24 shrink-0 text-right text-xs sm:text-left">
@@ -90,6 +103,19 @@ export function VersionRow({ version, index, onRestore, onDelete, onDownload }: 
           </PopoverTrigger>
           <PopoverContent align="end" className="w-56 p-1.5">
             <div className="flex flex-col">
+              {/* The row's own link sits in a column phones do not show. */}
+              {file.postingUrl && (
+                <a
+                  href={file.postingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-foreground hover:bg-muted inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold transition-colors md:hidden"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {t('cvs.open_posting')}
+                </a>
+              )}
               <Button
                 variant="quiet"
                 size="sm"

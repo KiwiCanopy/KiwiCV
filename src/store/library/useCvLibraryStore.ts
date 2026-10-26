@@ -12,6 +12,10 @@ export interface BackupFile {
   position?: string;
   theme?: string;
   driveRoot?: GoogleDriveRoot;
+  /** Job posting link saved at export (#54). GitHub rows fill it lazily. */
+  postingUrl?: string;
+  /** GitHub blob sha: the key of the per-device posting-link cache. */
+  sha?: string;
 }
 
 export function getBackupFileKey(file: Pick<BackupFile, 'id' | 'name' | 'driveRoot'>) {

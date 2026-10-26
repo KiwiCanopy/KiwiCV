@@ -38,12 +38,14 @@ test('discovers KiwiCV and CVCanvas backups without querying CV-Canvas', async (
       return jsonResponse({ files: [{ id: 'legacy-en', name: 'en' }] });
     }
     if (query.includes("'canonical-en' in parents")) {
+      assert.match(new URL(String(input)).searchParams.get('fields'), /appProperties/);
       return jsonResponse({
         files: [
           {
             id: 'canonical-resume',
             name: 'resume.json',
             modifiedTime: '2026-07-17T12:00:00.000Z',
+            appProperties: { kcvUrl0: 'https://jobs.example.com/42' },
           },
         ],
       });
@@ -71,6 +73,8 @@ test('discovers KiwiCV and CVCanvas backups without querying CV-Canvas', async (
       name: 'resume.json',
       modifiedTime: '2026-07-17T12:00:00.000Z',
       driveRoot: 'KiwiCV',
+      // #54: the posting link, listed without opening the file.
+      appProperties: { kcvUrl0: 'https://jobs.example.com/42' },
     },
     {
       id: 'legacy-resume',

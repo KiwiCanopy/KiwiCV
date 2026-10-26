@@ -86,7 +86,7 @@ export const sync: Translations['sync'] = {
       'Firma i stanowisko tworzą nazwę pliku. Link do ogłoszenia jest zapisywany z kopiami zapasowymi na Google Drive lub w prywatnym repozytorium GitHub, nigdy w publicznym ani opublikowanym.',
     letter_confirm_anyway: 'Eksportuj mimo to',
     letter_confirm_message:
-      'Ten list został prawdopodobnie napisany do innego ogłoszenia. Sprawdź, czy pasuje do tej aplikacji, zanim go wyślesz.',
+      'Ten list został prawdopodobnie napisany do innego ogłoszenia. Sprawdź, czy pasuje do tej rekrutacji, zanim go wyślesz.',
     letter_confirm_title: 'Eksportować z tym listem motywacyjnym?',
     letter_confirm_without: 'Eksportuj bez listu',
     letter_excluded: 'List motywacyjny nie jest dołączony',

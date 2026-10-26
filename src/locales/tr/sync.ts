@@ -82,7 +82,7 @@ export const sync: Translations['sync'] = {
       "Şirket ve pozisyon dosya adını belirler. İlan bağlantısı, Google Drive'a veya özel bir GitHub deposuna alınan yedeklerle saklanır; herkese açık ya da yayınlanmış bir depoda asla saklanmaz.",
     letter_confirm_anyway: 'Yine de dışa aktar',
     letter_confirm_message:
-      'Bu ön yazı muhtemelen başka bir iş ilanı için yazıldı. Göndermeden önce bu başvuruya uyup uymadığını kontrol et.',
+      'Bu ön yazı muhtemelen başka bir iş ilanı için yazılmış. Göndermeden önce bu başvuruya uyup uymadığını kontrol et.',
     letter_confirm_title: 'Bu ön yazıyla dışa aktarılsın mı?',
     letter_confirm_without: 'Ön yazı olmadan dışa aktar',
     letter_excluded: 'Ön yazı dahil değil',

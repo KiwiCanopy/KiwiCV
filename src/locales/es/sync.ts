@@ -83,6 +83,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Descargar como ZIP',
     filename_only:
       'La empresa y el puesto determinan el nombre del archivo. El enlace a la oferta se guarda con las copias de seguridad en Google Drive o en un repositorio privado de GitHub, nunca en uno público o publicado.',
+    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_message:
+      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
+    letter_confirm_title: 'Export with this cover letter?',
+    letter_confirm_without: 'Export without letter',
     letter_excluded: 'Carta de presentación no incluida',
     letter_included: 'Carta de presentación incluida antes del CV',
     letter_outdated: 'Puede no coincidir con la nueva oferta — revísala antes de enviarla.',

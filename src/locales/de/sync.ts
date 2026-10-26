@@ -84,6 +84,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Als ZIP herunterladen',
     filename_only:
       'Unternehmen und Position bestimmen den Dateinamen. Der Link zur Stellenanzeige wird mit Backups in Google Drive oder einem privaten GitHub-Repository gespeichert, nie in einem öffentlichen oder veröffentlichten.',
+    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_message:
+      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
+    letter_confirm_title: 'Export with this cover letter?',
+    letter_confirm_without: 'Export without letter',
     letter_excluded: 'Anschreiben nicht enthalten',
     letter_included: 'Anschreiben enthalten, vor dem Lebenslauf',
     letter_outdated: 'Passt vielleicht nicht zur neuen Stellenanzeige – vor dem Absenden prüfen.',

@@ -79,6 +79,11 @@ export const sync = {
     dest_zip_label: 'Download as ZIP',
     filename_only:
       'Company and position shape the file name. The posting link is saved with backups to Google Drive or a private GitHub repository, never with a public or published one.',
+    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_message:
+      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
+    letter_confirm_title: 'Export with this cover letter?',
+    letter_confirm_without: 'Export without letter',
     letter_excluded: 'Cover letter not included',
     letter_included: 'Cover letter included before your CV',
     letter_outdated: 'May not match the new job ad — check before sending.',

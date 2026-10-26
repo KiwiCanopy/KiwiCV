@@ -16,7 +16,9 @@ import { useSyncAuthGateway } from '@/hooks/sync/useSyncAuthGateway';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { normalizePostingUrl } from '@/utils/applicationMeta';
+import { hasCoverLetterText } from '@/utils/coverLetter';
 import { constructBackupFilename, getCleanProjectName, getProjectFilename } from '@/utils/export';
 import { localizedPath } from '@/utils/localeRouting';
 import { isPrimaryActionChord, isTextEntry } from '@/utils/primaryActionChord';
@@ -90,7 +92,39 @@ export function ExportModalBody({
   const isRetry = state.hasRun && failed.length > 0;
   const targets = isRetry ? failed : selected;
   const canRun = preview.trim().length > 0;
-  const runTargets = () => void run(targets, projectName, normalizePostingUrl(postingUrl));
+  const confirm = useConfirmStore((s) => s.confirm);
+  const updateCoverLetter = useResumeStore((s) => s.updateCoverLetter);
+  const letter = resume.coverLetter;
+  const letterIncluded = hasCoverLetterText(letter) && letter.enabled === true;
+  // Asked once per dialog session; switching the letter back on asks again.
+  const [letterAcknowledged, setLetterAcknowledged] = useState(false);
+  if (letterAcknowledged && !letterIncluded) setLetterAcknowledged(false);
+
+  const runTargets = async () => {
+    // The letter rides only in the PDF; an outdated one is for a different job ad.
+    if (letterIncluded && letter.outdated === true && formats.pdf && !letterAcknowledged) {
+      const choice = await confirm({
+        title: t('sync.export_dialog.letter_confirm_title'),
+        message: t('sync.export_dialog.letter_confirm_message'),
+        confirmText: t('sync.export_dialog.letter_confirm_without'),
+        cancelText: t('sync.export_dialog.letter_confirm_anyway'),
+        preferredFocus: 'confirm',
+      });
+      if (choice === null) return;
+      if (choice) {
+        // The same setting the row's switch writes, so the run reads it already off.
+        updateCoverLetter({ enabled: false });
+      } else {
+        setLetterAcknowledged(true);
+      }
+    }
+    void run(
+      targets,
+      projectName,
+      normalizePostingUrl(postingUrl),
+      useResumeStore.getState().resume,
+    );
+  };
 
   // Cmd/Ctrl+Enter from a text field presses the trigger itself, so the
   // button's own disabled state is the only guard. Elsewhere — a link, where it

@@ -39,8 +39,16 @@ export interface UseExportRun {
   failed: DestinationId[];
   /** Polite live-region text. Empty while nothing has happened. */
   announcement: string;
-  /** `postingUrl` is already normalized; `null` saves no link. */
-  run: (ids: DestinationId[], projectName: string, postingUrl?: string | null) => Promise<void>;
+  /**
+   * `postingUrl` is already normalized; `null` saves no link. `snapshot` replaces
+   * the rendered `resume` when the caller changed the store just before running.
+   */
+  run: (
+    ids: DestinationId[],
+    projectName: string,
+    postingUrl?: string | null,
+    snapshot?: ResumeData,
+  ) => Promise<void>;
 }
 
 /**
@@ -57,7 +65,7 @@ export interface UseExportRun {
  * so one failure leaves the others intact and the trigger can relabel to a
  * retry over exactly the failed set.
  */
-export function useExportRun({ resume, formats }: UseExportRunParams): UseExportRun {
+export function useExportRun({ resume: rendered, formats }: UseExportRunParams): UseExportRun {
   const { t } = useTranslation();
   const { handleSync } = useCloudSync();
   const addToast = useToastStore((state) => state.addToast);
@@ -68,8 +76,14 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
   const [announcement, setAnnouncement] = useState('');
 
   const run = useCallback(
-    async (ids: DestinationId[], projectName: string, postingUrl: string | null = null) => {
+    async (
+      ids: DestinationId[],
+      projectName: string,
+      postingUrl: string | null = null,
+      snapshot?: ResumeData,
+    ) => {
       if (runningRef.current || ids.length === 0) return;
+      const resume = snapshot ?? rendered;
       runningRef.current = true;
 
       const total = ids.length;
@@ -169,7 +183,7 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
         runningRef.current = false;
       }
     },
-    [addToast, formats, handleSync, resume, t],
+    [addToast, formats, handleSync, rendered, t],
   );
 
   const entries = Object.entries(state.rows) as [DestinationId, { status: string }][];

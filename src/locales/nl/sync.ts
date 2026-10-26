@@ -81,6 +81,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Downloaden als ZIP',
     filename_only:
       'Bedrijf en functie bepalen de bestandsnaam. De link naar de vacature wordt met back-ups opgeslagen in Google Drive of een privérepository op GitHub, nooit in een openbare of gepubliceerde.',
+    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_message:
+      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
+    letter_confirm_title: 'Export with this cover letter?',
+    letter_confirm_without: 'Export without letter',
     letter_excluded: 'Sollicitatiebrief niet inbegrepen',
     letter_included: 'Sollicitatiebrief inbegrepen, vóór je CV',
     letter_outdated:

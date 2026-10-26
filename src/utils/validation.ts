@@ -219,18 +219,18 @@ const SKILL_LEVEL_WORDS: Readonly<Record<string, SkillLevel>> = {
  * usual single words, and CEFR codes. `null` means "recognised, but no level".
  */
 const FLUENCY_RULES: ReadonlyArray<[RegExp, FluencyLevel | null]> = [
-  [/non-native/, null],
-  [/near-native|native-like/, 4],
-  [/native|bilingual|mother tongue/, 5],
+  [/non[- ]?native/, null],
+  [/near[- ]native|native[- ]like/, 4],
+  [/native|bilingual|mother[- ]?tongue/, 5],
   [/full professional|fluent|\bc2\b/, 4],
   [/limited working|intermediate|conversational|\bb[12]\b/, 2],
   [/elementary|basic|beginner|\ba[12]\b/, 1],
   [/professional|advanced|proficient|\bc1\b/, 3],
 ];
 
-/** A fluency that says nothing but the level; anything longer is kept as the certificate. */
-const BARE_FLUENCY_LABEL =
-  /^(?:native(?: speaker)?|native or bilingual(?: proficiency)?|bilingual|mother tongue|fluent|(?:full |limited )?(?:professional )?working proficiency|full professional(?: proficiency)?|professional|elementary(?: proficiency)?|basic|beginner|intermediate|conversational|advanced|[abc][12])$/;
+/** Words around a level label that add nothing to it ("Native speaker", "C1 level"). */
+const FLUENCY_FILLER =
+  /\b(?:speaker|proficiency|working|level|upper|lower|pre|or|and)\b|[^a-z0-9]+/g;
 
 export const levelFromFluency = (fluency: unknown): FluencyLevel | undefined => {
   if (typeof fluency !== 'string') return undefined;
@@ -238,8 +238,14 @@ export const levelFromFluency = (fluency: unknown): FluencyLevel | undefined => 
   return FLUENCY_RULES.find(([pattern]) => pattern.test(text))?.[1] ?? undefined;
 };
 
+/** True when the fluency is nothing but level words, so keeping it as a certificate would repeat the level. */
 const isBareFluencyLabel = (fluency: string): boolean =>
-  BARE_FLUENCY_LABEL.test(fluency.trim().toLowerCase().replace(/\s+/g, ' '));
+  FLUENCY_RULES.reduce(
+    (rest, [pattern]) => rest.replace(new RegExp(pattern.source, 'g'), ' '),
+    fluency.toLowerCase(),
+  )
+    .replace(FLUENCY_FILLER, '')
+    .trim() === '';
 
 /**
  * Standard JSON Resume item fields KiwiCV has nowhere to keep; importing one

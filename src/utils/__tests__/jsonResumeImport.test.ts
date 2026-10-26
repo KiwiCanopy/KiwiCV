@@ -69,6 +69,21 @@ describe('JSON Resume v1 import (#13)', () => {
     ]);
   });
 
+  it.each([
+    'Native speaker.',
+    'Native / Bilingual',
+    'fluent speaker',
+    'Proficient',
+    'Near-native',
+    'Upper Intermediate',
+    'Advanced (C1)',
+  ])('clears the level label %j instead of repeating it as the certificate', (fluency) => {
+    const { sanitized } = importJsonResume({ languages: [{ language: 'X', fluency }] });
+
+    expect(sanitized.languages[0].certificate).toBe('');
+    expect(sanitized.languages[0].level).toBeGreaterThan(0);
+  });
+
   // examples/resume_2_0_0.json and later carry this entry with no level.
   it('gives an old KiwiCV export’s unlevelled fluency word a level', () => {
     const { sanitized } = importJsonResume({
@@ -99,6 +114,8 @@ describe('JSON Resume v1 import (#13)', () => {
     ['Basic', 1],
     ['Near-native', 4],
     ['Non-native', undefined],
+    ['Non native', undefined],
+    ['Mother-tongue', 5],
     ['Proficient', 3],
     ['TOEFL 110', undefined],
     ['', undefined],

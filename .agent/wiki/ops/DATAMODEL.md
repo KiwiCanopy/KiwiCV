@@ -139,27 +139,34 @@ A per-export snapshot (`backups/<lang>/<name>.json` in Drive or GitHub) may carr
 one key that is **not** resume data: `application: { postingUrl }`, the job
 posting link typed at export (#54). It is metadata about where the version was
 sent, so it lives beside the resume, never in `ResumeData` or `meta`, and never
-reaches the store, the AI, the sync hashes or the rendered CV.
-`src/hooks/cloud/applicationMeta.ts` owns the key, the wrap and the peel.
+reaches the resume store, the AI or the rendered CV.
+`src/utils/applicationMeta.ts` owns the key, the wrap and the peel.
 
-- **Peeled before validation.** `useCloudOperations.downloadBackup` strips it
-  before anything calls `sanitizeResumeData`. A top-level key that reaches the
-  sanitizer becomes pass-through (above) and is written back into every later
-  export. A local file import does not peel it, so a downloaded snapshot opened
-  from disk keeps it as pass-through.
+- **Peeled at the cloud read point.** `useCloudOperations.downloadBackup`
+  strips it before anything calls `sanitizeResumeData`, and hands the link to
+  the export draft on restore.
+- **Dropped by pass-through everywhere else.** `collectPassthrough` refuses a
+  top-level `application` value of this shape, so a snapshot opened from disk
+  cannot carry an old link into later exports. Another tool's `application`
+  block (no string `postingUrl`) is still kept.
+- **In the full-push stamp, as a digest.** `fullPushStamp` folds the link in,
+  so changing only the link pushes again. Do not drop it from the stamp.
 - **Only on the per-export snapshot**, never on the master `resume.json` and
-  never in the ZIP's `backup.json`.
+  never in the ZIP's `backup.json`. The export dialog shows the field only when
+  a cloud backup destination is selected.
 - ⚠️ **Never in a repository anyone else can read.** It uses the same
   `isPrivateRepo` predicate as `getPublicBackupData` (owner, 2026-10-26: a
   posting URL reveals where the user applies).
 - **Listing without opening the file.** Drive writes it to the file's
   `appProperties` too, split over `kcvUrl0…` slots because Drive caps a property
   at 124 bytes of key plus value; an update writes every slot, `null` clearing
-  the unused ones, and so goes multipart. GitHub has no file metadata: a
-  per-device localStorage cache keyed by blob sha, filled at export and lazily
-  read for misses. Do not key that cache by file name — a rename keeps the sha.
-- **Restore hands it to the export draft**, so re-exporting a restored version
-  keeps its link; a version without one clears the draft.
+  the unused ones, and so goes multipart. The library reads the properties, so
+  editing the JSON by hand in Drive does not change the listed link; exporting
+  again does. GitHub has no file metadata: a per-device localStorage cache keyed
+  by blob sha (`GITHUB_POSTING_URL_CACHE_KEY`, cleared with the GitHub
+  credentials), filled at export and read lazily for misses by
+  `features/cv-library/hydratePostingUrls.ts`. Do not key that cache by file
+  name — a rename keeps the sha.
 
 ## Versioning Policy
 

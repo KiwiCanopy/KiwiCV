@@ -1,5 +1,4 @@
 import { GOOGLE_DRIVE_FOLDER } from '@/constants/cloud';
-import { toDriveAppProperties, wrapBackupJson } from '@/hooks/cloud/applicationMeta';
 import { buildExportArtifacts } from '@/hooks/export/buildExportArtifacts';
 import { type SyncParams, type SyncResult } from '@/hooks/sync/types';
 import { type DriveUploadFile, googleDriveService } from '@/services/google-drive';
@@ -11,6 +10,7 @@ import {
   googleDriveConnection,
 } from '@/services/storage/googleStorage';
 import { fullPushStamp } from '@/services/storage/syncHashes';
+import { toDriveAppProperties, wrapBackupJson } from '@/utils/applicationMeta';
 import {
   constructBackupFilename,
   getCleanProjectName,

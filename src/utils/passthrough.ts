@@ -1,4 +1,5 @@
 import { type ResumeData, initialResumeState } from '@/types/resume';
+import { APPLICATION_KEY, isApplicationEnvelope } from '@/utils/applicationMeta';
 
 /**
  * Pass-through: top-level blocks of an imported file that KiwiCV does not model
@@ -22,6 +23,10 @@ const UNSAFE_KEY = '__proto__';
 
 export const isModelledKey = (key: string): boolean => MODELLED_KEYS.has(key);
 
+/** A backup envelope's job posting link is application metadata, never resume data (#54). */
+const isEnvelopeKey = (key: string, value: unknown): boolean =>
+  key === APPLICATION_KEY && isApplicationEnvelope(value);
+
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
@@ -41,7 +46,7 @@ export const liftModelledFromPassthrough = (
   if (!isPlainObject(passthrough)) return { kept, lifted };
 
   for (const [key, value] of Object.entries(passthrough)) {
-    if (key === UNSAFE_KEY || value === undefined) continue;
+    if (key === UNSAFE_KEY || value === undefined || isEnvelopeKey(key, value)) continue;
     if (isModelledKey(key)) lifted[key] = value;
     else kept[key] = value;
   }
@@ -71,6 +76,7 @@ export const collectPassthrough = (data: Record<string, unknown>): CollectedPass
   const dropped: string[] = [];
   for (const [key, value] of Object.entries(data)) {
     if (isModelledKey(key) || key === UNSAFE_KEY || value === undefined) continue;
+    if (isEnvelopeKey(key, value)) continue;
     fromFile[key] = value;
   }
 

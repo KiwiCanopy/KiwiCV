@@ -1,4 +1,3 @@
-import { wrapBackupJson, writeCachedPostingUrl } from '@/hooks/cloud/applicationMeta';
 import { buildExportArtifacts } from '@/hooks/export/buildExportArtifacts';
 import { type SyncParams, type SyncResult } from '@/hooks/sync/types';
 import { GitHubService } from '@/services/github';
@@ -9,6 +8,7 @@ import {
   githubConnection,
 } from '@/services/storage/githubStorage';
 import { fullPushStamp } from '@/services/storage/syncHashes';
+import { wrapBackupJson, writeCachedPostingUrl } from '@/utils/applicationMeta';
 import { getCleanProjectName, getProjectFilename, normalizeHostingPath } from '@/utils/export';
 import { generateThemedHTML } from '@/utils/html-generator';
 import { stringifyResume } from '@/utils/passthrough';

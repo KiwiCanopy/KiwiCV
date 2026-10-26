@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { readExportDraft, writeExportDraft } from '@/components/modals/export/exportDraft';
 import { useCloudRestoreAction } from '@/hooks/cloud/useCloudRestoreAction';
+import { readExportDraft, writeExportDraft } from '@/hooks/export/exportDraft';
 import {
   GITHUB_LAST_FULL_PUSH_HASH_KEY,
   GITHUB_LAST_SYNC_HASH_KEY,

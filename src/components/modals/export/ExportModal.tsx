@@ -5,8 +5,8 @@ import {
   type ExportChromeState,
   ExportModalBody,
 } from '@/components/modals/export/ExportModalBody';
-import { readExportDraft } from '@/components/modals/export/exportDraft';
 import { DialogFrame } from '@/components/ui/DialogFrame';
+import { readExportDraft } from '@/hooks/export/exportDraft';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { getProjectFilename } from '@/utils/export';

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { ExportModal } from '@/components/modals/export/ExportModal';
-import { clearExportDraft } from '@/components/modals/export/exportDraft';
+import { clearExportDraft } from '@/hooks/export/exportDraft';
 import { type ProviderState } from '@/hooks/sync/providerState';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

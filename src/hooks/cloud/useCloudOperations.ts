@@ -1,4 +1,3 @@
-import { peelBackup } from '@/hooks/cloud/applicationMeta';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { GitHubService } from '@/services/github';
@@ -12,6 +11,7 @@ import {
 import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { useToastStore } from '@/store/ui/useToastStore';
 import type { ResumeData } from '@/types/resume';
+import { peelBackup } from '@/utils/applicationMeta';
 import { type FocusAnchor } from '@/utils/focus';
 
 export interface DownloadedBackup {

@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
+import { GITHUB_POSTING_URL_CACHE_KEY, clearGitHubCreds } from '@/services/storage/githubStorage';
+import { buildSingleItemResume } from '@/test/singleItemResume';
 import {
   APPLICATION_KEY,
   DRIVE_URL_SLOTS,
-  GITHUB_POSTING_URL_CACHE_KEY,
   MAX_POSTING_URL_LENGTH,
   fromDriveAppProperties,
   normalizePostingUrl,
@@ -11,8 +12,7 @@ import {
   toDriveAppProperties,
   wrapBackupJson,
   writeCachedPostingUrl,
-} from '@/hooks/cloud/applicationMeta';
-import { buildSingleItemResume } from '@/test/singleItemResume';
+} from '@/utils/applicationMeta';
 import { sanitizeResumeData } from '@/utils/validation';
 import { beforeEach, describe, expect, it } from 'vitest';
 
@@ -21,6 +21,7 @@ describe('normalizePostingUrl', () => {
     ['jobs.example.com/42', 'https://jobs.example.com/42'],
     ['  https://jobs.example.com/42  ', 'https://jobs.example.com/42'],
     ['http://jobs.example.com', 'http://jobs.example.com/'],
+    ['jobs.example.com:8443/x', 'https://jobs.example.com:8443/x'],
   ])('saves %j as %j', (raw, saved) => {
     expect(normalizePostingUrl(raw)).toBe(saved);
   });
@@ -56,13 +57,17 @@ describe('the backup envelope', () => {
     expect(wrapBackupJson(json, null)).toBe(json);
   });
 
-  it('a restored backup adds nothing to passthrough', () => {
+  it('pass-through drops our envelope, so a file imported from disk keeps no old link', () => {
     const resume = buildSingleItemResume('lunar');
     const wrapped = JSON.parse(wrapBackupJson(JSON.stringify(resume), 'https://x.example.com/'));
-    // The unpeeled file is what the guard exists for: it does keep the key.
-    expect(sanitizeResumeData(wrapped).sanitized.passthrough?.[APPLICATION_KEY]).toBeDefined();
-    const { data } = peelBackup(wrapped);
-    expect(sanitizeResumeData(data).sanitized.passthrough?.[APPLICATION_KEY]).toBeUndefined();
+    expect(sanitizeResumeData(wrapped).sanitized.passthrough).not.toHaveProperty(APPLICATION_KEY);
+  });
+
+  it("pass-through keeps another tool's `application` block", () => {
+    const resume = { ...buildSingleItemResume('lunar'), application: { status: 'sent' } };
+    expect(sanitizeResumeData(resume).sanitized.passthrough?.[APPLICATION_KEY]).toEqual({
+      status: 'sent',
+    });
   });
 
   it('leaves a foreign `application` key alone', () => {
@@ -85,6 +90,10 @@ describe('Drive appProperties', () => {
     expect(fromDriveAppProperties(stored)).toBe(url);
   });
 
+  it('stays within the 30 properties Drive allows per app', () => {
+    expect(DRIVE_URL_SLOTS).toBeLessThanOrEqual(30);
+  });
+
   it('clears every slot when there is no link', () => {
     expect(Object.values(toDriveAppProperties(null)).every((value) => value === null)).toBe(true);
     expect(fromDriveAppProperties(undefined)).toBeNull();
@@ -100,6 +109,17 @@ describe('the GitHub sha cache', () => {
     expect(readCachedPostingUrl('abc')).toBeNull();
     writeCachedPostingUrl('def', 'https://jobs.example.com/1');
     expect(readCachedPostingUrl('def')).toBe('https://jobs.example.com/1');
+  });
+
+  it('re-validates what it reads, so a tampered entry never becomes an href', () => {
+    localStorage.setItem(GITHUB_POSTING_URL_CACHE_KEY, '{"abc":"javascript:alert(1)"}');
+    expect(readCachedPostingUrl('abc')).toBeNull();
+  });
+
+  it('leaves the device with the GitHub credentials', () => {
+    writeCachedPostingUrl('abc', 'https://jobs.example.com/1');
+    clearGitHubCreds();
+    expect(readCachedPostingUrl('abc')).toBeUndefined();
   });
 
   it('survives a corrupt entry', () => {

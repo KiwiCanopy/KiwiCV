@@ -1,5 +1,5 @@
-import { clearExportDraft, writeExportDraft } from '@/components/modals/export/exportDraft';
 import { type DownloadedBackup } from '@/hooks/cloud/useCloudOperations';
+import { clearExportDraft, writeExportDraft } from '@/hooks/export/exportDraft';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { GITHUB_LAST_SYNC_HASH_KEY, githubConnection } from '@/services/storage/githubStorage';

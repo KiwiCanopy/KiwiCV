@@ -1,10 +1,13 @@
+import { GITHUB_POSTING_URL_CACHE_KEY } from '@/services/storage/githubStorage';
+
 /**
  * Application metadata: facts about where a CV version was sent, kept beside
  * the resume in a cloud backup and never inside it (#54).
  *
  * This module is the only place that knows the envelope key, the Drive
- * `appProperties` encoding and the GitHub cache. `ResumeData`, the store, the
- * AI payload and the sync hashes never see the link.
+ * `appProperties` encoding and the GitHub cache. `ResumeData`, the resume
+ * store and the AI payload never see the link; it enters the full-push stamp
+ * only as part of a digest, so changing just the link still pushes.
  */
 
 /** The top-level backup JSON key. Outside `ResumeData`, so never in `meta`. */
@@ -21,10 +24,11 @@ export const MAX_POSTING_URL_LENGTH = 2048;
  * The URL as it will be saved, or `null` when there is nothing valid to save.
  * A missing scheme becomes `https://`; anything but http(s) is rejected.
  */
-export function normalizePostingUrl(raw: string | null | undefined): string | null {
-  const trimmed = raw?.trim();
+export function normalizePostingUrl(raw: unknown): string | null {
+  const trimmed = typeof raw === 'string' ? raw.trim() : '';
   if (!trimmed) return null;
-  const withScheme = /^[a-z][a-z\d+.-]*:/i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  // A scheme has no dot, so `jobs.example.com:8443/x` reads as a host and port.
+  const withScheme = /^[a-z][a-z\d+-]*:/i.test(trimmed) ? trimmed : `https://${trimmed}`;
   let url: URL;
   try {
     url = new URL(withScheme);
@@ -53,14 +57,26 @@ export function wrapBackupJson(json: string, postingUrl: string | null): string 
 export function peelBackup<T>(data: T): { data: T; postingUrl: string | null } {
   if (!data || typeof data !== 'object' || Array.isArray(data)) return { data, postingUrl: null };
   const record = data as Record<string, unknown>;
-  const application = record[APPLICATION_KEY];
-  if (!application || typeof application !== 'object') return { data, postingUrl: null };
-  const postingUrl = normalizePostingUrl(
-    String((application as Partial<ApplicationMeta>).postingUrl ?? ''),
+  if (!isApplicationEnvelope(record[APPLICATION_KEY])) return { data, postingUrl: null };
+  const { [APPLICATION_KEY]: application, ...rest } = record;
+  return {
+    data: rest as T,
+    postingUrl: normalizePostingUrl((application as ApplicationMeta).postingUrl),
+  };
+}
+
+/**
+ * Our envelope rather than some other tool's `application` block. Pass-through
+ * drops a value of this shape, so a snapshot imported from disk cannot carry an
+ * old link into later exports.
+ */
+export function isApplicationEnvelope(value: unknown): boolean {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    typeof (value as Partial<ApplicationMeta>).postingUrl === 'string'
   );
-  if (!postingUrl) return { data, postingUrl: null };
-  const { [APPLICATION_KEY]: _peeled, ...rest } = record;
-  return { data: rest as T, postingUrl };
 }
 
 // --- Google Drive appProperties ---------------------------------------------
@@ -105,9 +121,9 @@ export function fromDriveAppProperties(
 
 /**
  * Per device, keyed by blob sha: a rename keeps the sha, a deleted file never
- * matches again, and an overwrite misses once and costs one lazy read.
+ * matches again, and an overwrite misses once and costs one lazy read. The key
+ * lives with the GitHub credentials, so disconnecting clears it.
  */
-export const GITHUB_POSTING_URL_CACHE_KEY = 'kiwicv_github_posting_urls';
 const GITHUB_CACHE_MAX_ENTRIES = 500;
 
 type ShaCache = Record<string, string>;
@@ -125,7 +141,7 @@ function readShaCache(): ShaCache {
 export function readCachedPostingUrl(sha: string): string | null | undefined {
   const cache = readShaCache();
   if (!Object.hasOwn(cache, sha)) return undefined;
-  return cache[sha] || null;
+  return normalizePostingUrl(cache[sha]);
 }
 
 export function writeCachedPostingUrl(sha: string, postingUrl: string | null): void {

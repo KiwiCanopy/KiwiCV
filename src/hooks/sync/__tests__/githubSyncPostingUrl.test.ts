@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { APPLICATION_KEY, readCachedPostingUrl } from '@/hooks/cloud/applicationMeta';
 import { performGitHubSync } from '@/hooks/sync/githubSync';
 import { type SyncParams } from '@/hooks/sync/types';
 import { resetGitHubSyncHashes, saveGitHubCreds } from '@/services/storage/githubStorage';
 import { buildSingleItemResume } from '@/test/singleItemResume';
+import { APPLICATION_KEY, readCachedPostingUrl } from '@/utils/applicationMeta';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /** The posting link reveals where the user applies: private repos only (#54). */

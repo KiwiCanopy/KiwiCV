@@ -1,12 +1,6 @@
 import React from 'react';
 
 import type { GoogleDriveRoot } from '@/constants/cloud';
-import {
-  fromDriveAppProperties,
-  peelBackup,
-  readCachedPostingUrl,
-  writeCachedPostingUrl,
-} from '@/hooks/cloud/applicationMeta';
 import { useTranslation } from '@/hooks/useTranslation';
 import { GitHubService } from '@/services/github';
 import { type DriveFile, googleDriveService } from '@/services/google-drive';
@@ -17,6 +11,7 @@ import {
   useCvLibraryStore,
 } from '@/store/library/useCvLibraryStore';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { fromDriveAppProperties, readCachedPostingUrl } from '@/utils/applicationMeta';
 import { parseBackupFilename } from '@/utils/export';
 
 export function useCloudDiscovery() {
@@ -184,50 +179,5 @@ export function useCloudDiscovery() {
     return { foundBackups, githubPaths: githubPaths.current, attempted, failed };
   };
 
-  /**
-   * Fills the posting links the per-device cache missed, one file read each,
-   * after the list has rendered (#54). The master backup never carries one.
-   */
-  const hydrateGitHubPostingUrls = async (
-    foundBackups: Record<string, Partial<Record<BackupSource, BackupFile[]>>>,
-    paths: Record<string, string>,
-  ) => {
-    if (!pat || !repo) return;
-    const gh = new GitHubService(pat);
-    const [owner, repoName] = repo.split('/');
-    const misses = Object.entries(foundBackups).flatMap(([locale, sources]) =>
-      (sources.github ?? [])
-        .filter(
-          (file) =>
-            file.name !== 'resume.json' && file.sha && readCachedPostingUrl(file.sha) === undefined,
-        )
-        .map((file) => ({ locale, file })),
-    );
-
-    // A few at a time: a fresh device can have dozens of versions to read.
-    const queue = [...misses];
-    const worker = async () => {
-      for (let next = queue.shift(); next; next = queue.shift()) {
-        const { locale, file } = next;
-        try {
-          const content = await gh.getFileContent(
-            owner,
-            repoName,
-            `${paths[locale] || `backups/${locale}`}/${file.name}`,
-          );
-          const { postingUrl } = peelBackup(content ? JSON.parse(content) : null);
-          writeCachedPostingUrl(file.sha!, postingUrl);
-          if (postingUrl) {
-            useCvLibraryStore.getState().setPostingUrl(locale, 'github', file.name, postingUrl);
-          }
-        } catch (err) {
-          // Not cached, so the next visit tries again.
-          console.warn('[Discovery] Could not read the posting link:', err);
-        }
-      }
-    };
-    await Promise.all(Array.from({ length: 4 }, worker));
-  };
-
-  return { discoverBackups, hydrateGitHubPostingUrls, githubPaths };
+  return { discoverBackups, githubPaths };
 }

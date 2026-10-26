@@ -84,6 +84,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Pobierz jako ZIP',
     filename_only:
       'Firma i stanowisko tworzą nazwę pliku. Link do ogłoszenia jest zapisywany z kopiami zapasowymi na Google Drive lub w prywatnym repozytorium GitHub, nigdy w publicznym ani opublikowanym.',
+    letter_confirm_anyway: 'Eksportuj mimo to',
+    letter_confirm_message:
+      'Ten list został prawdopodobnie napisany do innego ogłoszenia. Sprawdź, czy pasuje do tej rekrutacji, zanim go wyślesz.',
+    letter_confirm_title: 'Eksportować z tym listem motywacyjnym?',
+    letter_confirm_without: 'Eksportuj bez listu',
     letter_excluded: 'List motywacyjny nie jest dołączony',
     letter_included: 'List motywacyjny dołączony przed CV',
     letter_outdated: 'Może nie pasować do nowego ogłoszenia — sprawdź go przed wysłaniem.',

@@ -54,6 +54,11 @@ vi.mock('@/store/resume/useResumeStore', () => ({
   ),
 }));
 
+const confirm = vi.fn(async (): Promise<boolean | null> => null);
+vi.mock('@/store/ui/useConfirmStore', () => ({
+  useConfirmStore: (selector: (s: { confirm: typeof confirm }) => unknown) => selector({ confirm }),
+}));
+
 vi.mock('@/services/analytics', () => ({
   ANALYTICS_EVENTS: { EXPORT_MODAL_OPENED: 'export_opened', EXPORT_PERFORMED: 'export_performed' },
   analytics: { track: vi.fn() },
@@ -330,5 +335,155 @@ describe('ExportModal', () => {
     expect(
       screen.queryByRole('switch', { name: 'sync.export_dialog.package_backup_label' }),
     ).toBeNull();
+  });
+
+  describe('an outdated cover letter', () => {
+    const trigger = () => screen.getByRole('button', { name: /sync\.export_dialog\.trigger_one/ });
+
+    beforeEach(() => {
+      Object.assign(storeState.resume.coverLetter, {
+        enabled: true,
+        paragraphs: ['Dear team,'],
+        outdated: true,
+      });
+      // Replaces rather than mutates, like the immer store: a run reading a stale
+      // render would then still see the letter on.
+      storeState.updateCoverLetter.mockImplementation((patch: { enabled?: boolean }) => {
+        storeState.resume = {
+          ...storeState.resume,
+          coverLetter: { ...storeState.resume.coverLetter, ...patch },
+        };
+      });
+    });
+
+    afterEach(() => {
+      storeState.updateCoverLetter.mockReset();
+    });
+
+    it('asks before exporting, focusing the safe choice', async () => {
+      const user = userEvent.setup();
+      renderModal();
+
+      await user.click(trigger());
+
+      expect(confirm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          confirmText: 'sync.export_dialog.letter_confirm_without',
+          cancelText: 'sync.export_dialog.letter_confirm_anyway',
+          preferredFocus: 'confirm',
+        }),
+      );
+      // The trigger is busy once the run starts, so focus returns to the dialog.
+      const [{ restoreFocusTo }] = confirm.mock.calls[0] as unknown as [
+        { restoreFocusTo: () => HTMLElement | null },
+      ];
+      expect(restoreFocusTo()).toBe(screen.getByRole('dialog'));
+    });
+
+    it('exports nothing when the question is dismissed', async () => {
+      confirm.mockResolvedValueOnce(null);
+      const user = userEvent.setup();
+      renderModal();
+
+      await user.click(trigger());
+
+      await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+      expect(buildExportArtifacts).not.toHaveBeenCalled();
+    });
+
+    it('switches the letter off before building when exporting without it', async () => {
+      confirm.mockResolvedValueOnce(true);
+      const user = userEvent.setup();
+      renderModal();
+
+      await user.click(trigger());
+
+      await waitFor(() => expect(buildExportArtifacts).toHaveBeenCalledTimes(1));
+      expect(storeState.updateCoverLetter).toHaveBeenCalledWith({ enabled: false });
+      expect(buildExportArtifacts).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resume: expect.objectContaining({
+            coverLetter: expect.objectContaining({ enabled: false }),
+          }),
+        }),
+      );
+    });
+
+    it('keeps the letter and asks only once when exporting anyway', async () => {
+      confirm.mockResolvedValueOnce(false);
+      runDestination.mockResolvedValueOnce({ success: false, error: 'offline' } as never);
+      const user = userEvent.setup();
+      renderModal();
+
+      await user.click(trigger());
+      await waitFor(() => expect(buildExportArtifacts).toHaveBeenCalledTimes(1));
+      expect(storeState.updateCoverLetter).not.toHaveBeenCalled();
+
+      await user.click(await screen.findByRole('button', { name: /sync\.export_dialog\.retry/ }));
+      await waitFor(() => expect(buildExportArtifacts).toHaveBeenCalledTimes(2));
+      expect(confirm).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not ask for a letter that is current', async () => {
+      storeState.resume.coverLetter.outdated = false;
+      const user = userEvent.setup();
+      renderModal();
+
+      await user.click(trigger());
+
+      await waitFor(() => expect(buildExportArtifacts).toHaveBeenCalledTimes(1));
+      expect(confirm).not.toHaveBeenCalled();
+    });
+
+    it('asks again once the letter is switched off and back on', async () => {
+      confirm.mockResolvedValueOnce(false).mockResolvedValueOnce(null);
+      runDestination.mockResolvedValueOnce({ success: false, error: 'offline' } as never);
+      const user = userEvent.setup();
+      const { rerender } = render(<ExportModal isOpen onClose={vi.fn()} />);
+
+      await user.click(trigger());
+      await screen.findByRole('button', { name: /sync\.export_dialog\.retry/ });
+
+      storeState.resume = {
+        ...storeState.resume,
+        coverLetter: { ...storeState.resume.coverLetter, enabled: false },
+      };
+      rerender(<ExportModal isOpen onClose={vi.fn()} />);
+      storeState.resume = {
+        ...storeState.resume,
+        coverLetter: { ...storeState.resume.coverLetter, enabled: true },
+      };
+      rerender(<ExportModal isOpen onClose={vi.fn()} />);
+
+      await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.retry/ }));
+      await waitFor(() => expect(confirm).toHaveBeenCalledTimes(2));
+    });
+
+    it('does not ask when the letter is not included', async () => {
+      storeState.resume.coverLetter.enabled = false;
+      const user = userEvent.setup();
+      renderModal();
+
+      await user.click(trigger());
+
+      await waitFor(() => expect(buildExportArtifacts).toHaveBeenCalledTimes(1));
+      expect(confirm).not.toHaveBeenCalled();
+    });
+
+    it('does not ask when the PDF, the only format carrying the letter, is off', async () => {
+      const user = userEvent.setup();
+      renderModal();
+      await user.click(
+        screen.getByRole('button', { name: /sync\.export_dialog\.package_summary/ }),
+      );
+      await user.click(
+        screen.getByRole('switch', { name: 'sync.export_dialog.package_pdf_label' }),
+      );
+
+      await user.click(trigger());
+
+      await waitFor(() => expect(buildExportArtifacts).toHaveBeenCalledTimes(1));
+      expect(confirm).not.toHaveBeenCalled();
+    });
   });
 });

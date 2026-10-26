@@ -14,3 +14,12 @@ import { type ResumeData } from '@/types/resume';
  */
 export const hasCoverLetterText = (letter: ResumeData['coverLetter']): boolean =>
   letter.subject.trim().length > 0 || letter.paragraphs.some((entry) => entry.trim().length > 0);
+
+/** Whether the PDF prints the letter as its leading page. */
+export const isCoverLetterPrinted = (
+  letter: ResumeData['coverLetter'] | undefined,
+): letter is ResumeData['coverLetter'] => !!letter?.enabled && hasCoverLetterText(letter);
+
+/** Printed, but drafted for a different job ad than the CV is now tailored to. */
+export const isPrintedLetterOutdated = (letter: ResumeData['coverLetter'] | undefined): boolean =>
+  isCoverLetterPrinted(letter) && letter?.outdated === true;

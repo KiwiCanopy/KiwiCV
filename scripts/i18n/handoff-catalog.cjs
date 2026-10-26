@@ -2353,6 +2353,30 @@ const entries = [
   ],
   [
     'sync',
+    'export_dialog.letter_confirm_anyway',
+    'Export anyway',
+    'Confirmation dialog shown when exporting an outdated cover letter: secondary button that exports with the letter unchanged. Must read clearly different from the primary "Export without letter" at a glance. Take the export verb from sync.export_dialog.trigger.',
+  ],
+  [
+    'sync',
+    'export_dialog.letter_confirm_message',
+    'This letter was likely written for a different job ad. Check that it fits this application before you send it.',
+    'Confirmation dialog body: the cover letter was likely drafted for a different job ad than the one the CV is now tailored to (it may also have been written by hand, so keep the hedge: never state it as certain). Calm, not alarming; addresses the user directly (du in German). Take the ad noun from sync.export_dialog.letter_outdated; never use the word for a job someone holds.',
+  ],
+  [
+    'sync',
+    'export_dialog.letter_confirm_title',
+    'Export with this cover letter?',
+    'Title of the confirmation dialog that opens when the user exports while the included cover letter is flagged outdated. A question. Take "cover letter" from sync.export_dialog.letter_toggle.',
+  ],
+  [
+    'sync',
+    'export_dialog.letter_confirm_without',
+    'Export without letter',
+    'Confirmation dialog primary (safe, focused) button: turns the cover letter off and exports the CV alone. Take "cover letter"/"letter" from sync.export_dialog.letter_toggle and the export verb from sync.export_dialog.trigger.',
+  ],
+  [
+    'sync',
     'export_dialog.letter_excluded',
     'Cover letter not included',
     'Export dialog: status line beside the cover-letter switch when it is off. "Cover letter" is the application letter, not a CV section.',

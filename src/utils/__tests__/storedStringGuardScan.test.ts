@@ -110,8 +110,8 @@ const UNGUARDED = /\?\.trim\(|\|\|\s*['"]['"]\)\.trim\(/;
  * one.
  */
 const KNOWN_UNFIXED: readonly string[] = [
-  'components/preview/themes/shared/coverLetterTypst.ts:126',
-  'components/preview/themes/shared/coverLetterTypst.ts:174',
+  'components/preview/themes/shared/coverLetterTypst.ts:124',
+  'components/preview/themes/shared/coverLetterTypst.ts:172',
 ];
 
 /**

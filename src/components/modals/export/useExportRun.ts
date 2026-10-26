@@ -13,7 +13,6 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useToastStore } from '@/store/ui/useToastStore';
-import { type ResumeData } from '@/types/resume';
 
 /** How long a fully successful export's toast stays, the dialog having closed (#34). */
 export const ALL_OK_TOAST_MS = 10_000;
@@ -27,7 +26,6 @@ const IDLE_STATE: ExportRunState = {
 };
 
 export interface UseExportRunParams {
-  resume: ResumeData;
   formats: Record<ExportFormatId, boolean>;
 }
 
@@ -57,7 +55,7 @@ export interface UseExportRun {
  * so one failure leaves the others intact and the trigger can relabel to a
  * retry over exactly the failed set.
  */
-export function useExportRun({ resume, formats }: UseExportRunParams): UseExportRun {
+export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
   const { t } = useTranslation();
   const { handleSync } = useCloudSync();
   const addToast = useToastStore((state) => state.addToast);
@@ -70,6 +68,9 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
   const run = useCallback(
     async (ids: DestinationId[], projectName: string, postingUrl: string | null = null) => {
       if (runningRef.current || ids.length === 0) return;
+      // Read at press time, as `handleSync` does: a write made just before the
+      // run (the outdated-letter confirm) must reach the build.
+      const resume = useResumeStore.getState().resume;
       runningRef.current = true;
 
       const total = ids.length;
@@ -169,7 +170,7 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
         runningRef.current = false;
       }
     },
-    [addToast, formats, handleSync, resume, t],
+    [addToast, formats, handleSync, t],
   );
 
   const entries = Object.entries(state.rows) as [DestinationId, { status: string }][];

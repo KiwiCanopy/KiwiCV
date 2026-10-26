@@ -39,7 +39,8 @@ export interface UseExportRun {
   failed: DestinationId[];
   /** Polite live-region text. Empty while nothing has happened. */
   announcement: string;
-  run: (ids: DestinationId[], projectName: string) => Promise<void>;
+  /** `postingUrl` is already normalized; `null` saves no link. */
+  run: (ids: DestinationId[], projectName: string, postingUrl?: string | null) => Promise<void>;
 }
 
 /**
@@ -67,7 +68,7 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
   const [announcement, setAnnouncement] = useState('');
 
   const run = useCallback(
-    async (ids: DestinationId[], projectName: string) => {
+    async (ids: DestinationId[], projectName: string, postingUrl: string | null = null) => {
       if (runningRef.current || ids.length === 0) return;
       runningRef.current = true;
 
@@ -96,7 +97,7 @@ export function useExportRun({ resume, formats }: UseExportRunParams): UseExport
             artifacts,
             t,
             syncToCloud: (variant, providers: SyncProviderId[], mode) =>
-              handleSync(variant, projectName, mode, { providers, artifacts }),
+              handleSync(variant, projectName, mode, { providers, artifacts, postingUrl }),
           });
 
           if (result.success) succeededIds.push(id);

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { useCloudRestoreAction } from '@/hooks/cloud/useCloudRestoreAction';
+import { readExportDraft, writeExportDraft } from '@/hooks/export/exportDraft';
 import {
   GITHUB_LAST_FULL_PUSH_HASH_KEY,
   GITHUB_LAST_SYNC_HASH_KEY,
@@ -36,8 +37,8 @@ vi.mock('@/services/analytics', () => ({
 }));
 
 const file = { name: 'resume.json', label: 'resume.json' } as never;
-const restore = () => {
-  const download = vi.fn(async () => buildSingleItemResume('lunar'));
+const restore = (postingUrl: string | null = null) => {
+  const download = vi.fn(async () => ({ data: buildSingleItemResume('lunar'), postingUrl }));
   const { result } = renderHook(() => useCloudRestoreAction(download));
   return result.current.performRestore('github', file, 'en', true);
 };
@@ -68,6 +69,20 @@ describe('useCloudRestoreAction sync-hash bookkeeping', () => {
   });
 });
 
+describe('a restore and the export draft (#54)', () => {
+  it('hands the restored posting link to the next export', async () => {
+    writeExportDraft({ company: 'Old Co', postingUrl: 'https://old.example.com/job' });
+    await restore('https://jobs.example.com/42');
+    expect(readExportDraft()).toEqual({ postingUrl: 'https://jobs.example.com/42' });
+  });
+
+  it('drops a previous link when the restored version has none', async () => {
+    writeExportDraft({ postingUrl: 'https://old.example.com/job' });
+    await restore(null);
+    expect(readExportDraft()).toBeNull();
+  });
+});
+
 describe('a restore across a disconnect', () => {
   it.each([
     ['github', GITHUB_LAST_SYNC_HASH_KEY, clearGitHubCreds],
@@ -78,9 +93,11 @@ describe('a restore across a disconnect', () => {
       let release = () => {};
       const download = vi.fn(
         () =>
-          new Promise<ReturnType<typeof buildSingleItemResume>>((resolve) => {
-            release = () => resolve(buildSingleItemResume('lunar'));
-          }),
+          new Promise<{ data: ReturnType<typeof buildSingleItemResume>; postingUrl: null }>(
+            (resolve) => {
+              release = () => resolve({ data: buildSingleItemResume('lunar'), postingUrl: null });
+            },
+          ),
       );
       const { result } = renderHook(() => useCloudRestoreAction(download));
       const restoring = result.current.performRestore(source, file, 'en', true);

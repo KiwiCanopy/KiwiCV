@@ -41,6 +41,9 @@ export const cvs: Translations['cvs'] = {
   no_target: 'Geen functie vastgelegd',
   not_backed_up_since: 'Niet geback-upt sinds {{date}}',
   open_from_language_switch: "Mijn CV's openen",
+  open_posting: 'Vacature openen',
+  open_posting_for: 'Vacature voor {{name}} openen (opent in een nieuw tabblad)',
+  opens_new_tab: '(opent in een nieuw tabblad)',
   partial_failure_desc:
     '{{provider}} reageerde niet, dus wat daar is opgeslagen staat niet in de lijst.',
   partial_failure_title: 'Sommige versies ontbreken mogelijk',

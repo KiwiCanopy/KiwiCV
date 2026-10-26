@@ -11,6 +11,7 @@ import {
   useCvLibraryStore,
 } from '@/store/library/useCvLibraryStore';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { fromDriveAppProperties, readCachedPostingUrl } from '@/utils/applicationMeta';
 import { parseBackupFilename } from '@/utils/export';
 
 export function useCloudDiscovery() {
@@ -51,9 +52,13 @@ export function useCloudDiscovery() {
       id?: string;
       updatedAt?: string;
       driveRoot?: GoogleDriveRoot;
+      postingUrl?: string | null;
+      sha?: string;
     }): BackupFile => {
       const meta = parseBackupFilename(file.name);
       return {
+        ...(file.postingUrl && { postingUrl: file.postingUrl }),
+        ...(file.sha && { sha: file.sha }),
         id: file.id,
         name: file.name,
         label: getBackupLabel(file.name),
@@ -84,6 +89,8 @@ export function useCloudDiscovery() {
                 return enhanceBackupFile({
                   name: f.name,
                   updatedAt: commit?.commit?.committer?.date || commit?.commit?.author?.date,
+                  sha: f.sha,
+                  postingUrl: readCachedPostingUrl(f.sha),
                 });
               }),
             );
@@ -155,6 +162,7 @@ export function useCloudDiscovery() {
               name: f.name,
               updatedAt: f.modifiedTime,
               driveRoot: f.driveRoot,
+              postingUrl: fromDriveAppProperties(f.appProperties),
             }),
           );
         }

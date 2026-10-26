@@ -83,7 +83,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Ein Archiv, direkt auf dieses Gerät.',
     dest_zip_label: 'Als ZIP herunterladen',
     filename_only:
-      'Firma und Position beeinflussen nur den exportierten Namen. Sie werden nicht gespeichert.',
+      'Unternehmen und Position bestimmen den Dateinamen. Der Link zur Stellenanzeige wird mit Backups in Google Drive oder einem privaten GitHub-Repository gespeichert, nie in einem öffentlichen oder veröffentlichten.',
     letter_excluded: 'Anschreiben nicht enthalten',
     letter_included: 'Anschreiben enthalten, vor dem Lebenslauf',
     letter_outdated: 'Passt vielleicht nicht zur neuen Stellenanzeige – vor dem Absenden prüfen.',
@@ -100,6 +100,7 @@ export const sync: Translations['sync'] = {
       'Ein hochauflösendes, ATS-optimiertes Dokument für HR-Systeme und zum Drucken.',
     package_pdf_label: 'PDF',
     package_summary: 'PDF, Webseite und Sicherung',
+    posting_invalid: 'Das ist keine Webadresse und wird daher nicht gespeichert.',
     preview_label: 'Exportiert als',
     progress: 'Exportieren: {{done}} von {{total}} Zielen fertiggestellt.',
     rename: 'Umbenennen',
@@ -126,6 +127,8 @@ export const sync: Translations['sync'] = {
   export_modal_input_link: 'Standardeinstellungen ändern',
   export_modal_placeholder: 'z.B. Mein_Lebenslauf',
   export_modal_position_label: 'Position',
+  export_modal_posting_label: 'Link zur Stellenanzeige',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Ordnername',
   gateway_desc:
     'Wähle einen Dienst, um deinen Lebenslauf privat und sicher zu speichern. Du kannst dies später jederzeit in den Einstellungen ändern.',

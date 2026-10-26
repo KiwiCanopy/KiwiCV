@@ -1,6 +1,6 @@
 # JSON Export & Import System
 
-> **Last Updated: 2026-10-12**
+> **Last Updated: 2026-10-26**
 
 ## Overview
 
@@ -10,6 +10,8 @@ Two independent paths, often confused:
 - **Import sanitization** (`sanitizeResumeData`) coerces untrusted JSON back into `ResumeData`.
 
 `getFilteredResumeData` is read by `src/pages/RawJsonData.tsx` and by `getPublicBackupData`, which `src/hooks/sync/githubSync.ts` writes to a repo that is public, published by Pages, or of unreadable visibility. Every other export path — download, ZIP, Drive, a private unpublished GitHub repo — serializes the whole store through `stringifyResume`.
+
+A cloud snapshot may also carry a top-level `application` key with the job posting link, added after serialization by `wrapBackupJson` and absent from any repo that gets `getPublicBackupData`. It is not resume data; see [ops/DATAMODEL.md § The backup envelope](../ops/DATAMODEL.md#the-backup-envelope-application).
 
 ## The export package: `buildExportArtifacts`
 

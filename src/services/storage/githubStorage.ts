@@ -64,8 +64,12 @@ export const githubConnection = () => {
   };
 };
 
+/** Job posting links of this repo's backups, by blob sha (`utils/applicationMeta`, #54). */
+export const GITHUB_POSTING_URL_CACHE_KEY = 'kiwicv_github_posting_urls';
+
 export const clearGitHubCreds = () => {
   localStorage.removeItem(GITHUB_PAT_KEY);
+  localStorage.removeItem(GITHUB_POSTING_URL_CACHE_KEY);
   sessionStorage.removeItem(GITHUB_PAT_KEY);
   localStorage.removeItem(GITHUB_REPO_KEY);
   resetGitHubSyncHashes();

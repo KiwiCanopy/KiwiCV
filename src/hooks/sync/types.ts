@@ -29,4 +29,9 @@ export interface SyncParams {
    * builds its own as a fallback.
    */
   artifacts?: ExportArtifacts;
+  /**
+   * Normalized job posting link for a `full` export's snapshot (#54). Never
+   * written to a repository anyone else can read.
+   */
+  postingUrl?: string | null;
 }

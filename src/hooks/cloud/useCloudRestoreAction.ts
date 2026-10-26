@@ -1,3 +1,5 @@
+import { type DownloadedBackup } from '@/hooks/cloud/useCloudOperations';
+import { clearExportDraft, writeExportDraft } from '@/hooks/export/exportDraft';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { GITHUB_LAST_SYNC_HASH_KEY, githubConnection } from '@/services/storage/githubStorage';
@@ -15,7 +17,7 @@ type DownloadBackup = (
   source: BackupSource,
   file: BackupFile,
   locale: string,
-) => Promise<ResumeData>;
+) => Promise<DownloadedBackup>;
 
 /**
  * Downloading a backup into the live draft: confirm, loading dialog, download,
@@ -93,10 +95,13 @@ export function useCloudRestoreAction(downloadBackup: DownloadBackup) {
         source === 'github'
           ? githubConnection().writeHash.bind(null, GITHUB_LAST_SYNC_HASH_KEY)
           : googleDriveConnection().writeHash.bind(null, GOOGLE_LAST_SYNC_HASH_KEY);
-      const data = await downloadBackup(source, file, locale);
+      const { data, postingUrl } = await downloadBackup(source, file, locale);
       const { warnings, data: processedData } = await importResume(setResume, data, {
         clearAI: true,
       });
+      // A restored version re-exports with its own link, never the previous CV's.
+      if (postingUrl) writeExportDraft({ postingUrl });
+      else clearExportDraft();
 
       // The data is in; a hash that fails only costs the next sync one push.
       try {

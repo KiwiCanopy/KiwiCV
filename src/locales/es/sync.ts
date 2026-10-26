@@ -81,7 +81,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Un archivo comprimido, directo a este dispositivo.',
     dest_zip_label: 'Descargar como ZIP',
-    filename_only: 'La empresa y el puesto solo afectan al nombre exportado. No se guardan.',
+    filename_only:
+      'La empresa y el puesto determinan el nombre del archivo. El enlace a la oferta se guarda con las copias de seguridad en Google Drive o en un repositorio privado de GitHub, nunca en uno público o publicado.',
     letter_excluded: 'Carta de presentación no incluida',
     letter_included: 'Carta de presentación incluida antes del CV',
     letter_outdated: 'Puede no coincidir con la nueva oferta — revísala antes de enviarla.',
@@ -97,6 +98,7 @@ export const sync: Translations['sync'] = {
       'Un documento de alta fidelidad y optimizado para ATS, ideal para sistemas de RR. HH. e impresión.',
     package_pdf_label: 'PDF',
     package_summary: 'PDF, página web y copia de seguridad',
+    posting_invalid: 'No es una dirección web, así que no se guardará.',
     preview_label: 'Exportado como',
     progress: 'Exportando: {{done}} de {{total}} destinos finalizados.',
     rename: 'Renombrar',
@@ -122,6 +124,8 @@ export const sync: Translations['sync'] = {
   export_modal_input_link: 'Cambiar la configuración predeterminada',
   export_modal_placeholder: 'p. ej. Mi_Curriculum',
   export_modal_position_label: 'Puesto',
+  export_modal_posting_label: 'Enlace a la oferta',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Nombre de la carpeta',
   gateway_desc:
     'Elige un servicio para hacer una copia de seguridad de tu currículum de forma segura. Siempre puedes cambiar esto más tarde en la configuración.',

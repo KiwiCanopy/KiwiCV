@@ -12,6 +12,10 @@ export interface BackupFile {
   position?: string;
   theme?: string;
   driveRoot?: GoogleDriveRoot;
+  /** Job posting link saved at export (#54). GitHub rows fill it lazily. */
+  postingUrl?: string;
+  /** GitHub blob sha: the key of the per-device posting-link cache. */
+  sha?: string;
 }
 
 export function getBackupFileKey(file: Pick<BackupFile, 'id' | 'name' | 'driveRoot'>) {
@@ -49,6 +53,8 @@ interface CvLibraryState {
   setError: (message: string) => void;
   setUnconfigured: () => void;
   removeFile: (locale: string, source: BackupSource, file: BackupFile) => void;
+  /** A lazily read posting link, for the row still listing that blob (#54). */
+  setPostingUrl: (locale: string, source: BackupSource, sha: string, postingUrl: string) => void;
   reset: () => void;
 }
 
@@ -112,6 +118,15 @@ export const useCvLibraryStore = create<CvLibraryState>()(
         sourceMap[source] = sourceMap[source]!.filter((candidate) => {
           return getBackupFileKey(candidate) !== deletedKey;
         });
+      });
+    },
+
+    setPostingUrl: (locale, source, sha, postingUrl) => {
+      set((state) => {
+        const file = state.discoveryData?.[locale]?.[source]?.find(
+          (candidate) => candidate.sha === sha,
+        );
+        if (file) file.postingUrl = postingUrl;
       });
     },
 

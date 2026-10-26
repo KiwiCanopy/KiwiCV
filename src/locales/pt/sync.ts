@@ -82,7 +82,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Um ficheiro comprimido, diretamente para este dispositivo.',
     dest_zip_label: 'Transferir como ZIP',
-    filename_only: 'A empresa e o cargo apenas afetam o nome exportado. Não são guardados.',
+    filename_only:
+      'A empresa e o cargo definem o nome do ficheiro. O link da oferta é guardado com as cópias de segurança no Google Drive ou num repositório privado do GitHub, nunca num público ou publicado.',
     letter_excluded: 'Carta de apresentação não incluída',
     letter_included: 'Carta de apresentação incluída antes do CV',
     letter_outdated: 'Pode não corresponder à nova oferta — confirma antes de enviar.',
@@ -98,6 +99,7 @@ export const sync: Translations['sync'] = {
       'Um documento de alta fidelidade e otimizado para ATS para sistemas de RH e impressão.',
     package_pdf_label: 'PDF',
     package_summary: 'PDF, página web e cópia de segurança',
+    posting_invalid: 'Não é um endereço web, por isso não será guardado.',
     preview_label: 'Exportado como',
     progress: 'A exportar: {{done}} de {{total}} destinos concluídos.',
     rename: 'Mudar nome',
@@ -123,6 +125,8 @@ export const sync: Translations['sync'] = {
   export_modal_input_link: 'Alterar as definições predefinidas',
   export_modal_placeholder: 'ex: Meu_Curriculo',
   export_modal_position_label: 'Cargo',
+  export_modal_posting_label: 'Link da oferta',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Nome da pasta',
   gateway_desc:
     'Liga o teu currículo à nuvem para o manteres seguro e acessível a partir de qualquer lugar.',

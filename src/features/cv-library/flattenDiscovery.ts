@@ -6,7 +6,7 @@ export interface FlattenedLibrary {
   versions: CvVersion[];
 }
 
-const MASTER_FILENAME = 'resume.json';
+export const MASTER_FILENAME = 'resume.json';
 
 function timeOf(version: CvVersion): number | null {
   if (!version.file.updatedAt) return null;

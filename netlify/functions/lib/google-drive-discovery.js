@@ -77,7 +77,7 @@ export async function discoverBackups(accessToken) {
           const files = await fetchDriveFiles(
             accessToken,
             filesQuery,
-            'id,name,parents,modifiedTime,mimeType',
+            'id,name,parents,modifiedTime,mimeType,appProperties',
           );
 
           for (const file of files) {
@@ -90,6 +90,7 @@ export async function discoverBackups(accessToken) {
               name: file.name,
               modifiedTime: file.modifiedTime,
               driveRoot,
+              ...(file.appProperties && { appProperties: file.appProperties }),
             });
           }
         }

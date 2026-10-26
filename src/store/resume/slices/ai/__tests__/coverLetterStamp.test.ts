@@ -64,3 +64,50 @@ describe('a letter the run left in place', () => {
     expect(letter().outdated).toBeUndefined();
   });
 });
+
+/** Through the real apply path, so the proposal key and its rebuild are bound too. */
+describe('the stamp across real runs', () => {
+  const C = 'c'.repeat(64);
+
+  const seedLetterFor = (draftedFor: string) =>
+    useResumeStore.setState((state) => ({
+      resume: {
+        ...state.resume,
+        coverLetter: { ...createDefaultCoverLetter(), ...OLD, draftedFor, outdated: false },
+      },
+      ai: { ...state.ai, suggestions: {} },
+    }));
+
+  const improveLetter = (paragraphs: string[], jobHash: string) => {
+    store().applyAISuggestion('section:coverLetter', { improvedFields: { paragraphs } });
+    store().stampCoverLetter({ jobHash, wroteLetter: true, tailoredCv: false });
+  };
+
+  it('declines back to the letter the user had', () => {
+    seedLetterFor(A);
+    improveLetter(['Written for B'], B);
+    expect(letter()).toMatchObject({ draftedFor: B, outdated: false });
+
+    store().declineAISuggestion('item:coverLetter');
+    expect(letter()).toMatchObject({ ...OLD, draftedFor: A, outdated: true });
+  });
+
+  it('keeps the original stamp through a second run while the proposal is pending', () => {
+    seedLetterFor(A);
+    improveLetter(['Written for B'], B);
+    improveLetter(['Written for B, again'], B);
+
+    store().declineAISuggestion('item:coverLetter');
+    expect(letter()).toMatchObject({ ...OLD, draftedFor: A, outdated: true });
+  });
+
+  it('keeps it through a second run for another ad as well', () => {
+    seedLetterFor(A);
+    improveLetter(['Written for B'], B);
+    improveLetter(['Written for C'], C);
+    expect(letter()).toMatchObject({ draftedFor: C, outdated: false });
+
+    store().declineAISuggestion('item:coverLetter');
+    expect(letter()).toMatchObject({ ...OLD, draftedFor: A, outdated: true });
+  });
+});

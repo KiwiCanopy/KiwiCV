@@ -228,7 +228,7 @@ export const declineAISuggestion = (state: ResumeStore, target: AITargetKey, fie
         {} as Record<string, unknown>,
       );
 
-      section.patchObject({ ...restored, ...suggestion.onDecline });
+      section.patchObject(restored);
 
       if (field) {
         delete suggestion.originalValue[field];

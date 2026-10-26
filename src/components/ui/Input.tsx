@@ -25,7 +25,12 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix
    */
   prefix?: React.ReactNode;
   error?: string;
-  warning?: string;
+  /**
+   * A non-blocking notice, announced politely. Pass `null` while there is none
+   * on a field that can warn: the live region then exists before its text does,
+   * the only state in which a screen reader reliably announces it (#62).
+   */
+  warning?: string | null;
   infoHint?: React.ReactNode;
   infoInteractive?: boolean;
   infoIcon?: LucideIcon;
@@ -187,9 +192,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {error}
           </p>
         )}
-        {warning && !error && (
-          <p id={warningId} className="text-warning mt-1 text-sm font-medium">
-            {warning}
+        {warning !== undefined && (
+          <p
+            id={warningId}
+            role="status"
+            aria-live="polite"
+            className={cn(warningId && 'text-warning mt-1 text-sm font-medium')}
+          >
+            {warningId ? warning : null}
           </p>
         )}
       </div>

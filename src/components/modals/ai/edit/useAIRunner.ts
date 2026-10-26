@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   buildCoverLetterRequest,
@@ -70,9 +70,8 @@ export const useAIRunner = ({ enabled, target }: UseAIRunnerOptions) => {
   const setCoverLetterLength = useFlowStore((state) => state.setCoverLetterLength);
   const coverLetterTone = useFlowStore((state) => state.prompt.coverLetterTone);
   const setCoverLetterTone = useFlowStore((state) => state.setCoverLetterTone);
-  const coverLetterMatchStyle = useFlowStore((state) => state.prompt.coverLetterMatchStyle);
+  const pickedMatchStyle = useFlowStore((state) => state.prompt.coverLetterMatchStyle);
   const setCoverLetterMatchStyle = useFlowStore((state) => state.setCoverLetterMatchStyle);
-  const syncCoverLetterStyleDefault = useFlowStore((state) => state.syncCoverLetterStyleDefault);
   const resetPrompt = useFlowStore((state) => state.resetPrompt);
 
   /**
@@ -87,12 +86,9 @@ export const useAIRunner = ({ enabled, target }: UseAIRunnerOptions) => {
     clear: clearStyleSample,
   } = useCoverLetterStyle();
 
-  // ⚠️ An effect, not an initial value: a sample stamped for an account reads
-  // '' until auth binds the owner, long after the store is created (#56).
-  const hasStyleSample = styleSample.trim().length > 0;
-  useEffect(() => {
-    syncCoverLetterStyleDefault(hasStyleSample);
-  }, [hasStyleSample, syncCoverLetterStyleDefault]);
+  // ⚠️ Derived here, never seeded into the store: a sample stamped for an
+  // account reads '' until auth binds the owner, long after the store exists (#56).
+  const coverLetterMatchStyle = pickedMatchStyle ?? styleSample.trim().length > 0;
 
   // ⚠️ Seeded from *either* signal. `isTranslationMode` is the translate-only
   // invite; a bare `translationTargetLang` is a composer run that keeps its own

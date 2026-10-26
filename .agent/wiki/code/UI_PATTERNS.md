@@ -564,12 +564,15 @@ length preset, a tone and a writing-sample choice, and that does not fit beside 
   ⚠️ The fifth option is a **UI-only sentinel**. Never add it to `COVER_LETTER_TONES`: that
   array is pinned against the backend table, and an unknown tone is `LETTER_BAD_REQUEST`, one
   of the two failures no retry clears. On the wire it stays four tones XOR a sample.
-- **A saved writing sample is the default voice** (owner, 2026-10-26, #56). Until the user
-  picks in the tone select, `coverLetterMatchStyle` follows whether a sample is readable —
-  on when one appears, off when it is cleared. Any pick sets `coverLetterToneChosen`, and
-  from then on the default never touches the select in that tab. ⚠️ It is applied by an
-  effect in `useAIRunner`, not as the store's initial value: a sample stamped for an account
-  reads `''` until auth binds the owner, long after the store is created.
+- **A saved writing sample is the default voice** (owner, 2026-10-26, #56).
+  `coverLetterMatchStyle` is `null` until the user picks in the tone select, and `useAIRunner`
+  reads `null` as "a sample is readable" — on when one appears, off when it is cleared. A pick
+  stores `true` or `false`, which no sample change overrides in that tab. ⚠️ Derived at the read
+  site, never seeded into the store: a sample stamped for an account reads `''` until auth binds
+  the owner, long after the store is created. Opening the sample editor is not a pick, so on the
+  default, emptying the field mid-edit shows the tone behind the open dialog until the user
+  types again. That is accepted: it is what a cleared sample means, and the run reads the same
+  value the select shows.
 - ⚠️ **A control the band cannot afford hands off to the dialog rather than shrinking.** The
   writing sample is a 5,000-character textarea; the expanded band is already 376px against a
   460px workspace at 1440×900 and at 800×860 it is taller than the thing it acts on. Ticking

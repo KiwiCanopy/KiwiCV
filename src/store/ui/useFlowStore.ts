@@ -86,13 +86,11 @@ interface FlowStore {
      * The writing sample replaces the tone preset rather than joining it: the
      * prompt takes one voice block or the other. So the tone select
      * stays visible and disabled while this is on, never a fifth value in it.
+     *
+     * `null` until a pick in the tone select: the runner then reads it as
+     * "a writing sample is saved" (#56).
      */
-    coverLetterMatchStyle: boolean;
-    /**
-     * Set by a pick in the tone select, either value. Until then
-     * `coverLetterMatchStyle` follows whether a writing sample is saved (#56).
-     */
-    coverLetterToneChosen: boolean;
+    coverLetterMatchStyle: boolean | null;
   };
   setPromptMode: (mode: AIPromptMode | null) => void;
   setJobDescription: (desc: string) => void;
@@ -102,8 +100,6 @@ interface FlowStore {
   setCoverLetterLength: (length: CoverLetterLengthPreset) => void;
   setCoverLetterTone: (tone: CoverLetterTone) => void;
   setCoverLetterMatchStyle: (match: boolean) => void;
-  /** Defaults match-style to whether a sample is saved; a no-op once a tone was chosen. */
-  syncCoverLetterStyleDefault: (hasSample: boolean) => void;
   resetPrompt: () => void;
 
   // Global Auth Modals
@@ -182,9 +178,15 @@ export type _PersistedStateIsSerializable = AssertJson<
 /**
  * v0 → v1: `isGoogleModalOpen` / `isGitHubModalOpen` become `authSurface`.
  * Google wins a legacy pair that is both true — it is the one opened last.
+ *
+ * v1 → v2: `coverLetterMatchStyle` gains `null` for "not picked". A v1 `false`
+ * beside the default tone is the untouched initial state, not a pick.
  */
 export function migrateFlowState(persisted: unknown, version: number): unknown {
-  const state = persisted as { auth?: Record<string, unknown> } | null;
+  let state = persisted as {
+    auth?: Record<string, unknown>;
+    prompt?: Record<string, unknown>;
+  } | null;
   if (version < 1 && state?.auth) {
     const { isGoogleModalOpen, isGitHubModalOpen, ...auth } = state.auth;
     const authSurface: AuthSurface | null = isGoogleModalOpen
@@ -192,9 +194,16 @@ export function migrateFlowState(persisted: unknown, version: number): unknown {
       : isGitHubModalOpen
         ? 'github'
         : null;
-    return { ...state, auth: { ...auth, authSurface } };
+    state = { ...state, auth: { ...auth, authSurface } };
   }
-  return persisted;
+  if (
+    version < 2 &&
+    state?.prompt?.coverLetterMatchStyle === false &&
+    (state.prompt.coverLetterTone ?? COVER_LETTER_DEFAULT_TONE) === COVER_LETTER_DEFAULT_TONE
+  ) {
+    state = { ...state, prompt: { ...state.prompt, coverLetterMatchStyle: null } };
+  }
+  return state;
 }
 
 export const useFlowStore = create<FlowStore>()(
@@ -270,8 +279,7 @@ export const useFlowStore = create<FlowStore>()(
         draftCoverLetter: false,
         coverLetterLength: COVER_LETTER_DEFAULT_LENGTH,
         coverLetterTone: COVER_LETTER_DEFAULT_TONE,
-        coverLetterMatchStyle: false,
-        coverLetterToneChosen: false,
+        coverLetterMatchStyle: null,
       },
       setPromptMode: (mode) =>
         set((state) => {
@@ -300,16 +308,10 @@ export const useFlowStore = create<FlowStore>()(
       setCoverLetterTone: (tone) =>
         set((state) => {
           state.prompt.coverLetterTone = tone;
-          state.prompt.coverLetterToneChosen = true;
         }),
       setCoverLetterMatchStyle: (match) =>
         set((state) => {
           state.prompt.coverLetterMatchStyle = match;
-          state.prompt.coverLetterToneChosen = true;
-        }),
-      syncCoverLetterStyleDefault: (hasSample) =>
-        set((state) => {
-          if (!state.prompt.coverLetterToneChosen) state.prompt.coverLetterMatchStyle = hasSample;
         }),
       /**
        * Clears the DRAFT — what this run was going to say — and deliberately
@@ -418,7 +420,7 @@ export const useFlowStore = create<FlowStore>()(
       storage: createJSONStorage(() => sessionStorage),
       // ⚠️ This store outlives a deploy by design — it carries the OAuth
       // redirect — so a tab mid-sign-in rehydrates v0's two booleans.
-      version: 1,
+      version: 2,
       migrate: (persisted, version) => migrateFlowState(persisted, version) as FlowStore,
     },
   ),

@@ -70,7 +70,6 @@ beforeEach(() => {
       coverLetterLength: COVER_LETTER_DEFAULT_LENGTH,
       coverLetterTone: COVER_LETTER_DEFAULT_TONE,
       coverLetterMatchStyle: false,
-      coverLetterToneChosen: false,
     },
   });
 });

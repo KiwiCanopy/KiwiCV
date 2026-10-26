@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { BRAND_STORAGE_KEYS } from '@/config/brand';
+import { COVER_LETTER_DEFAULT_TONE } from '@/constants/ai';
 import { EXPORT_TRIGGER_ANCHOR_ID } from '@/constants/focusAnchors';
 import { useFlowStore } from '@/store/ui/useFlowStore';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -73,5 +74,30 @@ describe('a v0 auth slice rehydrated after the deploy', () => {
     expect(auth.source).toBe('sync');
     expect(auth).not.toHaveProperty('isGoogleModalOpen');
     expect(auth).not.toHaveProperty('isGitHubModalOpen');
+  });
+});
+
+/**
+ * v1 stored `coverLetterMatchStyle: false` before any pick, so a tab open across
+ * the deploy would otherwise read it as a pick and never get the default (#56).
+ */
+describe('a v1 cover-letter voice rehydrated after the deploy', () => {
+  const v1 = (coverLetterMatchStyle: boolean, coverLetterTone: string) =>
+    JSON.stringify({
+      state: {
+        prompt: { ...useFlowStore.getState().prompt, coverLetterMatchStyle, coverLetterTone },
+      },
+      version: 1,
+    });
+
+  it.each([
+    [false, COVER_LETTER_DEFAULT_TONE, null],
+    [false, 'warm', false],
+    [true, COVER_LETTER_DEFAULT_TONE, true],
+  ] as const)('match=%s tone=%s rehydrates as %s', async (match, tone, expected) => {
+    sessionStorage.setItem(BRAND_STORAGE_KEYS.flowState, v1(match, tone));
+    await useFlowStore.persist.rehydrate();
+
+    expect(useFlowStore.getState().prompt.coverLetterMatchStyle).toBe(expected);
   });
 });

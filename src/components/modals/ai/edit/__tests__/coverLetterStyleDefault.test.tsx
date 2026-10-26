@@ -50,9 +50,10 @@ const storeSample = (sample: string, owner?: string) =>
     JSON.stringify({ v: 1, sample, ...(owner ? { owner } : {}) }),
   );
 
-const matchStyle = () => useFlowStore.getState().prompt.coverLetterMatchStyle;
-
 const mount = () => renderHook(() => useAIRunner({ enabled: false, target: 'cv' }));
+
+// What `buildCoverLetterRequest` and both tone selects receive.
+const matchStyle = (hook: ReturnType<typeof mount>) => hook.result.current.coverLetter.matchStyle;
 
 beforeEach(() => {
   localStorage.clear();
@@ -61,8 +62,7 @@ beforeEach(() => {
       ...state.prompt,
       coverLetterLength: COVER_LETTER_DEFAULT_LENGTH,
       coverLetterTone: COVER_LETTER_DEFAULT_TONE,
-      coverLetterMatchStyle: false,
-      coverLetterToneChosen: false,
+      coverLetterMatchStyle: null,
     },
   }));
   useResumeStore.getState().openAIModal('cv');
@@ -76,50 +76,51 @@ afterEach(() => {
 describe('the writing-style default', () => {
   it('applies to a signed-in sample once the owner resolves', () => {
     storeSample('I write in short, direct sentences.', 'user-1');
-    mount();
-    expect(matchStyle()).toBe(false);
+    const hook = mount();
+    expect(matchStyle(hook)).toBe(false);
 
     act(() => bindCoverLetterStyleToUser({ userId: 'user-1' }));
 
-    expect(matchStyle()).toBe(true);
+    expect(matchStyle(hook)).toBe(true);
   });
 
   it('applies on mount to a signed-out sample', () => {
     storeSample('Warm and plain.');
-    mount();
-    expect(matchStyle()).toBe(true);
+    expect(matchStyle(mount())).toBe(true);
   });
 
   it('never overrides a tone picked in this tab', () => {
     storeSample('I write in short, direct sentences.', 'user-1');
-    const { result } = mount();
+    const hook = mount();
 
     act(() => {
-      result.current.coverLetter.setMatchStyle(false);
-      result.current.coverLetter.setTone('warm');
+      hook.result.current.coverLetter.setMatchStyle(false);
+      hook.result.current.coverLetter.setTone('warm');
     });
     act(() => bindCoverLetterStyleToUser({ userId: 'user-1' }));
 
-    expect(matchStyle()).toBe(false);
+    expect(matchStyle(hook)).toBe(false);
     expect(useFlowStore.getState().prompt.coverLetterTone).toBe('warm');
   });
 
   it('falls back to the tone when the sample is cleared', () => {
     storeSample('Warm and plain.');
-    const { result } = mount();
-    expect(matchStyle()).toBe(true);
+    const hook = mount();
+    expect(matchStyle(hook)).toBe(true);
 
-    act(() => result.current.coverLetter.clearStyleSample());
+    act(() => hook.result.current.coverLetter.clearStyleSample());
 
-    expect(matchStyle()).toBe(false);
+    expect(matchStyle(hook)).toBe(false);
   });
 
-  it('leaves an explicit match-style pick waiting for its sample', () => {
-    const { result } = mount();
+  it('keeps an explicit match-style pick when its sample is cleared', () => {
+    storeSample('Warm and plain.');
+    const hook = mount();
 
-    act(() => result.current.coverLetter.setMatchStyle(true));
+    act(() => hook.result.current.coverLetter.setMatchStyle(true));
+    act(() => hook.result.current.coverLetter.clearStyleSample());
 
-    expect(matchStyle()).toBe(true);
-    expect(result.current.coverLetter.needsSample).toBe(true);
+    expect(matchStyle(hook)).toBe(true);
+    expect(hook.result.current.coverLetter.needsSample).toBe(true);
   });
 });

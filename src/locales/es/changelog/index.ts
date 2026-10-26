@@ -60,8 +60,10 @@ import { v_005_000_000 } from './v_005_000_000';
 import { v_005_000_001 } from './v_005_000_001';
 import { v_005_000_002 } from './v_005_000_002';
 import { v_005_001_000 } from './v_005_001_000';
+import { v_005_002_000 } from './v_005_002_000';
 
 export const changelog_entries: Translations['changelog']['entries'] = {
+  v_005_002_000,
   v_005_001_000,
   v_005_000_002,
   v_005_000_001,

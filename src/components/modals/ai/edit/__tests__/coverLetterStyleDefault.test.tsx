@@ -16,6 +16,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
  * store is created would never see it.
  */
 
+const handleGenerate = vi.fn();
+
 vi.mock('@/components/modals/ai/edit/useAIGeneration', () => ({
   useAIGeneration: () => ({
     isLoading: false,
@@ -25,7 +27,7 @@ vi.mock('@/components/modals/ai/edit/useAIGeneration', () => ({
     changeDetails: undefined,
     coverLetterOutcome: null,
     runStage: null,
-    handleGenerate: vi.fn(),
+    handleGenerate,
   }),
 }));
 
@@ -52,10 +54,11 @@ const storeSample = (sample: string, owner?: string) =>
 
 const mount = () => renderHook(() => useAIRunner({ enabled: false, target: 'cv' }));
 
-// What `buildCoverLetterRequest` and both tone selects receive.
+// What both tone selects receive; the request has its own test below.
 const matchStyle = (hook: ReturnType<typeof mount>) => hook.result.current.coverLetter.matchStyle;
 
 beforeEach(() => {
+  handleGenerate.mockClear();
   localStorage.clear();
   useFlowStore.setState((state) => ({
     prompt: {
@@ -122,5 +125,23 @@ describe('the writing-style default', () => {
 
     expect(matchStyle(hook)).toBe(true);
     expect(hook.result.current.coverLetter.needsSample).toBe(true);
+  });
+
+  it('sends the sample, not the tone, on the default', async () => {
+    storeSample('Warm and plain.');
+    useFlowStore.setState((state) => ({
+      prompt: {
+        ...state.prompt,
+        mode: 'job_description',
+        jobDescription: 'Senior Frontend Engineer, Berlin.',
+        draftCoverLetter: true,
+      },
+    }));
+
+    await mount().result.current.handleGenerate();
+
+    const letter = handleGenerate.mock.calls[0]?.[0]?.coverLetter;
+    expect(letter).toMatchObject({ styleSample: 'Warm and plain.' });
+    expect(letter).not.toHaveProperty('tone');
   });
 });

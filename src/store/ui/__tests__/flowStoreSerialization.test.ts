@@ -100,4 +100,21 @@ describe('a v1 cover-letter voice rehydrated after the deploy', () => {
 
     expect(useFlowStore.getState().prompt.coverLetterMatchStyle).toBe(expected);
   });
+
+  it('runs after the v0 auth step in one rehydrate', async () => {
+    sessionStorage.setItem(
+      BRAND_STORAGE_KEYS.flowState,
+      JSON.stringify({
+        state: {
+          auth: { ...useFlowStore.getState().auth, isGoogleModalOpen: true },
+          prompt: { ...useFlowStore.getState().prompt, coverLetterMatchStyle: false },
+        },
+        version: 0,
+      }),
+    );
+    await useFlowStore.persist.rehydrate();
+
+    expect(useFlowStore.getState().auth.authSurface).toBe('google');
+    expect(useFlowStore.getState().prompt.coverLetterMatchStyle).toBeNull();
+  });
 });

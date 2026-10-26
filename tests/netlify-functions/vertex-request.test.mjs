@@ -453,22 +453,38 @@ test('improvement prompts forbid invented metrics', () => {
   }
 });
 
-// Unnamed, a job title or the ad's tools read as tailorable, and the model wrote them in.
+// Tailoring matches the ad's terms and holds only the facts a reader checks (#55).
 // An import with the job_description style nests the same clause as OPTIMIZATION STYLE.
-test('tailoring names titles, tools and years of experience as facts', () => {
+test('tailoring matches the ad and names held titles, employers and dates as facts', () => {
   const prompts = [
     ...['cv', 'item:work', 'section:skills'].map((target) => [
       target,
       getSystemPrompt('job_description', target, 'en', 'en', false, null),
     ]),
+    ['cv+translate', getSystemPrompt('job_description', 'cv', 'en', 'de', false, null)],
     ['import', getSystemPrompt('job_description', 'cv', 'en', undefined, false, 'cv_parsing')],
   ];
   for (const [where, prompt] of prompts) {
-    for (const fact of [/job titles/, /tools/, /skill keywords/, /years of experience/]) {
-      assert.match(prompt, fact, where);
+    // Naming tools or keywords as facts stopped tailoring from matching the ad at all.
+    const facts = prompt.match(/\*\*Facts are fixed:\*\* ([^.]*)\./)?.[1];
+    assert.equal(
+      facts,
+      'employer names, the job title held in each work entry, dates, certifications, and years of experience',
+      where,
+    );
+    assert.match(prompt, /headline label is a positioning statement, not a title held/, where);
+    assert.match(prompt, /a related tool is not the same tool/, where);
+  }
+  // Coverage is a whole-CV instruction: the other targets and the import do not reach every entry.
+  const coverage = [
+    /Rewrite every work entry the job description bears on/,
+    /no footing for stays out/,
+  ];
+  for (const [where, prompt] of prompts) {
+    const wholeCv = where.startsWith('cv');
+    for (const sentence of coverage) {
+      (wholeCv ? assert.match : assert.doesNotMatch)(prompt, sentence, where);
     }
-    assert.match(prompt, /never add one the CV lacks or swap one for a different one/, where);
-    assert.match(prompt, /Translating a fact, or writing a tool's standard name/, where);
   }
   const imported = prompts.at(-1)[1];
   assert.ok(

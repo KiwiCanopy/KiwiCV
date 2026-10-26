@@ -44,13 +44,22 @@ interface CvLibraryState {
   loadedAt: number | null;
   error: string | null;
 
-  setLoading: () => void;
+  /**
+   * Bumped by every `reset()`, so a discovery that began before a sign-out or an
+   * account switch cannot write the previous user's rows back (#63).
+   */
+  epoch: number;
+
+  /** Returns the epoch to hand back to `setReady` / `setError`. */
+  setLoading: () => number;
+  /** Ignored when `epoch` is given and a `reset()` has happened since. */
   setReady: (
     data: BackupDiscoveryMap,
     githubPaths: Record<string, string>,
     failedSources?: BackupSource[],
+    epoch?: number,
   ) => void;
-  setError: (message: string) => void;
+  setError: (message: string, epoch?: number) => void;
   setUnconfigured: () => void;
   removeFile: (locale: string, source: BackupSource, file: BackupFile) => void;
   /** A lazily read posting link, for the row still listing that blob (#54). */
@@ -68,18 +77,21 @@ const initialState = {
 };
 
 export const useCvLibraryStore = create<CvLibraryState>()(
-  immer((set) => ({
+  immer((set, get) => ({
     ...initialState,
+    epoch: 0,
 
     setLoading: () => {
       set((state) => {
         state.status = 'loading';
         state.error = null;
       });
+      return get().epoch;
     },
 
-    setReady: (data, githubPaths, failedSources = []) => {
+    setReady: (data, githubPaths, failedSources = [], epoch) => {
       set((state) => {
+        if (epoch !== undefined && epoch !== state.epoch) return;
         state.status = 'ready';
         state.discoveryData = data;
         state.githubPaths = githubPaths;
@@ -89,8 +101,9 @@ export const useCvLibraryStore = create<CvLibraryState>()(
       });
     },
 
-    setError: (message) => {
+    setError: (message, epoch) => {
       set((state) => {
+        if (epoch !== undefined && epoch !== state.epoch) return;
         state.status = 'error';
         state.error = message;
       });
@@ -133,6 +146,7 @@ export const useCvLibraryStore = create<CvLibraryState>()(
     reset: () => {
       set((state) => {
         Object.assign(state, initialState);
+        state.epoch += 1;
       });
     },
   })),

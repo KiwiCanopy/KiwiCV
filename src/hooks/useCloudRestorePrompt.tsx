@@ -106,7 +106,7 @@ export function useCloudRestorePrompt() {
     // Safety check for management entry
     if (!isCloudConfigured && !specificSource) return { hasBackups: false };
 
-    useCvLibraryStore.getState().setLoading();
+    const epoch = useCvLibraryStore.getState().setLoading();
 
     // 1. Focused Search
     const focused = await discoverBackups(undefined, specificSource, preFetchedBackups);
@@ -122,7 +122,7 @@ export function useCloudRestorePrompt() {
       failed = broad.failed;
     }
 
-    useCvLibraryStore.getState().setReady(backups, paths, failed);
+    useCvLibraryStore.getState().setReady(backups, paths, failed, epoch);
 
     if (Object.keys(backups).length === 0) {
       await confirm({

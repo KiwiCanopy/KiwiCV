@@ -55,6 +55,29 @@ describe('JSON Resume v1 import (#13)', () => {
     expect(sanitized.languages[0]).toMatchObject({ certificate: 'TOEFL 110', level: 0 });
   });
 
+  it('sets the level and keeps a certificate named beside it', () => {
+    const { sanitized } = importJsonResume({
+      languages: [
+        { language: 'French', fluency: 'DELF B2' },
+        { language: 'German', fluency: 'Goethe-Zertifikat C1' },
+      ],
+    });
+
+    expect(sanitized.languages.map(({ level, certificate }) => ({ level, certificate }))).toEqual([
+      { level: 2, certificate: 'DELF B2' },
+      { level: 3, certificate: 'Goethe-Zertifikat C1' },
+    ]);
+  });
+
+  // examples/resume_2_0_0.json and later carry this entry with no level.
+  it('gives an old KiwiCV export’s unlevelled fluency word a level', () => {
+    const { sanitized } = importJsonResume({
+      languages: [{ language: 'Japanese', fluency: 'Conversational' }],
+    });
+
+    expect(sanitized.languages[0]).toMatchObject({ level: 2, certificate: '' });
+  });
+
   it('keeps an old KiwiCV export’s fluency as its certificate beside its level', () => {
     const { sanitized } = importJsonResume({
       languages: [{ language: 'English', fluency: 'Professional (C1)', level: 4 }],
@@ -74,6 +97,9 @@ describe('JSON Resume v1 import (#13)', () => {
     ['conversational', 2],
     ['A1', 1],
     ['Basic', 1],
+    ['Near-native', 4],
+    ['Non-native', undefined],
+    ['Proficient', 3],
     ['TOEFL 110', undefined],
     ['', undefined],
   ])('maps the fluency %j to %s', (fluency, level) => {
@@ -93,9 +119,10 @@ describe('JSON Resume v1 import (#13)', () => {
   it('still clears and warns for a word it does not know', () => {
     const { validated, warnings } = validateSkills([
       { name: 'Web', level: 'Wizard', keywords: [] },
+      { name: 'Proto', level: 'constructor', keywords: [] },
     ]);
 
-    expect(validated[0].level).toBeUndefined();
-    expect(warnings).toHaveLength(1);
+    expect(validated.map((skill) => skill.level)).toEqual([undefined, undefined]);
+    expect(warnings).toHaveLength(2);
   });
 });

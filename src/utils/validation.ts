@@ -3,6 +3,7 @@ import type {
   AddressSchemaConfig,
   CustomSection,
   CustomSectionItem,
+  FluencyLevel,
   ResumeCoverLetter,
   ResumeData,
   SkillLevel,
@@ -199,7 +200,7 @@ interface HasVId {
  * JSON Resume writes a skill level as a word (#13). The common English ones map
  * onto KiwiCV's 1–4 scale; anything else still warns and clears.
  */
-const SKILL_LEVEL_WORDS: Record<string, number> = {
+const SKILL_LEVEL_WORDS: Readonly<Record<string, SkillLevel>> = {
   beginner: 1,
   novice: 1,
   basic: 1,
@@ -215,24 +216,36 @@ const SKILL_LEVEL_WORDS: Record<string, number> = {
 /**
  * JSON Resume `languages[].fluency` is free text (#13). Ordered rules, first
  * match wins: the LinkedIn proficiency scale KiwiCV's 1–5 labels follow, the
- * usual single words, and CEFR codes.
+ * usual single words, and CEFR codes. `null` means "recognised, but no level".
  */
-const FLUENCY_RULES: ReadonlyArray<[RegExp, number]> = [
+const FLUENCY_RULES: ReadonlyArray<[RegExp, FluencyLevel | null]> = [
+  [/non-native/, null],
+  [/near-native|native-like/, 4],
   [/native|bilingual|mother tongue/, 5],
   [/full professional|fluent|\bc2\b/, 4],
   [/limited working|intermediate|conversational|\bb[12]\b/, 2],
   [/elementary|basic|beginner|\ba[12]\b/, 1],
-  [/professional|advanced|\bc1\b/, 3],
+  [/professional|advanced|proficient|\bc1\b/, 3],
 ];
 
-export const levelFromFluency = (fluency: unknown): number | undefined => {
+/** A fluency that says nothing but the level; anything longer is kept as the certificate. */
+const BARE_FLUENCY_LABEL =
+  /^(?:native(?: speaker)?|native or bilingual(?: proficiency)?|bilingual|mother tongue|fluent|(?:full |limited )?(?:professional )?working proficiency|full professional(?: proficiency)?|professional|elementary(?: proficiency)?|basic|beginner|intermediate|conversational|advanced|[abc][12])$/;
+
+export const levelFromFluency = (fluency: unknown): FluencyLevel | undefined => {
   if (typeof fluency !== 'string') return undefined;
   const text = fluency.toLowerCase();
-  return FLUENCY_RULES.find(([pattern]) => pattern.test(text))?.[1];
+  return FLUENCY_RULES.find(([pattern]) => pattern.test(text))?.[1] ?? undefined;
 };
 
-/** Standard JSON Resume item fields KiwiCV has nowhere to keep; importing one warns (#13). */
-const UNKEPT_JSON_RESUME_FIELDS: Readonly<Record<string, readonly string[]>> = {
+const isBareFluencyLabel = (fluency: string): boolean =>
+  BARE_FLUENCY_LABEL.test(fluency.trim().toLowerCase().replace(/\s+/g, ' '));
+
+/**
+ * Standard JSON Resume item fields KiwiCV has nowhere to keep; importing one
+ * warns (#13). A field the section's schema gains is kept instead, never warned.
+ */
+const UNKEPT_JSON_RESUME_FIELDS: Partial<Record<EmptyItemKey, readonly string[]>> = {
   work: ['description'],
 };
 
@@ -288,7 +301,7 @@ export const validateSkills = (
         const parsed = parseFloat(level);
         if (!isNaN(parsed)) {
           rawVal = parsed;
-        } else if (level.trim().toLowerCase() in SKILL_LEVEL_WORDS) {
+        } else if (Object.hasOwn(SKILL_LEVEL_WORDS, level.trim().toLowerCase())) {
           // A recognised word is a conversion, not an invalid value.
           normalizedLevel = SKILL_LEVEL_WORDS[level.trim().toLowerCase()];
           isMigration = true;
@@ -703,15 +716,19 @@ export const sanitizeResumeData = (
     const record = obj as Record<string, unknown>;
     const result: Record<string, unknown> = {};
     Object.keys(defaults).forEach((key) => {
-      // `fluency` is a level in JSON Resume and a certificate in old KiwiCV
-      // exports, which always carry a numeric `level` beside it (#13).
+      // `fluency` is a level in JSON Resume and was the certificate in old KiwiCV
+      // exports. A recognised level fills an unset `level`; the text stays as the
+      // certificate unless it says nothing more than the level (#13).
       if (key === 'certificate' && !('certificate' in record) && 'fluency' in record) {
-        const fluencyLevel = levelFromFluency(record['fluency']);
+        const fluency = record['fluency'];
+        const fluencyLevel = levelFromFluency(fluency);
         const hasLevel = typeof record['level'] === 'number' && record['level'] > 0;
         if (fluencyLevel !== undefined && !hasLevel) {
           record['level'] = fluencyLevel;
+          record['certificate'] =
+            typeof fluency === 'string' && isBareFluencyLabel(fluency) ? '' : fluency;
         } else {
-          record['certificate'] = record['fluency'];
+          record['certificate'] = fluency;
         }
       }
       const isDateField = RESUME_DATE_FIELDS.has(key);
@@ -1026,7 +1043,8 @@ export const sanitizeResumeData = (
 
       const itemTitle = titleField ? (itemRecord[titleField] as string) : undefined;
       const sanitized = s(itemRecord, schema, section, itemTitle) as unknown as T;
-      for (const field of UNKEPT_JSON_RESUME_FIELDS[section] ?? []) {
+      for (const field of UNKEPT_JSON_RESUME_FIELDS[section as EmptyItemKey] ?? []) {
+        if (field in schema) continue;
         const value = itemRecord[field];
         if (typeof value === 'string' && value.trim() !== '') {
           warnings.push({

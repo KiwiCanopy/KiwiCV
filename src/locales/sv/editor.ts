@@ -80,6 +80,7 @@ export const editor: Translations['editor'] = {
     title_placeholder: 't.ex. Konferenser',
   },
   errors: {
+    field_not_kept: 'Inte importerat: KiwiCV har inget fält för detta.',
     invalid_list_value: 'Poster som inte var text har tagits bort från denna lista',
     invalid_skill_level: 'Nivån måste vara ett heltal från 1 till 4 och har justerats.',
     invalid_text_value: 'Ett värde som inte var text har rensats från detta fält',

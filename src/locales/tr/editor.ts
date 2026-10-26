@@ -80,6 +80,7 @@ export const editor: Translations['editor'] = {
     title_placeholder: 'ör. Konferanslar',
   },
   errors: {
+    field_not_kept: "İçe aktarılmadı: KiwiCV'de bunun için bir alan yok.",
     invalid_list_value: 'Metin olmayan ögeler bu listeden kaldırıldı',
     invalid_skill_level: 'Seviye 1 ile 4 arasında bir tam sayı olmalıdır, bu yüzden düzeltildi.',
     invalid_text_value: 'Metin olmayan bir değer bu alandan temizlendi',

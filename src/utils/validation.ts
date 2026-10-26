@@ -196,6 +196,47 @@ interface HasVId {
 }
 
 /**
+ * JSON Resume writes a skill level as a word (#13). The common English ones map
+ * onto KiwiCV's 1–4 scale; anything else still warns and clears.
+ */
+const SKILL_LEVEL_WORDS: Record<string, number> = {
+  beginner: 1,
+  novice: 1,
+  basic: 1,
+  elementary: 1,
+  intermediate: 2,
+  advanced: 3,
+  proficient: 3,
+  experienced: 3,
+  expert: 4,
+  master: 4,
+};
+
+/**
+ * JSON Resume `languages[].fluency` is free text (#13). Ordered rules, first
+ * match wins: the LinkedIn proficiency scale KiwiCV's 1–5 labels follow, the
+ * usual single words, and CEFR codes.
+ */
+const FLUENCY_RULES: ReadonlyArray<[RegExp, number]> = [
+  [/native|bilingual|mother tongue/, 5],
+  [/full professional|fluent|\bc2\b/, 4],
+  [/limited working|intermediate|conversational|\bb[12]\b/, 2],
+  [/elementary|basic|beginner|\ba[12]\b/, 1],
+  [/professional|advanced|\bc1\b/, 3],
+];
+
+export const levelFromFluency = (fluency: unknown): number | undefined => {
+  if (typeof fluency !== 'string') return undefined;
+  const text = fluency.toLowerCase();
+  return FLUENCY_RULES.find(([pattern]) => pattern.test(text))?.[1];
+};
+
+/** Standard JSON Resume item fields KiwiCV has nowhere to keep; importing one warns (#13). */
+const UNKEPT_JSON_RESUME_FIELDS: Readonly<Record<string, readonly string[]>> = {
+  work: ['description'],
+};
+
+/**
  * Validates and cleans up skills data.
  *
  * ⚠️ **Returns every entry it is given — it does not drop any, and it no longer
@@ -247,6 +288,10 @@ export const validateSkills = (
         const parsed = parseFloat(level);
         if (!isNaN(parsed)) {
           rawVal = parsed;
+        } else if (level.trim().toLowerCase() in SKILL_LEVEL_WORDS) {
+          // A recognised word is a conversion, not an invalid value.
+          normalizedLevel = SKILL_LEVEL_WORDS[level.trim().toLowerCase()];
+          isMigration = true;
         }
       }
 
@@ -658,9 +703,16 @@ export const sanitizeResumeData = (
     const record = obj as Record<string, unknown>;
     const result: Record<string, unknown> = {};
     Object.keys(defaults).forEach((key) => {
-      // Legacy catch: rename fluency to certificate for Languages section
+      // `fluency` is a level in JSON Resume and a certificate in old KiwiCV
+      // exports, which always carry a numeric `level` beside it (#13).
       if (key === 'certificate' && !('certificate' in record) && 'fluency' in record) {
-        record['certificate'] = record['fluency'];
+        const fluencyLevel = levelFromFluency(record['fluency']);
+        const hasLevel = typeof record['level'] === 'number' && record['level'] > 0;
+        if (fluencyLevel !== undefined && !hasLevel) {
+          record['level'] = fluencyLevel;
+        } else {
+          record['certificate'] = record['fluency'];
+        }
       }
       const isDateField = RESUME_DATE_FIELDS.has(key);
       if (key in record) {
@@ -974,6 +1026,17 @@ export const sanitizeResumeData = (
 
       const itemTitle = titleField ? (itemRecord[titleField] as string) : undefined;
       const sanitized = s(itemRecord, schema, section, itemTitle) as unknown as T;
+      for (const field of UNKEPT_JSON_RESUME_FIELDS[section] ?? []) {
+        const value = itemRecord[field];
+        if (typeof value === 'string' && value.trim() !== '') {
+          warnings.push({
+            section,
+            item: itemTitle,
+            field,
+            message: 'editor.errors.field_not_kept',
+          });
+        }
+      }
 
       sanitized._vId = keep ? existingVId : generateId();
       seen.add(sanitized._vId);

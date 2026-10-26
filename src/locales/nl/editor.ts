@@ -81,6 +81,7 @@ export const editor: Translations['editor'] = {
     title_placeholder: 'bijv. Conferenties',
   },
   errors: {
+    field_not_kept: 'Niet geïmporteerd: KiwiCV heeft hier geen veld voor.',
     invalid_list_value: 'Items die geen tekst waren, zijn uit deze lijst verwijderd',
     invalid_skill_level:
       'Het niveau moet een geheel getal van 1 tot en met 4 zijn en is aangepast.',

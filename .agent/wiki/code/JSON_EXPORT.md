@@ -98,8 +98,20 @@ cap). The rules are in [ops/DATAMODEL.md](../ops/DATAMODEL.md) § Pass-through.
 The Raw Data page lists each kept block and can remove one (`PassthroughPanel`);
 the next sync replaces the current backup, while earlier snapshots and Drive/GitHub
 versions keep it.
-`languages[].fluency` (JSON Resume's free-text level) is still copied into
-`certificate` and not re-emitted; deliberately out of scope for the pass-through.
+JSON Resume v1 item fields (#13), measured against every section's schema:
+only two have no KiwiCV field of the same name.
+
+- `languages[].fluency` is read as a `level` when its text matches the LinkedIn
+  proficiency scale, a common word or a CEFR code (`levelFromFluency`). Anything
+  else, and any entry that already carries a numeric `level` (old KiwiCV
+  exports used `fluency` for the certificate), still lands in `certificate`.
+  Not re-emitted on export.
+- `work[].description` (the organisation's description) has no field and is not
+  kept; the import warns with `editor.errors.field_not_kept`. Keeping it would be
+  a shape change and an item-level pass-through, which this repo does not have.
+
+A word `skills[].level` (`Beginner` … `Master`) maps onto the 1–4 scale; an
+unknown word still clears with `invalid_skill_level`.
 
 `src/utils/validation.ts:293`, wired into `setResume` (`src/store/resume/slices/dataSlice.ts:76`). It is **not Zod** (not a dependency) — it is a defaults-driven picker that coerces each field to the type of its default, so a field with no default is silently dropped. Add the default first. `sanitizeCoverLetter` (`validation.ts:255`) is exported separately for direct testing.
 

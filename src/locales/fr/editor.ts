@@ -81,6 +81,7 @@ export const editor: Translations['editor'] = {
     title_placeholder: 'ex. Conférences',
   },
   errors: {
+    field_not_kept: "Non importé : KiwiCV n'a pas de champ pour cela.",
     invalid_list_value: "Les éléments qui n'étaient pas du texte ont été retirés de cette liste",
     invalid_skill_level: 'Le niveau doit être un nombre entier de 1 à 4 et a été ajusté.',
     invalid_text_value: "Une valeur qui n'était pas du texte a été effacée de ce champ",

@@ -82,11 +82,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Скачать как ZIP',
     filename_only:
       'Компания и должность определяют имя файла. Ссылка на вакансию сохраняется с резервными копиями в Google Drive или в приватном репозитории GitHub, но никогда — в публичном или опубликованном.',
-    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_anyway: 'Всё равно экспортировать',
     letter_confirm_message:
-      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
-    letter_confirm_title: 'Export with this cover letter?',
-    letter_confirm_without: 'Export without letter',
+      'Скорее всего, это письмо написано для другой вакансии. Проверь, подходит ли оно для этой заявки, прежде чем отправлять.',
+    letter_confirm_title: 'Экспортировать с этим сопроводительным письмом?',
+    letter_confirm_without: 'Экспортировать без письма',
     letter_excluded: 'Сопроводительное письмо не включено',
     letter_included: 'Сопроводительное письмо включено перед резюме',
     letter_outdated: 'Может не подходить для новой вакансии — проверь перед отправкой.',

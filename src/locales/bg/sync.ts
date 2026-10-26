@@ -83,11 +83,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Изтегляне като ZIP',
     filename_only:
       'Компанията и позицията определят името на файла. Линкът към обявата се пази с резервните копия в Google Drive или в поверително хранилище в GitHub, никога в публично или публикувано.',
-    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_anyway: 'Експортиране въпреки това',
     letter_confirm_message:
-      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
-    letter_confirm_title: 'Export with this cover letter?',
-    letter_confirm_without: 'Export without letter',
+      'Това писмо вероятно е написано за друга обява за работа. Провери дали подхожда за тази кандидатура, преди да го изпратиш.',
+    letter_confirm_title: 'Експортиране с това мотивационно писмо?',
+    letter_confirm_without: 'Експортиране без писмото',
     letter_excluded: 'Мотивационното писмо не е включено',
     letter_included: 'Мотивационното писмо е включено преди CV-то',
     letter_outdated: 'Може да не отговаря на новата обява за работа — провери, преди да изпратиш.',

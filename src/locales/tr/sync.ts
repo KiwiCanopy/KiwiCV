@@ -80,11 +80,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'ZIP olarak indir',
     filename_only:
       "Şirket ve pozisyon dosya adını belirler. İlan bağlantısı, Google Drive'a veya özel bir GitHub deposuna alınan yedeklerle saklanır; herkese açık ya da yayınlanmış bir depoda asla saklanmaz.",
-    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_anyway: 'Yine de dışa aktar',
     letter_confirm_message:
-      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
-    letter_confirm_title: 'Export with this cover letter?',
-    letter_confirm_without: 'Export without letter',
+      'Bu ön yazı muhtemelen başka bir iş ilanı için yazıldı. Göndermeden önce bu başvuruya uyup uymadığını kontrol et.',
+    letter_confirm_title: 'Bu ön yazıyla dışa aktarılsın mı?',
+    letter_confirm_without: 'Ön yazı olmadan dışa aktar',
     letter_excluded: 'Ön yazı dahil değil',
     letter_included: "Ön yazı dahil, CV'den önce",
     letter_outdated: 'Yeni iş ilanına uymayabilir — göndermeden önce kontrol et.',

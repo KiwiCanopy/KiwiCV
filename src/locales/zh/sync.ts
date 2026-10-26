@@ -76,11 +76,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: '下载为 ZIP',
     filename_only:
       '公司和职位决定文件名。招聘启事链接会随备份保存到 Google Drive 或私有 GitHub 仓库，绝不会写入公开或已发布的仓库。',
-    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_anyway: '仍然导出',
     letter_confirm_message:
-      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
-    letter_confirm_title: 'Export with this cover letter?',
-    letter_confirm_without: 'Export without letter',
+      '这封求职信很可能是为另一个职位描述撰写的。发送前，请检查它是否适合这次申请。',
+    letter_confirm_title: '确定要连同这封求职信一起导出吗？',
+    letter_confirm_without: '导出时不含求职信',
     letter_excluded: '未包含求职信',
     letter_included: '已包含求职信，位于简历之前',
     letter_outdated: '可能与新的职位描述不符 — 发送前请检查。',

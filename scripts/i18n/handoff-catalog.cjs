@@ -2360,8 +2360,8 @@ const entries = [
   [
     'sync',
     'export_dialog.letter_confirm_message',
-    'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
-    'Confirmation dialog body: the cover letter was drafted for a different job ad than the one the CV is now tailored to. Calm, not alarming; addresses the user directly (du in German). Take the ad noun from sync.export_dialog.letter_outdated; never use the word for a job someone holds.',
+    'This letter was likely written for a different job ad. Check that it fits this application before you send it.',
+    'Confirmation dialog body: the cover letter was likely drafted for a different job ad than the one the CV is now tailored to (it may also have been written by hand, so keep the hedge: never state it as certain). Calm, not alarming; addresses the user directly (du in German). Take the ad noun from sync.export_dialog.letter_outdated; never use the word for a job someone holds.',
   ],
   [
     'sync',

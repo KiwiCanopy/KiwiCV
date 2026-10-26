@@ -82,11 +82,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'ZIP としてダウンロード',
     filename_only:
       '会社と役職はファイル名に使われます。求人情報のリンクは Google Drive またはプライベートの GitHub リポジトリへのバックアップと一緒に保存され、公開リポジトリや GitHub Pages で公開されたリポジトリには保存されません。',
-    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_anyway: 'このままエクスポート',
     letter_confirm_message:
-      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
-    letter_confirm_title: 'Export with this cover letter?',
-    letter_confirm_without: 'Export without letter',
+      'このカバーレターは別の求人情報向けに作成された可能性が高いです。送信前に、この応募に合っているかご確認ください。',
+    letter_confirm_title: 'このカバーレターを含めてエクスポートしますか？',
+    letter_confirm_without: 'カバーレターなしでエクスポート',
     letter_excluded: 'カバーレターは含まれていません',
     letter_included: 'カバーレターは履歴書の前に含まれています',
     letter_outdated: '新しい求人情報に合っていない可能性があります — 送信前にご確認ください。',

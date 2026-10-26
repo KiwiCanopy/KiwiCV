@@ -82,11 +82,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Ladda ned som ZIP',
     filename_only:
       'Företag och position avgör filnamnet. Länken till annonsen sparas med säkerhetskopior i Google Drive eller ett privat GitHub-arkiv, aldrig i ett offentligt eller publicerat.',
-    letter_confirm_anyway: 'Export anyway',
+    letter_confirm_anyway: 'Exportera ändå',
     letter_confirm_message:
-      'This letter was written for a different job ad and may not fit this application. Check it before you send it.',
-    letter_confirm_title: 'Export with this cover letter?',
-    letter_confirm_without: 'Export without letter',
+      'Det här brevet skrevs troligen för en annan jobbannons. Kontrollera att det passar den här ansökan innan du skickar det.',
+    letter_confirm_title: 'Exportera med det här personliga brevet?',
+    letter_confirm_without: 'Exportera utan brev',
     letter_excluded: 'Personligt brev inte inkluderat',
     letter_included: 'Personligt brev inkluderat före ditt CV',
     letter_outdated: 'Passar kanske inte den nya jobbannonsen — kontrollera innan du skickar.',

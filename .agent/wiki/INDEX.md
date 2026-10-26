@@ -97,7 +97,7 @@ be a state claim that rots:
 | Page                                         | Covers                          | Updated    |
 | -------------------------------------------- | ------------------------------- | ---------- |
 | [CORE_IDENTITY.md](CORE_IDENTITY.md)         | Vision, pillars, current status | 2026-07-24 |
-| [history/DECISIONS.md](history/DECISIONS.md) | Architecture decision record    | 2026-10-11 |
+| [history/DECISIONS.md](history/DECISIONS.md) | Architecture decision record    | 2026-10-26 |
 
 `.agent/plans/` is **gitignored** as of 2026-09-06 and holds working plans for whatever task is in flight on that machine — never a source to cite, and absent in a fresh clone. Plans committed before that date are still readable with `git log -- .agent/plans/`. Anything durable was folded into the pages below; if you find a ruling that was not, that is a gap to fix here rather than a reason to go digging in history.
 

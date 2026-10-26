@@ -4,6 +4,7 @@ import { TranslationInviteModal } from '@/components/modals/TranslationInviteMod
 import { useAIEntryGuard } from '@/hooks/useAIEntryGuard';
 import type { LocaleCode } from '@/locales';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { useFlowStore } from '@/store/ui/useFlowStore';
 
 /**
  * Hook to manage the flow of inviting a user to translate their CV.
@@ -33,6 +34,9 @@ export function useTranslationInvite() {
     if (!pendingTargetLang) return;
     if (!allowRun()) return;
 
+    // A translation keeps the CV's structure unless the user asks otherwise; the
+    // modal's `resetPrompt` on close restores the default (#57).
+    useFlowStore.getState().setAllowReorg(false);
     openTranslationModal(pendingTargetLang);
   };
 

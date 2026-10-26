@@ -1,6 +1,6 @@
 # Modal & Dialog Patterns
 
-> **Last Updated: 2026-09-06**
+> **Last Updated: 2026-10-26**
 
 Split out of [UI_PATTERNS.md](UI_PATTERNS.md) on 2026-07-20 to keep both files
 under the 300-line wiki limit.
@@ -45,6 +45,10 @@ under the 300-line wiki limit.
     (an operation is in flight) or `dismissible` is false (the dialog is not closable by
     design, e.g. blocking legal consent). These are separate axes: `busy` also sets
     `aria-busy`, `dismissible` does not.
+  - **Cmd/Ctrl+Enter presses the primary action** where a dialog has one that a
+    keyboard user reaches for from a field (the tag editor, the export dialog).
+    Plain Enter in a field stays inert: a stray Enter in a form must never send
+    anything. The shortcut runs the same handler as the button, under its guards.
   - **Explicit Close**: Every modal must leave a visible way out — the frame's X button,
     or action buttons. While `busy`, the X stays mounted and focusable with
     `aria-disabled` rather than disappearing or going natively `disabled`, which would

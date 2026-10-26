@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { type KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { CoverLetterRow } from '@/components/modals/export/CoverLetterRow';
@@ -88,6 +88,17 @@ export function ExportModalBody({
   ).length;
   const isRetry = state.hasRun && failed.length > 0;
   const targets = isRetry ? failed : selected;
+  const canRun = preview.trim().length > 0;
+  const runTargets = () => void run(targets, projectName, normalizePostingUrl(postingUrl));
+
+  // Cmd/Ctrl+Enter presses the trigger, as the tag editor's does; plain Enter
+  // in a field stays inert. `run` itself refuses an empty set or a second run.
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key !== 'Enter' || !(event.metaKey || event.ctrlKey)) return;
+    if (event.nativeEvent.isComposing) return;
+    event.preventDefault();
+    if (canRun) runTargets();
+  };
 
   const handleSetup = () => {
     ensureConnected({
@@ -124,7 +135,7 @@ export function ExportModalBody({
   }, [allOk, onClose]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" onKeyDown={handleKeyDown}>
       <ExportNameFields
         base={base}
         company={company}
@@ -178,11 +189,11 @@ export function ExportModalBody({
         done={finished}
         isRunning={state.isRunning}
         isRetry={isRetry}
-        canRun={preview.trim().length > 0}
+        canRun={canRun}
         announcement={announcement}
         buildFailed={state.buildError !== null}
         onCancel={handleCancel}
-        onRun={() => void run(targets, projectName, normalizePostingUrl(postingUrl))}
+        onRun={runTargets}
       />
     </div>
   );

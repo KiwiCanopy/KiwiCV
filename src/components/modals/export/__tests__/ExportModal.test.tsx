@@ -230,6 +230,42 @@ describe('ExportModal', () => {
     await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
   });
 
+  it('starts the export on Cmd+Enter or Ctrl+Enter from a field, never on plain Enter', async () => {
+    const user = userEvent.setup();
+    const props = renderModal();
+    const company = screen.getByRole('textbox', { name: 'sync.export_modal_company_label' });
+
+    await user.type(company, 'Acme{Enter}');
+    expect(runDestination).not.toHaveBeenCalled();
+
+    await user.type(company, '{Meta>}{Enter}{/Meta}');
+    await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
+
+    runDestination.mockClear();
+    clearExportDraft();
+    renderModal();
+    await user.type(
+      screen.getAllByRole('textbox', { name: 'sync.export_modal_company_label' }).at(-1)!,
+      '{Control>}{Enter}{/Control}',
+    );
+    await waitFor(() => expect(runDestination).toHaveBeenCalledTimes(1));
+  });
+
+  it('ignores Cmd+Enter while no destination is selected', async () => {
+    const user = userEvent.setup();
+    renderModal();
+    await user.click(screen.getByRole('switch', { name: /sync\.export_dialog\.dest_zip_label/ }));
+    expect(
+      screen.getByRole('button', { name: /sync\.export_dialog\.trigger_empty/ }),
+    ).toHaveProperty('disabled', true);
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'sync.export_modal_company_label' }),
+      '{Meta>}{Enter}{/Meta}',
+    );
+    expect(runDestination).not.toHaveBeenCalled();
+  });
+
   it('closes once a retry clears the last failure', async () => {
     runDestination.mockResolvedValueOnce({ success: false, error: 'disk full' } as never);
     const user = userEvent.setup();

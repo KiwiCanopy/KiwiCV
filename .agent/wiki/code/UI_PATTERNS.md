@@ -177,6 +177,13 @@ this makes the count checkable rather than asserted.
   under the button; `tooltip` puts it in the shared refusal tooltip and takes no room,
   for a control inside a one-line row.
 - **Input / TextArea**: Associated form controls sharing error and help semantics.
+  `Input`'s `warning` is announced through a polite `role="status"` region, opt-in like a
+  lock: pass `warning={null}` on a field that can warn so the region exists before its text
+  (#62). ⚠️ `warning={bad ? msg : undefined}` compiles, shows the warning and silently opts
+  out of the announcement; write `: null`. A warning shown on blur has lost focus, so
+  `aria-describedby` alone never reads it. `aria-invalid` stays error-only — a warning does
+  not block. `Field`'s `warning` has the same gap and no consumer yet (#77); the error half
+  is #76.
 - **Field**: Label plus `description`/`warning`/`error`/`required` around a control supplied
   through a render prop. It composes `FieldLabel`, so it carries help affordances too. It has
   **no production consumer yet** — 7.6 adopts it. It renders its own `<label>`, so a consumer

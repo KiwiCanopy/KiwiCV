@@ -142,7 +142,7 @@ export function ExportNameFields({
           }}
           onBlur={handlePostingBlur}
           placeholder={t('sync.export_modal_posting_placeholder')}
-          warning={postingInvalid ? t('sync.export_dialog.posting_invalid') : undefined}
+          warning={postingInvalid ? t('sync.export_dialog.posting_invalid') : null}
           liveUpdate={true}
         />
       )}

@@ -1,4 +1,4 @@
 export const fix_json_resume_import_levels = {
   fix_json_resume_import_levels:
-    'Importing a JSON Resume file now turns a language’s fluency, such as “Native” or “B2”, into its level, and reads skill levels written as words, such as “Expert”. If a work entry carries a company description, the import now tells you KiwiCV has no field to keep it in, instead of dropping it silently.',
+    'Beim Import einer JSON-Resume-Datei übernimmt KiwiCV jetzt das Sprachniveau, etwa „Native“ oder „B2“, und liest auch Kompetenzniveaus, die als Wörter angegeben sind, etwa „Expert“. Enthält eine Berufserfahrung eine Firmenbeschreibung, weist dich der Import jetzt darauf hin, dass KiwiCV dafür kein Feld hat, statt sie stillschweigend zu verwerfen.',
 };

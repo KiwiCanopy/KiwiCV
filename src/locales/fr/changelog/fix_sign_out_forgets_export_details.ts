@@ -1,4 +1,4 @@
 export const fix_sign_out_forgets_export_details = {
   fix_sign_out_forgets_export_details:
-    'Signing out now also forgets the company, position and job posting link you typed in the export dialog, so the next person to sign in on this browser does not see them.',
+    'La déconnexion efface désormais aussi l’entreprise, le poste et le lien vers l’offre que tu as saisis dans la fenêtre d’export, pour que la personne suivante qui se connecte sur ce navigateur ne les voie pas.',
 };

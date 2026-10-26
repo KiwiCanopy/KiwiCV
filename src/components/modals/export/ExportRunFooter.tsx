@@ -1,3 +1,4 @@
+import { type Ref } from 'react';
 import { CiExport } from 'react-icons/ci';
 
 import { Button } from '@/components/ui/Button';
@@ -16,6 +17,8 @@ interface ExportRunFooterProps {
   buildFailed: boolean;
   onCancel: () => void;
   onRun: () => void;
+  /** The trigger, for the dialog's Cmd/Ctrl+Enter. */
+  triggerRef?: Ref<HTMLButtonElement>;
 }
 
 /**
@@ -36,6 +39,7 @@ export function ExportRunFooter({
   buildFailed,
   onCancel,
   onRun,
+  triggerRef,
 }: ExportRunFooterProps) {
   const { t } = useTranslation();
 
@@ -75,6 +79,7 @@ export function ExportRunFooter({
           variant="primary"
           size="lg"
           className="flex-1"
+          ref={triggerRef}
           onClick={onRun}
           disabled={!canRun || count === 0}
           loading={isRunning}

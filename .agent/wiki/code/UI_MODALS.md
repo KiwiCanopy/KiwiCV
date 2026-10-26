@@ -1,6 +1,6 @@
 # Modal & Dialog Patterns
 
-> **Last Updated: 2026-09-06**
+> **Last Updated: 2026-10-26**
 
 Split out of [UI_PATTERNS.md](UI_PATTERNS.md) on 2026-07-20 to keep both files
 under the 300-line wiki limit.
@@ -49,11 +49,19 @@ under the 300-line wiki limit.
     or action buttons. While `busy`, the X stays mounted and focusable with
     `aria-disabled` rather than disappearing or going natively `disabled`, which would
     remove it from the accessibility tree.
+- **Cmd/Ctrl+Enter presses the primary action from a text field.** Each dialog
+  wires it itself — `DialogFrame` does not — through `isPrimaryActionChord` and
+  `isTextEntry` (`src/utils/primaryActionChord.ts`), which refuse IME composition
+  and key repeat. The export dialog presses its trigger button (`.click()`), so
+  the button's disabled state is the only guard. From a link or a button the key
+  keeps its native meaning: on a link it opens a new tab, and an export must not
+  start instead. Plain Enter in a multi-field form stays inert; a single-input
+  editor may commit on Enter (the tag editor's text input does).
 - **Hand-rolled dialogs are gone**: `directClsxAndRawRadixDialog` in
   `eslint-legacy-baseline.js` is now `[]`. The last holdout, `src/layouts/Sidebar.tsx`,
-  composes the shared `Sheet` primitive (`Sidebar.tsx:4,49`). Every dialog in the app
+  composes the shared `Sheet` primitive (`Sidebar.tsx:4,49`). Every Radix dialog
   now goes through `DialogFrame` or `Sheet`; nothing composes `Dialog.Content`
-  directly. If you add an exemption back, delete it in the same phase that adds it.
+  directly. (`TagEditorDialog` is a `createPortal` overlay, not a Radix dialog.) If you add an exemption back, delete it in the same phase that adds it.
 - **Scroll ownership**: by default the frame scrolls as a whole (`h-responsive` on
   the inner region). A dialog that pins a header over its own scrolling body passes
   `scrollable={false}` with an `innerClassName` establishing the flex column — the

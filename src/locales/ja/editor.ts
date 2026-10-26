@@ -81,6 +81,7 @@ export const editor: Translations['editor'] = {
     title_placeholder: '例：学会発表',
   },
   errors: {
+    field_not_kept: 'インポートされませんでした：KiwiCVにはこれに対応するフィールドがありません。',
     invalid_list_value: 'テキスト以外の項目はこのリストから削除されました',
     invalid_skill_level: 'レベルは1から4の整数である必要があるため、調整されました。',
     invalid_text_value: 'テキストではない値がこのフィールドからクリアされました',

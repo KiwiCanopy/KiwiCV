@@ -98,10 +98,24 @@ cap). The rules are in [ops/DATAMODEL.md](../ops/DATAMODEL.md) § Pass-through.
 The Raw Data page lists each kept block and can remove one (`PassthroughPanel`);
 the next sync replaces the current backup, while earlier snapshots and Drive/GitHub
 versions keep it.
-`languages[].fluency` (JSON Resume's free-text level) is still copied into
-`certificate` and not re-emitted; deliberately out of scope for the pass-through.
+JSON Resume v1 item fields (#13), measured against every section's schema:
+only two have no KiwiCV field of the same name.
 
-`src/utils/validation.ts:293`, wired into `setResume` (`src/store/resume/slices/dataSlice.ts:76`). It is **not Zod** (not a dependency) — it is a defaults-driven picker that coerces each field to the type of its default, so a field with no default is silently dropped. Add the default first. `sanitizeCoverLetter` (`validation.ts:255`) is exported separately for direct testing.
+- `languages[].fluency` fills an unset `level` when its text matches the
+  LinkedIn proficiency scale, a common word or a CEFR code (`levelFromFluency`).
+  The text stays as the `certificate` unless it is nothing but the level
+  ("Native speaker", "B2"), so "DELF B2" keeps its certificate. Old KiwiCV
+  exports used `fluency` for the certificate: one with a numeric `level` keeps
+  it as is, and an unlevelled word such as "Conversational" now gains a level.
+  Not re-emitted on export.
+- `work[].description` (the organisation's description) has no field and is not
+  kept; the import warns with `editor.errors.field_not_kept`. Keeping it would be
+  a shape change and an item-level pass-through, which this repo does not have.
+
+A word `skills[].level` (`Beginner` … `Master`) maps onto the 1–4 scale; an
+unknown word still clears with `invalid_skill_level`.
+
+`sanitizeResumeData` in `src/utils/validation.ts`, wired into `setResume` (`src/store/resume/slices/dataSlice.ts`). It is **not Zod** (not a dependency) — it is a defaults-driven picker that coerces each field to the type of its default, so a field with no default is silently dropped. Add the default first. `sanitizeCoverLetter` is exported separately for direct testing.
 
 **An import replaces `coverLetter` wholesale** rather than merging (`dataSlice.ts:172-180`), matching how content sections behave; a JSON without one yields the disabled default. UI lives in `src/components/modals/import/`.
 

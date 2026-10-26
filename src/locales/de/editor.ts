@@ -82,6 +82,7 @@ export const editor: Translations['editor'] = {
     title_placeholder: 'z. B. Konferenzen',
   },
   errors: {
+    field_not_kept: 'Nicht importiert: KiwiCV hat dafür kein Feld.',
     invalid_list_value: 'Einträge, die kein Text waren, wurden aus dieser Liste entfernt',
     invalid_skill_level: 'Das Niveau muss eine ganze Zahl von 1 bis 4 sein und wurde angepasst.',
     invalid_text_value: 'Ein Wert, der kein Text war, wurde aus diesem Feld gelöscht',

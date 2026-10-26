@@ -77,6 +77,7 @@ export const editor: Translations['editor'] = {
     title_placeholder: '例如：学术会议',
   },
   errors: {
+    field_not_kept: '未导入：KiwiCV 没有对应的字段。',
     invalid_list_value: '已从列表中移除非文本类型的条目',
     invalid_skill_level: '等级必须是 1 到 4 之间的整数，因此已调整。',
     invalid_text_value: '从此字段中清除了一个非文本值',

@@ -82,6 +82,7 @@ export const editor: Translations['editor'] = {
     title_placeholder: 'напр. Конференции',
   },
   errors: {
+    field_not_kept: 'Не е импортирано: KiwiCV няма поле за това.',
     invalid_list_value: 'Записите, които не бяха текст, бяха премахнати от този списък',
     invalid_skill_level: 'Нивото трябва да е цяло число от 1 до 4, затова беше коригирано.',
     invalid_text_value: 'Стойност, която не е текст, беше изчистена от това поле',

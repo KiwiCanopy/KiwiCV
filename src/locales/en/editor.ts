@@ -78,6 +78,7 @@ export const editor = {
     title_placeholder: 'e.g. Conferences',
   },
   errors: {
+    field_not_kept: 'Not imported: KiwiCV has no field for this.',
     invalid_list_value: 'Entries that were not text were removed from this list',
     invalid_skill_level: 'Skill level must be a whole number from 1 to 4, so it was adjusted.',
     invalid_text_value: 'A value that was not text was cleared from this field',

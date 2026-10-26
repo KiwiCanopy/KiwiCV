@@ -3069,6 +3069,12 @@ const entries = [
   ],
   [
     'editor',
+    'errors.field_not_kept',
+    'Not imported: KiwiCV has no field for this.',
+    'Message under a row of the import-warnings dialog, beside a monospace chip naming a field from the imported file (for example "description" under a Work Experience entry). The file had a value there and KiwiCV has no field to keep it in, so that value was left out of the CV. Statement, not a request; address nobody. Start with the same short lead-in pattern as `editor.errors.passthrough_dropped` ("Not saved:"), but say not imported. Keep KiwiCV as the product name; one sentence',
+  ],
+  [
+    'editor',
     'errors.passthrough_dropped',
     'Not saved: the extra data in this file is too large to keep.',
     'Message under a row of the import-warnings dialog: a block of extra data from the imported file was discarded. The limit is a TOTAL across all such blocks in the file, so a small block can be dropped too: do not say this block alone is too large. The subject is the file\'s extra data as a whole. Keep the "Not saved:" lead-in short; one sentence',

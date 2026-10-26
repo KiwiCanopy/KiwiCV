@@ -81,7 +81,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: '1 つのアーカイブをこのデバイスに直接保存。',
     dest_zip_label: 'ZIP としてダウンロード',
     filename_only:
-      '会社と役職はファイル名に使われます。求人情報のリンクはこのバージョンと一緒にマイ履歴書に保存され、公開リポジトリには保存されません。',
+      '会社と役職はファイル名に使われます。求人情報のリンクは Google Drive またはプライベートの GitHub リポジトリへのバックアップと一緒に保存され、公開リポジトリや GitHub Pages で公開されたリポジトリには保存されません。',
     manage_link: '設定で管理',
     one_run_one: '1 回の実行で 1 つの送信先。',
     one_run_other: '1 回の実行で全 {{count}} 件の送信先。',
@@ -121,7 +121,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: '例：私の履歴書',
   export_modal_position_label: '役職',
   export_modal_posting_label: '求人情報のリンク',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'フォルダ名',
   gateway_desc: '履歴書をクラウドに接続して、どこからでも安全にアクセスできるようにします。',
   gateway_title: 'クラウド同期',

@@ -42,7 +42,8 @@ export const cvs: Translations['cvs'] = {
   not_backed_up_since: 'Sem cópia de segurança desde {{date}}',
   open_from_language_switch: 'Abrir Os Meus CVs',
   open_posting: 'Abrir a oferta',
-  open_posting_for: 'Abrir a oferta de {{name}} (abre num novo separador)',
+  open_posting_for: 'Abrir a oferta para {{name}} (abre num novo separador)',
+  opens_new_tab: '(abre num novo separador)',
   partial_failure_desc:
     'O {{provider}} não respondeu, por isso o que está lá guardado não é listado.',
   partial_failure_title: 'Algumas versões podem estar em falta',

@@ -44,6 +44,7 @@ export const cvs: Translations['cvs'] = {
   open_from_language_switch: 'Отвори Моите CV',
   open_posting: 'Отвори обявата',
   open_posting_for: 'Отвори обявата за {{name}} (отваря се в нов раздел)',
+  opens_new_tab: '(отваря се в нов раздел)',
   partial_failure_desc: '{{provider}} не отговори, затова съхраненото там не е включено в списъка.',
   partial_failure_title: 'Някои версии може да липсват',
   refresh: 'Обновяване',

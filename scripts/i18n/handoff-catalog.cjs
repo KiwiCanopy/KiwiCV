@@ -2330,8 +2330,8 @@ const entries = [
   [
     'sync',
     'export_dialog.filename_only',
-    'Company and position shape the file name. The posting link is kept with this version in My CVs, never in a public repository.',
-    'Export dialog: note under the company, position and job posting link fields. Company and position only change the exported file name; the job posting link is stored with this CV version and shown in the My CVs library, but is never written to a public GitHub repository. Take "My CVs" from sidebar.my_cvs in this locale and the link noun from sync.export_modal_posting_label. Do not widen "public repository" into "public storage" or "anywhere public"',
+    'Company and position shape the file name. The posting link is saved with backups to Google Drive or a private GitHub repository, never with a public or published one.',
+    'Export dialog: note under the company, position and job posting link fields. Company and position only change the exported file name. The job posting link is saved only with backups to Google Drive or to a private GitHub repository, and is never written to a public repository or one published with GitHub Pages; ZIP downloads do not keep it. Do not widen the claim into "always saved". Take "backups" and the public/published repository wording from settings.github.public_repo_note in this locale, and the link noun from sync.export_modal_posting_label',
   ],
   [
     'sync',
@@ -2348,7 +2348,7 @@ const entries = [
   [
     'sync',
     'export_modal_posting_placeholder',
-    'https://…',
+    'https://...',
     'Export dialog: placeholder of the job posting link field. A URL scheme, identical in every locale',
   ],
   [
@@ -2915,13 +2915,19 @@ const entries = [
     'cvs',
     'open_posting',
     'Open job posting',
-    'CV library: row menu action opening the job posting link saved with this CV version, in a new browser tab. Take the posting noun from sync.export_modal_posting_label in this locale',
+    'CV library: row menu action opening the job posting link saved with this CV version, in a new browser tab; also the visible text of the row link when no company or position is recorded. Take the posting noun from sync.export_modal_posting_label in this locale',
+  ],
+  [
+    'cvs',
+    'opens_new_tab',
+    '(opens in a new tab)',
+    'CV library: screen-reader-only text after the "Open job posting" menu item, warning that it opens a new browser tab. Identical to landing.testimonial.new_tab in this locale',
   ],
   [
     'cvs',
     'open_posting_for',
     'Open job posting for {{name}} (opens in a new tab)',
-    'CV library: screen-reader name of the link on a version row that opens its saved job posting. {{name}} is the CV version name. Take the wording from cvs.open_posting and the parenthesis from landing.testimonial.new_tab in this locale',
+    'CV library: screen-reader-only text read after the visible "position · company" of a version row link that opens its saved job posting. {{name}} is the CV version name; use the same preposition as cvs.row_menu. Take the wording from cvs.open_posting and the parenthesis from cvs.opens_new_tab in this locale',
   ],
   [
     'cvs',

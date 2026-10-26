@@ -44,6 +44,7 @@ export const cvs: Translations['cvs'] = {
   open_from_language_switch: 'Открыть «Мои резюме»',
   open_posting: 'Открыть вакансию',
   open_posting_for: 'Открыть вакансию для {{name}} (откроется в новой вкладке)',
+  opens_new_tab: '(откроется в новой вкладке)',
   partial_failure_desc:
     'Служба {{provider}} не ответила, поэтому сохраненные там данные не отображаются.',
   partial_failure_title: 'Некоторые версии могут отсутствовать',

@@ -41,6 +41,7 @@ export const cvs = {
   open_from_language_switch: 'Open My CVs',
   open_posting: 'Open job posting',
   open_posting_for: 'Open job posting for {{name}} (opens in a new tab)',
+  opens_new_tab: '(opens in a new tab)',
   partial_failure_desc: '{{provider}} did not respond, so anything stored there is not listed.',
   partial_failure_title: 'Some versions may be missing',
   refresh: 'Refresh',

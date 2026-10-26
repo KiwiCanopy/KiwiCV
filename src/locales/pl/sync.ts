@@ -83,7 +83,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Jedno archiwum, bezpośrednio na to urządzenie.',
     dest_zip_label: 'Pobierz jako ZIP',
     filename_only:
-      'Firma i stanowisko tworzą nazwę pliku. Link do ogłoszenia jest zapisywany z tą wersją w Moje CV, nigdy w publicznym repozytorium.',
+      'Firma i stanowisko tworzą nazwę pliku. Link do ogłoszenia jest zapisywany z kopiami zapasowymi na Google Drive lub w prywatnym repozytorium GitHub, nigdy w publicznym ani opublikowanym.',
     manage_link: 'zarządzaj w Ustawieniach',
     one_run_one: 'Jeden przebieg, jedno miejsce docelowe.',
     one_run_other: 'Jeden przebieg, wszystkie miejsca docelowe ({{count}}).',
@@ -126,7 +126,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: 'np. Moj_Zyciorys',
   export_modal_position_label: 'Stanowisko',
   export_modal_posting_label: 'Link do ogłoszenia',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Nazwa folderu',
   gateway_desc: 'Połącz swoje CV z chmurą, aby było bezpieczne i dostępne z dowolnego miejsca.',
   gateway_title: 'Synchronizacja w chmurze',

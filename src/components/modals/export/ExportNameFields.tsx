@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { normalizePostingUrl } from '@/hooks/cloud/applicationMeta';
 import { useTranslation } from '@/hooks/useTranslation';
+import { normalizePostingUrl } from '@/utils/applicationMeta';
 import { localizedPath } from '@/utils/localeRouting';
 import { Folder } from 'lucide-react';
 
@@ -13,6 +13,8 @@ interface ExportNameFieldsProps {
   company: string;
   position: string;
   postingUrl: string;
+  /** Only a cloud backup keeps the link, so the field shows only when one is selected. */
+  showPostingUrl: boolean;
   /** The name every destination will actually write. */
   preview: string;
   suggestedBase: string;
@@ -41,6 +43,7 @@ export function ExportNameFields({
   company,
   position,
   postingUrl,
+  showPostingUrl,
   preview,
   suggestedBase,
   disabled,
@@ -125,22 +128,24 @@ export function ExportNameFields({
         />
       </div>
 
-      <Input
-        type="url"
-        inputMode="url"
-        autoComplete="off"
-        label={t('sync.export_modal_posting_label')}
-        value={postingUrl}
-        disabled={disabled}
-        onChange={(event) => {
-          setPostingInvalid(false);
-          onPostingUrlChange(event.target.value);
-        }}
-        onBlur={handlePostingBlur}
-        placeholder={t('sync.export_modal_posting_placeholder')}
-        warning={postingInvalid ? t('sync.export_dialog.posting_invalid') : undefined}
-        liveUpdate={true}
-      />
+      {showPostingUrl && (
+        <Input
+          type="url"
+          inputMode="url"
+          autoComplete="off"
+          label={t('sync.export_modal_posting_label')}
+          value={postingUrl}
+          disabled={disabled}
+          onChange={(event) => {
+            setPostingInvalid(false);
+            onPostingUrlChange(event.target.value);
+          }}
+          onBlur={handlePostingBlur}
+          placeholder={t('sync.export_modal_posting_placeholder')}
+          warning={postingInvalid ? t('sync.export_dialog.posting_invalid') : undefined}
+          liveUpdate={true}
+        />
+      )}
 
       <p className="text-muted-foreground/60 px-1 text-[11px] leading-relaxed italic">
         {t('sync.export_dialog.filename_only')}

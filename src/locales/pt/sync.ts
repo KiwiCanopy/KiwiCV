@@ -83,7 +83,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Um ficheiro comprimido, diretamente para este dispositivo.',
     dest_zip_label: 'Transferir como ZIP',
     filename_only:
-      'A empresa e o cargo definem o nome do ficheiro. O link da oferta fica guardado com esta versão em Os Meus CVs, nunca num repositório público.',
+      'A empresa e o cargo definem o nome do ficheiro. O link da oferta é guardado com as cópias de segurança no Google Drive ou num repositório privado do GitHub, nunca num público ou publicado.',
     manage_link: 'gerir nas Definições',
     one_run_one: 'Uma execução, um destino.',
     one_run_other: 'Uma execução, todos os {{count}} destinos.',
@@ -124,7 +124,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: 'ex: Meu_Curriculo',
   export_modal_position_label: 'Cargo',
   export_modal_posting_label: 'Link da oferta',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Nome da pasta',
   gateway_desc:
     'Liga o teu currículo à nuvem para o manteres seguro e acessível a partir de qualquer lugar.',

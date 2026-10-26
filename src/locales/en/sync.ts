@@ -78,7 +78,7 @@ export const sync = {
     dest_zip_desc: 'One archive, straight to this device.',
     dest_zip_label: 'Download as ZIP',
     filename_only:
-      'Company and position shape the file name. The posting link is kept with this version in My CVs, never in a public repository.',
+      'Company and position shape the file name. The posting link is saved with backups to Google Drive or a private GitHub repository, never with a public or published one.',
     manage_link: 'manage in Settings',
     one_run_one: 'One run, one destination.',
     one_run_other: 'One run, all {{count}} destinations.',
@@ -118,7 +118,7 @@ export const sync = {
   export_modal_placeholder: 'e.g. My_Awesome_Resume',
   export_modal_position_label: 'Position',
   export_modal_posting_label: 'Job posting link',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Folder Name',
   gateway_desc: 'Connect your resume to the cloud to keep it secure and accessible from anywhere.',
   gateway_title: 'Cloud Sync',

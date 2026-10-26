@@ -81,7 +81,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Ett arkiv, direkt till denna enhet.',
     dest_zip_label: 'Ladda ned som ZIP',
     filename_only:
-      'Företag och position avgör filnamnet. Länken till annonsen sparas med den här versionen i Mina CV:n, aldrig i ett offentligt arkiv.',
+      'Företag och position avgör filnamnet. Länken till annonsen sparas med säkerhetskopior i Google Drive eller ett privat GitHub-arkiv, aldrig i ett offentligt eller publicerat.',
     manage_link: 'hantera i Inställningar',
     one_run_one: 'En körning, en destination.',
     one_run_other: 'En körning, alla {{count}} destinationer.',
@@ -121,7 +121,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: 't.ex. Mitt_Grymma_CV',
   export_modal_position_label: 'Position',
   export_modal_posting_label: 'Länk till annonsen',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Mappnamn',
   gateway_desc: 'Anslut ditt CV till molnet för att hålla det säkert och tillgängligt överallt.',
   gateway_title: 'Molnsynk',

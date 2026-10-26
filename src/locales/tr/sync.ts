@@ -79,7 +79,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Doğrudan bu cihaza tek bir arşiv.',
     dest_zip_label: 'ZIP olarak indir',
     filename_only:
-      "Şirket ve pozisyon dosya adını belirler. İlan bağlantısı bu sürümle birlikte CV'lerim'de saklanır, asla herkese açık bir repoda değil.",
+      "Şirket ve pozisyon dosya adını belirler. İlan bağlantısı, Google Drive'a veya özel bir GitHub deposuna alınan yedeklerle saklanır; herkese açık ya da yayınlanmış bir depoda asla saklanmaz.",
     manage_link: "Ayarlar'dan yönet",
     one_run_one: 'Tek çalıştırma, tek hedef.',
     one_run_other: 'Tek çalıştırma, tüm {{count}} hedef.',
@@ -120,7 +120,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: 'örn. Ozgecmisim',
   export_modal_position_label: 'Pozisyon',
   export_modal_posting_label: 'İlan bağlantısı',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Klasör Adı',
   gateway_desc: 'Her yerden erişebilmek ve güvende tutmak için özgeçmişini buluta bağla.',
   gateway_title: 'Bulut Senkronizasyonu',

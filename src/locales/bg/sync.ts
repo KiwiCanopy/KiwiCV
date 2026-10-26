@@ -82,7 +82,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Един архив, директно на това устройство.',
     dest_zip_label: 'Изтегляне като ZIP',
     filename_only:
-      'Компанията и позицията определят името на файла. Линкът към обявата се пази с тази версия в „Моите CV-та“, никога в публично хранилище.',
+      'Компанията и позицията определят името на файла. Линкът към обявата се пази с резервните копия в Google Drive или в поверително хранилище в GitHub, никога в публично или публикувано.',
     manage_link: 'управление в Настройки',
     one_run_one: 'Едно пускане, една дестинация.',
     one_run_other: 'Едно пускане, всички {{count}} дестинации.',
@@ -123,7 +123,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: 'напр. Моето_Резюме',
   export_modal_position_label: 'Позиция',
   export_modal_posting_label: 'Линк към обявата',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Име на папка',
   gateway_desc: 'Свържи резюмето си с облака, за да го поддържаш сигурно и достъпно отвсякъде.',
   gateway_title: 'Облачна синхронизация',

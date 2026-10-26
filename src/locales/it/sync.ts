@@ -82,7 +82,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Un archivio, direttamente su questo dispositivo.',
     dest_zip_label: 'Scarica come ZIP',
     filename_only:
-      "Azienda e posizione determinano il nome del file. Il link all'annuncio resta con questa versione in «I miei CV», mai in un repository pubblico.",
+      "Azienda e posizione determinano il nome del file. Il link all'annuncio viene salvato con i backup su Google Drive o in un repository GitHub privato, mai in uno pubblico o pubblicato.",
     manage_link: 'gestisci nelle Impostazioni',
     one_run_one: 'Un invio, una destinazione.',
     one_run_other: 'Un invio, tutte le {{count}} destinazioni.',
@@ -124,7 +124,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: 'ad es. Mio_Curriculum',
   export_modal_position_label: 'Posizione',
   export_modal_posting_label: "Link all'annuncio",
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Nome della cartella',
   gateway_desc:
     'Scegli un servizio per eseguire il backup del tuo curriculum in modo sicuro. Puoi sempre cambiarlo in seguito nelle impostazioni.',

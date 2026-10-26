@@ -44,6 +44,7 @@ export const cvs: Translations['cvs'] = {
   open_from_language_switch: 'Ouvrir Mes CV',
   open_posting: "Ouvrir l'offre",
   open_posting_for: "Ouvrir l'offre pour {{name}} (s'ouvre dans un nouvel onglet)",
+  opens_new_tab: "(s'ouvre dans un nouvel onglet)",
   partial_failure_desc:
     "{{provider}} n'a pas répondu, tout ce qui y est stocké n'est donc pas affiché.",
   partial_failure_title: 'Certaines versions peuvent être manquantes',

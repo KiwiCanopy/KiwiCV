@@ -43,6 +43,7 @@ export const cvs: Translations['cvs'] = {
   open_from_language_switch: "CV'lerimi Aç",
   open_posting: 'İlanı aç',
   open_posting_for: '{{name}} için ilanı aç (yeni sekmede açılır)',
+  opens_new_tab: '(yeni sekmede açılır)',
   partial_failure_desc:
     '{{provider}} yanıt vermedi, bu nedenle orada depolanan içerikler listelenmiyor.',
   partial_failure_title: 'Bazı sürümler eksik olabilir',

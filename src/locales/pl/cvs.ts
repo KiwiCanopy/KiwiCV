@@ -44,6 +44,7 @@ export const cvs: Translations['cvs'] = {
   open_from_language_switch: 'Otwórz Moje CV',
   open_posting: 'Otwórz ogłoszenie',
   open_posting_for: 'Otwórz ogłoszenie dla {{name}} (otwiera się w nowej karcie)',
+  opens_new_tab: '(otwiera się w nowej karcie)',
   partial_failure_desc:
     'Dostawca {{provider}} nie odpowiedział, więc zapisane tam elementy nie są wyświetlane.',
   partial_failure_title: 'Niektórych wersji może brakować',

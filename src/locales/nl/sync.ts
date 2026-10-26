@@ -80,7 +80,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Één archief, rechtstreeks naar dit apparaat.',
     dest_zip_label: 'Downloaden als ZIP',
     filename_only:
-      "Bedrijf en functie bepalen de bestandsnaam. De link naar de vacature blijft bij deze versie in Mijn CV's, nooit in een openbare repository.",
+      'Bedrijf en functie bepalen de bestandsnaam. De link naar de vacature wordt met back-ups opgeslagen in Google Drive of een privérepository op GitHub, nooit in een openbare of gepubliceerde.',
     manage_link: 'beheren in Instellingen',
     one_run_one: 'Eén keer uitvoeren, één bestemming.',
     one_run_other: 'Eén keer uitvoeren, alle {{count}} bestemmingen.',
@@ -122,7 +122,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: 'bijv. Mijn_CV',
   export_modal_position_label: 'Functie',
   export_modal_posting_label: 'Link naar vacature',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Mapnaam',
   gateway_desc: 'Verbind je CV met de cloud om deze veilig en overal toegankelijk te houden.',
   gateway_title: 'Cloud-synchronisatie',

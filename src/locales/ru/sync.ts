@@ -81,7 +81,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Один архив прямо на это устройство.',
     dest_zip_label: 'Скачать как ZIP',
     filename_only:
-      'Компания и должность определяют имя файла. Ссылка на вакансию сохраняется с этой версией в «Мои резюме», но никогда — в публичном репозитории.',
+      'Компания и должность определяют имя файла. Ссылка на вакансию сохраняется с резервными копиями в Google Drive или в приватном репозитории GitHub, но никогда — в публичном или опубликованном.',
     manage_link: 'управлять в Настройках',
     one_run_one: 'Один запуск, одно назначение.',
     one_run_other: 'Один запуск, все назначения ({{count}}).',
@@ -123,7 +123,7 @@ export const sync: Translations['sync'] = {
   export_modal_placeholder: 'например, Мое_Резюме',
   export_modal_position_label: 'Должность',
   export_modal_posting_label: 'Ссылка на вакансию',
-  export_modal_posting_placeholder: 'https://…',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Название папки',
   gateway_desc:
     'Подключи свое резюме к облаку, чтобы оно было в безопасности и доступно из любого места.',

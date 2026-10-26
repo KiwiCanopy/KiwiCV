@@ -6,20 +6,16 @@ import { ExportRunFooter } from '@/components/modals/export/ExportRunFooter';
 import { CloudSetupRow } from '@/components/modals/export/destinations/CloudSetupRow';
 import { DestinationList } from '@/components/modals/export/destinations/DestinationList';
 import { HostingPathField } from '@/components/modals/export/destinations/HostingPathField';
-import {
-  clearExportDraft,
-  readExportDraft,
-  writeExportDraft,
-} from '@/components/modals/export/exportDraft';
 import { PackageSummary } from '@/components/modals/export/package/PackageSummary';
 import { useExportDestinations } from '@/components/modals/export/useExportDestinations';
 import { useExportRun } from '@/components/modals/export/useExportRun';
 import { EXPORT_TRIGGER_ANCHOR_ID } from '@/constants/focusAnchors';
-import { normalizePostingUrl } from '@/hooks/cloud/applicationMeta';
+import { clearExportDraft, readExportDraft, writeExportDraft } from '@/hooks/export/exportDraft';
 import { useSyncAuthGateway } from '@/hooks/sync/useSyncAuthGateway';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { normalizePostingUrl } from '@/utils/applicationMeta';
 import { constructBackupFilename, getCleanProjectName, getProjectFilename } from '@/utils/export';
 import { localizedPath } from '@/utils/localeRouting';
 
@@ -133,6 +129,7 @@ export function ExportModalBody({
         company={company}
         position={position}
         postingUrl={postingUrl}
+        showPostingUrl={selected.some((id) => id === 'github_repo' || id === 'google_drive')}
         preview={preview}
         suggestedBase={suggestedBase}
         disabled={state.isRunning}

@@ -44,6 +44,7 @@ export const cvs: Translations['cvs'] = {
   open_from_language_switch: '「マイ 履歴書」を開く',
   open_posting: '求人情報を開く',
   open_posting_for: '{{name}} の求人情報を開く（新しいタブで開きます）',
+  opens_new_tab: '（新しいタブで開きます）',
   partial_failure_desc:
     '{{provider}} から応答がないため、そこに保存されているデータは表示されません。',
   partial_failure_title: '一部のバージョンが表示されていない可能性があります',

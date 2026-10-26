@@ -27,7 +27,7 @@ function LatestBackupRow({ version, onRestore }: LatestBackupRowProps) {
       : t('cvs.saved_unknown');
 
   return (
-    <div className="border-border bg-secondary/50 flex flex-wrap items-center gap-3 rounded-xl border p-4 sm:gap-4">
+    <div className="border-border bg-card hover:bg-secondary/50 flex flex-wrap items-center gap-3 rounded-xl border p-4 transition-colors sm:gap-4">
       <VersionThumbnail theme={version.file.theme} />
 
       {/* Same phone shape as `VersionRow`: below the thumbnail's own line, not

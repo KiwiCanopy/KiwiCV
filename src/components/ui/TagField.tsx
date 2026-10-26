@@ -106,10 +106,10 @@ export const TagField: FC<TagFieldProps> = ({
                   disabled={!lock && !inputValue.trim()}
                   aria-disabled={lock ? true : undefined}
                   aria-describedby={reasonId}
-                  variant="quiet"
-                  // The secondary fill, same as the backup button. As a quiet
-                  // button it had no shape inside the field, so the only
-                  // discoverable way to commit an entry was knowing Enter works.
+                  // Secondary, not quiet: a quiet button had no shape inside the
+                  // field, so the only discoverable way to commit an entry was
+                  // knowing Enter works.
+                  variant="secondary"
                   //
                   // 32px, not `IconButton`'s 44px: it is anchored inside the
                   // field, where a 44px square around a 16px glyph is almost
@@ -117,10 +117,7 @@ export const TagField: FC<TagFieldProps> = ({
                   // Still over WCAG 2.2's 24px target minimum (2.5.8), and
                   // scoped here rather than on `IconButton`, which would shrink
                   // every touch target in the app.
-                  className={cn(
-                    'bg-secondary hover:bg-secondary/80 h-8 min-h-8 w-8',
-                    lock && LOCKED_BUTTON_CLASS,
-                  )}
+                  className={cn('h-8 min-h-8 w-8', lock && LOCKED_BUTTON_CLASS)}
                 >
                   <Plus className="h-4 w-4" aria-hidden="true" />
                 </IconButton>

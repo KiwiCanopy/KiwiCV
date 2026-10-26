@@ -231,7 +231,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                 onActionRequiredClick();
               }}
               loading={isLoading}
-              className="h-10 w-full border-amber-500/40 text-amber-600 hover:bg-amber-500/10 dark:border-amber-400/40 dark:text-amber-400"
+              className="h-10 w-full border-amber-500/40 text-amber-600 hover:bg-amber-500/10 active:bg-amber-500/20 dark:border-amber-400/40 dark:text-amber-400"
             >
               <Info className="h-4 w-4 shrink-0 text-amber-500" />
               <span className="truncate">{t('sync.grant_permission')}</span>

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { type KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { CoverLetterRow } from '@/components/modals/export/CoverLetterRow';
@@ -19,6 +19,7 @@ import { useResumeStore } from '@/store/resume/useResumeStore';
 import { normalizePostingUrl } from '@/utils/applicationMeta';
 import { constructBackupFilename, getCleanProjectName, getProjectFilename } from '@/utils/export';
 import { localizedPath } from '@/utils/localeRouting';
+import { isPrimaryActionChord, isTextEntry } from '@/utils/primaryActionChord';
 
 export interface ExportChromeState {
   busy: boolean;
@@ -88,6 +89,18 @@ export function ExportModalBody({
   ).length;
   const isRetry = state.hasRun && failed.length > 0;
   const targets = isRetry ? failed : selected;
+  const canRun = preview.trim().length > 0;
+  const runTargets = () => void run(targets, projectName, normalizePostingUrl(postingUrl));
+
+  // Cmd/Ctrl+Enter from a text field presses the trigger itself, so the
+  // button's own disabled state is the only guard. Elsewhere — a link, where it
+  // opens a new tab, or a button — the key keeps its native meaning.
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (!isPrimaryActionChord(event) || !isTextEntry(event.target)) return;
+    event.preventDefault();
+    triggerRef.current?.click();
+  };
 
   const handleSetup = () => {
     ensureConnected({
@@ -124,7 +137,7 @@ export function ExportModalBody({
   }, [allOk, onClose]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" onKeyDown={handleKeyDown}>
       <ExportNameFields
         base={base}
         company={company}
@@ -178,11 +191,12 @@ export function ExportModalBody({
         done={finished}
         isRunning={state.isRunning}
         isRetry={isRetry}
-        canRun={preview.trim().length > 0}
+        canRun={canRun}
         announcement={announcement}
         buildFailed={state.buildError !== null}
         onCancel={handleCancel}
-        onRun={() => void run(targets, projectName, normalizePostingUrl(postingUrl))}
+        onRun={runTargets}
+        triggerRef={triggerRef}
       />
     </div>
   );

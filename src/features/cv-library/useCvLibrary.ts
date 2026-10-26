@@ -27,6 +27,7 @@ export function useCvLibrary() {
   const { isCloudActive } = useSyncAuthGateway();
 
   const status = useCvLibraryStore((state) => state.status);
+  const epoch = useCvLibraryStore((state) => state.epoch);
   const discoveryData = useCvLibraryStore((state) => state.discoveryData);
   const failedSources = useCvLibraryStore((state) => state.failedSources);
   const githubPaths = useCvLibraryStore((state) => state.githubPaths);
@@ -38,14 +39,15 @@ export function useCvLibrary() {
   const { performRestore } = useCloudRestoreAction(downloadBackup);
 
   // Discovery is not reentrant: a second pass while the first is in flight
-  // would double every GitHub request for the same answer.
-  const inFlightRef = useRef(false);
+  // would double every GitHub request for the same answer. Keyed by the store's
+  // epoch, so a pass orphaned by a reset does not block the next user's (#63).
+  const inFlightRef = useRef<number | null>(null);
 
   const load = useCallback(async () => {
-    if (inFlightRef.current) return;
-    inFlightRef.current = true;
     const store = useCvLibraryStore.getState();
-    store.setLoading();
+    if (inFlightRef.current === store.epoch) return;
+    const epoch = store.setLoading();
+    inFlightRef.current = epoch;
 
     try {
       const { foundBackups, githubPaths: paths, attempted, failed } = await discoverBackups();
@@ -54,16 +56,16 @@ export function useCvLibrary() {
       // attempted provider failing is an error state — reporting "no backups"
       // there is how an expired token used to look like an empty account.
       if (attempted.length > 0 && failed.length === attempted.length) {
-        store.setError(t('cvs.error_desc'));
+        store.setError(t('cvs.error_desc'), epoch);
         return;
       }
 
-      store.setReady(foundBackups, paths, failed);
+      store.setReady(foundBackups, paths, failed, epoch);
     } catch (err) {
       console.error('[CvLibrary] Discovery failed:', err);
-      useCvLibraryStore.getState().setError(t('cvs.error_desc'));
+      useCvLibraryStore.getState().setError(t('cvs.error_desc'), epoch);
     } finally {
-      inFlightRef.current = false;
+      if (inFlightRef.current === epoch) inFlightRef.current = null;
     }
     // `discoverBackups` is rebuilt every render by design (it closes over the
     // current credentials), so it is deliberately not a dependency.
@@ -91,7 +93,9 @@ export function useCvLibrary() {
     if (isFresh) return;
 
     void load();
-  }, [isCloudActive, load]);
+    // `epoch`: a sign-out resets the store to idle under a page that stays
+    // cloud-active (the GitHub PAT outlives the session), so reload then (#63).
+  }, [isCloudActive, load, epoch]);
 
   // After every load, whoever ran it: the language-switch restore prompt fills
   // this store too, and a fresh device is exactly when the cache is empty.

@@ -126,9 +126,9 @@ its stored flag so reconnecting restores it. Preferences live in
 mismatch.
 
 `activeSyncModal` is a single enum, so opening the cloud gateway unmounts the dialog.
-`exportDraft.ts` holds the typed name fields at module scope across that detour and across
-the Google OAuth redirect within the tab; it is cleared on an explicit Cancel or a fully
-successful run, never on a failure.
+`exportDraft.ts` holds the typed name fields at module scope across that detour. The Google
+OAuth redirect reloads the page and loses them. The draft is cleared on an explicit Cancel, a
+fully successful run, a sign-out or a different account signing in (#63), never on a failure.
 
 ---
 

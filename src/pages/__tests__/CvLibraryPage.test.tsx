@@ -7,7 +7,7 @@ import { useCvLibraryStore } from '@/store/library/useCvLibraryStore';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { useUIStore } from '@/store/ui/useUIStore';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -190,6 +190,36 @@ describe('CvLibraryPage', () => {
     // this the argument is unguarded: the gateway would inherit `'save'` and
     // point its CTA at a sync on an account with no provider configured.
     expect(useUIStore.getState().syncGatewayTarget).toBe('manage');
+  });
+
+  // A sign-out resets the store (#63). The scan already running belongs to the
+  // previous user, and the page stays cloud-active because the PAT survives.
+  it('drops a scan a sign-out orphaned, and loads again for whoever is left', async () => {
+    mocks.isCloudActive.value = true;
+    let releaseFirstScan: () => void = () => {};
+    const firstScan = new Promise<void>((resolve) => (releaseFirstScan = resolve));
+    let previousUser = true;
+    listContents.mockImplementation((async (_owner: string, _repo: string, path: string) => {
+      if (!previousUser) return [];
+      await firstScan;
+      if (path === 'backups') return [{ type: 'dir', name: 'en' }];
+      if (path === 'backups/en') return [{ type: 'file', name: 'Private.json', sha: 's1' }];
+      return [];
+    }) as never);
+
+    renderPage();
+    await waitFor(() => expect(listContents).toHaveBeenCalledTimes(1));
+
+    previousUser = false;
+    act(() => useCvLibraryStore.getState().reset());
+    await waitFor(() => expect(useCvLibraryStore.getState().status).toBe('ready'));
+    releaseFirstScan();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const state = useCvLibraryStore.getState();
+    expect(state.status).toBe('ready');
+    expect(state.discoveryData).toEqual({});
+    listContents.mockImplementation(async () => []);
   });
 
   it('shows the loading state while discovery is in flight', () => {

@@ -55,3 +55,27 @@ describe('useCvLibraryStore', () => {
     expect(state.loadedAt).toBeNull();
   });
 });
+
+describe('useCvLibraryStore epoch (#63)', () => {
+  it('drops a result whose load began before a reset', () => {
+    const epoch = useCvLibraryStore.getState().setLoading();
+    useCvLibraryStore.getState().reset();
+
+    useCvLibraryStore.getState().setReady({ en: { github: [] } }, { en: 'backups/en' }, [], epoch);
+    useCvLibraryStore.getState().setError('late', epoch);
+
+    const state = useCvLibraryStore.getState();
+    expect(state.status).toBe('idle');
+    expect(state.discoveryData).toBeNull();
+    expect(state.error).toBeNull();
+  });
+
+  it('keeps a result whose load began after the last reset', () => {
+    useCvLibraryStore.getState().reset();
+    const epoch = useCvLibraryStore.getState().setLoading();
+
+    useCvLibraryStore.getState().setReady({ en: { github: [] } }, {}, [], epoch);
+
+    expect(useCvLibraryStore.getState().status).toBe('ready');
+  });
+});

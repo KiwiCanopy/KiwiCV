@@ -1,6 +1,6 @@
 # Deployment & Environment
 
-> **Last Updated: 2026-10-12** (Sanity CORS admits netlify dev only)
+> **Last Updated: 2026-10-26** (netlify dev in a worktree serves the main checkout's functions)
 
 ## Contents
 
@@ -104,6 +104,19 @@ It defines three configurations:
   here. Allow-listed in Supabase, so OAuth round-trips work too — but it is a
   different origin from 5173, so sessions and any `localStorage`-backed
   credentials do not carry across.
+
+  ⚠️ **It passes `--functions netlify/functions`, and that flag is load-bearing.**
+  netlify-cli finds the repository root by looking for a `.git` _directory_
+  (`base-command.js`), and a git worktree's `.git` is a file. So from
+  `.claude/worktrees/<name>` it resolves the main checkout and, without the
+  flag, serves _that checkout's_ functions while Vite serves the worktree
+  (measured 2026-10-26). The client and the function then come from different
+  commits, and a correct change reads as a product bug. The relative flag was
+  measured serving an uncommitted worktree edit. Check what is served with a
+  grep under `.netlify/functions-serve/<function>/`. Edge functions,
+  `netlify.toml`, redirects and headers derive from the same root and are
+  **unmeasured** from a worktree.
+
 - `kiwicv-dev-alt` — port **5199**, via `--port 5199 --strictPort`. For a second
   concurrent session, e.g. two agents verifying different areas at once.
   OAuth callbacks will **not** work here unless 5199 is added to the allow-list

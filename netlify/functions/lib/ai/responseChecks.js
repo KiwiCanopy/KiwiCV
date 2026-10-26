@@ -95,8 +95,8 @@ export function assertTranslationComplete({ source, improved, allowReorg }) {
 }
 
 /**
- * The facts whole-CV tailoring may not change: object sections by field, list
- * sections by entry field. The prompt names them and does not hold them
+ * The facts whole-CV tailoring may not change, by list section and entry field.
+ * The prompt names them and does not hold them
  * (ops/AI_LOGIC.md § Tailoring names its facts).
  */
 export const TAILORING_FACT_FIELDS = {
@@ -122,23 +122,19 @@ export function dropTailoringFactChanges({ source, improved }) {
 
   for (const [section, keys] of Object.entries(TAILORING_FACT_FIELDS)) {
     const answer = improved[section];
-    const sourceSection = source?.[section];
-    if (Array.isArray(answer)) {
-      const sourceItems = Array.isArray(sourceSection) ? sourceSection : [];
-      const stripped = new Set();
-      sourceItems.forEach((item, index) => {
-        const match = matchResponseEntry(answer, sourceItems, index);
-        if (!match || stripped.has(match)) return;
-        stripped.add(match);
-        strip(match.improvedFields, item, keys);
-      });
-      // An entry that answers no source item merges nowhere; strip it anyway.
-      answer
-        .filter((entry) => isObject(entry) && !stripped.has(entry))
-        .forEach((entry) => strip(entry.improvedFields, undefined, keys));
-    } else if (isObject(answer)) {
-      strip(answer.improvedFields, sourceSection, keys);
-    }
+    if (!Array.isArray(answer)) continue;
+    const sourceItems = Array.isArray(source?.[section]) ? source[section] : [];
+    const stripped = new Set();
+    sourceItems.forEach((item, index) => {
+      const match = matchResponseEntry(answer, sourceItems, index);
+      if (!match || stripped.has(match)) return;
+      stripped.add(match);
+      strip(match.improvedFields, item, keys);
+    });
+    // An entry that answers no source item merges nowhere; strip it anyway.
+    answer
+      .filter((entry) => isObject(entry) && !stripped.has(entry))
+      .forEach((entry) => strip(entry.improvedFields, undefined, keys));
   }
   return dropped;
 }

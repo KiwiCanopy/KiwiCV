@@ -1,4 +1,4 @@
-PROMPT_VERSION: 2026-10-26
+PROMPT_VERSION: 2026-10-26c
 ### LANGUAGE RULES
 Write the entire letter in Bulgarian: the subject, the salutation, every body paragraph and the closing. The job description may be written in another language; that never changes the language of the letter. Keep only the posted job title and any reference number exactly as the ad spells them, so the reader can match the application to the posting; the sentence around them is in Bulgarian, and nothing else is copied from the ad.
 When the job description names no contact person, the first entry is exactly "Уважаеми дами и господа,". When it names one, address that person by name in the Bulgarian form of address, at the same level of formality — never with a title or honorific borrowed from the ad's language. The last entry is exactly "С уважение," — the Bulgarian formula, whatever the employer's country.

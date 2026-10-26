@@ -464,13 +464,21 @@ test('tailoring matches the ad and names held titles, employers and dates as fac
     ['import', getSystemPrompt('job_description', 'cv', 'en', undefined, false, 'cv_parsing')],
   ];
   for (const [where, prompt] of prompts) {
-    for (const fact of [/employer names/, /job title held/, /dates/, /years of experience/]) {
-      assert.match(prompt, fact, where);
-    }
-    assert.match(prompt, /Rewrite every work entry the job description bears on/, where);
+    const facts = prompt.match(/\*\*Facts are fixed:\*\* ([^.]*)\./)?.[1];
+    assert.equal(
+      facts,
+      'employer names, the job title held in each work entry, dates, certifications, and years of experience',
+      where,
+    );
+    // Naming tools or keywords as facts stopped tailoring from matching the ad at all.
+    assert.doesNotMatch(facts, /tools|technologies|skill keywords/, where);
     assert.match(prompt, /headline label is a positioning statement, not a title held/, where);
     assert.match(prompt, /a related tool is not the same tool/, where);
-    assert.doesNotMatch(prompt, /skill keywords/, where);
+  }
+  // Coverage is a whole-CV instruction: the other targets and the import do not reach every entry.
+  const rewriteEvery = /Rewrite every work entry the job description bears on/;
+  for (const [where, prompt] of prompts) {
+    (where === 'cv' ? assert.match : assert.doesNotMatch)(prompt, rewriteEvery, where);
   }
   const imported = prompts.at(-1)[1];
   assert.ok(

@@ -9,7 +9,10 @@ import assert from 'node:assert/strict';
 import { generateKeyPairSync } from 'node:crypto';
 import { test } from 'node:test';
 
-import { SECTION_COMPOSITION } from '../../netlify/functions/lib/ai/definitions.js';
+import {
+  SECTION_COMPOSITION,
+  SINGLETON_SECTIONS,
+} from '../../netlify/functions/lib/ai/definitions.js';
 import {
   TAILORING_FACT_FIELDS,
   assertNotTruncated,
@@ -241,6 +244,14 @@ test('every tailoring fact is a field its section composes', () => {
   );
   assert.ok(Object.keys(TAILORING_FACT_FIELDS).length > 0);
   assert.deepEqual(stray, []);
+});
+
+// `dropTailoringFactChanges` strips list entries only; an object section would be skipped.
+test('every tailoring fact section is a list section', () => {
+  const objects = Object.keys(TAILORING_FACT_FIELDS).filter((section) =>
+    SINGLETON_SECTIONS.includes(section),
+  );
+  assert.deepEqual(objects, []);
 });
 
 test('a response that keeps every keyword is left as it is', () => {

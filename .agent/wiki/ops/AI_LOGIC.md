@@ -1,6 +1,6 @@
 # AI Logic & Vertex AI Integration
 
-> **Last Updated: 2026-10-13** (proposal keys built by one helper; a custom section heading proposal is reviewed at its title; truncation, translation completeness and its cap; the tailoring facts and skill keywords held server-side; one list-entry matcher; one job-run lifecycle for both dialogs; the request guards; the server serves only composed targets; the two CV merges pinned; one comparator rule; an `item:` run is a list entry; custom sections; the length unit; one inventory of object-shaped sections)
+> **Last Updated: 2026-10-26** (tailoring matches the ad and may adjust the headline; proposal keys built by one helper; a custom section heading proposal is reviewed at its title; truncation, translation completeness and its cap; the tailoring facts and skill keywords held server-side; one list-entry matcher; one job-run lifecycle for both dialogs; the request guards; the server serves only composed targets; the two CV merges pinned; one comparator rule; an `item:` run is a list entry; custom sections; the length unit; one inventory of object-shaped sections)
 
 ## Contents
 
@@ -345,58 +345,84 @@ whether a tailored statement is true, through the proposals and the unsourced-ke
 below. The model must not fabricate on purpose; an occasional overreach is an accepted mistake,
 not a failure the prompt must prevent by matching nothing.
 
-So `BASE_ROLE_PROMPTS.job_description` (since `PROMPT_VERSION` 2026-10-26) tells the model to
-mirror the ad's terms wherever the CV gives them a footing — the CV mentions the term anywhere, or
-it plausibly describes what was done in that role — and to rewrite every work entry the ad bears
-on. It forbids inventing a skill, tool, industry, responsibility or achievement with no footing,
-and names two footings that are not one: a related tool (Azure for AWS) and the employer's
-industry. The facts it holds are the ones a reader checks against the CV's own history: employer
-names, the title held in each work entry, dates, certifications, years of experience. The headline
-`label` is a positioning statement, not a title held, so tailoring may adjust it. An import with
-the job-description style nests the same role under `### OPTIMIZATION STYLE`.
-`vertex-request.test.mjs` pins the clause on both paths, and the `tailor-cv-job-description-en`
-and `parse-job-description-en` snapshots pin the text.
+The prompt says it in two places (`PROMPT_VERSION` 2026-10-26c):
+
+- `BASE_ROLE_PROMPTS.job_description`, on every tailoring target and on an import with the
+  job-description style (nested under `### OPTIMIZATION STYLE`), mirrors the ad's terms wherever
+  the CV gives them a footing — the CV mentions the term anywhere, or it plausibly describes what
+  was done in that role. It forbids inventing a skill, tool, industry, responsibility or achievement
+  with no footing, and names two footings that are not one: a related tool (Azure for AWS) and the
+  employer's industry. Its facts are the ones a reader checks against the CV's own history:
+  employer names, the title held in each work entry, dates, certifications, years of experience.
+  The headline `label` is a positioning statement, not a title held, so tailoring may adjust it.
+- The whole-CV scope sentence of a `job_description` run names where the terms go (summary, every
+  work entry, skills, headline), asks for every work entry the ad bears on to be rewritten, and
+  repeats that a tool, industry or claim with no footing stays out. It is scoped there because an
+  `item:` or `section:` run, and an import, do not reach every entry.
+
+`vertex-request.test.mjs` pins the facts sentence word for word and the coverage sentence to the
+whole-CV target only; the `tailor-cv-job-description-en` and `parse-job-description-en` snapshots
+pin the text.
 
 ⚠️ **Do not re-add tools, technologies or skill keywords to the facts list.** The 2026-10-12b
 clause named them. With skill restructuring ticked it stopped the run from tailoring at all: the
 work entries came back verbatim or with synonym swaps ("Worked" → "Collaborated") and no ad term
 in them. That is the run the owner reported.
 
+⚠️ **Keep the no-footing limit in the coverage sentence.** With the coverage sentence moved into the
+scope and the limit left only in the role (2026-10-26b below), fixture B wrote "financial services"
+into a highlight in 3/3 runs and AWS into skills in 3/3. The coverage sentence comes later in the
+prompt, and without its own limit it won.
+
 Measured 2026-10-26: gemini-3.5-flash-lite, EU endpoint, whole-CV call 1 through the real
 modules, `allowReorg` on unless noted. Fixture A is a three-job frontend CV against a senior
 full-stack ad (React, Node.js, CI/CD, REST/GraphQL, WCAG, design system). Fixture B is
 `examples/resume_4_3_5.json` against an ML fraud-detection ad asking for Kubernetes, AWS SageMaker
 and financial services, none of which the CV has (it has Docker and Azure). "Lines" counts changed
-work summaries and highlights; "ad terms" counts ad terms newly present in work prose.
+work summaries and highlights; "ad terms" counts ad terms newly present in work prose;
+"unfounded" counts runs that put Kubernetes, AWS/SageMaker or "financial services" in work prose.
 
-| Fixture | Arm                               | runs | work entries changed | lines changed | ad terms in work | label shipped |
-| ------- | --------------------------------- | ---- | -------------------- | ------------- | ---------------- | ------------- |
-| A       | 2026-10-12b clause                | 2    | 3/3, **0/3**         | 5/14, 0/14    | **0, 0**         | 0/2           |
-| A       | 2026-10-12b clause, reorg off     | 2    | 3/3, 3/3             | 12/14, 10/14  | 6, 7             | 0/2           |
-| A       | no clause, reorg on and off       | 4    | 3/3 ×4               | 9–14/14       | 3–7              | 0/4           |
-| A       | shipped (2026-10-26)              | 2    | 3/3, 3/3             | 9/14, 8/14    | 6, 5             | 2/2           |
-| A       | first draft, reorg on and off     | 4    | 3/3 ×4               | 10–14/14      | 7–10             | 4/4           |
-| B       | 2026-10-12b clause                | 2    | 4/4, 4/4             | 14/16, 14/16  | 0, 0             | 0/2           |
-| B       | first draft, no related-tool rule | 2    | 4/4, 4/4             | 16/16, 16/16  | 11, 14           | 2/2           |
-| B       | shipped (2026-10-26)              | 2    | 4/4, 4/4             | 16/16, 16/16  | 6, 9             | 2/2           |
+| Fixture | Arm                                             | runs | lines changed       | ad terms in work | unfounded | label shipped |
+| ------- | ----------------------------------------------- | ---- | ------------------- | ---------------- | --------- | ------------- |
+| A       | 2026-10-12b clause                              | 2    | 5/14, **0/14**      | **0, 0**         | —         | 0/2           |
+| A       | 2026-10-12b clause, reorg off                   | 2    | 12/14, 10/14        | 6, 7             | —         | 0/2           |
+| A       | no clause, reorg on and off                     | 4    | 9–14/14             | 3–7              | —         | 0/4           |
+| A       | all in the role, reorg on and off (draft)       | 6    | 8–14/14             | 5–10             | —         | 6/6           |
+| A       | coverage in scope, no limit there (26b)         | 4    | 10–13/14            | 1, 7, 7, 5       | —         | 4/4           |
+| A       | **shipped (26c)**                               | 2    | 10/14, 12/14        | 3, 4             | —         | 2/2           |
+| B       | 2026-10-12b clause                              | 2    | 14/16, 14/16        | 0, 0             | 0/2       | 0/2           |
+| B       | all in the role, no related-tool rule           | 2    | 16/16, 16/16        | 11, 14           | 2/2       | 2/2           |
+| B       | all in the role, related-tool rule (2026-10-26) | 2    | 16/16, 16/16        | 6, 9             | 2/2       | 2/2           |
+| B       | coverage in scope, no limit there (26b)         | 3    | 15–16/16            | 9, 9, 7          | 3/3       | 3/3           |
+| B       | **shipped (26c)**                               | 3    | 16/16, 16/16, 14/16 | 4, 0, 0          | **0/3**   | 3/3           |
 
-No run returned a `_vId` the source lacks. Every run of every arm proposed a new headline, which
-the old guard then stripped. The no-clause arm retitled a held `position` in 2 of 4 runs; no other
-arm did. Fixture B sizes the overreach the ruling accepts: in the shipped arm Kubernetes (Docker is
-in the CV) reached the work prose in 2/2 runs, AWS in 1/2 and fraud detection in 1/2; the first
-draft put AWS in 2/2 and wrote "financial services" into a highlight. The 2026-10-12 baseline
-before any clause put Kubernetes/AWS and SageMaker into skills in 3/3. A skills keyword the CV
-never mentions is marked for the user; one written into work prose is not, and reaches the user
-only as a proposal to review.
+Every work entry changed in every run except the one 0/14 run of the old clause. No run returned
+a `_vId` the source lacks, and every run proposed a new headline, which the old guard then
+stripped. A held `position` was retitled in 2 of 4 no-clause runs and 1 of 4 26b runs (both
+stripped by the server). The shipped arm's overreach is the headline: fixture B's label became
+"Senior Machine Learning Engineer — Fraud Detection" in 2/3 runs, a domain the CV does not show.
+That is the accepted kind — a proposal the user reviews, never applied unasked. Fixture A's ad
+terms (3, 4) sit inside the no-clause range (3–7); the 2026-10-12 baseline before any clause put
+Kubernetes/AWS and SageMaker into skills in 3/3. A skills keyword the CV never mentions is marked
+for the user; one written into work prose is not, and reaches the user only as a proposal to
+review.
+
+**The import path has no review step**, so it was measured separately: fixture A as plain text,
+`cv_parsing`, the job-description import instruction. Every run kept every bullet (4/4, 4/4, 3/3)
+and every held position, employer and date. With the shipped prompt the work prose took no ad term
+(0, 0, as on 2026-10-12b) while the headline was adjusted (2/2). The coverage sentence does not
+reach the import; with it in the role (the draft) the import put 6 and 11 ad terms into work prose.
 
 **The server holds the facts** (`lib/ai/responseChecks.js`, run in `improve-cv-background.mjs`
 after the parse and before the grade, so the grade, the letter's merge and the store all see the
 source value). A whole-CV `job_description` run has `TAILORING_FACT_FIELDS` — a work entry's
 `name`, `position`, `startDate` and `endDate` — removed from its response by
-`dropTailoringFactChanges`; a run that only retitled grades as no change. `basics.label` left the
-list on 2026-10-26 with the ruling above. Only that mode is tailoring (`professional` and `custom`
-may retitle), and only the whole-CV run. A run that also translates skips the guard: a translated
-title is not a swap.
+`dropTailoringFactChanges`; a run that only retitled grades as no change. It strips list entries
+only, and `response-checks.test.mjs` fails if an object section such as `basics` joins the list.
+`basics.label` left it on 2026-10-26 with the ruling above. Certifications and years of experience
+are held by the prompt alone: years are prose, and no measured run changed a certificate. Only that
+mode is tailoring (`professional` and `custom` may retitle), and only the whole-CV run. A run that
+also translates skips the guard: a translated title is not a swap. The import runs no guard at all.
 
 **Tailoring never drops a skill keyword.** A 2026-10-12 `section:skills` run seeded with `Postgres`,
 `k8s` and `Photo Editing` normalised the first two truthfully but lost `Photo Editing`, `Next.js`

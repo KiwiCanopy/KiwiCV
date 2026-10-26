@@ -84,9 +84,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Pobierz jako ZIP',
     filename_only:
       'Firma i stanowisko wpływają tylko na nazwę eksportowanego pliku. Nie są zapisywane.',
+    letter_excluded: 'List motywacyjny nie jest dołączony',
+    letter_included: 'List motywacyjny dołączony przed CV',
+    letter_outdated: 'Może nie pasować do nowego ogłoszenia — sprawdź go przed wysłaniem.',
+    letter_toggle: 'Dołącz list motywacyjny',
     manage_link: 'zarządzaj w Ustawieniach',
-    one_run_one: 'Jeden przebieg, jedno miejsce docelowe.',
-    one_run_other: 'Jeden przebieg, wszystkie miejsca docelowe ({{count}}).',
     package_always_included: 'Zawsze w zestawie',
     package_backup_desc: 'Migawka projektu, która umożliwia przywrócenie tego eksportu.',
     package_backup_label: 'Kopia zapasowa',

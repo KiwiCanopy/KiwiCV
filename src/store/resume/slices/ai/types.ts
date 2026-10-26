@@ -1,3 +1,4 @@
+import { type CoverLetterStampInput } from '@/store/resume/slices/ai/coverLetterStamp';
 import { type AITargetKey } from '@/utils/aiTarget';
 
 export interface ReorgSuggestion {
@@ -18,6 +19,8 @@ export interface AISuggestionEntry {
    * Optional: absent on stores written before it and on runs that do not mark.
    */
   unsourced?: Record<string, string[]>;
+  /** Written onto the object when any field of this proposal is declined (`stampCoverLetter`). */
+  onDecline?: Record<string, unknown>;
 }
 
 /** Indexed like the `Record<string, …>` it replaced: a prefixed key reads as present. */
@@ -96,6 +99,7 @@ export interface AISlice {
   acceptAISuggestion: (target: AITargetKey, field?: string) => void;
   acceptAllSuggestions: (target: AITargetKey) => void;
   declineAISuggestion: (target: AITargetKey, field?: string) => void;
+  stampCoverLetter: (input: CoverLetterStampInput) => void;
   /** Text typed before a field's proposal arrived becomes the user's side of it. */
   keepTypedAsMine: (target: AITargetKey, field: string, value: unknown) => void;
   applyReorgSuggestion: (sectionKey: string, proposedItems: Array<Record<string, unknown>>) => void;

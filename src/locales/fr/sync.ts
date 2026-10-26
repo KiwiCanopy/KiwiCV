@@ -82,9 +82,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Télécharger en ZIP',
     filename_only:
       "L'entreprise et le poste influent uniquement sur le nom exporté. Ils ne sont pas enregistrés.",
+    letter_excluded: 'Lettre de motivation non incluse',
+    letter_included: 'Lettre de motivation incluse avant le CV',
+    letter_outdated: 'Ne correspond peut-être pas à la nouvelle offre — à vérifier avant l’envoi.',
+    letter_toggle: 'Inclure la lettre de motivation',
     manage_link: 'gérer dans les Paramètres',
-    one_run_one: 'Un seul envoi, une destination.',
-    one_run_other: 'Un seul envoi, les {{count}} destinations.',
     package_always_included: 'Toujours inclus',
     package_backup_desc: "L'instantané du projet qui rend cet export restaurable.",
     package_backup_label: 'Sauvegarde',

@@ -75,7 +75,9 @@ export function BasicsForm({ variant = 'nested', defaultCollapsed = true }: Basi
             label: t('editor.fields.label'),
             summary: t('editor.fields.summary'),
           }}
-          className="mx-0 mb-0"
+          // ⚠️ Tailwind v4's `space-y-*` is a `margin-bottom` on each child, so the
+          // panel's own bottom margin IS the gap; `mb-0` here once removed it.
+          className={cn('mx-0', isStandard ? 'mb-8' : 'mb-6')}
         />
 
         {/* Top Section: Photo & Core Identity */}

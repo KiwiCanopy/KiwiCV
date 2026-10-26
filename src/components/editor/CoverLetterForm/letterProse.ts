@@ -1,7 +1,7 @@
 /**
  * Whether the letter has prose an Improve run could act on.
  *
- * ⚠️ **Not the same question as `hasCoverLetterText`** (`coverLetterRequest.ts`),
+ * ⚠️ **Not the same question as `hasCoverLetterText`** (`src/utils/coverLetter.ts`),
  * which counts a subject too because it asks "is there anything a fresh draft
  * would destroy". This one asks "is there anything to rewrite", and a subject
  * alone is a header, not a letter. The divergence is deliberate and the shared

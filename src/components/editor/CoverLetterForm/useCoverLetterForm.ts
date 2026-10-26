@@ -20,8 +20,10 @@ export function useCoverLetterForm() {
     [updateCoverLetter],
   );
 
+  // A content edit means the user has looked at the letter, which is all the
+  // `outdated` warning asks for.
   const setSubject = useCallback(
-    (subject: string) => updateCoverLetter({ subject }),
+    (subject: string) => updateCoverLetter({ subject, outdated: false }),
     [updateCoverLetter],
   );
 
@@ -34,7 +36,7 @@ export function useCoverLetterForm() {
   const setRecipientField = useCallback(
     (field: keyof Recipient, value: string) => {
       const current = useResumeStore.getState().resume.coverLetter.recipient;
-      updateCoverLetter({ recipient: { ...current, [field]: value } });
+      updateCoverLetter({ recipient: { ...current, [field]: value }, outdated: false });
     },
     [updateCoverLetter],
   );
@@ -48,7 +50,7 @@ export function useCoverLetterForm() {
   );
 
   const setParagraphs = useCallback(
-    (paragraphs: string[]) => updateCoverLetter({ paragraphs }),
+    (paragraphs: string[]) => updateCoverLetter({ paragraphs, outdated: false }),
     [updateCoverLetter],
   );
 

@@ -132,6 +132,8 @@ export const sanitizeForAI = (data: unknown): unknown => {
     '_imageVId',
     '_isNew',
     'recipient',
+    'draftedFor',
+    'outdated',
     'location',
     'passthrough',
     'roles',

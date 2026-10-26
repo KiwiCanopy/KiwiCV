@@ -320,6 +320,8 @@ const LEAKY_CV = {
     subject: 'Application',
     paragraphs: ['Dear Hiring Team,'],
     recipient: { name: 'STRIPPED-recipient', company: 'Northwind' },
+    draftedFor: 'STRIPPED-draftedFor',
+    outdated: 'STRIPPED-outdated',
   },
   passthrough: { kiwitalents: { salaryExpectation: 'STRIPPED-passthrough' } },
   meta: { template: 'STRIPPED-meta' },

@@ -81,9 +81,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Завантажити як ZIP',
     filename_only:
       'Компанія та посада впливають лише на назву експортованого файлу. Вони не зберігаються.',
+    letter_excluded: 'Супровідний лист не включено',
+    letter_included: 'Супровідний лист включено перед резюме',
+    letter_outdated: 'Може не відповідати новій вакансії — перевір перед надсиланням.',
+    letter_toggle: 'Додати супровідний лист',
     manage_link: 'керувати в Налаштуваннях',
-    one_run_one: 'Один запуск, одне призначення.',
-    one_run_other: 'Один запуск, усі {{count}} призначень.',
     package_always_included: 'Завжди включено',
     package_backup_desc: 'Знімок проекту, який робить цей експорт відновлюваним.',
     package_backup_label: 'Резервна копія',

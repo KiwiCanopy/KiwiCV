@@ -17,6 +17,7 @@ import {
   THEME_PARAM_DEFAULTS,
   createDefaultCoverLetter,
 } from '@/types/resume';
+import { isResumeDigest } from '@/utils/hash';
 import { stripImageMetadataCached } from '@/utils/imageMetadata';
 import { createEmptyItem, customSectionItemFields, generateId } from '@/utils/items';
 import {
@@ -431,6 +432,8 @@ export const sanitizeCoverLetter = (raw: unknown): ResumeCoverLetter => {
     },
     subject: asString(r.subject, ''),
     date: asString(r.date, ''),
+    ...(isResumeDigest(asString(r.draftedFor, '')) && { draftedFor: r.draftedFor as string }),
+    ...(r.outdated === true && { outdated: true }),
   };
 };
 

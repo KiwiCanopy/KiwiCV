@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { useCoverLetterStyle } from '@/components/modals/ai/edit/useCoverLetterStyle';
 import { BRAND_STORAGE_KEYS } from '@/config/brand';
 import { PENDING_GOOGLE_RESTORE_KEY } from '@/constants/auth';
+import { readExportDraft, writeExportDraft } from '@/hooks/export/exportDraft';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { readCoverLetterStyle } from '@/services/storage/coverLetterStyleStorage';
@@ -21,6 +22,7 @@ import {
   loadGoogleDriveCreds,
   saveGoogleDriveCreds,
 } from '@/services/storage/googleStorage';
+import { useCvLibraryStore } from '@/store/library/useCvLibraryStore';
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -243,6 +245,56 @@ describe('AuthProvider credential handling', () => {
     expect(setPendingRedirect).toHaveBeenCalledWith(true);
     expect(sessionStorage.getItem('google_oauth_in_progress')).toBeNull();
     expect(updateSync).not.toHaveBeenCalled();
+  });
+});
+
+describe('AuthProvider per-user memory (#63)', () => {
+  const holdUserMemory = () => {
+    writeExportDraft({ company: 'Acme', position: 'Dev', postingUrl: 'https://jobs.example/1' });
+    useCvLibraryStore.getState().setError('loaded for A');
+  };
+  const libraryIsEmpty = () => useCvLibraryStore.getState().status === 'idle';
+
+  it('forgets the export draft and the library on sign-out', async () => {
+    await emit('SIGNED_IN', sessionFor(USER_A));
+    holdUserMemory();
+
+    await act(async () => {
+      await contextSignOut?.(false);
+    });
+
+    expect(readExportDraft()).toBeNull();
+    expect(libraryIsEmpty()).toBe(true);
+  });
+
+  it('forgets them when the session ends without an explicit sign-out', async () => {
+    await emit('SIGNED_IN', sessionFor(USER_A));
+    holdUserMemory();
+
+    await emit('SIGNED_OUT', null);
+
+    expect(readExportDraft()).toBeNull();
+    expect(libraryIsEmpty()).toBe(true);
+  });
+
+  it('forgets them when a different account signs in on the same tab', async () => {
+    await emit('SIGNED_IN', sessionFor(USER_A));
+    holdUserMemory();
+
+    await emit('SIGNED_IN', sessionFor(USER_B));
+
+    expect(readExportDraft()).toBeNull();
+    expect(libraryIsEmpty()).toBe(true);
+  });
+
+  it('keeps a signed-out visitor’s draft through their own sign-in', async () => {
+    await emit('SIGNED_OUT', null);
+    holdUserMemory();
+
+    await emit('SIGNED_IN', sessionFor(USER_A));
+    await emit('TOKEN_REFRESHED', sessionFor(USER_A));
+
+    expect(readExportDraft()?.company).toBe('Acme');
   });
 });
 

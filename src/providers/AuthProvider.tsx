@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { PENDING_GOOGLE_RESTORE_KEY } from '@/constants/auth';
 import { UNUSABLE_DRIVE_CREDENTIAL_ERRORS } from '@/constants/cloud';
+import { clearExportDraft } from '@/hooks/export/exportDraft';
 import { disconnectGitHub } from '@/hooks/sync/disconnectGitHub';
 import { useTranslation } from '@/hooks/useTranslation';
 import { supabase } from '@/lib/supabase';
@@ -22,6 +23,7 @@ import {
   loadGoogleDriveCreds,
   saveGoogleDriveCreds,
 } from '@/services/storage/googleStorage';
+import { useCvLibraryStore } from '@/store/library/useCvLibraryStore';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useFlowStore } from '@/store/ui/useFlowStore';
 import { useToastStore } from '@/store/ui/useToastStore';
@@ -55,6 +57,17 @@ interface DriveCheck {
  */
 const driveCheckRef = { current: null as DriveCheck | null };
 const lastFetchedProfileIdRef = { current: null as string | null };
+/** The account the last session belonged to; a different one signing in is a user switch. */
+const lastSessionUserIdRef = { current: null as string | null };
+
+/**
+ * In-memory state that belongs to whoever was signed in: the export dialog's
+ * typed company, position and posting link, and the CV library rows (#63).
+ */
+function forgetSignedInUserMemory() {
+  clearExportDraft();
+  useCvLibraryStore.getState().reset();
+}
 
 // Security & Stability Constants
 const PROFILE_CACHE_VERSION = 'v1';
@@ -534,6 +547,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
             lastFetchedProfileIdRef.current = null;
             driveCheckRef.current = null;
+            lastSessionUserIdRef.current = null;
+            forgetSignedInUserMemory();
           }
 
           // Stale flag cleanup: If we are not logged in but have a flag,
@@ -572,6 +587,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         // Independent of Drive: a session can end without SIGNED_OUT.
         bindCoverLetterStyleToUser({ userId: session.user.id });
+        // Only a switch: a signed-out visitor signing in keeps the draft they typed.
+        if (lastSessionUserIdRef.current && lastSessionUserIdRef.current !== session.user.id) {
+          forgetSignedInUserMemory();
+        }
+        lastSessionUserIdRef.current = session.user.id;
 
         // --- OPTIMISTIC UPDATE: Set state immediately to avoid blocking on hangs ---
         setSession(session);
@@ -863,6 +883,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clearAvatarCache();
       clearStoredCoverLetterStyle();
       forgetCoverLetterStyleFreshSignIn();
+      forgetSignedInUserMemory();
+      lastSessionUserIdRef.current = null;
 
       // 2. Disable cloud sync in the store but preserve local resume data
       useResumeStore.getState().updateSync({ googleDrive: { enabled: false } });

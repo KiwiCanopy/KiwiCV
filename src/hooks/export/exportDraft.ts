@@ -17,7 +17,8 @@ export interface ExportDraft {
  *
  * Cleared on a fully successful run and on an explicit Cancel — never on a
  * failed run, which is exactly when the typed values still matter. A cloud
- * restore replaces it with the restored version's posting link (#54).
+ * restore replaces it with the restored version's posting link (#54). A
+ * sign-out or a different account signing in clears it too (#63).
  */
 let draft: ExportDraft | null = null;
 

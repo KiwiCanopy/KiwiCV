@@ -1,4 +1,4 @@
 export const feat_export_outdated_letter_check = {
   feat_export_outdated_letter_check:
-    'Export now asks before sending a cover letter that was likely written for a different job ad. One click exports your CV without it, so the wrong letter never reaches an employer by accident.',
+    '別の求人情報向けに作成された可能性が高いカバーレターを含める場合、エクスポート前に確認が表示されるようになりました。ワンクリックでカバーレターなしで履歴書をエクスポートできるため、誤ったカバーレターを応募先に送ってしまう心配がありません。',
 };

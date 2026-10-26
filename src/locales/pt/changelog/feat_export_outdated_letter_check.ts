@@ -1,4 +1,4 @@
 export const feat_export_outdated_letter_check = {
   feat_export_outdated_letter_check:
-    'Export now asks before sending a cover letter that was likely written for a different job ad. One click exports your CV without it, so the wrong letter never reaches an employer by accident.',
+    'A exportação agora pergunta antes de enviar uma carta de apresentação que provavelmente foi escrita para outra oferta. Com um clique exportas o teu CV sem ela, para que a carta errada nunca chegue por engano a um empregador.',
 };

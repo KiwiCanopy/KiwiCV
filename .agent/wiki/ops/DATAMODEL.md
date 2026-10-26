@@ -167,6 +167,10 @@ reaches the resume store, the AI or the rendered CV.
   credentials), filled at export and read lazily for misses by
   `features/cv-library/hydratePostingUrls.ts`. Do not key that cache by file
   name — a rename keeps the sha.
+- ⚠️ **The privacy policy names every one of these places.** `legal.privacy`
+  §4 (drive, github, storage) lists where the link goes, that it never reaches
+  the AI, and what clears the GitHub cache. A new destination, any AI use, or a
+  change to `clearGitHubCreds` is a policy change with a `--legal` release (#64).
 
 ## Versioning Policy
 

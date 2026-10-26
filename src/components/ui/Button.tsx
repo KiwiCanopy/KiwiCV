@@ -48,11 +48,19 @@ const variantClasses: Record<ButtonVariant, string> = {
   // hand-rolled borderless copy in the dashboard header. One rule, chosen
   // deliberately, is the point.
   //
-  // Hover steps one shade darker to `--mist`; an alpha fade like `secondary/80`
-  // blends toward the surface and was 1.02:1 against rest, i.e. invisible.
+  // Hover steps one shade away from rest to `--mist` (darker in light, lighter in
+  // dark); an alpha fade like `secondary/80` measured 1.02:1, i.e. invisible.
   secondary: 'bg-secondary text-foreground hover:bg-mist active:bg-border border-transparent',
   quiet: 'bg-transparent text-foreground hover:bg-muted border-transparent',
   danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 border-destructive',
+};
+
+// Pins hover and press to the rest fill, so a refused button never reads as live.
+const inertFillClasses: Record<ButtonVariant, string> = {
+  primary: 'hover:bg-primary active:bg-primary',
+  secondary: 'hover:bg-secondary active:bg-secondary',
+  quiet: 'hover:bg-transparent active:bg-transparent',
+  danger: 'hover:bg-destructive active:bg-destructive',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -161,6 +169,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           'disabled:cursor-not-allowed disabled:opacity-60',
           'aria-disabled:cursor-not-allowed aria-disabled:opacity-60',
           variantClasses[variant],
+          (inert || isAriaDisabled) && inertFillClasses[variant],
           sizeClasses[size],
           className,
         )}

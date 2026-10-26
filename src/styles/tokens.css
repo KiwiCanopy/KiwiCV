@@ -159,7 +159,8 @@
 
    A naive `--accent` swap therefore paints every hover surface brand green.
    `--secondary` (pale green subtle surface) and `--mist` (pale green band) are
-   two roles in both repos and stay separate on purpose.
+   two roles in both repos and stay separate on purpose. In KiwiCV `--mist` is
+   also the secondary button's hover step: re-check that contrast if it moves.
 
    `--kiwi` is FILL/RING-ONLY (`bg-kiwi/*`, `ring-kiwi`) — never `text-kiwi`
    on light surfaces: #A9CB59 sits at ~1.7:1 on the light background, far

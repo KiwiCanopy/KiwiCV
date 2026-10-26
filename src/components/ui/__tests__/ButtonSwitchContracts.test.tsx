@@ -181,3 +181,30 @@ describe('Switch', () => {
     expect(toggle.getAttribute('aria-checked')).toBe('true');
   });
 });
+
+describe('Button hover fill', () => {
+  it('steps the secondary hover to --mist on a live button', () => {
+    render(<Button>Restore</Button>);
+    const classes = screen.getByRole('button', { name: 'Restore' }).className.split(' ');
+    expect(classes).toContain('hover:bg-mist');
+    expect(classes).toContain('active:bg-border');
+  });
+
+  it.each([
+    ['natively disabled', <Button disabled>Restore</Button>],
+    [
+      'soft-disabled',
+      <Button disabled disabledReason="Offline">
+        Restore
+      </Button>,
+    ],
+    ['caller aria-disabled', <Button aria-disabled>Restore</Button>],
+  ])('pins hover and press to the rest fill when %s', (_, element) => {
+    render(element);
+    const classes = screen.getByRole('button', { name: 'Restore' }).className.split(' ');
+    expect(classes).not.toContain('hover:bg-mist');
+    expect(classes).not.toContain('active:bg-border');
+    expect(classes).toContain('hover:bg-secondary');
+    expect(classes).toContain('active:bg-secondary');
+  });
+});

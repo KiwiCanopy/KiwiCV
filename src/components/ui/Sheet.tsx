@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { useInsideStaysOnTop } from '@/components/ui/DialogFrame';
 import { noteDialogOpened } from '@/components/ui/dialogStack';
+import { useInsideStaysOnTop } from '@/components/ui/insideStaysOnTop';
 import { cn } from '@/utils/cn';
 import * as Dialog from '@radix-ui/react-dialog';
 

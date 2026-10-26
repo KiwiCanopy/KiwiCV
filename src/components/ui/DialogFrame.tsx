@@ -15,6 +15,7 @@ import {
   noteDialogOpened,
   subscribeToDialogOpens,
 } from '@/components/ui/dialogStack';
+import { InsideStaysOnTopContext } from '@/components/ui/insideStaysOnTop';
 import { useTranslation } from '@/hooks/useTranslation';
 import { cn } from '@/utils/cn';
 import { type FocusAnchor, focusIfPossible } from '@/utils/focus';
@@ -172,10 +173,6 @@ type DialogFrameProps = DialogFrameBaseProps &
 // throws inside an `AlertDialog.Content` and vice versa. The frame publishes its
 // role so the title/description helpers reach for the matching primitive.
 const DialogFrameRoleContext = createContext<'dialog' | 'alertdialog'>('dialog');
-/** Inside a `staysOnTop` frame: a nested dialog's open must not remount its own host. */
-const InsideStaysOnTopContext = createContext(false);
-/** For a dialog primitive other than this frame (`Sheet`) deciding whether to count its open. */
-export const useInsideStaysOnTop = (): boolean => useContext(InsideStaysOnTopContext);
 const noSubscription = () => () => {};
 const noOpens = () => 0;
 const TABBABLE =

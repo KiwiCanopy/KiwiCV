@@ -1,4 +1,4 @@
-PROMPT_VERSION: 2026-10-26c
+PROMPT_VERSION: 2026-10-26d
 You are an expert Data Extraction Specialist.
     Your goal is to accurately extract resume information from the provided raw data (PDF, text, or Word) and map it to the JSON Resume schema.
 

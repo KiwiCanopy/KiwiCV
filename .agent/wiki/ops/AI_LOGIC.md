@@ -345,7 +345,7 @@ whether a tailored statement is true, through the proposals and the unsourced-ke
 below. The model must not fabricate on purpose; an occasional overreach is an accepted mistake,
 not a failure the prompt must prevent by matching nothing.
 
-The prompt says it in two places (`PROMPT_VERSION` 2026-10-26c):
+The prompt says it in two places (`PROMPT_VERSION` 2026-10-26d):
 
 - `BASE_ROLE_PROMPTS.job_description`, on every tailoring target and on an import with the
   job-description style (nested under `### OPTIMIZATION STYLE`), mirrors the ad's terms wherever
@@ -355,13 +355,15 @@ The prompt says it in two places (`PROMPT_VERSION` 2026-10-26c):
   employer's industry. Its facts are the ones a reader checks against the CV's own history:
   employer names, the title held in each work entry, dates, certifications, years of experience.
   The headline `label` is a positioning statement, not a title held, so tailoring may adjust it.
-- The whole-CV scope sentence of a `job_description` run names where the terms go (summary, every
-  work entry, skills, headline), asks for every work entry the ad bears on to be rewritten, and
-  repeats that a tool, industry or claim with no footing stays out. It is scoped there because an
-  `item:` or `section:` run, and an import, do not reach every entry.
+- `WHOLE_CV_TAILORING`, appended to the whole-CV scope sentence of a `job_description` run —
+  translating or not — names where the terms go (summary, every work entry, skills, headline), asks
+  for every work entry the ad bears on to be rewritten, and repeats that a tool, industry or claim
+  with no footing stays out. It is scoped there because an `item:` or `section:` run, and an
+  import, do not reach every entry. An en→de tailoring run (fixture A, 2 runs) carried the ad's
+  terms into the German highlights in both, kept every held position and returned every section.
 
-`vertex-request.test.mjs` pins the facts sentence word for word and the coverage sentence to the
-whole-CV target only; the `tailor-cv-job-description-en` and `parse-job-description-en` snapshots
+`vertex-request.test.mjs` pins the facts sentence word for word, and the coverage sentence and its
+limit to the whole-CV target only, translating or not; the `tailor-cv-job-description-en` and `parse-job-description-en` snapshots
 pin the text.
 
 ⚠️ **Do not re-add tools, technologies or skill keywords to the facts list.** The 2026-10-12b
@@ -389,16 +391,17 @@ work summaries and highlights; "ad terms" counts ad terms newly present in work 
 | A       | no clause, reorg on and off                     | 4    | 9–14/14             | 3–7              | —         | 0/4           |
 | A       | all in the role, reorg on and off (draft)       | 6    | 8–14/14             | 5–10             | —         | 6/6           |
 | A       | coverage in scope, no limit there (26b)         | 4    | 10–13/14            | 1, 7, 7, 5       | —         | 4/4           |
-| A       | **shipped (26c)**                               | 2    | 10/14, 12/14        | 3, 4             | —         | 2/2           |
+| A       | **shipped (26c/d)**                             | 2    | 10/14, 12/14        | 3, 4             | —         | 2/2           |
 | B       | 2026-10-12b clause                              | 2    | 14/16, 14/16        | 0, 0             | 0/2       | 0/2           |
 | B       | all in the role, no related-tool rule           | 2    | 16/16, 16/16        | 11, 14           | 2/2       | 2/2           |
 | B       | all in the role, related-tool rule (2026-10-26) | 2    | 16/16, 16/16        | 6, 9             | 2/2       | 2/2           |
 | B       | coverage in scope, no limit there (26b)         | 3    | 15–16/16            | 9, 9, 7          | 3/3       | 3/3           |
-| B       | **shipped (26c)**                               | 3    | 16/16, 16/16, 14/16 | 4, 0, 0          | **0/3**   | 3/3           |
+| B       | **shipped (26c/d)**                             | 3    | 16/16, 16/16, 14/16 | 4, 0, 0          | **0/3**   | 3/3           |
 
-Every work entry changed in every run except the one 0/14 run of the old clause. No run returned
+26d changed only the translating branch, so the non-translating prompt these rows ran is byte for
+byte the shipped one. Every work entry changed in every run except the one 0/14 run of the old clause. No run returned
 a `_vId` the source lacks, and every run proposed a new headline, which the old guard then
-stripped. A held `position` was retitled in 2 of 4 no-clause runs and 1 of 4 26b runs (both
+stripped. A held `position` was retitled in 2 of 4 no-clause runs and 1 of fixture A's 4 26b runs (both
 stripped by the server). The shipped arm's overreach is the headline: fixture B's label became
 "Senior Machine Learning Engineer — Fraud Detection" in 2/3 runs, a domain the CV does not show.
 That is the accepted kind — a proposal the user reviews, never applied unasked. Fixture A's ad

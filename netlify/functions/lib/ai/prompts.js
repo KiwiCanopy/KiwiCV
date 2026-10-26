@@ -434,6 +434,10 @@ You have permission to restructure skill categories for optimal ATS impact:
    Use an empty array [] for entirely new categories not derived from any existing item.
 `;
 
+/** Whole-CV tailoring only: an `item:` or `section:` run, or an import, reaches no other entry (#55). */
+const WHOLE_CV_TAILORING =
+  "Carry the job description's terms into the summary, every work entry's summary and highlights, the skills, and the headline label, wherever the CV gives them a footing. Rewrite every work entry the job description bears on; an entry left as it was is a missed match. A tool, an industry, or a claim the CV gives no footing for stays out, however often the job description asks for it.";
+
 export const getSystemPrompt = (
   mode,
   activeTarget,
@@ -470,12 +474,13 @@ export const getSystemPrompt = (
     targetAdvice =
       'Ensure that all extracted sections follow the JSON Resume schema structures precisely.';
   } else {
+    const tailoring = mode === 'job_description';
     scopeInstruction =
       targetGranularity === 'cv'
         ? isTranslating
-          ? 'You are performing a full CV translation and optimization. You MUST translate ALL provided sections into the target language. CRITICAL: Do not skip or omit any sections (like education, projects, privateProjects, customSections, etc.) from the output JSON, even if their professional content is already optimal or if they do not change under the current optimization mode (e.g. job_description). Return every single section that contains input data fully translated, including the title of every entry in customSections.'
-          : mode === 'job_description'
-            ? "You are tailoring the entire CV. Carry the job description's terms into the summary, every work entry's summary and highlights, the skills, and the headline label, wherever the CV gives them a footing. Rewrite every work entry the job description bears on; an entry left as it was is a missed match. A tool, an industry, or a claim the CV gives no footing for stays out, however often the job description asks for it."
+          ? `You are performing a full CV translation and optimization. You MUST translate ALL provided sections into the target language. CRITICAL: Do not skip or omit any sections (like education, projects, privateProjects, customSections, etc.) from the output JSON, even if their professional content is already optimal or if they do not change under the current optimization mode (e.g. job_description). Return every single section that contains input data fully translated, including the title of every entry in customSections.${tailoring ? ` ${WHOLE_CV_TAILORING}` : ''}`
+          : tailoring
+            ? `You are tailoring the entire CV. ${WHOLE_CV_TAILORING}`
             : 'You are optimizing the entire CV. Improve only sections that benefit from revision, and do not invent missing content.'
         : 'Optimize only the content that belongs to the requested target.';
     targetAdvice = getTargetInstructions(activeTarget);

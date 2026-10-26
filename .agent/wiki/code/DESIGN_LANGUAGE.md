@@ -126,7 +126,7 @@ uses local Inter at 400, 500, 600, 700, and 800. The semantic roles are:
 | Primary action | `--primary`                  | `#A9CB59` | `#A9CB59` |
 | Primary drawn  | `--primary-strong`           | `#14503E` | `#A9CB59` |
 | Kiwi accent    | `--kiwi`                     | `#A9CB59` | `#A9CB59` |
-| Mist           | `--mist`                     | `#D8E5DA` | `#31473D` |
+| Mist / hover   | `--mist`                     | `#D8E5DA` | `#31473D` |
 | Pass accent    | `--premium`                  | `#F6BF31` | `#F3C349` |
 | Pass deep stop | `--premium-deep`             | `#F59F0A` | `#F3A620` |
 | Pass label     | `--premium-foreground`       | `#12251A` | `#12251A` |

@@ -118,7 +118,7 @@ export const TagField: FC<TagFieldProps> = ({
                   // scoped here rather than on `IconButton`, which would shrink
                   // every touch target in the app.
                   className={cn(
-                    'bg-secondary hover:bg-secondary/80 h-8 min-h-8 w-8',
+                    'bg-secondary hover:bg-mist active:bg-border h-8 min-h-8 w-8',
                     lock && LOCKED_BUTTON_CLASS,
                   )}
                 >

@@ -176,6 +176,17 @@ this makes the count checkable rather than asserted.
   `disabledReasonDisplay` picks where the reason shows: `inline` (default) prints it
   under the button; `tooltip` puts it in the shared refusal tooltip and takes no room,
   for a control inside a one-line row.
+  **Hover darkens one step and never fades toward the surface** (2026-10-26): `secondary`
+  rests on `--secondary`, hovers to `--mist`, presses to `--border`. The old
+  `hover:bg-secondary/80` alpha-blended into the surface and measured 1.02:1 against
+  rest in light, 1.01:1 in dark — no visible hover. `CloudSaveButton` and `TagField`'s
+  square buttons copy the variant and follow it. Colour only: no shadow, glow or ring on
+  hover, since rings mean focus.
+- **List rows and pinned rows share one surface.** Rest `bg-card`, hover
+  `bg-secondary/50` — My CVs' `VersionRow` and the pinned `resume.json` card
+  (`LatestBackupSection`) alike. A resting fill on the pinned card read as permanently
+  hovered; its label, border and position carry the pin. Do not step the row hover up to
+  full `--secondary`: a `secondary` button on it would sit at 1.00:1 and vanish.
 - **Input / TextArea**: Associated form controls sharing error and help semantics.
   `Input`'s `warning` is announced through a polite `role="status"` region, opt-in like a
   lock: pass `warning={null}` on a field that can warn so the region exists before its text

@@ -47,7 +47,10 @@ const variantClasses: Record<ButtonVariant, string> = {
   // treatment and the two looks coexisted: this variant on My CVs and a
   // hand-rolled borderless copy in the dashboard header. One rule, chosen
   // deliberately, is the point.
-  secondary: 'bg-secondary text-foreground hover:bg-secondary/80 border-transparent',
+  //
+  // Hover steps one shade darker to `--mist`; an alpha fade like `secondary/80`
+  // blends toward the surface and was 1.02:1 against rest, i.e. invisible.
+  secondary: 'bg-secondary text-foreground hover:bg-mist active:bg-border border-transparent',
   quiet: 'bg-transparent text-foreground hover:bg-muted border-transparent',
   danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 border-destructive',
 };

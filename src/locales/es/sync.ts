@@ -83,9 +83,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Descargar como ZIP',
     filename_only:
       'La empresa y el puesto determinan el nombre del archivo. El enlace a la oferta se guarda con las copias de seguridad en Google Drive o en un repositorio privado de GitHub, nunca en uno público o publicado.',
+    letter_excluded: 'Carta de presentación no incluida',
+    letter_included: 'Carta de presentación incluida antes del CV',
+    letter_outdated: 'Puede no coincidir con la nueva oferta — revísala antes de enviarla.',
+    letter_toggle: 'Incluir carta de presentación',
     manage_link: 'gestionar en Configuración',
-    one_run_one: 'Una ejecución, un destino.',
-    one_run_other: 'Una ejecución, los {{count}} destinos.',
     package_always_included: 'Siempre incluido',
     package_backup_desc: 'La instantánea del proyecto que permite restaurar esta exportación.',
     package_backup_label: 'Copia de seguridad',

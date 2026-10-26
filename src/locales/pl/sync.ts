@@ -84,9 +84,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Pobierz jako ZIP',
     filename_only:
       'Firma i stanowisko tworzą nazwę pliku. Link do ogłoszenia jest zapisywany z kopiami zapasowymi na Google Drive lub w prywatnym repozytorium GitHub, nigdy w publicznym ani opublikowanym.',
+    letter_excluded: 'List motywacyjny nie jest dołączony',
+    letter_included: 'List motywacyjny dołączony przed CV',
+    letter_outdated: 'Może nie pasować do nowego ogłoszenia — sprawdź go przed wysłaniem.',
+    letter_toggle: 'Dołącz list motywacyjny',
     manage_link: 'zarządzaj w Ustawieniach',
-    one_run_one: 'Jeden przebieg, jedno miejsce docelowe.',
-    one_run_other: 'Jeden przebieg, wszystkie miejsca docelowe ({{count}}).',
     package_always_included: 'Zawsze w zestawie',
     package_backup_desc: 'Migawka projektu, która umożliwia przywrócenie tego eksportu.',
     package_backup_label: 'Kopia zapasowa',

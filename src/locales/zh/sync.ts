@@ -76,9 +76,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: '下载为 ZIP',
     filename_only:
       '公司和职位决定文件名。招聘启事链接会随备份保存到 Google Drive 或私有 GitHub 仓库，绝不会写入公开或已发布的仓库。',
+    letter_excluded: '未包含求职信',
+    letter_included: '已包含求职信，位于简历之前',
+    letter_outdated: '可能与新的职位描述不符 — 发送前请检查。',
+    letter_toggle: '包含求职信',
     manage_link: '在“设置”中管理',
-    one_run_one: '一次运行，一个目的地。',
-    one_run_other: '一次运行，全部 {{count}} 个目的地。',
     package_always_included: '始终包含',
     package_backup_desc: '使此导出内容支持还原的项目快照。',
     package_backup_label: '备份',

@@ -79,9 +79,11 @@ export const sync = {
     dest_zip_label: 'Download as ZIP',
     filename_only:
       'Company and position shape the file name. The posting link is saved with backups to Google Drive or a private GitHub repository, never with a public or published one.',
+    letter_excluded: 'Cover letter not included',
+    letter_included: 'Cover letter included before your CV',
+    letter_outdated: 'May not match the new job ad — check before sending.',
+    letter_toggle: 'Include cover letter',
     manage_link: 'manage in Settings',
-    one_run_one: 'One run, one destination.',
-    one_run_other: 'One run, all {{count}} destinations.',
     package_always_included: 'Always included',
     package_backup_desc: 'The project snapshot that makes this export restorable.',
     package_backup_label: 'Backup',

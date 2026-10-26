@@ -3,13 +3,13 @@ import {
   type CoverLetterRequestInput,
   buildCoverLetterRequest,
   coverLetterBlocker,
-  hasCoverLetterText,
 } from '@/components/modals/ai/edit/coverLetterRequest';
 import { COVER_LETTER_PAGE_WORDS } from '@/components/preview/letterCapacity';
 import { letterFurniture } from '@/components/preview/letterCapacity';
 import { resolveThemeId } from '@/components/preview/themeIds';
 import { COVER_LETTER_LENGTH_PRESETS } from '@/constants/ai';
 import { type ResumeData, initialResumeState } from '@/types/resume';
+import { hasCoverLetterText } from '@/utils/coverLetter';
 import * as lengthUtils from '@/utils/coverLetterLength';
 import { coverLetterWordTarget } from '@/utils/coverLetterLength';
 import { describe, expect, it, vi } from 'vitest';

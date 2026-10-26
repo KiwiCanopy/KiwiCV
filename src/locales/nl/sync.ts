@@ -81,9 +81,12 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Downloaden als ZIP',
     filename_only:
       'Bedrijf en functie bepalen de bestandsnaam. De link naar de vacature wordt met back-ups opgeslagen in Google Drive of een privérepository op GitHub, nooit in een openbare of gepubliceerde.',
+    letter_excluded: 'Sollicitatiebrief niet inbegrepen',
+    letter_included: 'Sollicitatiebrief inbegrepen, vóór je CV',
+    letter_outdated:
+      'Past mogelijk niet bij de nieuwe vacature — controleer de brief voordat je hem verstuurt.',
+    letter_toggle: 'Sollicitatiebrief toevoegen',
     manage_link: 'beheren in Instellingen',
-    one_run_one: 'Eén keer uitvoeren, één bestemming.',
-    one_run_other: 'Eén keer uitvoeren, alle {{count}} bestemmingen.',
     package_always_included: 'Altijd inbegrepen',
     package_backup_desc: 'De projectmomentopname die deze export herstelbaar maakt.',
     package_backup_label: 'Back-up',

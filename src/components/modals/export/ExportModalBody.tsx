@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { CoverLetterRow } from '@/components/modals/export/CoverLetterRow';
 import { ExportNameFields } from '@/components/modals/export/ExportNameFields';
 import { ExportRunFooter } from '@/components/modals/export/ExportRunFooter';
 import { CloudSetupRow } from '@/components/modals/export/destinations/CloudSetupRow';
@@ -138,6 +139,8 @@ export function ExportModalBody({
         onPositionChange={setPosition}
         onPostingUrlChange={setPostingUrl}
       />
+
+      <CoverLetterRow disabled={state.isRunning} />
 
       <PackageSummary formats={formats} disabled={state.isRunning} onToggleFormat={toggleFormat} />
 

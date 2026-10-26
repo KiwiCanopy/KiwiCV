@@ -1,4 +1,5 @@
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
+import { stampCoverLetter } from '@/store/resume/slices/ai/coverLetterStamp';
 import * as modalActions from '@/store/resume/slices/ai/modalActions';
 import * as reorgActions from '@/store/resume/slices/ai/reorgActions';
 import * as suggestionActions from '@/store/resume/slices/ai/suggestions/index';
@@ -67,6 +68,8 @@ export const createAISlice: StateCreator<ResumeStore, [['zustand/immer', never]]
     });
     set((state) => suggestionActions.declineAISuggestion(state, target, field));
   },
+
+  stampCoverLetter: (input) => set((state) => stampCoverLetter(state, input)),
 
   keepTypedAsMine: (target, field, value) =>
     set((state) => suggestionActions.keepTypedAsMine(state, target, field, value)),

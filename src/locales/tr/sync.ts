@@ -80,9 +80,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'ZIP olarak indir',
     filename_only:
       "Şirket ve pozisyon dosya adını belirler. İlan bağlantısı, Google Drive'a veya özel bir GitHub deposuna alınan yedeklerle saklanır; herkese açık ya da yayınlanmış bir depoda asla saklanmaz.",
+    letter_excluded: 'Ön yazı dahil değil',
+    letter_included: "Ön yazı dahil, CV'den önce",
+    letter_outdated: 'Yeni iş ilanına uymayabilir — göndermeden önce kontrol et.',
+    letter_toggle: 'Ön yazı ekle',
     manage_link: "Ayarlar'dan yönet",
-    one_run_one: 'Tek çalıştırma, tek hedef.',
-    one_run_other: 'Tek çalıştırma, tüm {{count}} hedef.',
     package_always_included: 'Her zaman dahil',
     package_backup_desc: 'Bu dışa aktarmayı geri yüklenebilir kılan proje anlık görüntüsü.',
     package_backup_label: 'Yedek',

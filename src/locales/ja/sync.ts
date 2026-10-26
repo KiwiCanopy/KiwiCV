@@ -82,9 +82,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'ZIP としてダウンロード',
     filename_only:
       '会社と役職はファイル名に使われます。求人情報のリンクは Google Drive またはプライベートの GitHub リポジトリへのバックアップと一緒に保存され、公開リポジトリや GitHub Pages で公開されたリポジトリには保存されません。',
+    letter_excluded: 'カバーレターは含まれていません',
+    letter_included: 'カバーレターは履歴書の前に含まれています',
+    letter_outdated: '新しい求人情報に合っていない可能性があります — 送信前にご確認ください。',
+    letter_toggle: 'カバーレターを含める',
     manage_link: '設定で管理',
-    one_run_one: '1 回の実行で 1 つの送信先。',
-    one_run_other: '1 回の実行で全 {{count}} 件の送信先。',
     package_always_included: '常時付属',
     package_backup_desc: 'このエクスポートを復元可能にするプロジェクトのスナップショット。',
     package_backup_label: 'バックアップ',

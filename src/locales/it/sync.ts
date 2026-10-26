@@ -83,9 +83,12 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Scarica come ZIP',
     filename_only:
       "Azienda e posizione determinano il nome del file. Il link all'annuncio viene salvato con i backup su Google Drive o in un repository GitHub privato, mai in uno pubblico o pubblicato.",
+    letter_excluded: 'Lettera di presentazione non inclusa',
+    letter_included: 'Lettera di presentazione inclusa prima del CV',
+    letter_outdated:
+      'Potrebbe non corrispondere al nuovo annuncio — controllala prima di inviarla.',
+    letter_toggle: 'Includi la lettera di presentazione',
     manage_link: 'gestisci nelle Impostazioni',
-    one_run_one: 'Un invio, una destinazione.',
-    one_run_other: 'Un invio, tutte le {{count}} destinazioni.',
     package_always_included: 'Sempre incluso',
     package_backup_desc: 'Lo snapshot del progetto che rende ripristinabile questa esportazione.',
     package_backup_label: 'Backup',

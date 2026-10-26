@@ -82,9 +82,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Télécharger en ZIP',
     filename_only:
       "L'entreprise et le poste déterminent le nom du fichier. Le lien vers l'offre est enregistré avec les sauvegardes dans Google Drive ou un dépôt GitHub privé, jamais dans un dépôt public ou publié.",
+    letter_excluded: 'Lettre de motivation non incluse',
+    letter_included: 'Lettre de motivation incluse avant le CV',
+    letter_outdated: 'Ne correspond peut-être pas à la nouvelle offre — à vérifier avant l’envoi.',
+    letter_toggle: 'Inclure la lettre de motivation',
     manage_link: 'gérer dans les Paramètres',
-    one_run_one: 'Un seul envoi, une destination.',
-    one_run_other: 'Un seul envoi, les {{count}} destinations.',
     package_always_included: 'Toujours inclus',
     package_backup_desc: "L'instantané du projet qui rend cet export restaurable.",
     package_backup_label: 'Sauvegarde',

@@ -82,9 +82,11 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Ladda ned som ZIP',
     filename_only:
       'Företag och position avgör filnamnet. Länken till annonsen sparas med säkerhetskopior i Google Drive eller ett privat GitHub-arkiv, aldrig i ett offentligt eller publicerat.',
+    letter_excluded: 'Personligt brev inte inkluderat',
+    letter_included: 'Personligt brev inkluderat före ditt CV',
+    letter_outdated: 'Passar kanske inte den nya jobbannonsen — kontrollera innan du skickar.',
+    letter_toggle: 'Inkludera personligt brev',
     manage_link: 'hantera i Inställningar',
-    one_run_one: 'En körning, en destination.',
-    one_run_other: 'En körning, alla {{count}} destinationer.',
     package_always_included: 'Alltid inkluderad',
     package_backup_desc: 'Projektögonblicksbilden som gör denna export återställningsbar.',
     package_backup_label: 'Säkerhetskopia',

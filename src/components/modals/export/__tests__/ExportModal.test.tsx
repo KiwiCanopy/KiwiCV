@@ -34,9 +34,15 @@ const storeState = {
       export: { hostingPath: '/docs' },
       content: { order: { twoColumn: { sidebarPosition: 'left' } } },
     },
-    coverLetter: { enabled: false },
+    coverLetter: {
+      enabled: false,
+      subject: '',
+      paragraphs: [] as string[],
+      outdated: undefined as boolean | undefined,
+    },
   },
   updateMeta: vi.fn(),
+  updateCoverLetter: vi.fn(),
   syncVersion: vi.fn(),
   sync: {},
   viewMode: 'edit',
@@ -112,6 +118,8 @@ describe('ExportModal', () => {
     providerStates.github = 'not_connected';
     providerStates.googleDrive = 'not_connected';
     storeState.resume.coverLetter.enabled = false;
+    storeState.resume.coverLetter.paragraphs = [];
+    storeState.resume.coverLetter.outdated = undefined;
   });
 
   afterEach(() => {
@@ -127,6 +135,17 @@ describe('ExportModal', () => {
     storeState.resume.coverLetter.enabled = true;
     renderModal();
     expect(screen.getByRole('dialog', { name: 'sync.export_dialog.title_documents' })).toBeTruthy();
+  });
+
+  it('offers the cover letter switch, with its warning, once there is a letter', () => {
+    Object.assign(storeState.resume.coverLetter, {
+      enabled: true,
+      paragraphs: ['Dear team,'],
+      outdated: true,
+    });
+    renderModal();
+    expect(screen.getByRole('switch', { name: 'sync.export_dialog.letter_toggle' })).toBeTruthy();
+    expect(screen.getByText('sync.export_dialog.letter_outdated')).toBeTruthy();
   });
 
   it('stays closed when not open', () => {

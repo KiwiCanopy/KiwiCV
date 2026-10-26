@@ -184,6 +184,8 @@ const CV_WITH_BOTH_LOCATIONS = {
     subject: 'Application',
     paragraphs: ['Dear Hiring Team,'],
     recipient: { name: 'Dana Fischer', company: 'Northwind', address: '1 Docks Road' },
+    draftedFor: 'a'.repeat(64),
+    outdated: true,
   },
   // Blocks another tool exported and KiwiCV does not model: never sent.
   passthrough: { kiwitalents: { salaryExpectation: PASSTHROUGH_SENTINEL } },

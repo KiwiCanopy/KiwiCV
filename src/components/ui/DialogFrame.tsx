@@ -1,7 +1,19 @@
-import { type ReactNode, createContext, useContext, useEffect, useRef } from 'react';
+import {
+  type ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from 'react';
 
 import { IconButton } from '@/components/ui/IconButton';
 import { ModalContainer } from '@/components/ui/ModalContainer';
+import {
+  getDialogOpens,
+  noteDialogOpened,
+  subscribeToDialogOpens,
+} from '@/components/ui/dialogStack';
 import { useTranslation } from '@/hooks/useTranslation';
 import { cn } from '@/utils/cn';
 import { type FocusAnchor, focusIfPossible } from '@/utils/focus';
@@ -76,6 +88,12 @@ interface DialogFrameBaseProps {
    * close button and blocks Escape, without implying `aria-busy`.
    */
   dismissible?: boolean;
+  /**
+   * Keeps this dialog the one Radix treats as active — scroll lock, focus,
+   * pointer events — when another dialog opens after it, by remounting on each
+   * such open. For a blocking gate that must stay usable over anything (#9).
+   */
+  staysOnTop?: boolean;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | 'none';
   zIndexClassName?: string;
   className?: string;
@@ -188,6 +206,7 @@ export function DialogFrame({
   footer,
   busy = false,
   dismissible = true,
+  staysOnTop = false,
   maxWidth = '3xl',
   zIndexClassName = 'z-[100]',
   className,
@@ -196,6 +215,8 @@ export function DialogFrame({
   ...rest
 }: DialogFrameProps) {
   const { t } = useTranslation();
+  const opensSeen = useSyncExternalStore(subscribeToDialogOpens, getDialogOpens);
+  const stackKey = staysOnTop ? opensSeen : 0;
   const {
     header,
     title,
@@ -253,6 +274,17 @@ export function DialogFrame({
   // `busy`/`dismissible` and let Escape dismiss a dialog that has since become
   // busy (e.g. a delete in flight). Read the latest values off a ref so a
   // post-mount lock actually takes effect.
+  // Open and still mounted: a consumer that unmounts the frame while open is closing it.
+  const openRef = useRef(open);
+  useEffect(() => {
+    openRef.current = open;
+  });
+  useEffect(
+    () => () => {
+      openRef.current = false;
+    },
+    [],
+  );
   const escapeStateRef = useRef({ busy, dismissible, onOpenChange });
   useEffect(() => {
     escapeStateRef.current = { busy, dismissible, onOpenChange };
@@ -294,6 +326,10 @@ export function DialogFrame({
     const active = document.activeElement;
     openerRef.current = active instanceof HTMLElement && active !== document.body ? active : null;
     restoreFocusToRef.current = restoreFocusTo;
+    // Counted once the content has mounted (Radix's Portal renders it a pass after
+    // `open` flips) and, via the microtask, after this dialog takes focus. A frame
+    // that stays on top does not count itself, or each remount would trigger the next.
+    if (!staysOnTop) queueMicrotask(noteDialogOpened);
     onOpenAutoFocus?.(event);
   };
 
@@ -306,6 +342,9 @@ export function DialogFrame({
    */
   const handleCloseAutoFocus = (event: Event) => {
     event.preventDefault();
+    // A `staysOnTop` remount unmounts the old content while the dialog stays open;
+    // Radix runs this a tick later, after the new content took focus (#9).
+    if (openRef.current) return;
     const opener = openerRef.current;
     // ⚠️ No fallback to the live prop, and no clearing. Radix dispatches
     // open-autofocus on every mount — including a mount while already open — so
@@ -378,7 +417,7 @@ export function DialogFrame({
   // alert-dialog forwards its content props to the same modal `Dialog.Content`.
   const tree =
     role === 'alertdialog' ? (
-      <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
+      <AlertDialog.Root key={stackKey} open={open} onOpenChange={onOpenChange}>
         <AlertDialog.Portal>
           <AlertDialog.Overlay className={overlayClassName} />
           <AlertDialog.Content
@@ -392,7 +431,7 @@ export function DialogFrame({
         </AlertDialog.Portal>
       </AlertDialog.Root>
     ) : (
-      <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Root key={stackKey} open={open} onOpenChange={onOpenChange}>
         <Dialog.Portal>
           <Dialog.Overlay className={overlayClassName} />
           <Dialog.Content

@@ -91,6 +91,15 @@ under the 300-line wiki limit.
   - Upsell over a flow: `InsufficientPremiumAccessModal`, `TranslationInviteModal` — z-[80]
   - In-flow: `ImportModal`, `AIModalTemplate` — z-[70]
   - Base / nested editors: `SyncGatewayModal`, `CloudSyncGatewayModal`, `PhotoEditor`, `image-cropper` — z-[60]
+- **z-index is paint order, not the active layer.** Radix gives scroll lock, pointer
+  events, focus and `aria-hidden` to the dialog opened _last_, whatever its z-index, so a
+  dialog that opens on its own after a z-[9999] gate freezes it (measured in the browser,
+  2026-10-26: `aria-hidden` on the gate, `pointer-events: none`, wheel prevented, focus
+  moved). A gate that must stay usable passes `staysOnTop` (`LegalUpdateModal`, #9):
+  `DialogFrame` counts every other dialog's open in `dialogStack.ts` and remounts the gate's
+  Radix root on each, so it is last again; the later dialog gets its layer back when the gate
+  closes. `Sheet` counts its opens too. No dialog needs to wait for consent to avoid the
+  freeze; `VersionUpdateModal` still waits so What's New is not shown behind the gate.
 - **Modular Modals**: Large modals (e.g., `GitHubSyncModal`) are modularized into sub-components for maintainability.
 - **Unified Authentication (`AuthView`)**:
   - **Pattern**: Dual-pane "Marketing Benefits" (Left) + "Action Pane" (Right) layout.

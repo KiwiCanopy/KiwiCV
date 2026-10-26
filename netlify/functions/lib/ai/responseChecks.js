@@ -100,7 +100,6 @@ export function assertTranslationComplete({ source, improved, allowReorg }) {
  * (ops/AI_LOGIC.md § Tailoring names its facts).
  */
 export const TAILORING_FACT_FIELDS = {
-  basics: ['label'],
   work: ['name', 'position', 'startDate', 'endDate'],
 };
 

@@ -453,9 +453,9 @@ test('improvement prompts forbid invented metrics', () => {
   }
 });
 
-// Unnamed, a job title or the ad's tools read as tailorable, and the model wrote them in.
+// Tailoring matches the ad's terms and holds only the facts a reader checks (#55).
 // An import with the job_description style nests the same clause as OPTIMIZATION STYLE.
-test('tailoring names titles, tools and years of experience as facts', () => {
+test('tailoring matches the ad and names held titles, employers and dates as facts', () => {
   const prompts = [
     ...['cv', 'item:work', 'section:skills'].map((target) => [
       target,
@@ -464,11 +464,13 @@ test('tailoring names titles, tools and years of experience as facts', () => {
     ['import', getSystemPrompt('job_description', 'cv', 'en', undefined, false, 'cv_parsing')],
   ];
   for (const [where, prompt] of prompts) {
-    for (const fact of [/job titles/, /tools/, /skill keywords/, /years of experience/]) {
+    for (const fact of [/employer names/, /job title held/, /dates/, /years of experience/]) {
       assert.match(prompt, fact, where);
     }
-    assert.match(prompt, /never add one the CV lacks or swap one for a different one/, where);
-    assert.match(prompt, /Translating a fact, or writing a tool's standard name/, where);
+    assert.match(prompt, /Rewrite every work entry the job description bears on/, where);
+    assert.match(prompt, /headline label is a positioning statement, not a title held/, where);
+    assert.match(prompt, /a related tool is not the same tool/, where);
+    assert.doesNotMatch(prompt, /skill keywords/, where);
   }
   const imported = prompts.at(-1)[1];
   assert.ok(

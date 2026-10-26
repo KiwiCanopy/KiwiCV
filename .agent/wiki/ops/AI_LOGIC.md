@@ -336,64 +336,71 @@ The backend functions and libraries use **ECMAScript Modules (ESM)**. To ensure 
 - **Translation Tasks**: `TRANSLATION_COMPOSITION` extends the base section composition with `entryLocation` for those same sections, allowing translation flows to localize place names while keeping the schema shape stable.
 - **Generator Behavior**: `generator.js` switches between the base section composition and `TRANSLATION_COMPOSITION` depending on whether the request is a translation pass.
 
-### Tailoring names its facts, and the prompt alone does not hold them
+### Tailoring names its facts, and matches everything else
 
-"Do not invent skills" and "do not invent facts" did not stop `job_description` tailoring from
-writing the ad's title and tools into the CV: neither named a job title or a skill keyword as a
-fact. Since `PROMPT_VERSION` 2026-10-12b, `BASE_ROLE_PROMPTS.job_description` lists them —
-titles including the headline label, employers, dates, tools, technologies, skill keywords,
-certifications, years of experience. An import with the job-description style nests the same
-role under `### OPTIMIZATION STYLE`, so the clause reaches that path too. `vertex-request.test.mjs` pins
-the list on both paths, and the `tailor-cv-job-description-en` and `parse-job-description-en`
-snapshots pin the text.
+**Owner ruling (2026-10-26, #55): tailoring errs toward matching, and the user's review catches
+the overreach.** Carrying the ad's keywords, tools and terminology into the summary, the work
+entries, the skills and the headline is what a `job_description` run is for. The user judges
+whether a tailored statement is true, through the proposals and the unsourced-keyword marking
+below. The model must not fabricate on purpose; an occasional overreach is an accepted mistake,
+not a failure the prompt must prevent by matching nothing.
 
-The clause forbids **adding** a fact the CV lacks or **swapping** one for a different one, not
-"changing" it. A `job_description` run can also translate, and `SECTION_SPECIFIC_INSTRUCTIONS.skills`
-asks for standard tool names. Translating a title, or writing `PostgreSQL` for `Postgres`, is not a
-swap, and the clause says so.
+So `BASE_ROLE_PROMPTS.job_description` (since `PROMPT_VERSION` 2026-10-26) tells the model to
+mirror the ad's terms wherever the CV gives them a footing — the CV mentions the term anywhere, or
+it plausibly describes what was done in that role — and to rewrite every work entry the ad bears
+on. It forbids inventing a skill, tool, industry, responsibility or achievement with no footing,
+and names two footings that are not one: a related tool (Azure for AWS) and the employer's
+industry. The facts it holds are the ones a reader checks against the CV's own history: employer
+names, the title held in each work entry, dates, certifications, years of experience. The headline
+`label` is a positioning statement, not a title held, so tailoring may adjust it. An import with
+the job-description style nests the same role under `### OPTIMIZATION STYLE`.
+`vertex-request.test.mjs` pins the clause on both paths, and the `tailor-cv-job-description-en`
+and `parse-job-description-en` snapshots pin the text.
 
-Measured 2026-10-12: gemini-3.5-flash-lite, EU endpoint, whole-CV call 1 through the real
-modules, `examples/resume_4_3_5.json` with `_vId`s, one ad asking for Kubernetes, AWS SageMaker,
-5+ years and fraud detection (the CV has none). Baseline is three runs of the prompt before
-the clause, same code and inputs.
+⚠️ **Do not re-add tools, technologies or skill keywords to the facts list.** The 2026-10-12b
+clause named them. With skill restructuring ticked it stopped the run from tailoring at all: the
+work entries came back verbatim or with synonym swaps ("Worked" → "Collaborated") and no ad term
+in them. That is the run the owner reported.
 
-| Arm                     | runs | `work[0].position` retitled | `basics.label` retitled | K8s/AWS added to skills | SageMaker added | invented claim in summary/work prose¹ | prompt tokens |
-| ----------------------- | ---- | --------------------------- | ----------------------- | ----------------------- | --------------- | ------------------------------------- | ------------- |
-| baseline                | 3    | 3/3                         | 3/3                     | 3/3                     | 3/3             | 3/3                                   | 6,752         |
-| first clause ("change") | 5    | **0/5**                     | 5/5                     | 4/5                     | **0/5**         | 2/5                                   | 6,834 (+82)   |
-| longer variant, unused  | 4    | 1/4                         | 4/4                     | 2/4                     | 0/4             | 3/4                                   | 6,881 (+129)  |
-| scoped clause (shipped) | 2    | **0/2**                     | 2/2                     | 0/2                     | **0/2**         | 1/2 (the ad's title, in the summary)  | 6,863 (+111)  |
+Measured 2026-10-26: gemini-3.5-flash-lite, EU endpoint, whole-CV call 1 through the real
+modules, `allowReorg` on unless noted. Fixture A is a three-job frontend CV against a senior
+full-stack ad (React, Node.js, CI/CD, REST/GraphQL, WCAG, design system). Fixture B is
+`examples/resume_4_3_5.json` against an ML fraud-detection ad asking for Kubernetes, AWS SageMaker
+and financial services, none of which the CV has (it has Docker and Azure). "Lines" counts changed
+work summaries and highlights; "ad terms" counts ad terms newly present in work prose.
 
-The scoped wording ("add … or swap", with translation and standard names excepted) also got two
-single-run checks:
+| Fixture | Arm                               | runs | work entries changed | lines changed | ad terms in work | label shipped |
+| ------- | --------------------------------- | ---- | -------------------- | ------------- | ---------------- | ------------- |
+| A       | 2026-10-12b clause                | 2    | 3/3, **0/3**         | 5/14, 0/14    | **0, 0**         | 0/2           |
+| A       | 2026-10-12b clause, reorg off     | 2    | 3/3, 3/3             | 12/14, 10/14  | 6, 7             | 0/2           |
+| A       | no clause, reorg on and off       | 4    | 3/3 ×4               | 9–14/14       | 3–7              | 0/4           |
+| A       | shipped (2026-10-26)              | 2    | 3/3, 3/3             | 9/14, 8/14    | 6, 5             | 2/2           |
+| A       | first draft, reorg on and off     | 4    | 3/3 ×4               | 10–14/14      | 7–10             | 4/4           |
+| B       | 2026-10-12b clause                | 2    | 4/4, 4/4             | 14/16, 14/16  | 0, 0             | 0/2           |
+| B       | first draft, no related-tool rule | 2    | 4/4, 4/4             | 16/16, 16/16  | 11, 14           | 2/2           |
+| B       | shipped (2026-10-26)              | 2    | 4/4, 4/4             | 16/16, 16/16  | 6, 9             | 2/2           |
 
-| Check                                                                   | Result                                                                                                                                                                                                                          |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| whole CV, same ad, `targetLang: 'de'`                                   | Titles translated, not swapped: label "Softwarearchitekt \| M.Sc. Informatik", `work[0].position` "Softwarearchitekt". Skills unchanged apart from translation. The run barely tailored: the summary is a straight translation. |
-| `section:skills`, same ad, `Postgres`, `k8s` and `Photo Editing` seeded | Truthful normalisation held: `Postgres` became `PostgreSQL` and `k8s` became `Kubernetes`. No AWS or SageMaker. But `Photo Editing`, `Next.js` and `Cloud Governance` were dropped rather than kept.                            |
-
-¹ Kubernetes/AWS, fraud detection, "5+ years", the ad's title, mentoring, or the ad's duty
-bullets copied verbatim as highlights.
-
-Tailoring still did its job in every clause run: the summary re-angled toward machine learning
-and surfaced truthful matches (PyTorch, scikit-learn, pandas, RAG and agents, time-series
-forecasting, compliance), all of which the CV already contains.
-
-⚠️ **The clause cuts, it does not close.** The headline label was retitled in every English run of every
-arm, and Kubernetes/AWS still reached the skills list in 6 of the 9 runs of the first two clause arms. The second variant — naming
-`position` and `label` as fields, "the job description lists what the employer wants" — measured
-no better. What remains is held server-side.
+No run returned a `_vId` the source lacks. Every run of every arm proposed a new headline, which
+the old guard then stripped. The no-clause arm retitled a held `position` in 2 of 4 runs; no other
+arm did. Fixture B sizes the overreach the ruling accepts: in the shipped arm Kubernetes (Docker is
+in the CV) reached the work prose in 2/2 runs, AWS in 1/2 and fraud detection in 1/2; the first
+draft put AWS in 2/2 and wrote "financial services" into a highlight. The 2026-10-12 baseline
+before any clause put Kubernetes/AWS and SageMaker into skills in 3/3. A skills keyword the CV
+never mentions is marked for the user; one written into work prose is not, and reaches the user
+only as a proposal to review.
 
 **The server holds the facts** (`lib/ai/responseChecks.js`, run in `improve-cv-background.mjs`
 after the parse and before the grade, so the grade, the letter's merge and the store all see the
-source value). A whole-CV `job_description` run has `TAILORING_FACT_FIELDS` — `basics.label`, and a
-work entry's `name`, `position`, `startDate` and `endDate` — removed from its response by
-`dropTailoringFactChanges`; a run that only retitled grades as no change. Only that mode is
-tailoring (`professional` and `custom` may retitle), and only the whole-CV run, which is what the
-ruling covers. A run that also translates skips the guard: a translated title is not a swap.
+source value). A whole-CV `job_description` run has `TAILORING_FACT_FIELDS` — a work entry's
+`name`, `position`, `startDate` and `endDate` — removed from its response by
+`dropTailoringFactChanges`; a run that only retitled grades as no change. `basics.label` left the
+list on 2026-10-26 with the ruling above. Only that mode is tailoring (`professional` and `custom`
+may retitle), and only the whole-CV run. A run that also translates skips the guard: a translated
+title is not a swap.
 
-**Tailoring never drops a skill keyword.** The `section:skills` check above lost `Photo Editing`,
-`Next.js` and `Cloud Governance`. `restoreDroppedSkillKeywords` re-appends every source keyword
+**Tailoring never drops a skill keyword.** A 2026-10-12 `section:skills` run seeded with `Postgres`,
+`k8s` and `Photo Editing` normalised the first two truthfully but lost `Photo Editing`, `Next.js`
+and `Cloud Governance`. `restoreDroppedSkillKeywords` re-appends every source keyword
 the response omitted to the end of its own entry (matched by `matchResponseEntry`), on whole-CV,
 `section:skills` and `item:skills` `job_description` runs. An `item:` run restores straight into
 its `improvedFields` against the target entry, since the store applies it by the target's `_vId`

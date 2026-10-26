@@ -1,9 +1,10 @@
 # Architecture Decisions
 
-> **Last Updated: 2026-10-12**
+> **Last Updated: 2026-10-26**
 
 ## Contents
 
+- [[2026-10-26] Privacy Policy Names the Job Posting Link](#2026-10-26-privacy-policy-names-the-job-posting-link)
 - [[2026-10-12] One Rule for All Four AI Character Counters](#2026-10-12-one-rule-for-all-four-ai-character-counters)
 - [[2026-10-12] No Cover-Letter SEO Pages](#2026-10-12-no-cover-letter-seo-pages)
 - [[2026-10-12] A 1-Day Pass Replaces the 90-Day Pass](#2026-10-12-a-1-day-pass-replaces-the-90-day-pass)
@@ -38,6 +39,13 @@
 - [[2025-10-01] JSON Resume Schema Adoption](#2025-10-01-json-resume-schema-adoption)
 
 This document is a historical record of the major architectural decisions taken during the **CVCanvas** era (the project has since rebranded to **KiwiCV**). It preserves the context for _why_ things ended up the way they are; entries describe the reasoning at the time they were made and are not rewritten to match later branding.
+
+## [2026-10-26] Privacy Policy Names the Job Posting Link
+
+- **Decision**: Amend `legal.ts` §4 Drive, GitHub and Storage to name the optional job posting link saved with an exported version (#64): in the backup file and hidden Drive file properties, passing through the server functions on upload and when My CVs lists versions; in private, non-Pages GitHub repositories only; and in a per-device cache of GitHub links removed with the GitHub connection. One `LAST_LEGAL_UPDATE` bump with a `legal.update` text that names only this change.
+- **Rationale**: §4 itemises what each destination receives, so a list without the link read as exhaustive and wrong. Art. 13 GDPR does not strictly require the categories; the gap was against KiwiCV's own promise. Existing Drive and GitHub consents were given under text that did not name the link, hence the bump.
+- **Not claimed**: the cache is not said to clear when another account signs in, because the code only does so when a Drive owner stamp exists.
+- **Status**: Implemented; ships with a `--legal` release.
 
 ## [2026-10-12] One Rule for All Four AI Character Counters
 

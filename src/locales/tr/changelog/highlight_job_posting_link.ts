@@ -1,10 +1,10 @@
 export const highlight_job_posting_link = {
   _highlights: {
     job_posting_link: {
-      badge: 'Job Postings',
+      badge: 'İş İlanları',
       content:
-        'Paste the job posting link in the Export dialog when you back up a CV to Google Drive or a private GitHub repository, then open it from My CVs whenever you need it. Public repositories never receive the link.',
-      title: 'Remember where you applied',
+        "Bir CV'yi Google Drive'a veya özel bir GitHub deposuna yedeklerken ilan bağlantısını dışa aktarma penceresine yapıştır, sonra ihtiyaç duyduğunda “CV'lerim” üzerinden aç. Herkese açık depolar bu bağlantıyı asla almaz.",
+      title: 'Nereye başvurduğunu hatırla',
     },
   },
 };

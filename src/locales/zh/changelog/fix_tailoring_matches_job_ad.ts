@@ -1,4 +1,4 @@
 export const fix_tailoring_matches_job_ad = {
   fix_tailoring_matches_job_ad:
-    'Job tailoring now rewrites your work experience toward the job ad and adjusts your professional title, instead of only restructuring your skills.',
+    '按职位定制简历时，现在会根据职位描述改写你的工作经历并调整你的职位，而不只是重新构建你的技能。',
 };

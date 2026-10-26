@@ -1,10 +1,10 @@
 export const highlight_job_posting_link = {
   _highlights: {
     job_posting_link: {
-      badge: 'Job Postings',
+      badge: 'Vacatures',
       content:
-        'Paste the job posting link in the Export dialog when you back up a CV to Google Drive or a private GitHub repository, then open it from My CVs whenever you need it. Public repositories never receive the link.',
-      title: 'Remember where you applied',
+        "Plak de link naar de vacature in het exportvenster wanneer je een back-up van een cv maakt naar Google Drive of een privé-GitHub-repository, en open hem vanuit „Mijn CV's” wanneer je hem nodig hebt. Openbare repository's krijgen de link nooit.",
+      title: 'Onthoud waar je hebt gesolliciteerd',
     },
   },
 };

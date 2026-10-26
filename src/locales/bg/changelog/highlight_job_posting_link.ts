@@ -1,10 +1,10 @@
 export const highlight_job_posting_link = {
   _highlights: {
     job_posting_link: {
-      badge: 'Job Postings',
+      badge: 'Обяви за работа',
       content:
-        'Paste the job posting link in the Export dialog when you back up a CV to Google Drive or a private GitHub repository, then open it from My CVs whenever you need it. Public repositories never receive the link.',
-      title: 'Remember where you applied',
+        'Постави линка към обявата в диалоговия прозорец за експорт, когато архивираш CV в Google Drive или в лично хранилище в GitHub, и го отваряй от „Моите CV“ винаги, когато ти потрябва. Публичните хранилища никога не получават линка.',
+      title: 'Помни къде е изпратено CV-то ти',
     },
   },
 };

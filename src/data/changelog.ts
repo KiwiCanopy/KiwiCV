@@ -25,6 +25,12 @@ function compareSemver(a: string, b: string): number {
 
 const allChangelogs: ChangelogEntry[] = [
   {
+    version: '5.1.0',
+    date: '2026-10-26',
+    id: 'v_005_001_000',
+    highlights: [{ id: 'job_posting_link' }],
+  },
+  {
     version: '5.0.2',
     date: '2026-10-24',
     id: 'v_005_000_002',

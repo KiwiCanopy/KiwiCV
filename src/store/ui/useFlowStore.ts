@@ -180,7 +180,8 @@ export type _PersistedStateIsSerializable = AssertJson<
  * Google wins a legacy pair that is both true — it is the one opened last.
  *
  * v1 → v2: `coverLetterMatchStyle` gains `null` for "not picked". A v1 `false`
- * beside the default tone is the untouched initial state, not a pick.
+ * beside the default tone is treated as the untouched initial state. A user who
+ * picked that tone explicitly reads as unpicked once, in a tab open across the deploy.
  */
 export function migrateFlowState(persisted: unknown, version: number): unknown {
   let state = persisted as {

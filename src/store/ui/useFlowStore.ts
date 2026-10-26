@@ -1,5 +1,6 @@
 import { BRAND_STORAGE_KEYS } from '@/config/brand';
 import {
+  AI_REORG_DEFAULT,
   COVER_LETTER_DEFAULT_LENGTH,
   COVER_LETTER_DEFAULT_TONE,
   type CoverLetterLengthPreset,
@@ -276,7 +277,7 @@ export const useFlowStore = create<FlowStore>()(
         mode: null,
         jobDescription: '',
         customPrompt: '',
-        allowReorg: false,
+        allowReorg: AI_REORG_DEFAULT,
         draftCoverLetter: false,
         coverLetterLength: COVER_LETTER_DEFAULT_LENGTH,
         coverLetterTone: COVER_LETTER_DEFAULT_TONE,
@@ -331,6 +332,10 @@ export const useFlowStore = create<FlowStore>()(
        * it false once the letter it would overwrite exists, and it is
        * `sessionStorage`, so it dies with the tab.
        *
+       * `allowReorg` is the exception and does go back to `AI_REORG_DEFAULT`:
+       * the composer keeps its own mirror and re-asserts it on run, so only the
+       * modal's choice is dropped on close.
+       *
        * ⚠️ A tick KiwiCV pre-set is a different thing and is NOT cleared here —
        * `AIEditModal` clears it on close, reading `ai.presetCoverLetter`, which
        * is per-open state and unpersisted.
@@ -342,7 +347,7 @@ export const useFlowStore = create<FlowStore>()(
             mode: null,
             jobDescription: '',
             customPrompt: '',
-            allowReorg: false,
+            allowReorg: AI_REORG_DEFAULT,
           };
         }),
 

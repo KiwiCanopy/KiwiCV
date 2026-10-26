@@ -7,19 +7,16 @@ import { ExportRunFooter } from '@/components/modals/export/ExportRunFooter';
 import { CloudSetupRow } from '@/components/modals/export/destinations/CloudSetupRow';
 import { DestinationList } from '@/components/modals/export/destinations/DestinationList';
 import { HostingPathField } from '@/components/modals/export/destinations/HostingPathField';
-import {
-  clearExportDraft,
-  readExportDraft,
-  writeExportDraft,
-} from '@/components/modals/export/exportDraft';
 import { PackageSummary } from '@/components/modals/export/package/PackageSummary';
 import { useExportDestinations } from '@/components/modals/export/useExportDestinations';
 import { useExportRun } from '@/components/modals/export/useExportRun';
 import { EXPORT_TRIGGER_ANCHOR_ID } from '@/constants/focusAnchors';
+import { clearExportDraft, readExportDraft, writeExportDraft } from '@/hooks/export/exportDraft';
 import { useSyncAuthGateway } from '@/hooks/sync/useSyncAuthGateway';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { normalizePostingUrl } from '@/utils/applicationMeta';
 import { constructBackupFilename, getCleanProjectName, getProjectFilename } from '@/utils/export';
 import { localizedPath } from '@/utils/localeRouting';
 
@@ -58,6 +55,7 @@ export function ExportModalBody({
   const [base, setBase] = useState(draft?.base ?? suggestedBase);
   const [company, setCompany] = useState(draft?.company ?? '');
   const [position, setPosition] = useState(draft?.position ?? '');
+  const [postingUrl, setPostingUrl] = useState(draft?.postingUrl ?? '');
 
   const { destinations, selected, showCloudSetup, formats, toggleDestination, toggleFormat } =
     useExportDestinations();
@@ -77,8 +75,8 @@ export function ExportModalBody({
   }, [resume.meta.theme.locale]);
 
   useEffect(() => {
-    writeExportDraft({ base, company, position });
-  }, [base, company, position]);
+    writeExportDraft({ base, company, position, postingUrl });
+  }, [base, company, position, postingUrl]);
 
   useEffect(() => {
     onChromeChange({ busy: state.isRunning, name: base });
@@ -131,12 +129,15 @@ export function ExportModalBody({
         base={base}
         company={company}
         position={position}
+        postingUrl={postingUrl}
+        showPostingUrl={selected.some((id) => id === 'github_repo' || id === 'google_drive')}
         preview={preview}
         suggestedBase={suggestedBase}
         disabled={state.isRunning}
         onBaseChange={setBase}
         onCompanyChange={setCompany}
         onPositionChange={setPosition}
+        onPostingUrlChange={setPostingUrl}
       />
 
       <CoverLetterRow disabled={state.isRunning} />
@@ -181,7 +182,7 @@ export function ExportModalBody({
         announcement={announcement}
         buildFailed={state.buildError !== null}
         onCancel={handleCancel}
-        onRun={() => void run(targets, projectName)}
+        onRun={() => void run(targets, projectName, normalizePostingUrl(postingUrl))}
       />
     </div>
   );

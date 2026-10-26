@@ -94,4 +94,50 @@ describe('VersionRow', () => {
     expect(container.querySelector('img')).toBeNull();
     expect(screen.getByText('Design not recorded')).toBeTruthy();
   });
+
+  it('links the tailored-for cell and the row menu to a saved posting (#54)', () => {
+    render(
+      <VersionRow
+        version={version({
+          company: 'Acme',
+          position: 'Engineer',
+          postingUrl: 'https://jobs.example.com/42',
+        })}
+        index={0}
+        onRestore={vi.fn()}
+        onDelete={vi.fn()}
+        onDownload={vi.fn()}
+      />,
+    );
+
+    const link = screen.getByRole('link', {
+      name: 'Engineer · Acme Open job posting for ProjectA (opens in a new tab)',
+    });
+    expect(link.getAttribute('href')).toBe('https://jobs.example.com/42');
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+
+    fireEvent.click(screen.getByRole('button', { name: 'More actions for ProjectA' }));
+    expect(
+      screen
+        .getByRole('link', { name: 'Open job posting (opens in a new tab)' })
+        .getAttribute('href'),
+    ).toBe('https://jobs.example.com/42');
+  });
+
+  it('keeps plain text and no menu entry without a posting', () => {
+    render(
+      <VersionRow
+        version={version({ company: 'Acme', position: 'Engineer' })}
+        index={0}
+        onRestore={vi.fn()}
+        onDelete={vi.fn()}
+        onDownload={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Engineer · Acme').closest('a')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'More actions for ProjectA' }));
+    expect(screen.queryByRole('link')).toBeNull();
+  });
 });

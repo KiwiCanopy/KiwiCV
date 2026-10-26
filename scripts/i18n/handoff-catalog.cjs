@@ -2330,8 +2330,26 @@ const entries = [
   [
     'sync',
     'export_dialog.filename_only',
-    'Company and position only affect the exported name. They are not saved.',
-    'Export dialog: note that company and position only affect the exported name',
+    'Company and position shape the file name. The posting link is saved with backups to Google Drive or a private GitHub repository, never with a public or published one.',
+    'Export dialog: note under the company, position and job posting link fields. Company and position only change the exported file name. The job posting link is saved only with backups to Google Drive or to a private GitHub repository, and is never written to a public repository or one published with GitHub Pages; ZIP downloads do not keep it. Do not widen the claim into "always saved". Take "backups" and the public/published repository wording from settings.github.public_repo_note in this locale, and the link noun from sync.export_modal_posting_label',
+  ],
+  [
+    'sync',
+    'export_dialog.posting_invalid',
+    "That isn't a web address, so it won't be saved.",
+    'Export dialog: soft warning under the job posting link field when the typed text is not an http(s) web address. Export still runs; the value is simply not stored. Informal register (du in German)',
+  ],
+  [
+    'sync',
+    'export_modal_posting_label',
+    'Job posting link',
+    'Export dialog: label of the optional field holding the URL of the job ad this CV is sent to. Sits under the company and position fields',
+  ],
+  [
+    'sync',
+    'export_modal_posting_placeholder',
+    'https://...',
+    'Export dialog: placeholder of the job posting link field. A URL scheme, identical in every locale',
   ],
   [
     'sync',
@@ -2905,6 +2923,24 @@ const entries = [
     'CV library: warning heading when one provider did not respond',
   ],
   ['cvs', 'refresh', 'Refresh', 'CV library: action re-reading the cloud providers'],
+  [
+    'cvs',
+    'open_posting',
+    'Open job posting',
+    'CV library: row menu action opening the job posting link saved with this CV version, in a new browser tab; also the visible text of the row link when no company or position is recorded. Take the posting noun from sync.export_modal_posting_label in this locale',
+  ],
+  [
+    'cvs',
+    'opens_new_tab',
+    '(opens in a new tab)',
+    'CV library: screen-reader-only text after the "Open job posting" menu item, warning that it opens a new browser tab. Identical to landing.testimonial.new_tab in this locale',
+  ],
+  [
+    'cvs',
+    'open_posting_for',
+    'Open job posting for {{name}} (opens in a new tab)',
+    'CV library: screen-reader-only text read after the visible "position · company" of a version row link that opens its saved job posting. {{name}} is the CV version name; use the same preposition as cvs.row_menu. Take the wording from cvs.open_posting and the parenthesis from cvs.opens_new_tab in this locale',
+  ],
   [
     'cvs',
     'row_menu',
@@ -4796,6 +4832,7 @@ const VERBATIM = new Set([
   'placeholders.common.https',
   'sync.export_dialog.dest_google_drive_label',
   'sync.export_dialog.package_pdf_label',
+  'sync.export_modal_posting_placeholder',
   'sync.google_drive_title',
   'sync.providers.google_drive',
 ]);

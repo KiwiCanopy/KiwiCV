@@ -42,6 +42,9 @@ export const cvs: Translations['cvs'] = {
   no_target: 'Sin puesto registrado',
   not_backed_up_since: 'Sin copia de seguridad desde {{date}}',
   open_from_language_switch: 'Abrir Mis CV',
+  open_posting: 'Abrir la oferta',
+  open_posting_for: 'Abrir la oferta para {{name}} (se abre en una pestaña nueva)',
+  opens_new_tab: '(se abre en una pestaña nueva)',
   partial_failure_desc:
     '{{provider}} no respondió, por lo que lo almacenado allí no aparece en la lista.',
   partial_failure_title: 'Es posible que falten algunas versiones',

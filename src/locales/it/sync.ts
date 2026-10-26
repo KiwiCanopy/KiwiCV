@@ -81,7 +81,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Un archivio, direttamente su questo dispositivo.',
     dest_zip_label: 'Scarica come ZIP',
-    filename_only: 'Azienda e posizione influiscono solo sul nome esportato. Non vengono salvate.',
+    filename_only:
+      "Azienda e posizione determinano il nome del file. Il link all'annuncio viene salvato con i backup su Google Drive o in un repository GitHub privato, mai in uno pubblico o pubblicato.",
     letter_excluded: 'Lettera di presentazione non inclusa',
     letter_included: 'Lettera di presentazione inclusa prima del CV',
     letter_outdated:
@@ -98,6 +99,7 @@ export const sync: Translations['sync'] = {
       'Un documento ad alta fedeltà, ottimizzato per ATS, per i sistemi HR e la stampa.',
     package_pdf_label: 'PDF',
     package_summary: 'PDF, pagina web e backup',
+    posting_invalid: 'Non è un indirizzo web, quindi non verrà salvato.',
     preview_label: 'Esportato come',
     progress: 'Esportazione: {{done}} di {{total}} destinazioni completate.',
     rename: 'Rinomina',
@@ -124,6 +126,8 @@ export const sync: Translations['sync'] = {
   export_modal_input_link: 'Modifica le impostazioni predefinite',
   export_modal_placeholder: 'ad es. Mio_Curriculum',
   export_modal_position_label: 'Posizione',
+  export_modal_posting_label: "Link all'annuncio",
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Nome della cartella',
   gateway_desc:
     'Scegli un servizio per eseguire il backup del tuo curriculum in modo sicuro. Puoi sempre cambiarlo in seguito nelle impostazioni.',

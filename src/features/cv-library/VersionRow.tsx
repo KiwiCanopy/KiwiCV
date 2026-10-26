@@ -9,7 +9,7 @@ import { CV_LIBRARY_LIST_ID } from '@/constants/focusAnchors';
 import { VersionThumbnail } from '@/features/cv-library/VersionThumbnail';
 import type { CvVersion } from '@/features/cv-library/types';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Download, EllipsisVertical, RotateCcw, Trash2 } from 'lucide-react';
+import { Download, EllipsisVertical, ExternalLink, RotateCcw, Trash2 } from 'lucide-react';
 
 interface VersionRowProps {
   version: CvVersion;
@@ -65,8 +65,23 @@ export function VersionRow({ version, index, onRestore, onDelete, onDownload }: 
         </p>
       </div>
 
-      <p className="text-muted-foreground hidden min-w-0 flex-1 truncate text-xs md:block">
-        {tailoredFor || t('cvs.no_target')}
+      {/* Truncation sits on the inner span: on the <p> it would clip the link's focus ring. */}
+      <p className="text-muted-foreground hidden min-w-0 flex-1 text-xs md:block">
+        {file.postingUrl ? (
+          <a
+            href={file.postingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary-strong inline-flex max-w-full items-center gap-1 underline-offset-4 hover:underline"
+          >
+            {/* The visible text leads the accessible name (WCAG 2.5.3). */}
+            <span className="truncate">{tailoredFor || t('cvs.open_posting')}</span>{' '}
+            <span className="sr-only">{t('cvs.open_posting_for', { name: file.label })}</span>
+            <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+          </a>
+        ) : (
+          <span className="block truncate">{tailoredFor || t('cvs.no_target')}</span>
+        )}
       </p>
 
       <p className="text-muted-foreground w-24 shrink-0 text-right text-xs sm:text-left">
@@ -90,6 +105,19 @@ export function VersionRow({ version, index, onRestore, onDelete, onDownload }: 
           </PopoverTrigger>
           <PopoverContent align="end" className="w-56 p-1.5">
             <div className="flex flex-col">
+              {/* The row's own link sits in a column phones do not show. */}
+              {file.postingUrl && (
+                <a
+                  href={file.postingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-foreground hover:bg-muted inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold transition-colors md:hidden"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {t('cvs.open_posting')} <span className="sr-only">{t('cvs.opens_new_tab')}</span>
+                </a>
+              )}
               <Button
                 variant="quiet"
                 size="sm"

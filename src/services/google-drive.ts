@@ -13,6 +13,16 @@ export interface DriveFile {
   name: string;
   modifiedTime: string;
   driveRoot: GoogleDriveRoot;
+  /** Read by `fromDriveAppProperties`; absent on a file that never had any. */
+  appProperties?: Record<string, string>;
+}
+
+export interface DriveUploadFile {
+  name: string;
+  content: string | Blob;
+  contentType: string;
+  /** Written in the same request; a `null` value deletes that property. */
+  appProperties?: Record<string, string | null>;
 }
 
 export const googleDriveService = {
@@ -98,7 +108,7 @@ export const googleDriveService = {
   async sync(
     refreshToken: string,
     folderPath: string[],
-    files: { name: string; content: string | Blob; contentType: string }[],
+    files: DriveUploadFile[],
     unique: boolean = false,
   ): Promise<{ folderId: string; folderName?: string }> {
     const preparedFiles = await Promise.all(
@@ -118,6 +128,7 @@ export const googleDriveService = {
             content: contentBase64,
             contentType: file.contentType,
             isBase64: true,
+            appProperties: file.appProperties,
           };
         }
         return {
@@ -125,6 +136,7 @@ export const googleDriveService = {
           content: file.content as string,
           contentType: file.contentType,
           isBase64: false,
+          appProperties: file.appProperties,
         };
       }),
     );

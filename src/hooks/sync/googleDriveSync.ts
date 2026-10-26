@@ -1,7 +1,7 @@
 import { GOOGLE_DRIVE_FOLDER } from '@/constants/cloud';
 import { buildExportArtifacts } from '@/hooks/export/buildExportArtifacts';
 import { type SyncParams, type SyncResult } from '@/hooks/sync/types';
-import { googleDriveService } from '@/services/google-drive';
+import { type DriveUploadFile, googleDriveService } from '@/services/google-drive';
 import {
   GOOGLE_LAST_FULL_PUSH_HASH_KEY,
   GOOGLE_LAST_SYNC_HASH_KEY,
@@ -10,6 +10,7 @@ import {
   googleDriveConnection,
 } from '@/services/storage/googleStorage';
 import { fullPushStamp } from '@/services/storage/syncHashes';
+import { toDriveAppProperties, wrapBackupJson } from '@/utils/applicationMeta';
 import {
   constructBackupFilename,
   getCleanProjectName,
@@ -32,7 +33,7 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
     if (variant === 'full') {
       const backupFileName = params.projectName || getProjectFilename(resume);
       const lastFullHash = getGoogleLastFullPushHash();
-      if (lastFullHash === (await fullPushStamp(currentHash, backupFileName))) {
+      if (lastFullHash === (await fullPushStamp(currentHash, backupFileName, params.postingUrl))) {
         alreadySynced = true;
       }
     } else if (variant === 'hosting') {
@@ -118,18 +119,22 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
       }
 
       // --- Project Snapshot (JSON) to backups/{lang}/{finalBackupFileName}.json ---
-      const snapshotFiles: { name: string; content: string | Blob; contentType: string }[] = [];
+      // The link also goes in `appProperties`, which the library listing reads
+      // without opening the file (#54).
+      const postingUrl = params.postingUrl ?? null;
+      const snapshotFiles: DriveUploadFile[] = [];
       snapshotFiles.push({
         name: `${finalBackupFileName}.json`,
-        content: artifacts.json,
+        content: wrapBackupJson(artifacts.json, postingUrl),
         contentType: 'application/json',
+        appProperties: toDriveAppProperties(postingUrl),
       });
 
       const backupPath = [driveFolder, 'backups', lang];
       await googleDriveService.sync(refreshToken, backupPath, snapshotFiles);
 
       // The requested name, as the check above compares; a renamed folder is Drive's choice.
-      const stamp = await fullPushStamp(currentHash, backupFileName);
+      const stamp = await fullPushStamp(currentHash, backupFileName, params.postingUrl);
       connection.writeHash(GOOGLE_LAST_FULL_PUSH_HASH_KEY, stamp);
       return { service: 'google_drive', success: true, folderName: finalFolderName };
     }

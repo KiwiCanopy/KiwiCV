@@ -11,7 +11,13 @@ import {
 import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { useToastStore } from '@/store/ui/useToastStore';
 import type { ResumeData } from '@/types/resume';
+import { peelBackup } from '@/utils/applicationMeta';
 import { type FocusAnchor } from '@/utils/focus';
+
+export interface DownloadedBackup {
+  data: ResumeData;
+  postingUrl: string | null;
+}
 
 export function useCloudOperations(githubPaths: Record<string, string>) {
   const { t } = useTranslation();
@@ -21,11 +27,15 @@ export function useCloudOperations(githubPaths: Record<string, string>) {
   const repo = localStorage.getItem('github_repo');
   const refreshToken = loadGoogleDriveCreds();
 
+  /**
+   * The one cloud read point. The posting link is peeled off here, before
+   * anything validates the resume, so it never lands in `passthrough` (#54).
+   */
   const downloadBackup = async (
     source: BackupSource,
     file: BackupFile,
     locale: string,
-  ): Promise<ResumeData> => {
+  ): Promise<DownloadedBackup> => {
     let data: ResumeData;
 
     if (source === 'github') {
@@ -44,7 +54,7 @@ export function useCloudOperations(githubPaths: Record<string, string>) {
     }
 
     if (!data) throw new Error('No data received');
-    return data;
+    return peelBackup(data);
   };
 
   const handleDelete = async (

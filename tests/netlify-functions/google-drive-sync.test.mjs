@@ -222,6 +222,79 @@ test('upload still sends a PDF with its content type', async (context) => {
   assert.ok(upload.arguments[1].body.toString().includes('Content-Type: application/pdf\r\n'));
 });
 
+// #54: the posting link rides in appProperties, which a media-only PATCH cannot set.
+const uploadJson = (appProperties) =>
+  handler({
+    httpMethod: 'POST',
+    body: JSON.stringify({
+      action: 'upload',
+      refreshToken: 'refresh-token',
+      folderPath: ['KiwiCV', 'backups', 'en'],
+      files: [
+        { fileName: 'cv.json', content: '{}', contentType: 'application/json', appProperties },
+      ],
+    }),
+  });
+
+const driveMock = (context, existingId) =>
+  context.mock.method(globalThis, 'fetch', async (url) => {
+    if (String(url).startsWith('https://oauth2.googleapis.com/token')) return tokenResponse();
+    if (String(url).includes('google-apps.folder')) return jsonResponse({ files: [{ id: 'f' }] });
+    if (String(url).includes('/upload/')) return jsonResponse({ id: existingId || 'new' });
+    return jsonResponse({ files: existingId ? [{ id: existingId }] : [] });
+  });
+
+const uploadCall = (fetchMock) =>
+  fetchMock.mock.calls.find((call) => String(call.arguments[0]).includes('/upload/'));
+
+test('an update with appProperties goes multipart and carries them', async (context) => {
+  const fetchMock = driveMock(context, 'existing');
+  const response = await uploadJson({ kcvUrl0: 'https://jobs.example.com/42', kcvUrl1: null });
+  assert.equal(response.statusCode, 200);
+  const [url, init] = uploadCall(fetchMock).arguments;
+  assert.equal(init.method, 'PATCH');
+  assert.ok(String(url).includes('/files/existing?uploadType=multipart'));
+  const body = init.body.toString();
+  assert.ok(
+    body.includes('"appProperties":{"kcvUrl0":"https://jobs.example.com/42","kcvUrl1":null}'),
+  );
+  assert.ok(body.includes('Content-Type: application/json\r\n\r\n{}'));
+});
+
+test('an update without appProperties stays a media PATCH', async (context) => {
+  const fetchMock = driveMock(context, 'existing');
+  assert.equal((await uploadJson(undefined)).statusCode, 200);
+  assert.ok(String(uploadCall(fetchMock).arguments[0]).includes('uploadType=media'));
+});
+
+test('a create sends appProperties without the null slots', async (context) => {
+  const fetchMock = driveMock(context, null);
+  assert.equal(
+    (await uploadJson({ kcvUrl0: 'https://a.example.com/', kcvUrl1: null })).statusCode,
+    200,
+  );
+  const body = uploadCall(fetchMock).arguments[1].body.toString();
+  assert.ok(body.includes('"appProperties":{"kcvUrl0":"https://a.example.com/"}'));
+});
+
+test('upload rejects appProperties Drive would refuse, before touching Drive', async (context) => {
+  const fetchMock = context.mock.method(globalThis, 'fetch', async () => tokenResponse());
+  for (const appProperties of [
+    'x',
+    ['x'],
+    { kcvUrl0: 'x'.repeat(124) },
+    { 'bad key': 'x' },
+    { kcvUrl0: 1 },
+    Object.fromEntries(Array.from({ length: 31 }, (_, i) => [`k${i}`, 'v'])),
+  ]) {
+    assert.equal((await uploadJson(appProperties)).statusCode, 400, JSON.stringify(appProperties));
+  }
+  const driveCalls = fetchMock.mock.calls.filter((call) =>
+    String(call.arguments[0]).startsWith('https://www.googleapis.com/'),
+  );
+  assert.equal(driveCalls.length, 0);
+});
+
 // The client discards a stored credential on exactly these two codes, so each
 // is pinned next to the neighbouring failure that must keep its old code.
 async function handshakeWith(context, { token, drive }) {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { flattenDiscovery, selectMasterForLocale } from '@/features/cv-library/flattenDiscovery';
+import { hydrateGitHubPostingUrls } from '@/features/cv-library/hydratePostingUrls';
 import type { CvVersion } from '@/features/cv-library/types';
 import { useCloudDiscovery } from '@/hooks/cloud/useCloudDiscovery';
 import { useCloudOperations } from '@/hooks/cloud/useCloudOperations';
@@ -92,6 +93,15 @@ export function useCvLibrary() {
     void load();
   }, [isCloudActive, load]);
 
+  // After every load, whoever ran it: the language-switch restore prompt fills
+  // this store too, and a fresh device is exactly when the cache is empty.
+  useEffect(() => {
+    if (status !== 'ready' || !discoveryData) return;
+    void hydrateGitHubPostingUrls(discoveryData, downloadBackup);
+    // Once per load; `discoveryData` changes as links arrive.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, loadedAt]);
+
   const { versions } = useMemo(() => flattenDiscovery(discoveryData), [discoveryData]);
 
   // The editor's draft is in one language, so only that language's master can
@@ -118,7 +128,7 @@ export function useCvLibrary() {
   const downloadJson = useCallback(
     async (version: CvVersion) => {
       try {
-        const data = await downloadBackup(version.source, version.file, version.locale);
+        const { data } = await downloadBackup(version.source, version.file, version.locale);
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         saveAs(blob, version.file.name);
       } catch (err) {

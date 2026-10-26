@@ -36,6 +36,41 @@ export function isUploadContentType(value) {
 }
 
 /**
+ * Drive `appProperties` from the client: at most 30 string-or-null values, each key
+ * plus value within Drive's 124-byte cap. `null` deletes a property on update.
+ */
+export function isAppProperties(value) {
+  if (value === undefined) return true;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const entries = Object.entries(value);
+  return (
+    entries.length <= 30 &&
+    entries.every(
+      ([key, entry]) =>
+        /^\w+$/.test(key) &&
+        (entry === null ||
+          (typeof entry === 'string' && Buffer.byteLength(key + entry, 'utf8') <= 124)),
+    )
+  );
+}
+
+/**
+ * A `multipart/related` body: the JSON metadata part, then the content part.
+ */
+function multipartBody(boundary, metadata, contentType, content, isBase64) {
+  const delimiter = `\r\n--${boundary}\r\n`;
+  return Buffer.concat([
+    Buffer.from(delimiter),
+    Buffer.from('Content-Type: application/json; charset=UTF-8\r\n\r\n'),
+    Buffer.from(JSON.stringify(metadata)),
+    Buffer.from(delimiter),
+    Buffer.from('Content-Type: ' + contentType + '\r\n\r\n'),
+    isBase64 ? Buffer.from(content, 'base64') : Buffer.from(content),
+    Buffer.from(`\r\n--${boundary}--`),
+  ]);
+}
+
+/**
  * An error that carries a fixed `code` (and HTTP `status`) safe to write to function logs.
  */
 export function driveError(code, message, status) {
@@ -179,7 +214,7 @@ export async function uploadFiles(accessToken, folderInfo, files) {
   const results = [];
 
   for (const file of files) {
-    const { fileName, content, contentType, isBase64 } = file;
+    const { fileName, content, contentType, isBase64, appProperties } = file;
 
     // Check if file exists to update it
     const query = `name = '${escapeDriveQueryValue(fileName)}' and '${parentId}' in parents and trashed = false`;
@@ -192,19 +227,35 @@ export async function uploadFiles(accessToken, folderInfo, files) {
     const searchData = await searchRes.json();
     const existingFileId = searchData.files?.[0]?.id;
 
+    const boundary = '-------314159265358979323846';
+    const type = contentType || 'application/json';
+
     if (existingFileId) {
-      // Update Content
-      const updateRes = await fetch(
-        `https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=media`,
-        {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': contentType || 'application/json',
-          },
-          body: isBase64 ? Buffer.from(content, 'base64') : content,
-        },
-      );
+      // A media-only PATCH cannot carry metadata, so the update goes multipart
+      // whenever there are appProperties to write.
+      const updateRes = appProperties
+        ? await fetch(
+            `https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=multipart`,
+            {
+              method: 'PATCH',
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': `multipart/related; boundary=${boundary}`,
+              },
+              body: multipartBody(boundary, { appProperties }, type, content, isBase64),
+            },
+          )
+        : await fetch(
+            `https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=media`,
+            {
+              method: 'PATCH',
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': type,
+              },
+              body: isBase64 ? Buffer.from(content, 'base64') : content,
+            },
+          );
       if (!updateRes.ok)
         throw driveError(
           'UPDATE_FAILED',
@@ -212,26 +263,18 @@ export async function uploadFiles(accessToken, folderInfo, files) {
           updateRes.status,
         );
     } else {
-      // Create Multipart
-      const boundary = '-------314159265358979323846';
-      const delimiter = `\r\n--${boundary}\r\n`;
-      const closeDelimiter = `\r\n--${boundary}--`;
-
-      const metadata = JSON.stringify({
+      const metadata = {
         name: fileName,
         parents: [parentId],
-        mimeType: contentType || 'application/json',
-      });
-
-      const multipartBody = Buffer.concat([
-        Buffer.from(delimiter),
-        Buffer.from('Content-Type: application/json; charset=UTF-8\r\n\r\n'),
-        Buffer.from(metadata),
-        Buffer.from(delimiter),
-        Buffer.from('Content-Type: ' + (contentType || 'application/json') + '\r\n\r\n'),
-        isBase64 ? Buffer.from(content, 'base64') : Buffer.from(content),
-        Buffer.from(closeDelimiter),
-      ]);
+        mimeType: type,
+        // Drive rejects a null value on create; it only means "delete" on update.
+        ...(appProperties && {
+          appProperties: Object.fromEntries(
+            Object.entries(appProperties).filter(([, value]) => value !== null),
+          ),
+        }),
+      };
+      const body = multipartBody(boundary, metadata, type, content, isBase64);
 
       const uploadRes = await fetch(
         'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
@@ -240,9 +283,9 @@ export async function uploadFiles(accessToken, folderInfo, files) {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': `multipart/related; boundary=${boundary}`,
-            'Content-Length': multipartBody.length.toString(),
+            'Content-Length': body.length.toString(),
           },
-          body: multipartBody,
+          body,
         },
       );
 

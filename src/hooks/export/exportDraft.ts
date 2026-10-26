@@ -1,7 +1,9 @@
 export interface ExportDraft {
-  base: string;
-  company: string;
-  position: string;
+  base?: string;
+  company?: string;
+  position?: string;
+  /** As typed; `normalizePostingUrl` decides what is saved. */
+  postingUrl?: string;
 }
 
 /**
@@ -14,7 +16,8 @@ export interface ExportDraft {
  * Google OAuth redirect within the same tab.
  *
  * Cleared on a fully successful run and on an explicit Cancel — never on a
- * failed run, which is exactly when the typed values still matter.
+ * failed run, which is exactly when the typed values still matter. A cloud
+ * restore replaces it with the restored version's posting link (#54).
  */
 let draft: ExportDraft | null = null;
 

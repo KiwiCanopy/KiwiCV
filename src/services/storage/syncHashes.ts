@@ -19,11 +19,16 @@ export const ALL_SYNC_HASH_KEYS = [
 ] as const;
 
 /**
- * What a full-push key stores: one digest over the resume digest and the
- * backup file name, which names the company and position applied to.
+ * What a full-push key stores: one digest over the resume digest, the backup
+ * file name (company and position) and the posting link, so changing only the
+ * link still pushes. Without a link the stamp is what earlier builds stored.
  */
-export const fullPushStamp = (resumeHash: string, backupFileName: string): Promise<string> =>
-  sha256Hex(`${resumeHash}:${backupFileName}`);
+export const fullPushStamp = (
+  resumeHash: string,
+  backupFileName: string,
+  postingUrl?: string | null,
+): Promise<string> =>
+  sha256Hex(`${resumeHash}:${backupFileName}${postingUrl ? `:${postingUrl}` : ''}`);
 
 /**
  * Removes any sync-hash value that is not a digest. Earlier builds stored

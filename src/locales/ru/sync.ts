@@ -81,7 +81,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Один архив прямо на это устройство.',
     dest_zip_label: 'Скачать как ZIP',
     filename_only:
-      'Компания и должность влияют только на имя экспортируемого файла. Они не сохраняются.',
+      'Компания и должность определяют имя файла. Ссылка на вакансию сохраняется с резервными копиями в Google Drive или в приватном репозитории GitHub, но никогда — в публичном или опубликованном.',
     letter_excluded: 'Сопроводительное письмо не включено',
     letter_included: 'Сопроводительное письмо включено перед резюме',
     letter_outdated: 'Может не подходить для новой вакансии — проверь перед отправкой.',
@@ -97,6 +97,7 @@ export const sync: Translations['sync'] = {
       'Высококачественный документ, оптимизированный для ATS, предназначенный для HR-систем и печати.',
     package_pdf_label: 'PDF',
     package_summary: 'PDF, веб-страница и резервная копия',
+    posting_invalid: 'Это не веб-адрес, поэтому он не будет сохранён.',
     preview_label: 'Экспортировано как',
     progress: 'Экспорт: завершено {{done}} из {{total}} назначений.',
     rename: 'Переименовать',
@@ -123,6 +124,8 @@ export const sync: Translations['sync'] = {
   export_modal_input_link: 'Изменить настройки по умолчанию',
   export_modal_placeholder: 'например, Мое_Резюме',
   export_modal_position_label: 'Должность',
+  export_modal_posting_label: 'Ссылка на вакансию',
+  export_modal_posting_placeholder: 'https://...',
   folder_name: 'Название папки',
   gateway_desc:
     'Подключи свое резюме к облаку, чтобы оно было в безопасности и доступно из любого места.',

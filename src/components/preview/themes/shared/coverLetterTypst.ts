@@ -2,6 +2,7 @@ import { markdownToTypst } from '@/components/preview/themes/shared/markdownTyps
 import { renderTypstSignatureFooter } from '@/components/preview/themes/shared/typstFooter';
 import { escapeTypst } from '@/components/preview/themes/shared/typstUtils';
 import type { ResumeData } from '@/types/resume';
+import { hasCoverLetterText } from '@/utils/coverLetter';
 
 /**
  * Theme-provided styling for the cover letter page. The letter is emitted as a
@@ -113,10 +114,10 @@ export function buildCoverLetterTypst(data: ResumeData, options: CoverLetterTyps
   const coverLetter = data.coverLetter;
   if (!coverLetter?.enabled) return '';
 
-  const paragraphs = (coverLetter.paragraphs || []).filter((p) => p.trim() !== '');
-  const subject = (coverLetter.subject || '').trim();
   // An enabled but still-empty letter must not produce a blank leading page.
-  if (paragraphs.length === 0 && !subject) return '';
+  if (!hasCoverLetterText(coverLetter)) return '';
+  const paragraphs = coverLetter.paragraphs.filter((p) => p.trim() !== '');
+  const subject = coverLetter.subject.trim();
 
   const { basics } = data;
   const { layout, recipient } = coverLetter;

@@ -21,6 +21,7 @@ import {
 } from '@/utils/ai';
 import { selectAITargetData } from '@/utils/aiPayload';
 import { type AITargetKey, parseAITarget } from '@/utils/aiTarget';
+import { sha256Hex } from '@/utils/hash';
 import { type Session } from '@supabase/supabase-js';
 
 interface UseAIGenerationProps {
@@ -82,6 +83,7 @@ export const useAIGeneration = ({
   const acceptReorg = useResumeStore((state) => state.acceptReorg);
   const updateMeta = useResumeStore((state) => state.updateMeta);
   const updateCoverLetter = useResumeStore((state) => state.updateCoverLetter);
+  const stampCoverLetter = useResumeStore((state) => state.stampCoverLetter);
 
   const handleGenerate = async (params: {
     activeTarget: AITargetKey | null;
@@ -193,6 +195,13 @@ export const useAIGeneration = ({
     else if (mode === 'custom') instructions = customPrompt;
     setChangeDetails(undefined);
 
+    // Started with the run and never awaited in `processResult`, which applies,
+    // counts and reports in one synchronous pass; the stamp lands when it resolves.
+    const jobHashPending =
+      mode === 'job_description' && jobDescription.trim()
+        ? sha256Hex(jobDescription.trim()).catch(() => undefined)
+        : Promise.resolve(undefined);
+
     const processResult = async (result: AIResult) => {
       // Tailoring is the run that pulls skills in from the ad; ops/AI_LOGIC.md.
       const markUnsourced = mode === 'job_description';
@@ -280,6 +289,13 @@ export const useAIGeneration = ({
       if (hasLetter) {
         updateCoverLetter({ enabled: true });
       }
+      void jobHashPending.then((jobHash) =>
+        stampCoverLetter({
+          jobHash,
+          wroteLetter: hasLetter || targetSectionKey === 'coverLetter',
+          tailoredCv: type === 'cv' && !coverLetterOnly,
+        }),
+      );
 
       const isItemLevel = type === 'item';
       if (!isItemLevel) {

@@ -265,6 +265,10 @@ export interface ResumeCoverLetter {
   };
   subject: string;
   date: string;
+  /** SHA-256 of the job description the AI drafted this letter for; absent when hand-written. */
+  draftedFor?: string;
+  /** Set when a tailoring run for a different job left this letter in place; cleared by an edit or a new draft. */
+  outdated?: boolean;
 }
 
 /** Fresh default cover letter. Factory (not a shared const) so no two resumes

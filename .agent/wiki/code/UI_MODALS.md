@@ -80,8 +80,10 @@ under the 300-line wiki limit.
   out of an exempted file puts the legacy markup into a new, fully guarded path.
 - **Z-Index Strategy**: Standardized hierarchy to prevent overlapping conflicts.
   Every `zIndexClassName` in `src/`, highest first — grep
-  `zIndexClassName="z-\[` to regenerate this list rather than editing a row by hand:
-  - Blocking, must sit over everything: `LegalUpdateModal`, `LanguageOnboardingModal` — z-[9999]
+  `zIndexClassName="z-\[`, plus `staysOnTop$` for the top row, to regenerate this list rather
+  than editing a row by hand:
+  - Blocking, must sit over everything: `LegalUpdateModal`, `LanguageOnboardingModal` —
+    `staysOnTop`, which paints z-[9999] itself (no `zIndexClassName`)
   - Confirmations, raised over whatever they interrupt: `ConfirmModal` — z-[200]
   - Auth and backup pickers: `GoogleAuthModal`, `CloudBackupSelectorModal` — z-[150]
   - Sensitive / destructive: `DeleteAccountModal`, `ContactModal` — z-[120]
@@ -91,6 +93,21 @@ under the 300-line wiki limit.
   - Upsell over a flow: `InsufficientPremiumAccessModal`, `TranslationInviteModal` — z-[80]
   - In-flow: `ImportModal`, `AIModalTemplate` — z-[70]
   - Base / nested editors: `SyncGatewayModal`, `CloudSyncGatewayModal`, `PhotoEditor`, `image-cropper` — z-[60]
+- **z-index is paint order, not the active layer.** Radix gives scroll lock, pointer
+  events, focus and `aria-hidden` to the dialog opened _last_, whatever its z-index, so a
+  dialog that opens on its own after a z-[9999] gate freezes it (measured in the browser,
+  2026-10-26: `aria-hidden` on the gate, `pointer-events: none`, wheel prevented, focus
+  moved). A blocking gate passes `staysOnTop` (`LegalUpdateModal`, `LanguageOnboardingModal`,
+  #9), one prop for both facts — top paint layer and active layer — so they cannot disagree.
+  `DialogFrame` counts every other dialog's open in `dialogStack.ts` and remounts the gate's
+  Radix root on each, so it is last again; focus returns to the control the user had, but
+  scroll position and any DOM state inside the content reset, so a gate keeps its state above
+  the frame. A dialog in a gate's React tree (`DialogFrame` or `Sheet`) does not count, or it would
+  remount its own host forever; one a gate opens through a store is not nested and would end
+  up frozen under it. The later dialog gets its layer back when the gate closes. `Sheet` counts its opens
+  too; a `Popover` with `modal` would not, so do not use one under a gate. No dialog needs to
+  wait for consent to avoid the freeze; `VersionUpdateModal` still waits so What's New is not
+  shown behind the gate.
 - **Modular Modals**: Large modals (e.g., `GitHubSyncModal`) are modularized into sub-components for maintainability.
 - **Unified Authentication (`AuthView`)**:
   - **Pattern**: Dual-pane "Marketing Benefits" (Left) + "Action Pane" (Right) layout.

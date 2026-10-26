@@ -58,8 +58,10 @@ export const LegalUpdateModal: React.FC = () => {
       // omits the close button and blocks Escape; outside-click is always blocked.
       onOpenChange={() => {}}
       dismissible={false}
+      // Anything that opens on its own after this gate (a post-sign-in dialog,
+      // What's New) would otherwise take Radix's scroll lock and freeze it (#9).
+      staysOnTop
       maxWidth="lg"
-      zIndexClassName="z-[9999]"
       header={
         <div className="mb-6 flex items-center gap-3 px-6 pt-6">
           <div className="rounded-xl bg-amber-500/10 p-2 text-amber-500">

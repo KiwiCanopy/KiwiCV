@@ -48,7 +48,13 @@ const recordProposal = (
     delete state.ai.suggestions[key];
     return;
   }
-  state.ai.suggestions[key] = { originalValue, improvedValue, timestamp: now };
+  // `onDecline` describes the user's original, which a follow-up run does not change.
+  state.ai.suggestions[key] = {
+    originalValue,
+    improvedValue,
+    timestamp: now,
+    ...(pending?.onDecline && { onDecline: pending.onDecline }),
+  };
 };
 
 /**

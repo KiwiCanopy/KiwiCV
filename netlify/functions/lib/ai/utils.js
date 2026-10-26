@@ -34,6 +34,8 @@ export function sanitizeResumeData(data) {
     '_imageVId',
     '_isNew',
     'recipient',
+    'draftedFor',
+    'outdated',
     'location',
     'passthrough',
     'roles',

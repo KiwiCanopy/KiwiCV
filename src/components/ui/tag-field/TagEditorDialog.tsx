@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 
 import type { TagFieldControlType } from '@/components/ui/tag-field/types';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isPrimaryActionChord } from '@/utils/primaryActionChord';
 
 interface TagEditorDialogProps {
   id: string;
@@ -62,7 +63,7 @@ export function TagEditorDialog({
               autoFocus
               onFocus={(event) => event.target.select()}
               onKeyDown={(event) => {
-                if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+                if (isPrimaryActionChord(event)) {
                   event.preventDefault();
                   save();
                 } else if (event.key === 'Escape') {

@@ -230,6 +230,51 @@ describe('ExportModal', () => {
     await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
   });
 
+  // `buildExportArtifacts` is the run's first call, before any await, so a
+  // not-called assertion right after the keystroke is reliable.
+  it('starts the export on Cmd+Enter or Ctrl+Enter from a field, never on plain Enter', async () => {
+    const user = userEvent.setup();
+    renderModal();
+    const company = screen.getByRole('textbox', { name: 'sync.export_modal_company_label' });
+
+    await user.type(company, 'Acme{Enter}');
+    expect(buildExportArtifacts).not.toHaveBeenCalled();
+
+    await user.type(company, '{Meta>}{Enter}{/Meta}');
+    expect(buildExportArtifacts).toHaveBeenCalledTimes(1);
+  });
+
+  it('takes Ctrl+Enter too', async () => {
+    const user = userEvent.setup();
+    renderModal();
+    await user.type(
+      screen.getByRole('textbox', { name: 'sync.export_modal_company_label' }),
+      '{Control>}{Enter}{/Control}',
+    );
+    expect(buildExportArtifacts).toHaveBeenCalledTimes(1);
+  });
+
+  it('leaves Cmd+Enter alone on a link, where it opens a new tab', async () => {
+    providerStates.github = 'active';
+    const user = userEvent.setup();
+    renderModal();
+    screen.getByRole('link', { name: 'sync.export_dialog.manage_link' }).focus();
+
+    await user.keyboard('{Meta>}{Enter}{/Meta}');
+    expect(buildExportArtifacts).not.toHaveBeenCalled();
+  });
+
+  it('presses nothing the trigger would refuse: an empty name', async () => {
+    const user = userEvent.setup();
+    renderModal();
+    await user.click(screen.getByRole('button', { name: 'sync.export_dialog.rename' }));
+    const base = screen.getByRole('textbox', { name: 'sync.export_modal_input_label' });
+    await user.clear(base);
+
+    await user.type(base, '{Meta>}{Enter}{/Meta}');
+    expect(buildExportArtifacts).not.toHaveBeenCalled();
+  });
+
   it('closes once a retry clears the last failure', async () => {
     runDestination.mockResolvedValueOnce({ success: false, error: 'disk full' } as never);
     const user = userEvent.setup();

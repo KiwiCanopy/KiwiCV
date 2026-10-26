@@ -126,6 +126,9 @@ export type CoverLetterTone = (typeof COVER_LETTER_TONES)[number];
 
 export const COVER_LETTER_DEFAULT_TONE: CoverLetterTone = 'professional';
 
+/** "Restructure skills" starts ticked: restructuring is the recommended path (owner, 2026-10-26, #57). */
+export const AI_REORG_DEFAULT = true;
+
 export const COVER_LETTER_DEFAULT_LENGTH: CoverLetterLengthPreset = 'medium';
 
 /**

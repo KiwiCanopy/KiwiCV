@@ -1,5 +1,6 @@
 import { BRAND_STORAGE_KEYS } from '@/config/brand';
 import {
+  AI_REORG_DEFAULT,
   COVER_LETTER_DEFAULT_LENGTH,
   COVER_LETTER_DEFAULT_TONE,
   type CoverLetterLengthPreset,
@@ -276,7 +277,7 @@ export const useFlowStore = create<FlowStore>()(
         mode: null,
         jobDescription: '',
         customPrompt: '',
-        allowReorg: false,
+        allowReorg: AI_REORG_DEFAULT,
         draftCoverLetter: false,
         coverLetterLength: COVER_LETTER_DEFAULT_LENGTH,
         coverLetterTone: COVER_LETTER_DEFAULT_TONE,
@@ -342,7 +343,7 @@ export const useFlowStore = create<FlowStore>()(
             mode: null,
             jobDescription: '',
             customPrompt: '',
-            allowReorg: false,
+            allowReorg: AI_REORG_DEFAULT,
           };
         }),
 

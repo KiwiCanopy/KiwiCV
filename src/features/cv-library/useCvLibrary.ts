@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { flattenDiscovery, selectMasterForLocale } from '@/features/cv-library/flattenDiscovery';
+import { hydrateGitHubPostingUrls } from '@/features/cv-library/hydratePostingUrls';
 import type { CvVersion } from '@/features/cv-library/types';
 import { useCloudDiscovery } from '@/hooks/cloud/useCloudDiscovery';
 import { useCloudOperations } from '@/hooks/cloud/useCloudOperations';
@@ -32,7 +33,7 @@ export function useCvLibrary() {
   const loadedAt = useCvLibraryStore((state) => state.loadedAt);
   const error = useCvLibraryStore((state) => state.error);
 
-  const { discoverBackups, hydrateGitHubPostingUrls } = useCloudDiscovery();
+  const { discoverBackups } = useCloudDiscovery();
   const { downloadBackup, handleDelete } = useCloudOperations(githubPaths);
   const { performRestore } = useCloudRestoreAction(downloadBackup);
 
@@ -58,15 +59,14 @@ export function useCvLibrary() {
       }
 
       store.setReady(foundBackups, paths, failed);
-      void hydrateGitHubPostingUrls(foundBackups, paths);
     } catch (err) {
       console.error('[CvLibrary] Discovery failed:', err);
       useCvLibraryStore.getState().setError(t('cvs.error_desc'));
     } finally {
       inFlightRef.current = false;
     }
-    // Both discovery functions are rebuilt every render by design (they close
-    // over the current credentials), so they are deliberately not dependencies.
+    // `discoverBackups` is rebuilt every render by design (it closes over the
+    // current credentials), so it is deliberately not a dependency.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
 
@@ -92,6 +92,15 @@ export function useCvLibrary() {
 
     void load();
   }, [isCloudActive, load]);
+
+  // After every load, whoever ran it: the language-switch restore prompt fills
+  // this store too, and a fresh device is exactly when the cache is empty.
+  useEffect(() => {
+    if (status !== 'ready' || !discoveryData) return;
+    void hydrateGitHubPostingUrls(discoveryData, downloadBackup);
+    // Once per load; `discoveryData` changes as links arrive.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, loadedAt]);
 
   const { versions } = useMemo(() => flattenDiscovery(discoveryData), [discoveryData]);
 

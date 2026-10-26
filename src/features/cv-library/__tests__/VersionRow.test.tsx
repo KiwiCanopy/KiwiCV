@@ -111,17 +111,18 @@ describe('VersionRow', () => {
     );
 
     const link = screen.getByRole('link', {
-      name: 'Open job posting for ProjectA (opens in a new tab)',
+      name: 'Engineer · Acme Open job posting for ProjectA (opens in a new tab)',
     });
     expect(link.getAttribute('href')).toBe('https://jobs.example.com/42');
     expect(link.getAttribute('target')).toBe('_blank');
     expect(link.getAttribute('rel')).toBe('noopener noreferrer');
-    expect(link.textContent).toBe('Engineer · Acme');
 
     fireEvent.click(screen.getByRole('button', { name: 'More actions for ProjectA' }));
-    expect(screen.getByRole('link', { name: 'Open job posting' }).getAttribute('href')).toBe(
-      'https://jobs.example.com/42',
-    );
+    expect(
+      screen
+        .getByRole('link', { name: 'Open job posting (opens in a new tab)' })
+        .getAttribute('href'),
+    ).toBe('https://jobs.example.com/42');
   });
 
   it('keeps plain text and no menu entry without a posting', () => {

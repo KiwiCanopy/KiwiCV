@@ -1,12 +1,17 @@
 // @vitest-environment jsdom
+import { hydrateGitHubPostingUrls } from '@/features/cv-library/hydratePostingUrls';
+import { useCloudDiscovery } from '@/hooks/cloud/useCloudDiscovery';
+import { useCloudOperations } from '@/hooks/cloud/useCloudOperations';
+import { saveGitHubCreds } from '@/services/storage/githubStorage';
+import { useCvLibraryStore } from '@/store/library/useCvLibraryStore';
+import { buildSingleItemResume } from '@/test/singleItemResume';
 import {
+  APPLICATION_KEY,
   readCachedPostingUrl,
   wrapBackupJson,
   writeCachedPostingUrl,
-} from '@/hooks/cloud/applicationMeta';
-import { useCloudDiscovery } from '@/hooks/cloud/useCloudDiscovery';
-import { saveGitHubCreds } from '@/services/storage/githubStorage';
-import { useCvLibraryStore } from '@/store/library/useCvLibraryStore';
+} from '@/utils/applicationMeta';
+import { sanitizeResumeData } from '@/utils/validation';
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -34,11 +39,13 @@ vi.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (k: strin
 
 const URL_ = 'https://jobs.example.com/42';
 
+/** Discovery, then hydration through the real cloud read point. */
 const discover = async () => {
   const { result } = renderHook(() => useCloudDiscovery());
   const found = await result.current.discoverBackups(undefined, 'github');
   useCvLibraryStore.getState().setReady(found.foundBackups, found.githubPaths);
-  await result.current.hydrateGitHubPostingUrls(found.foundBackups, found.githubPaths);
+  const ops = renderHook(() => useCloudOperations(found.githubPaths)).result.current;
+  await hydrateGitHubPostingUrls(found.foundBackups, ops.downloadBackup);
   return useCvLibraryStore.getState().discoveryData!.en.github!;
 };
 
@@ -85,5 +92,32 @@ describe('GitHub posting links in My CVs', () => {
     expect(github.getFileContent.mock.calls.map((call) => call[2])).toEqual([
       'backups/en/CV_Plain.json',
     ]);
+  });
+
+  it('a failed read caches nothing, so the next visit retries', async () => {
+    github.files = [{ name: 'CV_Big.json', sha: 's3' }];
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await discover();
+    expect(readCachedPostingUrl('s3')).toBeUndefined();
+  });
+});
+
+describe('the cloud read point', () => {
+  it('peels the link before the resume reaches the sanitizer', async () => {
+    github.contents['backups/en/CV.json'] = wrapBackupJson(
+      JSON.stringify(buildSingleItemResume('lunar')),
+      URL_,
+    );
+    const { result } = renderHook(() => useCloudOperations({ en: 'backups/en' }));
+    const { data, postingUrl } = await result.current.downloadBackup(
+      'github',
+      { name: 'CV.json', label: 'CV' },
+      'en',
+    );
+
+    expect(postingUrl).toBe(URL_);
+    expect(APPLICATION_KEY in data).toBe(false);
+    expect(sanitizeResumeData(data).sanitized.passthrough).not.toHaveProperty(APPLICATION_KEY);
   });
 });

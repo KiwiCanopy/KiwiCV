@@ -65,20 +65,22 @@ export function VersionRow({ version, index, onRestore, onDelete, onDownload }: 
         </p>
       </div>
 
-      <p className="text-muted-foreground hidden min-w-0 flex-1 truncate text-xs md:block">
+      {/* Truncation sits on the inner span: on the <p> it would clip the link's focus ring. */}
+      <p className="text-muted-foreground hidden min-w-0 flex-1 text-xs md:block">
         {file.postingUrl ? (
           <a
             href={file.postingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={t('cvs.open_posting_for', { name: file.label })}
             className="text-primary-strong inline-flex max-w-full items-center gap-1 underline-offset-4 hover:underline"
           >
-            <span className="truncate">{tailoredFor || t('cvs.open_posting')}</span>
+            {/* The visible text leads the accessible name (WCAG 2.5.3). */}
+            <span className="truncate">{tailoredFor || t('cvs.open_posting')}</span>{' '}
+            <span className="sr-only">{t('cvs.open_posting_for', { name: file.label })}</span>
             <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
           </a>
         ) : (
-          tailoredFor || t('cvs.no_target')
+          <span className="block truncate">{tailoredFor || t('cvs.no_target')}</span>
         )}
       </p>
 
@@ -113,7 +115,7 @@ export function VersionRow({ version, index, onRestore, onDelete, onDownload }: 
                   className="text-foreground hover:bg-muted inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold transition-colors md:hidden"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" aria-hidden="true" />
-                  {t('cvs.open_posting')}
+                  {t('cvs.open_posting')} <span className="sr-only">{t('cvs.opens_new_tab')}</span>
                 </a>
               )}
               <Button

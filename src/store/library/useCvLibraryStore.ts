@@ -53,8 +53,8 @@ interface CvLibraryState {
   setError: (message: string) => void;
   setUnconfigured: () => void;
   removeFile: (locale: string, source: BackupSource, file: BackupFile) => void;
-  /** A lazily read posting link for the file of that name (#54). */
-  setPostingUrl: (locale: string, source: BackupSource, name: string, postingUrl: string) => void;
+  /** A lazily read posting link, for the row still listing that blob (#54). */
+  setPostingUrl: (locale: string, source: BackupSource, sha: string, postingUrl: string) => void;
   reset: () => void;
 }
 
@@ -121,10 +121,10 @@ export const useCvLibraryStore = create<CvLibraryState>()(
       });
     },
 
-    setPostingUrl: (locale, source, name, postingUrl) => {
+    setPostingUrl: (locale, source, sha, postingUrl) => {
       set((state) => {
         const file = state.discoveryData?.[locale]?.[source]?.find(
-          (candidate) => candidate.name === name,
+          (candidate) => candidate.sha === sha,
         );
         if (file) file.postingUrl = postingUrl;
       });

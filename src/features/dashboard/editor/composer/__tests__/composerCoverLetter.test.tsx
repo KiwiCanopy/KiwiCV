@@ -50,6 +50,7 @@ beforeEach(() => {
       coverLetterLength: COVER_LETTER_DEFAULT_LENGTH,
       coverLetterTone: COVER_LETTER_DEFAULT_TONE,
       coverLetterMatchStyle: false,
+      coverLetterToneChosen: false,
     },
   });
   useResumeStore.getState().closeAIModal();
@@ -208,7 +209,12 @@ describe('the composer cover-letter add-on', () => {
    */
   it('names the sample button for the state it is in', () => {
     useFlowStore.setState((state) => ({
-      prompt: { ...state.prompt, draftCoverLetter: true, coverLetterMatchStyle: true },
+      prompt: {
+        ...state.prompt,
+        draftCoverLetter: true,
+        coverLetterMatchStyle: true,
+        coverLetterToneChosen: true,
+      },
     }));
     render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
 
@@ -229,6 +235,7 @@ describe('the composer cover-letter add-on', () => {
         ...state.prompt,
         draftCoverLetter: true,
         coverLetterMatchStyle: true,
+        coverLetterToneChosen: true,
         jobDescription: 'Senior Frontend Engineer, Berlin.',
       },
     }));
@@ -281,6 +288,7 @@ describe('the composer cover-letter add-on', () => {
         ...state.prompt,
         draftCoverLetter: true,
         coverLetterMatchStyle: true,
+        coverLetterToneChosen: true,
         jobDescription: 'Senior Frontend Engineer, Berlin.',
       },
     }));

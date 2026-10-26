@@ -88,6 +88,11 @@ interface FlowStore {
      * stays visible and disabled while this is on, never a fifth value in it.
      */
     coverLetterMatchStyle: boolean;
+    /**
+     * Set by a pick in the tone select, either value. Until then
+     * `coverLetterMatchStyle` follows whether a writing sample is saved (#56).
+     */
+    coverLetterToneChosen: boolean;
   };
   setPromptMode: (mode: AIPromptMode | null) => void;
   setJobDescription: (desc: string) => void;
@@ -97,6 +102,8 @@ interface FlowStore {
   setCoverLetterLength: (length: CoverLetterLengthPreset) => void;
   setCoverLetterTone: (tone: CoverLetterTone) => void;
   setCoverLetterMatchStyle: (match: boolean) => void;
+  /** Defaults match-style to whether a sample is saved; a no-op once a tone was chosen. */
+  syncCoverLetterStyleDefault: (hasSample: boolean) => void;
   resetPrompt: () => void;
 
   // Global Auth Modals
@@ -264,6 +271,7 @@ export const useFlowStore = create<FlowStore>()(
         coverLetterLength: COVER_LETTER_DEFAULT_LENGTH,
         coverLetterTone: COVER_LETTER_DEFAULT_TONE,
         coverLetterMatchStyle: false,
+        coverLetterToneChosen: false,
       },
       setPromptMode: (mode) =>
         set((state) => {
@@ -292,10 +300,16 @@ export const useFlowStore = create<FlowStore>()(
       setCoverLetterTone: (tone) =>
         set((state) => {
           state.prompt.coverLetterTone = tone;
+          state.prompt.coverLetterToneChosen = true;
         }),
       setCoverLetterMatchStyle: (match) =>
         set((state) => {
           state.prompt.coverLetterMatchStyle = match;
+          state.prompt.coverLetterToneChosen = true;
+        }),
+      syncCoverLetterStyleDefault: (hasSample) =>
+        set((state) => {
+          if (!state.prompt.coverLetterToneChosen) state.prompt.coverLetterMatchStyle = hasSample;
         }),
       /**
        * Clears the DRAFT — what this run was going to say — and deliberately

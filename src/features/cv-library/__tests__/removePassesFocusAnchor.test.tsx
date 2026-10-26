@@ -16,7 +16,7 @@ vi.mock('@/hooks/sync/useSyncAuthGateway', () => ({
 }));
 
 vi.mock('@/hooks/cloud/useCloudDiscovery', () => ({
-  useCloudDiscovery: () => ({ discoverBackups: vi.fn() }),
+  useCloudDiscovery: () => ({ discoverBackups: vi.fn(), hydrateGitHubPostingUrls: vi.fn() }),
 }));
 
 vi.mock('@/hooks/cloud/useCloudRestoreAction', () => ({

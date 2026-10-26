@@ -32,7 +32,7 @@ export function useCvLibrary() {
   const loadedAt = useCvLibraryStore((state) => state.loadedAt);
   const error = useCvLibraryStore((state) => state.error);
 
-  const { discoverBackups } = useCloudDiscovery();
+  const { discoverBackups, hydrateGitHubPostingUrls } = useCloudDiscovery();
   const { downloadBackup, handleDelete } = useCloudOperations(githubPaths);
   const { performRestore } = useCloudRestoreAction(downloadBackup);
 
@@ -58,14 +58,15 @@ export function useCvLibrary() {
       }
 
       store.setReady(foundBackups, paths, failed);
+      void hydrateGitHubPostingUrls(foundBackups, paths);
     } catch (err) {
       console.error('[CvLibrary] Discovery failed:', err);
       useCvLibraryStore.getState().setError(t('cvs.error_desc'));
     } finally {
       inFlightRef.current = false;
     }
-    // `discoverBackups` is rebuilt every render by design (it closes over the
-    // current credentials), so it is deliberately not a dependency.
+    // Both discovery functions are rebuilt every render by design (they close
+    // over the current credentials), so they are deliberately not dependencies.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
 

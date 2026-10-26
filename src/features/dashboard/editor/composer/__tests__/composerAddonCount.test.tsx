@@ -38,8 +38,23 @@ describe('a closed row with no room left', () => {
     fireEvent.click(screen.getByRole('checkbox', { name: 'Also translate my CV' }));
     fireEvent.click(screen.getByRole('button', { name: 'Improve with AI' }));
 
-    expect(document.querySelector('[data-composer-addons]')?.textContent).toBe('+1 option');
+    // Restructure (on by default, #57) plus the translation.
+    expect(document.querySelector('[data-composer-addons]')?.textContent).toBe('+2 options');
     expect(screen.getByRole('button', { name: 'Improve' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Professional' })).toBeNull();
+  });
+
+  it('says one option in the singular', () => {
+    render(
+      <MemoryRouter>
+        <AIComposerBar isPhone={false} workspaceWidth={800} />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Professional' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Restructure Skills' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Also translate my CV' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Improve with AI' }));
+
+    expect(document.querySelector('[data-composer-addons]')?.textContent).toBe('+1 option');
   });
 });

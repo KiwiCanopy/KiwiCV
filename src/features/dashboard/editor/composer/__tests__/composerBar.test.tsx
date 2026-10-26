@@ -398,7 +398,7 @@ describe("the composer's options row", () => {
     it('names every active add-on after the run button', () => {
       render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
       fireEvent.click(mode('Professional'));
-      fireEvent.click(screen.getByRole('checkbox', { name: 'Restructure Skills' }));
+      // Restructure is on by default (#57), so it is named without a click.
       tickTranslate('fr');
       closeBand();
 
@@ -424,6 +424,7 @@ describe("the composer's options row", () => {
     it('shows nothing when no add-on is active', () => {
       render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
       fireEvent.click(mode('Professional'));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Restructure Skills' }));
       closeBand();
 
       expect(summary()).toBeNull();

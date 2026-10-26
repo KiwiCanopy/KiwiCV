@@ -62,8 +62,14 @@ export const useAIRunner = ({ enabled, target }: UseAIRunnerOptions) => {
   const setJobDescription = useFlowStore((state) => state.setJobDescription);
   const customPrompt = useFlowStore((state) => state.prompt.customPrompt);
   const setCustomPrompt = useFlowStore((state) => state.setCustomPrompt);
-  const allowReorg = useFlowStore((state) => state.prompt.allowReorg);
-  const setAllowReorg = useFlowStore((state) => state.setAllowReorg);
+  const storedAllowReorg = useFlowStore((state) => state.prompt.allowReorg);
+  const setStoredAllowReorg = useFlowStore((state) => state.setAllowReorg);
+  // A translate-only run keeps the CV's structure unless the user ticks it here
+  // (#57). Per-open, like the seed below: the modal unmounts while closed, and
+  // the shared draft other surfaces read is never written.
+  const [translationAllowReorg, setTranslationAllowReorg] = useState(false);
+  const allowReorg = isTranslationMode ? translationAllowReorg : storedAllowReorg;
+  const setAllowReorg = isTranslationMode ? setTranslationAllowReorg : setStoredAllowReorg;
   const draftCoverLetter = useFlowStore((state) => state.prompt.draftCoverLetter);
   const setDraftCoverLetter = useFlowStore((state) => state.setDraftCoverLetter);
   const coverLetterLength = useFlowStore((state) => state.prompt.coverLetterLength);

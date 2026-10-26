@@ -55,17 +55,18 @@ const restructure = () => screen.getByRole('checkbox', { name: 'Restructure Skil
  * hand-off. Before this, a whole-CV run from the bar could never restructure
  * skills and there was no way to ask for it.
  */
-describe('the composer Restructure Skills opt-in', () => {
+describe('the composer Restructure Skills option', () => {
   it('is offered for a whole-CV run', () => {
     render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
     // The add-ons appear once the mode can run; `professional` needs no draft.
     fireEvent.click(screen.getByRole('button', { name: 'Professional' }));
 
     expect(restructure()).toBeTruthy();
-    expect((restructure() as HTMLInputElement).checked).toBe(false);
+    // On by default: restructuring is the recommended path (#57).
+    expect((restructure() as HTMLInputElement).checked).toBe(true);
   });
 
-  it('reaches the runner as true when ticked', () => {
+  it('reaches the runner as false when unticked', () => {
     render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
     fireEvent.click(screen.getByRole('button', { name: 'Professional' }));
 
@@ -73,23 +74,23 @@ describe('the composer Restructure Skills opt-in', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Improve my CV' }));
 
     expect(useResumeStore.getState().ai.isModalOpen).toBe(true);
-    expect(useFlowStore.getState().prompt.allowReorg).toBe(true);
+    expect(useFlowStore.getState().prompt.allowReorg).toBe(false);
   });
 
-  it('reaches the runner as false when left alone', () => {
+  it('reaches the runner as true when left alone', () => {
     render(<AIComposerBar isPhone={false} workspaceWidth={1400} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Professional' }));
     fireEvent.click(screen.getByRole('button', { name: 'Improve my CV' }));
 
     expect(useResumeStore.getState().ai.isModalOpen).toBe(true);
-    expect(useFlowStore.getState().prompt.allowReorg).toBe(false);
+    expect(useFlowStore.getState().prompt.allowReorg).toBe(true);
   });
 
   /**
    * ⚠️ The composer never reads the store back — the modal calls `resetPrompt()`
    * on close, including after a section-level Improve the bar knows nothing
-   * about, so reading back would silently untick the user's choice. It mirrors
+   * about, so reading back would silently reset the user's choice. It mirrors
    * on change and re-asserts on run instead.
    */
   it('survives the modal resetting the shared prompt draft', () => {
@@ -98,12 +99,12 @@ describe('the composer Restructure Skills opt-in', () => {
 
     fireEvent.click(restructure());
     useFlowStore.getState().resetPrompt();
-    expect(useFlowStore.getState().prompt.allowReorg).toBe(false);
+    expect(useFlowStore.getState().prompt.allowReorg).toBe(true);
 
-    expect((restructure() as HTMLInputElement).checked).toBe(true);
+    expect((restructure() as HTMLInputElement).checked).toBe(false);
 
     fireEvent.click(screen.getByRole('button', { name: 'Improve my CV' }));
 
-    expect(useFlowStore.getState().prompt.allowReorg).toBe(true);
+    expect(useFlowStore.getState().prompt.allowReorg).toBe(false);
   });
 });

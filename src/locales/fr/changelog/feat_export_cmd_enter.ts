@@ -1,4 +1,4 @@
 export const feat_export_cmd_enter = {
   feat_export_cmd_enter:
-    'Press Cmd+Enter (Ctrl+Enter on Windows) in the export dialog to start the export without reaching for the button.',
+    "Appuie sur Cmd+Entrée (Ctrl+Entrée sous Windows) dans la fenêtre d'export pour lancer l'export sans aller chercher le bouton.",
 };

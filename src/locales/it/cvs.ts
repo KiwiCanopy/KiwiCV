@@ -42,6 +42,8 @@ export const cvs: Translations['cvs'] = {
   no_target: 'Nessun ruolo registrato',
   not_backed_up_since: 'Nessun backup dal {{date}}',
   open_from_language_switch: 'Apri I miei CV',
+  open_posting: "Apri l'annuncio",
+  open_posting_for: "Apri l'annuncio per {{name}} (si apre in una nuova scheda)",
   partial_failure_desc:
     '{{provider}} non ha risposto, quindi gli elementi salvati lì non sono elencati.',
   partial_failure_title: 'Alcune versioni potrebbero mancare',

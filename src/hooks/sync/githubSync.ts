@@ -1,3 +1,4 @@
+import { wrapBackupJson, writeCachedPostingUrl } from '@/hooks/cloud/applicationMeta';
 import { buildExportArtifacts } from '@/hooks/export/buildExportArtifacts';
 import { type SyncParams, type SyncResult } from '@/hooks/sync/types';
 import { GitHubService } from '@/services/github';
@@ -38,7 +39,7 @@ export const performGitHubSync = async (
 
     if (variant === 'full' && backupFileName) {
       const lastFullHash = localStorage.getItem(GITHUB_LAST_FULL_PUSH_HASH_KEY);
-      if (lastFullHash === (await fullPushStamp(currentHash, backupFileName))) {
+      if (lastFullHash === (await fullPushStamp(currentHash, backupFileName, params.postingUrl))) {
         alreadySynced = true;
       }
     } else if (variant === 'hosting') {
@@ -123,16 +124,19 @@ export const performGitHubSync = async (
         `${t('sync.commit_prefix')} ${t('sync.commit_export')}${langSuffix} - ${cleanFolderName}`,
       );
 
-      // 3. Include Project Snapshot JSON in backups/{lang}/ using the full backupFileName
-      await gh.pushFile(
+      // 3. Include Project Snapshot JSON in backups/{lang}/ using the full backupFileName.
+      // ⚠️ The posting link reveals where the user applies: private repos only (#54).
+      const postingUrl = isPrivateRepo ? (params.postingUrl ?? null) : null;
+      const snapshot = await gh.pushFile(
         owner,
         repoName,
         `backups/${lang}/${backupFileName}.json`,
-        backupJson,
+        wrapBackupJson(backupJson, postingUrl),
         `${t('sync.commit_prefix')} ${t('sync.commit_export')}${langSuffix} - ${cleanFolderName} (Backup)`,
       );
+      if (snapshot.content?.sha) writeCachedPostingUrl(snapshot.content.sha, postingUrl);
 
-      const stamp = await fullPushStamp(currentHash, backupFileName);
+      const stamp = await fullPushStamp(currentHash, backupFileName, params.postingUrl);
       connection.writeHash(GITHUB_LAST_FULL_PUSH_HASH_KEY, stamp);
     } else if (variant === 'hosting') {
       // Reuse the run's HTML when there is one — publishing alongside the

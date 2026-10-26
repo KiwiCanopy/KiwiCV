@@ -81,7 +81,7 @@ export const sync: Translations['sync'] = {
     dest_zip_desc: 'Une archive, directement sur cet appareil.',
     dest_zip_label: 'Télécharger en ZIP',
     filename_only:
-      "L'entreprise et le poste influent uniquement sur le nom exporté. Ils ne sont pas enregistrés.",
+      "L'entreprise et le poste déterminent le nom du fichier. Le lien vers l'offre est conservé avec cette version dans Mes CV, jamais dans un dépôt public.",
     manage_link: 'gérer dans les Paramètres',
     one_run_one: 'Un seul envoi, une destination.',
     one_run_other: 'Un seul envoi, les {{count}} destinations.',
@@ -95,6 +95,7 @@ export const sync: Translations['sync'] = {
       "Un document haute fidélité optimisé ATS pour les systèmes RH et l'impression.",
     package_pdf_label: 'PDF',
     package_summary: 'PDF, page web et sauvegarde',
+    posting_invalid: "Ce n'est pas une adresse web, elle ne sera donc pas enregistrée.",
     preview_label: 'Exporté sous',
     progress: 'Exportation : {{done}} sur {{total}} destinations terminées.',
     rename: 'Renommer',
@@ -120,6 +121,8 @@ export const sync: Translations['sync'] = {
   export_modal_input_link: 'Modifier les paramètres par défaut',
   export_modal_placeholder: 'par ex. Mon_CV',
   export_modal_position_label: 'Poste',
+  export_modal_posting_label: "Lien vers l'offre",
+  export_modal_posting_placeholder: 'https://…',
   folder_name: 'Nom du dossier',
   gateway_desc:
     'Choisis un service pour sauvegarder ton CV en toute sécurité. Tu pourras toujours modifier ce paramètre plus tard dans les paramètres.',

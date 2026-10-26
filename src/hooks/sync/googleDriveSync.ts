@@ -1,4 +1,5 @@
 import { GOOGLE_DRIVE_FOLDER } from '@/constants/cloud';
+import { wrapBackupJson } from '@/hooks/cloud/applicationMeta';
 import { buildExportArtifacts } from '@/hooks/export/buildExportArtifacts';
 import { type SyncParams, type SyncResult } from '@/hooks/sync/types';
 import { googleDriveService } from '@/services/google-drive';
@@ -32,7 +33,7 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
     if (variant === 'full') {
       const backupFileName = params.projectName || getProjectFilename(resume);
       const lastFullHash = getGoogleLastFullPushHash();
-      if (lastFullHash === (await fullPushStamp(currentHash, backupFileName))) {
+      if (lastFullHash === (await fullPushStamp(currentHash, backupFileName, params.postingUrl))) {
         alreadySynced = true;
       }
     } else if (variant === 'hosting') {
@@ -118,10 +119,11 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
       }
 
       // --- Project Snapshot (JSON) to backups/{lang}/{finalBackupFileName}.json ---
+      const postingUrl = params.postingUrl ?? null;
       const snapshotFiles: { name: string; content: string | Blob; contentType: string }[] = [];
       snapshotFiles.push({
         name: `${finalBackupFileName}.json`,
-        content: artifacts.json,
+        content: wrapBackupJson(artifacts.json, postingUrl),
         contentType: 'application/json',
       });
 
@@ -129,7 +131,7 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
       await googleDriveService.sync(refreshToken, backupPath, snapshotFiles);
 
       // The requested name, as the check above compares; a renamed folder is Drive's choice.
-      const stamp = await fullPushStamp(currentHash, backupFileName);
+      const stamp = await fullPushStamp(currentHash, backupFileName, params.postingUrl);
       connection.writeHash(GOOGLE_LAST_FULL_PUSH_HASH_KEY, stamp);
       return { service: 'google_drive', success: true, folderName: finalFolderName };
     }

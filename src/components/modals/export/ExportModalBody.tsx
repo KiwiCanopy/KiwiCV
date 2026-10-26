@@ -15,6 +15,7 @@ import { PackageSummary } from '@/components/modals/export/package/PackageSummar
 import { useExportDestinations } from '@/components/modals/export/useExportDestinations';
 import { useExportRun } from '@/components/modals/export/useExportRun';
 import { EXPORT_TRIGGER_ANCHOR_ID } from '@/constants/focusAnchors';
+import { normalizePostingUrl } from '@/hooks/cloud/applicationMeta';
 import { useSyncAuthGateway } from '@/hooks/sync/useSyncAuthGateway';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
@@ -57,6 +58,7 @@ export function ExportModalBody({
   const [base, setBase] = useState(draft?.base ?? suggestedBase);
   const [company, setCompany] = useState(draft?.company ?? '');
   const [position, setPosition] = useState(draft?.position ?? '');
+  const [postingUrl, setPostingUrl] = useState(draft?.postingUrl ?? '');
 
   const { destinations, selected, showCloudSetup, formats, toggleDestination, toggleFormat } =
     useExportDestinations();
@@ -76,8 +78,8 @@ export function ExportModalBody({
   }, [resume.meta.theme.locale]);
 
   useEffect(() => {
-    writeExportDraft({ base, company, position });
-  }, [base, company, position]);
+    writeExportDraft({ base, company, position, postingUrl });
+  }, [base, company, position, postingUrl]);
 
   useEffect(() => {
     onChromeChange({ busy: state.isRunning, name: base });
@@ -130,12 +132,14 @@ export function ExportModalBody({
         base={base}
         company={company}
         position={position}
+        postingUrl={postingUrl}
         preview={preview}
         suggestedBase={suggestedBase}
         disabled={state.isRunning}
         onBaseChange={setBase}
         onCompanyChange={setCompany}
         onPositionChange={setPosition}
+        onPostingUrlChange={setPostingUrl}
       />
 
       <PackageSummary formats={formats} disabled={state.isRunning} onToggleFormat={toggleFormat} />
@@ -178,7 +182,7 @@ export function ExportModalBody({
         announcement={announcement}
         buildFailed={state.buildError !== null}
         onCancel={handleCancel}
-        onRun={() => void run(targets, projectName)}
+        onRun={() => void run(targets, projectName, normalizePostingUrl(postingUrl))}
       />
     </div>
   );

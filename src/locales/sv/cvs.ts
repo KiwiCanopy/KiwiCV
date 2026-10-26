@@ -41,6 +41,8 @@ export const cvs: Translations['cvs'] = {
   no_target: 'Ingen roll registrerad',
   not_backed_up_since: 'Inte säkerhetskopierad sedan {{date}}',
   open_from_language_switch: 'Öppna Mina CV:n',
+  open_posting: 'Öppna annonsen',
+  open_posting_for: 'Öppna annonsen för {{name}} (öppnas i en ny flik)',
   partial_failure_desc: '{{provider}} svarade inte, så det som finns sparat där visas inte.',
   partial_failure_title: 'Vissa versioner kan saknas',
   refresh: 'Uppdatera',

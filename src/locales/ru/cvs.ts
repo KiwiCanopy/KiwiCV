@@ -42,6 +42,8 @@ export const cvs: Translations['cvs'] = {
   no_target: 'Должность не указана',
   not_backed_up_since: 'Резервная копия не создавалась с {{date}}',
   open_from_language_switch: 'Открыть «Мои резюме»',
+  open_posting: 'Открыть вакансию',
+  open_posting_for: 'Открыть вакансию для {{name}} (откроется в новой вкладке)',
   partial_failure_desc:
     'Служба {{provider}} не ответила, поэтому сохраненные там данные не отображаются.',
   partial_failure_title: 'Некоторые версии могут отсутствовать',

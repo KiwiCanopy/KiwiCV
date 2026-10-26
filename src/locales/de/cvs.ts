@@ -43,6 +43,8 @@ export const cvs: Translations['cvs'] = {
   no_target: 'Keine Stelle angegeben',
   not_backed_up_since: 'Nicht mehr gesichert seit {{date}}',
   open_from_language_switch: 'Meine Lebensläufe öffnen',
+  open_posting: 'Stellenanzeige öffnen',
+  open_posting_for: 'Stellenanzeige für {{name}} öffnen (öffnet sich in einem neuen Tab)',
   partial_failure_desc:
     '{{provider}} hat nicht geantwortet, daher ist dort Gespeichertes nicht aufgelistet.',
   partial_failure_title: 'Einige Versionen fehlen möglicherweise',

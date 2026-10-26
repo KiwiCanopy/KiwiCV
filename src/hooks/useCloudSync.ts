@@ -29,6 +29,8 @@ export interface CloudSyncOptions {
    * compiles its own PDF through the single Typst worker, one after another.
    */
   artifacts?: ExportArtifacts;
+  /** The run's normalized posting link, for the `full` snapshot only. */
+  postingUrl?: string | null;
 }
 
 export const useCloudSync = () => {
@@ -62,6 +64,7 @@ export const useCloudSync = () => {
         includeBackup: true,
         projectName,
         artifacts: options?.artifacts,
+        postingUrl: options?.postingUrl,
       };
 
       const syncTasks: Promise<void>[] = [];

@@ -39,6 +39,8 @@ export const cvs: Translations['cvs'] = {
   no_target: '未记录目标职位',
   not_backed_up_since: '自 {{date}} 以来未进行备份',
   open_from_language_switch: '打开“我的简历”',
+  open_posting: '打开职位链接',
+  open_posting_for: '打开 {{name}} 的职位链接（在新标签页中打开）',
   partial_failure_desc: '{{provider}} 未响应，存储在其中的内容未在此列表中。',
   partial_failure_title: '部分版本可能缺失',
   refresh: '刷新',

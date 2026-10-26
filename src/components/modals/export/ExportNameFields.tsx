@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { normalizePostingUrl } from '@/hooks/cloud/applicationMeta';
 import { useTranslation } from '@/hooks/useTranslation';
 import { localizedPath } from '@/utils/localeRouting';
 import { Folder } from 'lucide-react';
@@ -11,6 +12,7 @@ interface ExportNameFieldsProps {
   base: string;
   company: string;
   position: string;
+  postingUrl: string;
   /** The name every destination will actually write. */
   preview: string;
   suggestedBase: string;
@@ -18,6 +20,7 @@ interface ExportNameFieldsProps {
   onBaseChange: (value: string) => void;
   onCompanyChange: (value: string) => void;
   onPositionChange: (value: string) => void;
+  onPostingUrlChange: (value: string) => void;
 }
 
 /**
@@ -37,15 +40,26 @@ export function ExportNameFields({
   base,
   company,
   position,
+  postingUrl,
   preview,
   suggestedBase,
   disabled,
   onBaseChange,
   onCompanyChange,
   onPositionChange,
+  onPostingUrlChange,
 }: ExportNameFieldsProps) {
   const { t, uiLanguage } = useTranslation();
   const [renaming, setRenaming] = useState(false);
+  const [postingInvalid, setPostingInvalid] = useState(false);
+
+  // Soft validation (#54): a missing scheme is added, anything else that is
+  // not an http(s) address is flagged and simply not saved. Never blocks Export.
+  const handlePostingBlur = () => {
+    const normalized = normalizePostingUrl(postingUrl);
+    if (normalized && normalized !== postingUrl) onPostingUrlChange(normalized);
+    setPostingInvalid(!normalized && postingUrl.trim().length > 0);
+  };
 
   return (
     <div className="space-y-3">
@@ -110,6 +124,23 @@ export function ExportNameFields({
           liveUpdate={true}
         />
       </div>
+
+      <Input
+        type="url"
+        inputMode="url"
+        autoComplete="off"
+        label={t('sync.export_modal_posting_label')}
+        value={postingUrl}
+        disabled={disabled}
+        onChange={(event) => {
+          setPostingInvalid(false);
+          onPostingUrlChange(event.target.value);
+        }}
+        onBlur={handlePostingBlur}
+        placeholder={t('sync.export_modal_posting_placeholder')}
+        warning={postingInvalid ? t('sync.export_dialog.posting_invalid') : undefined}
+        liveUpdate={true}
+      />
 
       <p className="text-muted-foreground/60 px-1 text-[11px] leading-relaxed italic">
         {t('sync.export_dialog.filename_only')}

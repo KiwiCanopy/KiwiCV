@@ -118,7 +118,7 @@ export function useCvLibrary() {
   const downloadJson = useCallback(
     async (version: CvVersion) => {
       try {
-        const data = await downloadBackup(version.source, version.file, version.locale);
+        const { data } = await downloadBackup(version.source, version.file, version.locale);
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         saveAs(blob, version.file.name);
       } catch (err) {

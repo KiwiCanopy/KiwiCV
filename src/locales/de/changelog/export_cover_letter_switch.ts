@@ -1,7 +1,8 @@
 export const export_cover_letter_switch = {
   feat_export_cover_letter_switch:
-    'The Export dialog now shows whether your cover letter is included, with a switch to add or leave it out, and warns you when the letter may not match the job ad you just tailored your CV to, so you can check it before sending.',
-  fix_basics_proposal_gap: 'An AI proposal in Basics no longer sits flush against your photo.',
+    'Der Export-Dialog zeigt jetzt, ob dein Anschreiben dabei ist, und bietet einen Schalter, um es hinzuzufügen oder wegzulassen. Passt das Anschreiben womöglich nicht zur Stellenanzeige, auf die du deinen Lebenslauf gerade zugeschnitten hast, warnt er dich – so kannst du es vor dem Absenden prüfen.',
+  fix_basics_proposal_gap:
+    'Ein KI-Vorschlag in den Grunddaten klebt nicht mehr direkt an deinem Foto.',
   ui_export_footer_pinned:
-    'Export and Cancel now stay in view at the bottom of the Export dialog on shorter screens.',
+    '„Exportieren“ und „Abbrechen“ bleiben auf kleineren Bildschirmen jetzt unten im Export-Dialog sichtbar.',
 };

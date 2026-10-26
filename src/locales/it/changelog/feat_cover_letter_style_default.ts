@@ -1,4 +1,4 @@
 export const feat_cover_letter_style_default = {
   feat_cover_letter_style_default:
-    'With a writing sample saved, your cover letters now start on “Match my writing style”, even in a new browser tab. Pick a tone instead and KiwiCV keeps it for that tab.',
+    'Con un campione di scrittura salvato, le tue lettere di presentazione ora partono da «Adatta al mio stile di scrittura», anche in una nuova scheda del browser. Se invece scegli un tono, KiwiCV lo mantiene per quella scheda.',
 };

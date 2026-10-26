@@ -1,7 +1,8 @@
 export const export_cover_letter_switch = {
   feat_export_cover_letter_switch:
-    'The Export dialog now shows whether your cover letter is included, with a switch to add or leave it out, and warns you when the letter may not match the job ad you just tailored your CV to, so you can check it before sending.',
-  fix_basics_proposal_gap: 'An AI proposal in Basics no longer sits flush against your photo.',
+    'A janela de exportação mostra agora se a tua carta de apresentação está incluída, com um interruptor para a adicionar ou deixar de fora, e avisa-te quando a carta pode não corresponder ao anúncio de emprego ao qual acabaste de adaptar o teu CV, para a poderes verificar antes de a enviar.',
+  fix_basics_proposal_gap:
+    'Uma proposta da IA em «Dados Básicos» já não fica colada à tua fotografia.',
   ui_export_footer_pinned:
-    'Export and Cancel now stay in view at the bottom of the Export dialog on shorter screens.',
+    'Exportar e Cancelar ficam agora visíveis no fundo da janela de exportação em ecrãs mais pequenos.',
 };

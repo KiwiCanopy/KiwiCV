@@ -1,7 +1,7 @@
 export const export_cover_letter_switch = {
   feat_export_cover_letter_switch:
-    'The Export dialog now shows whether your cover letter is included, with a switch to add or leave it out, and warns you when the letter may not match the job ad you just tailored your CV to, so you can check it before sending.',
-  fix_basics_proposal_gap: 'An AI proposal in Basics no longer sits flush against your photo.',
+    'Диалоговият прозорец за експорт вече показва дали мотивационното ти писмо е включено, с превключвател, за да го добавиш или пропуснеш, и те предупреждава, когато писмото може да не отговаря на обявата за работа, към която току-що е адаптирано CV-то ти, за да го провериш преди изпращане.',
+  fix_basics_proposal_gap: 'Предложение на ИИ в „Основни“ вече не е залепено до снимката ти.',
   ui_export_footer_pinned:
-    'Export and Cancel now stay in view at the bottom of the Export dialog on shorter screens.',
+    '„Експортиране“ и „Отказ“ вече остават видими в долната част на диалоговия прозорец за експорт на по-малки екрани.',
 };

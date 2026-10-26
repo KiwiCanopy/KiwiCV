@@ -1,4 +1,4 @@
 export const fix_tailoring_matches_job_ad = {
   fix_tailoring_matches_job_ad:
-    'Job tailoring now rewrites your work experience toward the job ad and adjusts your professional title, instead of only restructuring your skills.',
+    "L'adattamento a un annuncio ora riscrive la tua esperienza lavorativa in funzione dell'annuncio di lavoro e adegua il tuo titolo professionale, invece di limitarsi a ristrutturare le tue competenze.",
 };

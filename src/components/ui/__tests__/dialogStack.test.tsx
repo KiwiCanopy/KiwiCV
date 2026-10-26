@@ -103,6 +103,77 @@ describe('a dialog that stays on top (#9)', () => {
     expect(isHiddenByAnotherDialog(exportDialog)).toBe(false);
   });
 
+  // Radix restores focus for the replaced content a tick after the remount; aimed at
+  // the opener the new content captured, it would pull focus out of the gate.
+  it('moves focus nowhere outside it once the remount has focused it', async () => {
+    const focused: HTMLElement[] = [];
+    const focus = HTMLElement.prototype.focus;
+    const spy = vi.spyOn(HTMLElement.prototype, 'focus').mockImplementation(function (
+      this: HTMLElement,
+      options?: FocusOptions,
+    ) {
+      focused.push(this);
+      focus.call(this, options);
+    });
+    try {
+      const { rerender } = render(<Scene staysOnTop later={null} />);
+      focused.length = 0;
+      await openLater(rerender, true, 'frame');
+      await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+      const gate = gateDialog();
+      const backInGate = focused.findIndex((node) => gate.contains(node));
+      expect(backInGate).toBeGreaterThanOrEqual(0);
+      expect(focused.slice(backInGate).filter((node) => !gate.contains(node))).toEqual([]);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('puts focus back on the control the user had focused', async () => {
+    function TwoControls({ later }: { later: boolean }) {
+      return (
+        <>
+          <DialogFrame open onOpenChange={() => {}} dismissible={false} staysOnTop title="Consent">
+            {/* Two non-links: Radix never picks a link for initial focus. */}
+            <button type="button">Read the terms</button>
+            <input type="checkbox" aria-label="I agree" />
+          </DialogFrame>
+          <DialogFrame open={later} onOpenChange={() => {}} title="Export">
+            <button type="button">Export now</button>
+          </DialogFrame>
+        </>
+      );
+    }
+    const { rerender } = render(<TwoControls later={false} />);
+    await act(async () => screen.getByLabelText('I agree').focus());
+
+    await act(async () => rerender(<TwoControls later />));
+    await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+    expect(document.activeElement).toBe(screen.getByLabelText('I agree'));
+  });
+
+  it('paints on the top layer and does not remount for a dialog nested in it', async () => {
+    let renders = 0;
+    function Counted() {
+      renders += 1;
+      return null;
+    }
+    render(
+      <DialogFrame open onOpenChange={() => {}} dismissible={false} staysOnTop title="Consent">
+        <Counted />
+        <DialogFrame open onOpenChange={() => {}} title="Nested">
+          <button type="button">Inner</button>
+        </DialogFrame>
+      </DialogFrame>,
+    );
+    await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+    expect(gateDialog().className).toContain('z-[9999]');
+    expect(renders).toBeLessThan(5);
+  });
+
   // The other half: without the prop the later dialog takes over, which is the freeze.
   it('loses its layer to a later dialog without it', async () => {
     const { rerender } = render(<Scene staysOnTop={false} later={null} />);

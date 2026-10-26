@@ -81,7 +81,8 @@ under the 300-line wiki limit.
 - **Z-Index Strategy**: Standardized hierarchy to prevent overlapping conflicts.
   Every `zIndexClassName` in `src/`, highest first — grep
   `zIndexClassName="z-\[` to regenerate this list rather than editing a row by hand:
-  - Blocking, must sit over everything: `LegalUpdateModal`, `LanguageOnboardingModal` — z-[9999]
+  - Blocking, must sit over everything: `LegalUpdateModal`, `LanguageOnboardingModal` —
+    `staysOnTop`, which paints z-[9999] itself (no `zIndexClassName`)
   - Confirmations, raised over whatever they interrupt: `ConfirmModal` — z-[200]
   - Auth and backup pickers: `GoogleAuthModal`, `CloudBackupSelectorModal` — z-[150]
   - Sensitive / destructive: `DeleteAccountModal`, `ContactModal` — z-[120]
@@ -95,11 +96,16 @@ under the 300-line wiki limit.
   events, focus and `aria-hidden` to the dialog opened _last_, whatever its z-index, so a
   dialog that opens on its own after a z-[9999] gate freezes it (measured in the browser,
   2026-10-26: `aria-hidden` on the gate, `pointer-events: none`, wheel prevented, focus
-  moved). A gate that must stay usable passes `staysOnTop` (`LegalUpdateModal`, #9):
+  moved). A blocking gate passes `staysOnTop` (`LegalUpdateModal`, `LanguageOnboardingModal`,
+  #9), one prop for both facts — top paint layer and active layer — so they cannot disagree.
   `DialogFrame` counts every other dialog's open in `dialogStack.ts` and remounts the gate's
-  Radix root on each, so it is last again; the later dialog gets its layer back when the gate
-  closes. `Sheet` counts its opens too. No dialog needs to wait for consent to avoid the
-  freeze; `VersionUpdateModal` still waits so What's New is not shown behind the gate.
+  Radix root on each, so it is last again; focus returns to the control the user had, but
+  scroll position and any DOM state inside the content reset, so a gate keeps its state above
+  the frame. A dialog nested inside a gate does not count, or it would remount its own host
+  forever. The later dialog gets its layer back when the gate closes. `Sheet` counts its opens
+  too; a `Popover` with `modal` would not, so do not use one under a gate. No dialog needs to
+  wait for consent to avoid the freeze; `VersionUpdateModal` still waits so What's New is not
+  shown behind the gate.
 - **Modular Modals**: Large modals (e.g., `GitHubSyncModal`) are modularized into sub-components for maintainability.
 - **Unified Authentication (`AuthView`)**:
   - **Pattern**: Dual-pane "Marketing Benefits" (Left) + "Action Pane" (Right) layout.

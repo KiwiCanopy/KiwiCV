@@ -1,6 +1,6 @@
 # Data Model Migration & Versioning
 
-> **Last Updated: 2026-10-12**
+> **Last Updated: 2026-10-26**
 
 ## Overview
 
@@ -132,6 +132,34 @@ import followed by an export returns them unchanged. Rules:
   lifted copy — at both lift sites — and the user's data is gone, with every test
   green. v7 had nothing to lift (no v6 store has a pass-through block); the
   `customSections` step is the first real one.
+
+## The backup envelope: `application`
+
+A per-export snapshot (`backups/<lang>/<name>.json` in Drive or GitHub) may carry
+one key that is **not** resume data: `application: { postingUrl }`, the job
+posting link typed at export (#54). It is metadata about where the version was
+sent, so it lives beside the resume, never in `ResumeData` or `meta`, and never
+reaches the store, the AI, the sync hashes or the rendered CV.
+`src/hooks/cloud/applicationMeta.ts` owns the key, the wrap and the peel.
+
+- **Peeled before validation.** `useCloudOperations.downloadBackup` strips it
+  before anything calls `sanitizeResumeData`. A top-level key that reaches the
+  sanitizer becomes pass-through (above) and is written back into every later
+  export. A local file import does not peel it, so a downloaded snapshot opened
+  from disk keeps it as pass-through.
+- **Only on the per-export snapshot**, never on the master `resume.json` and
+  never in the ZIP's `backup.json`.
+- ⚠️ **Never in a repository anyone else can read.** It uses the same
+  `isPrivateRepo` predicate as `getPublicBackupData` (owner, 2026-10-26: a
+  posting URL reveals where the user applies).
+- **Listing without opening the file.** Drive writes it to the file's
+  `appProperties` too, split over `kcvUrl0…` slots because Drive caps a property
+  at 124 bytes of key plus value; an update writes every slot, `null` clearing
+  the unused ones, and so goes multipart. GitHub has no file metadata: a
+  per-device localStorage cache keyed by blob sha, filled at export and lazily
+  read for misses. Do not key that cache by file name — a rename keeps the sha.
+- **Restore hands it to the export draft**, so re-exporting a restored version
+  keeps its link; a version without one clears the draft.
 
 ## Versioning Policy
 

@@ -1,4 +1,4 @@
 export const restructure_skills_default = {
   ui_restructure_skills_default:
-    'Restructure Skills now starts ticked when you improve your whole CV, so tailoring regroups your skills toward the job by default. Untick it to keep your own structure; every change still arrives as a proposal you can accept or discard.',
+    '履歴書全体を改善するとき、「スキルを再構成する」が最初からチェックされるようになり、調整時にはスキルが既定で求人に合わせて再グループ化されます。自分の構成を保ちたい場合はチェックを外してください。変更はすべて、これまでどおり採用または破棄できる提案として届きます。',
 };

@@ -1,7 +1,7 @@
 export const export_cover_letter_switch = {
   feat_export_cover_letter_switch:
-    'The Export dialog now shows whether your cover letter is included, with a switch to add or leave it out, and warns you when the letter may not match the job ad you just tailored your CV to, so you can check it before sending.',
-  fix_basics_proposal_gap: 'An AI proposal in Basics no longer sits flush against your photo.',
+    'エクスポートのダイアログに、カバーレターが含まれているかどうかが表示され、スイッチで追加や除外ができるようになりました。直前に履歴書を合わせた求人情報とカバーレターが一致していない可能性がある場合は警告が表示されるため、送信前に確認できます。',
+  fix_basics_proposal_gap: '「基本情報」の AI の提案が写真にぴったりくっつかなくなりました。',
   ui_export_footer_pinned:
-    'Export and Cancel now stay in view at the bottom of the Export dialog on shorter screens.',
+    '画面が小さい場合でも、「エクスポート」と「キャンセル」がエクスポートのダイアログ下部に表示されたままになりました。',
 };

@@ -1,7 +1,8 @@
 export const export_cover_letter_switch = {
   feat_export_cover_letter_switch:
-    'The Export dialog now shows whether your cover letter is included, with a switch to add or leave it out, and warns you when the letter may not match the job ad you just tailored your CV to, so you can check it before sending.',
-  fix_basics_proposal_gap: 'An AI proposal in Basics no longer sits flush against your photo.',
+    "Dışa aktarma penceresi artık ön yazının dahil olup olmadığını gösteriyor ve eklemek ya da çıkarmak için bir anahtar sunuyor. Ön yazı, CV'ni az önce uyarladığın iş ilanıyla uyuşmayabilecekse seni uyarıyor; böylece göndermeden önce kontrol edebilirsin.",
+  fix_basics_proposal_gap:
+    '“Temel Bilgiler” bölümündeki bir yapay zeka önerisi artık fotoğrafına yapışık durmuyor.',
   ui_export_footer_pinned:
-    'Export and Cancel now stay in view at the bottom of the Export dialog on shorter screens.',
+    'Dışa Aktar ve İptal düğmeleri artık küçük ekranlarda dışa aktarma penceresinin altında görünür kalıyor.',
 };

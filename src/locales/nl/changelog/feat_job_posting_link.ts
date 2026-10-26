@@ -1,4 +1,4 @@
 export const feat_job_posting_link = {
   feat_job_posting_link:
-    'Add the job posting link when you back up a CV to Google Drive or a private GitHub repository, then open it straight from that version in My CVs. Public GitHub repositories never receive it.',
+    "Voeg de link naar de vacature toe wanneer je een back-up van een cv maakt naar Google Drive of een privé-GitHub-repository, en open hem daarna direct vanuit die versie in „Mijn CV's”. Openbare GitHub-repository's krijgen hem nooit.",
 };

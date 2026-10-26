@@ -9,6 +9,7 @@ import {
   GripVertical,
   Home,
   LayoutTemplate,
+  Link,
   ListPlus,
   type LucideIcon,
   Newspaper,
@@ -72,6 +73,8 @@ export const HIGHLIGHT_STYLES: Record<string, HighlightStyle> = {
   open_source: { icon: Code, token: 'brand' },
   // CalendarClock: the news is a pass measured in a single day.
   one_day_pass: { icon: CalendarClock, token: 'brand' },
+  // Link: the news is the posting link saved with each backup.
+  job_posting_link: { icon: Link, token: 'brand' },
 };
 
 export const getHighlightStyle = (id: string): HighlightStyle =>

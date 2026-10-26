@@ -1,10 +1,11 @@
+import { useId } from 'react';
 import { FiFileText } from 'react-icons/fi';
 
-import { hasCoverLetterText } from '@/components/modals/ai/edit/coverLetterRequest';
 import { Switch } from '@/components/ui/Switch';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { cn } from '@/utils/cn';
+import { hasCoverLetterText } from '@/utils/coverLetter';
 import { TriangleAlert } from 'lucide-react';
 
 /**
@@ -14,6 +15,7 @@ import { TriangleAlert } from 'lucide-react';
  */
 export function CoverLetterRow({ disabled }: { disabled: boolean }) {
   const { t } = useTranslation();
+  const warningId = useId();
   const letter = useResumeStore((state) => state.resume.coverLetter);
   const updateCoverLetter = useResumeStore((state) => state.updateCoverLetter);
   if (!hasCoverLetterText(letter)) return null;
@@ -41,11 +43,15 @@ export function CoverLetterRow({ disabled }: { disabled: boolean }) {
           checked={included}
           label={t('sync.export_dialog.letter_toggle')}
           disabled={disabled}
+          aria-describedby={warn ? warningId : undefined}
           onCheckedChange={(next) => updateCoverLetter({ enabled: next })}
         />
       </div>
       {warn && (
-        <p className="text-warning mt-1.5 flex items-center gap-1.5 text-[11px] font-bold">
+        <p
+          id={warningId}
+          className="text-warning mt-1.5 flex items-center gap-1.5 text-[11px] font-bold"
+        >
           <TriangleAlert className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           {t('sync.export_dialog.letter_outdated')}
         </p>

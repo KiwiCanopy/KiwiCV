@@ -150,6 +150,7 @@ export const declineAISuggestion = (state: ResumeStore, target: AITargetKey, fie
         if (isStillTheProposal(current, suggestion, field)) {
           section.patchObject({ [field]: suggestion.originalValue[field] });
         }
+        if (suggestion.onDecline) section.patchObject(suggestion.onDecline);
         delete suggestion.originalValue[field];
         delete suggestion.improvedValue[field];
         if (Object.keys(suggestion.improvedValue).length === 0) {
@@ -167,7 +168,7 @@ export const declineAISuggestion = (state: ResumeStore, target: AITargetKey, fie
             {} as Record<string, unknown>,
           );
 
-        section.patchObject(restorable);
+        section.patchObject({ ...restorable, ...suggestion.onDecline });
         delete state.ai.suggestions[target];
         cleanupContainerSuggestions(state, sectionKey);
       }
@@ -227,7 +228,7 @@ export const declineAISuggestion = (state: ResumeStore, target: AITargetKey, fie
         {} as Record<string, unknown>,
       );
 
-      section.patchObject(restored);
+      section.patchObject({ ...restored, ...suggestion.onDecline });
 
       if (field) {
         delete suggestion.originalValue[field];

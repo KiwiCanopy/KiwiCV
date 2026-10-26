@@ -13,6 +13,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 let pollRow: { status: string; result?: unknown; error?: string } = { status: 'processing' };
 
+// A real digest resolves outside the fake clock, so a stamp could land in the
+// next case; a microtask-only stand-in keeps each run inside its own test.
+vi.mock('@/utils/hash', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/utils/hash')>()),
+  sha256Hex: async (text: string) => `digest:${text}`,
+}));
+
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     from: () => ({
@@ -129,6 +136,11 @@ describe('a tailoring run without a letter', () => {
     await complete({ ...RUN, mode: 'professional', jobDescription: '' }, { work: [] });
     expect(letter().outdated).toBeUndefined();
   });
+  it('leaves the letter alone when tailoring one section, not the CV', async () => {
+    seedLetter({ paragraphs: ['Dear team,'] });
+    await complete({ ...RUN, activeTarget: 'section:work', isWholeCV: false }, { items: [] });
+    expect(letter().outdated).toBeUndefined();
+  });
 });
 
 describe('a run that drafts a letter', () => {
@@ -141,5 +153,15 @@ describe('a run that drafts a letter', () => {
     expect(letter().draftedFor).toBe(await sha256Hex(JOB_B));
     expect(letter().outdated).toBe(false);
     expect(letter().enabled).toBe(true);
+  });
+
+  it('stamps an Improve run on the letter itself as current, not outdated', async () => {
+    seedLetter({ paragraphs: ['Dear team,'], draftedFor: await sha256Hex(JOB_A) });
+    await complete(
+      { ...RUN, activeTarget: 'section:coverLetter', isWholeCV: false },
+      { improvedFields: { paragraphs: ['Tailored to B'] } },
+    );
+    expect(letter().draftedFor).toBe(await sha256Hex(JOB_B));
+    expect(letter().outdated).toBe(false);
   });
 });

@@ -39,6 +39,8 @@ describe('CoverLetterRow', () => {
     seed({ enabled: true, paragraphs: ['Dear team,'], outdated: true });
     render(<CoverLetterRow disabled={false} />);
     expect(screen.getByText(OUTDATED)).toBeTruthy();
+    const describedBy = screen.getByRole('switch').getAttribute('aria-describedby');
+    expect(describedBy && document.getElementById(describedBy)?.textContent).toBe(OUTDATED);
 
     await userEvent.click(screen.getByRole('switch'));
     expect(screen.queryByText(OUTDATED)).toBeNull();

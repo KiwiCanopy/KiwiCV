@@ -22,20 +22,6 @@ import { coverLetterLengthUnit, coverLetterWordTarget } from '@/utils/coverLette
 export const isCoverLetterEligible = (isWholeCV: boolean): boolean => isWholeCV;
 
 /**
- * Letter content this run would LOSE. `subject` counts as well as the body: the
- * generator returns both fields and the apply path writes both, so a letter with
- * only a subject typed is still content a draft would overwrite.
- *
- * ⚠️ **Not the same question as `EditorSectionPanel`'s `letterHasText`**, which
- * reads `paragraphs` alone. That one asks "is there prose an Improve run can act
- * on"; this asks "is there anything a fresh draft would destroy". The divergence
- * is deliberate, and the shared name is the trap — a maintainer who finds one
- * will assume it is the other. Change one only after reading both.
- */
-export const hasCoverLetterText = (letter: ResumeData['coverLetter']): boolean =>
-  letter.subject.trim().length > 0 || letter.paragraphs.some((entry) => entry.trim().length > 0);
-
-/**
  * ⚠️ **Content is no longer a refusal.** This once also returned
  * `'has_text'` whenever a letter existed, because a draft would have
  * overwritten it. It no longer can: a whole-CV run's letter lands on the

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { hasCoverLetterText } from '@/components/modals/ai/edit/coverLetterRequest';
 import { type CoverLetterRequest } from '@/components/modals/ai/edit/types';
 import {
   type AIChangeDetails,
@@ -84,6 +83,7 @@ export const useAIGeneration = ({
   const acceptReorg = useResumeStore((state) => state.acceptReorg);
   const updateMeta = useResumeStore((state) => state.updateMeta);
   const updateCoverLetter = useResumeStore((state) => state.updateCoverLetter);
+  const stampCoverLetter = useResumeStore((state) => state.stampCoverLetter);
 
   const handleGenerate = async (params: {
     activeTarget: AITargetKey | null;
@@ -195,7 +195,15 @@ export const useAIGeneration = ({
     else if (mode === 'custom') instructions = customPrompt;
     setChangeDetails(undefined);
 
+    // Started now and awaited before anything is applied, so no await separates
+    // the CV write from the change counts the success view reads.
+    const jobHashPending =
+      mode === 'job_description' && jobDescription.trim()
+        ? sha256Hex(jobDescription.trim()).catch(() => undefined)
+        : Promise.resolve(undefined);
+
     const processResult = async (result: AIResult) => {
+      const jobHash = await jobHashPending;
       // Tailoring is the run that pulls skills in from the ad; ops/AI_LOGIC.md.
       const markUnsourced = mode === 'job_description';
 
@@ -279,20 +287,14 @@ export const useAIGeneration = ({
       // checkbox lives in the AI band and this setting lives in the Cover Letter
       // section, so a tick that flipped it would change a setting elsewhere on
       // screen — and leave it flipped when the user unticked the box.
-      // A letter left behind by a run tailoring for another job is flagged for the
-      // export dialog; `draftedFor` keeps a re-run for the same ad from tripping it.
-      const jobHash =
-        mode === 'job_description' && jobDescription.trim()
-          ? await sha256Hex(jobDescription.trim())
-          : undefined;
       if (hasLetter) {
-        updateCoverLetter({ enabled: true, draftedFor: jobHash, outdated: false });
-      } else if (jobHash && !coverLetterOnly) {
-        const letter = useResumeStore.getState().resume.coverLetter;
-        if (hasCoverLetterText(letter) && letter.draftedFor !== jobHash) {
-          updateCoverLetter({ outdated: true });
-        }
+        updateCoverLetter({ enabled: true });
       }
+      stampCoverLetter({
+        jobHash,
+        wroteLetter: hasLetter || targetSectionKey === 'coverLetter',
+        tailoredCv: type === 'cv' && !coverLetterOnly,
+      });
 
       const isItemLevel = type === 'item';
       if (!isItemLevel) {

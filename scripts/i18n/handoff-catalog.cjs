@@ -2335,6 +2335,30 @@ const entries = [
   ],
   [
     'sync',
+    'export_dialog.letter_excluded',
+    'Cover letter not included',
+    'Export dialog: status line beside the cover-letter switch when it is off. "Cover letter" is the application letter, not a CV section.',
+  ],
+  [
+    'sync',
+    'export_dialog.letter_included',
+    'Cover letter included as page 1',
+    'Export dialog: status line beside the cover-letter switch when it is on. "page 1" = the letter becomes the first page of the exported PDF.',
+  ],
+  [
+    'sync',
+    'export_dialog.letter_outdated',
+    'Written for an earlier job — check before sending.',
+    'Export dialog: warning under the cover-letter switch. The AI-drafted letter was written for a different job ad than the one the CV was just tailored to; the user should re-read it before sending the application.',
+  ],
+  [
+    'sync',
+    'export_dialog.letter_toggle',
+    'Include cover letter',
+    'Export dialog: accessible name (screen-reader label) of the switch that adds the cover letter to the export',
+  ],
+  [
+    'sync',
     'export_dialog.manage_link',
     'manage in Settings',
     'Export dialog: link text to the sync settings',

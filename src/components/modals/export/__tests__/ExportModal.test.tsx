@@ -34,7 +34,7 @@ const storeState = {
       export: { hostingPath: '/docs' },
       content: { order: { twoColumn: { sidebarPosition: 'left' } } },
     },
-    coverLetter: { enabled: false },
+    coverLetter: { enabled: false, subject: '', paragraphs: [] },
   },
   updateMeta: vi.fn(),
   syncVersion: vi.fn(),

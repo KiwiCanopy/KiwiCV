@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { hasCoverLetterText } from '@/components/modals/ai/edit/coverLetterRequest';
 import { type CoverLetterRequest } from '@/components/modals/ai/edit/types';
 import {
   type AIChangeDetails,
@@ -21,6 +22,7 @@ import {
 } from '@/utils/ai';
 import { selectAITargetData } from '@/utils/aiPayload';
 import { type AITargetKey, parseAITarget } from '@/utils/aiTarget';
+import { sha256Hex } from '@/utils/hash';
 import { type Session } from '@supabase/supabase-js';
 
 interface UseAIGenerationProps {
@@ -277,8 +279,19 @@ export const useAIGeneration = ({
       // checkbox lives in the AI band and this setting lives in the Cover Letter
       // section, so a tick that flipped it would change a setting elsewhere on
       // screen — and leave it flipped when the user unticked the box.
+      // A letter left behind by a run tailoring for another job is flagged for the
+      // export dialog; `draftedFor` keeps a re-run for the same ad from tripping it.
+      const jobHash =
+        mode === 'job_description' && jobDescription.trim()
+          ? await sha256Hex(jobDescription.trim())
+          : undefined;
       if (hasLetter) {
-        updateCoverLetter({ enabled: true });
+        updateCoverLetter({ enabled: true, draftedFor: jobHash, outdated: false });
+      } else if (jobHash && !coverLetterOnly) {
+        const letter = useResumeStore.getState().resume.coverLetter;
+        if (hasCoverLetterText(letter) && letter.draftedFor !== jobHash) {
+          updateCoverLetter({ outdated: true });
+        }
       }
 
       const isItemLevel = type === 'item';

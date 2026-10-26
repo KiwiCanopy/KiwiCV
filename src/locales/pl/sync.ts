@@ -84,6 +84,10 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Pobierz jako ZIP',
     filename_only:
       'Firma i stanowisko wpływają tylko na nazwę eksportowanego pliku. Nie są zapisywane.',
+    letter_excluded: 'List motywacyjny nie jest dołączony',
+    letter_included: 'List motywacyjny dołączony jako strona 1',
+    letter_outdated: 'Napisany dla wcześniejszej oferty pracy — sprawdź go przed wysłaniem.',
+    letter_toggle: 'Dołącz list motywacyjny',
     manage_link: 'zarządzaj w Ustawieniach',
     one_run_one: 'Jeden przebieg, jedno miejsce docelowe.',
     one_run_other: 'Jeden przebieg, wszystkie miejsca docelowe ({{count}}).',

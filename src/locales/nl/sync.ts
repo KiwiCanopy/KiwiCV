@@ -81,6 +81,10 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Downloaden als ZIP',
     filename_only:
       'Bedrijf en functie zijn alleen van invloed op de geëxporteerde naam. Ze worden niet opgeslagen.',
+    letter_excluded: 'Sollicitatiebrief niet inbegrepen',
+    letter_included: 'Sollicitatiebrief inbegrepen als pagina 1',
+    letter_outdated: 'Geschreven voor een eerdere baan — controleer de brief voordat je verstuurt.',
+    letter_toggle: 'Sollicitatiebrief toevoegen',
     manage_link: 'beheren in Instellingen',
     one_run_one: 'Eén keer uitvoeren, één bestemming.',
     one_run_other: 'Eén keer uitvoeren, alle {{count}} bestemmingen.',

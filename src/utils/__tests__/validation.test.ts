@@ -322,6 +322,17 @@ describe('Resume Validation & Migration', () => {
       expect(sanitized.coverLetter).toEqual(coverLetter);
     });
 
+    it('keeps the outdated stamp, and drops a malformed one', () => {
+      const digest = 'a'.repeat(64);
+      expect(sanitizeCoverLetter({ draftedFor: digest, outdated: true })).toMatchObject({
+        draftedFor: digest,
+        outdated: true,
+      });
+      const malformed = sanitizeCoverLetter({ draftedFor: 'not-a-digest', outdated: 'yes' });
+      expect(malformed).not.toHaveProperty('draftedFor');
+      expect(malformed).not.toHaveProperty('outdated');
+    });
+
     it('coerces malformed fields and drops non-string paragraphs', () => {
       const result = sanitizeCoverLetter({
         enabled: 'yes', // not a boolean -> default false

@@ -84,6 +84,10 @@ export const sync: Translations['sync'] = {
     dest_zip_label: 'Als ZIP herunterladen',
     filename_only:
       'Firma und Position beeinflussen nur den exportierten Namen. Sie werden nicht gespeichert.',
+    letter_excluded: 'Anschreiben nicht enthalten',
+    letter_included: 'Anschreiben als Seite 1 enthalten',
+    letter_outdated: 'Für eine frühere Stelle geschrieben – vor dem Absenden prüfen.',
+    letter_toggle: 'Anschreiben hinzufügen',
     manage_link: 'in Einstellungen verwalten',
     one_run_one: 'Ein Durchgang, ein Ziel.',
     one_run_other: 'Ein Durchgang, alle {{count}} Ziele.',

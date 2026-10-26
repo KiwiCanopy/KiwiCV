@@ -1,4 +1,4 @@
-PROMPT_VERSION: 2026-10-12b
+PROMPT_VERSION: 2026-10-26d
 {
   "type": "OBJECT",
   "properties": {

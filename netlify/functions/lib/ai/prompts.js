@@ -19,8 +19,8 @@ export const BASE_ROLE_PROMPTS = {
   job_description: `You are a Career Transition Specialist.
     Your goal is to tailor the user's resume data to match a specific job description.
     Identify and highlight relevant transferable skills.
-    **Crucial:** Mirror the exact keywords and industry terminology from the job description **only where they truthfully align with the user's existing experience.** Do not invent skills to force a match.
-    **Facts are fixed:** job titles (including the headline label), employer names, dates, tools, technologies, skill keywords, certifications, and years of experience are facts. Reword, reorder, and emphasise what the CV already says, but never add one the CV lacks or swap one for a different one — not even when the job description asks for it. Translating a fact, or writing a tool's standard name for the same tool, is not a swap. A requirement the CV does not show stays out of the CV.`,
+    **Crucial:** Mirror the exact keywords, tools and terminology of the job description wherever the CV gives them a footing: the CV mentions the term anywhere, or it plausibly describes what was done in that role. Never invent a skill, tool, industry, responsibility, or achievement the CV gives no footing for: a related tool is not the same tool (Azure is no footing for AWS), and the employer's industry is not the candidate's.
+    **Facts are fixed:** employer names, the job title held in each work entry, dates, certifications, and years of experience. Never change or add one; translating one is not a change. The headline label is a positioning statement, not a title held: adjust it toward the role in the job description when the CV supports it.`,
 
   custom: `You are a professional AI Writing Assistant.
     Your goal is to follow the user's specific instructions precisely while maintaining a clean, professional tone.`,
@@ -434,6 +434,10 @@ You have permission to restructure skill categories for optimal ATS impact:
    Use an empty array [] for entirely new categories not derived from any existing item.
 `;
 
+/** Whole-CV tailoring only: an `item:` or `section:` run, or an import, reaches no other entry (#55). */
+const WHOLE_CV_TAILORING =
+  "Carry the job description's terms into the summary, every work entry's summary and highlights, the skills, and the headline label, wherever the CV gives them a footing. Rewrite every work entry the job description bears on; an entry left as it was is a missed match. A tool, an industry, or a claim the CV gives no footing for stays out, however often the job description asks for it.";
+
 export const getSystemPrompt = (
   mode,
   activeTarget,
@@ -470,11 +474,14 @@ export const getSystemPrompt = (
     targetAdvice =
       'Ensure that all extracted sections follow the JSON Resume schema structures precisely.';
   } else {
+    const tailoring = mode === 'job_description';
     scopeInstruction =
       targetGranularity === 'cv'
         ? isTranslating
-          ? 'You are performing a full CV translation and optimization. You MUST translate ALL provided sections into the target language. CRITICAL: Do not skip or omit any sections (like education, projects, privateProjects, customSections, etc.) from the output JSON, even if their professional content is already optimal or if they do not change under the current optimization mode (e.g. job_description). Return every single section that contains input data fully translated, including the title of every entry in customSections.'
-          : 'You are optimizing the entire CV. Improve only sections that benefit from revision, and do not invent missing content.'
+          ? `You are performing a full CV translation and optimization. You MUST translate ALL provided sections into the target language. CRITICAL: Do not skip or omit any sections (like education, projects, privateProjects, customSections, etc.) from the output JSON, even if their professional content is already optimal or if they do not change under the current optimization mode (e.g. job_description). Return every single section that contains input data fully translated, including the title of every entry in customSections.${tailoring ? ` ${WHOLE_CV_TAILORING}` : ''}`
+          : tailoring
+            ? `You are tailoring the entire CV. ${WHOLE_CV_TAILORING}`
+            : 'You are optimizing the entire CV. Improve only sections that benefit from revision, and do not invent missing content.'
         : 'Optimize only the content that belongs to the requested target.';
     targetAdvice = getTargetInstructions(activeTarget);
   }

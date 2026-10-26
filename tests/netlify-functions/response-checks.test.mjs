@@ -9,7 +9,10 @@ import assert from 'node:assert/strict';
 import { generateKeyPairSync } from 'node:crypto';
 import { test } from 'node:test';
 
-import { SECTION_COMPOSITION } from '../../netlify/functions/lib/ai/definitions.js';
+import {
+  SECTION_COMPOSITION,
+  SINGLETON_SECTIONS,
+} from '../../netlify/functions/lib/ai/definitions.js';
 import {
   TAILORING_FACT_FIELDS,
   assertNotTruncated,
@@ -153,7 +156,7 @@ const TAILOR_SOURCE = {
   ],
 };
 
-test('a retitled label, position, employer or date is dropped; other fields survive', () => {
+test('a retitled position, employer or date is dropped; the label and prose survive', () => {
   const improved = {
     basics: { improvedFields: { label: 'ML Engineer', summary: 'Designs ML systems.' } },
     work: [
@@ -169,15 +172,15 @@ test('a retitled label, position, employer or date is dropped; other fields surv
       },
     ],
   };
-  assert.equal(dropTailoringFactChanges({ source: TAILOR_SOURCE, improved }), 5);
+  assert.equal(dropTailoringFactChanges({ source: TAILOR_SOURCE, improved }), 4);
   assert.deepEqual(improved, {
-    basics: { improvedFields: { summary: 'Designs ML systems.' } },
+    basics: { improvedFields: { label: 'ML Engineer', summary: 'Designs ML systems.' } },
     work: [{ _vId: 'w1', improvedFields: { summary: 'Built pipelines.' } }],
   });
 });
 
 test('an unchanged fact is not counted as a dropped change', () => {
-  const improved = { basics: { improvedFields: { label: 'Software Architect' } } };
+  const improved = { work: [{ _vId: 'w1', improvedFields: { position: 'Architect' } }] };
   assert.equal(dropTailoringFactChanges({ source: TAILOR_SOURCE, improved }), 0);
 });
 
@@ -241,6 +244,14 @@ test('every tailoring fact is a field its section composes', () => {
   );
   assert.ok(Object.keys(TAILORING_FACT_FIELDS).length > 0);
   assert.deepEqual(stray, []);
+});
+
+// `dropTailoringFactChanges` strips list entries only; an object section would be skipped.
+test('every tailoring fact section is a list section', () => {
+  const objects = Object.keys(TAILORING_FACT_FIELDS).filter((section) =>
+    SINGLETON_SECTIONS.includes(section),
+  );
+  assert.deepEqual(objects, []);
 });
 
 test('a response that keeps every keyword is left as it is', () => {
@@ -482,7 +493,7 @@ test('worker: a complete translation completes, translated title and all', async
   assert.equal(run.result.basics.improvedFields.label, 'Ingenieur');
 });
 
-test('worker: tailoring drops a retitled label and keeps the rewritten summary', async (context) => {
+test('worker: tailoring drops a retitled position and keeps the label and summary', async (context) => {
   const run = await improve(context, {
     resumeData: TAILOR_SOURCE,
     response: {
@@ -491,16 +502,28 @@ test('worker: tailoring drops a retitled label and keeps the rewritten summary',
     },
   });
   assert.equal(run.status, 'completed');
-  assert.deepEqual(run.result.basics, { improvedFields: { summary: 'Designs ML systems.' } });
+  assert.deepEqual(run.result.basics, {
+    improvedFields: { label: 'ML Engineer', summary: 'Designs ML systems.' },
+  });
   assert.deepEqual(run.result.work, [{ _vId: 'w1', improvedFields: { summary: 'Built ML.' } }]);
 });
 
-test('worker: a label-only retitle grades as no change once dropped', async (context) => {
+test('worker: a position-only retitle grades as no change once dropped', async (context) => {
+  const run = await improve(context, {
+    resumeData: TAILOR_SOURCE,
+    response: { work: [{ _vId: 'w1', improvedFields: { position: 'ML Engineer' } }] },
+  });
+  assert.equal(run.result.isNoOp, true);
+});
+
+// The headline is a positioning statement, not a title held (#55).
+test('worker: a label-only retitle is a change tailoring keeps', async (context) => {
   const run = await improve(context, {
     resumeData: TAILOR_SOURCE,
     response: { basics: { improvedFields: { label: 'ML Engineer' } } },
   });
-  assert.equal(run.result.isNoOp, true);
+  assert.equal(run.result.isNoOp, false);
+  assert.equal(run.result.basics.improvedFields.label, 'ML Engineer');
 });
 
 test('worker: a professional run is not held to the tailoring facts', async (context) => {

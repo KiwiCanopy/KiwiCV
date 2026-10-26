@@ -82,12 +82,11 @@ export const sync: Translations['sync'] = {
     filename_only:
       'Bedrijf en functie zijn alleen van invloed op de geëxporteerde naam. Ze worden niet opgeslagen.',
     letter_excluded: 'Sollicitatiebrief niet inbegrepen',
-    letter_included: 'Sollicitatiebrief inbegrepen als pagina 1',
-    letter_outdated: 'Geschreven voor een eerdere baan — controleer de brief voordat je verstuurt.',
+    letter_included: 'Sollicitatiebrief inbegrepen, vóór je CV',
+    letter_outdated:
+      'Past mogelijk niet bij de nieuwe vacature — controleer de brief voordat je hem verstuurt.',
     letter_toggle: 'Sollicitatiebrief toevoegen',
     manage_link: 'beheren in Instellingen',
-    one_run_one: 'Eén keer uitvoeren, één bestemming.',
-    one_run_other: 'Eén keer uitvoeren, alle {{count}} bestemmingen.',
     package_always_included: 'Altijd inbegrepen',
     package_backup_desc: 'De projectmomentopname die deze export herstelbaar maakt.',
     package_backup_label: 'Back-up',

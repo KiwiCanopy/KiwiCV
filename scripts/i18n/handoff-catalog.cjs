@@ -2342,14 +2342,14 @@ const entries = [
   [
     'sync',
     'export_dialog.letter_included',
-    'Cover letter included as page 1',
-    'Export dialog: status line beside the cover-letter switch when it is on. "page 1" = the letter becomes the first page of the exported PDF.',
+    'Cover letter included before your CV',
+    'Status beside the cover-letter switch: the letter is part of the export, placed before the CV. It may be longer than one page.',
   ],
   [
     'sync',
     'export_dialog.letter_outdated',
-    'Written for an earlier job — check before sending.',
-    'Export dialog: warning under the cover-letter switch. The AI-drafted letter was written for a different job ad than the one the CV was just tailored to; the user should re-read it before sending the application.',
+    'May not match the new job ad — check before sending.',
+    'Warning under the cover-letter switch in the Export dialog: the CV was just tailored to a job ad, and this letter was not drafted for that ad (or was written by hand). The user should re-read it before sending. Take the ad noun from editor.coverLetter.empty_desc; never use the word for a job someone holds.',
   ],
   [
     'sync',
@@ -2362,18 +2362,6 @@ const entries = [
     'export_dialog.manage_link',
     'manage in Settings',
     'Export dialog: link text to the sync settings',
-  ],
-  [
-    'sync',
-    'export_dialog.one_run_one',
-    'One run, one destination.',
-    'Export dialog: singular one-run note above the trigger',
-  ],
-  [
-    'sync',
-    'export_dialog.one_run_other',
-    'One run, all {{count}} destinations.',
-    'Export dialog: plural one-run note above the trigger',
   ],
   [
     'sync',

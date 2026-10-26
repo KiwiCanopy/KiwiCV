@@ -19,6 +19,7 @@ import { useResumeStore } from '@/store/resume/useResumeStore';
 import { normalizePostingUrl } from '@/utils/applicationMeta';
 import { constructBackupFilename, getCleanProjectName, getProjectFilename } from '@/utils/export';
 import { localizedPath } from '@/utils/localeRouting';
+import { isPrimaryActionChord, isTextEntry } from '@/utils/primaryActionChord';
 
 export interface ExportChromeState {
   busy: boolean;
@@ -91,13 +92,14 @@ export function ExportModalBody({
   const canRun = preview.trim().length > 0;
   const runTargets = () => void run(targets, projectName, normalizePostingUrl(postingUrl));
 
-  // Cmd/Ctrl+Enter presses the trigger, as the tag editor's does; plain Enter
-  // in a field stays inert. `run` itself refuses an empty set or a second run.
+  // Cmd/Ctrl+Enter from a text field presses the trigger itself, so the
+  // button's own disabled state is the only guard. Elsewhere — a link, where it
+  // opens a new tab, or a button — the key keeps its native meaning.
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key !== 'Enter' || !(event.metaKey || event.ctrlKey)) return;
-    if (event.nativeEvent.isComposing) return;
+    if (!isPrimaryActionChord(event) || !isTextEntry(event.target)) return;
     event.preventDefault();
-    if (canRun) runTargets();
+    triggerRef.current?.click();
   };
 
   const handleSetup = () => {
@@ -194,6 +196,7 @@ export function ExportModalBody({
         buildFailed={state.buildError !== null}
         onCancel={handleCancel}
         onRun={runTargets}
+        triggerRef={triggerRef}
       />
     </div>
   );

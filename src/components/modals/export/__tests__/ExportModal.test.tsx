@@ -230,40 +230,49 @@ describe('ExportModal', () => {
     await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
   });
 
+  // `buildExportArtifacts` is the run's first call, before any await, so a
+  // not-called assertion right after the keystroke is reliable.
   it('starts the export on Cmd+Enter or Ctrl+Enter from a field, never on plain Enter', async () => {
     const user = userEvent.setup();
-    const props = renderModal();
+    renderModal();
     const company = screen.getByRole('textbox', { name: 'sync.export_modal_company_label' });
 
     await user.type(company, 'Acme{Enter}');
-    expect(runDestination).not.toHaveBeenCalled();
+    expect(buildExportArtifacts).not.toHaveBeenCalled();
 
     await user.type(company, '{Meta>}{Enter}{/Meta}');
-    await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
-
-    runDestination.mockClear();
-    clearExportDraft();
-    renderModal();
-    await user.type(
-      screen.getAllByRole('textbox', { name: 'sync.export_modal_company_label' }).at(-1)!,
-      '{Control>}{Enter}{/Control}',
-    );
-    await waitFor(() => expect(runDestination).toHaveBeenCalledTimes(1));
+    expect(buildExportArtifacts).toHaveBeenCalledTimes(1);
   });
 
-  it('ignores Cmd+Enter while no destination is selected', async () => {
+  it('takes Ctrl+Enter too', async () => {
     const user = userEvent.setup();
     renderModal();
-    await user.click(screen.getByRole('switch', { name: /sync\.export_dialog\.dest_zip_label/ }));
-    expect(
-      screen.getByRole('button', { name: /sync\.export_dialog\.trigger_empty/ }),
-    ).toHaveProperty('disabled', true);
-
     await user.type(
       screen.getByRole('textbox', { name: 'sync.export_modal_company_label' }),
-      '{Meta>}{Enter}{/Meta}',
+      '{Control>}{Enter}{/Control}',
     );
-    expect(runDestination).not.toHaveBeenCalled();
+    expect(buildExportArtifacts).toHaveBeenCalledTimes(1);
+  });
+
+  it('leaves Cmd+Enter alone on a link, where it opens a new tab', async () => {
+    providerStates.github = 'active';
+    const user = userEvent.setup();
+    renderModal();
+    screen.getByRole('link', { name: 'sync.export_dialog.manage_link' }).focus();
+
+    await user.keyboard('{Meta>}{Enter}{/Meta}');
+    expect(buildExportArtifacts).not.toHaveBeenCalled();
+  });
+
+  it('presses nothing the trigger would refuse: an empty name', async () => {
+    const user = userEvent.setup();
+    renderModal();
+    await user.click(screen.getByRole('button', { name: 'sync.export_dialog.rename' }));
+    const base = screen.getByRole('textbox', { name: 'sync.export_modal_input_label' });
+    await user.clear(base);
+
+    await user.type(base, '{Meta>}{Enter}{/Meta}');
+    expect(buildExportArtifacts).not.toHaveBeenCalled();
   });
 
   it('closes once a retry clears the last failure', async () => {

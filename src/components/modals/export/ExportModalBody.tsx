@@ -18,7 +18,7 @@ import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { normalizePostingUrl } from '@/utils/applicationMeta';
-import { hasCoverLetterText } from '@/utils/coverLetter';
+import { isCoverLetterPrinted, isPrintedLetterOutdated } from '@/utils/coverLetter';
 import { constructBackupFilename, getCleanProjectName, getProjectFilename } from '@/utils/export';
 import { localizedPath } from '@/utils/localeRouting';
 import { isPrimaryActionChord, isTextEntry } from '@/utils/primaryActionChord';
@@ -67,7 +67,7 @@ export function ExportModalBody({
   const projectName = constructBackupFilename(base, company, position, resume.meta.theme.name);
   const preview = getCleanProjectName(projectName);
 
-  const { state, failed, announcement, run } = useExportRun({ resume, formats });
+  const { state, failed, announcement, run } = useExportRun({ formats });
 
   // Mounts only while the dialog is open (rendered inside DialogFrame's
   // portal), so this fires once per open.
@@ -94,36 +94,34 @@ export function ExportModalBody({
   const canRun = preview.trim().length > 0;
   const confirm = useConfirmStore((s) => s.confirm);
   const updateCoverLetter = useResumeStore((s) => s.updateCoverLetter);
-  const letter = resume.coverLetter;
-  const letterIncluded = hasCoverLetterText(letter) && letter.enabled === true;
+  const letterIncluded = isCoverLetterPrinted(resume.coverLetter);
   // Asked once per dialog session; switching the letter back on asks again.
   const [letterAcknowledged, setLetterAcknowledged] = useState(false);
   if (letterAcknowledged && !letterIncluded) setLetterAcknowledged(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const runTargets = async () => {
-    // The letter rides only in the PDF; an outdated one is for a different job ad.
-    if (letterIncluded && letter.outdated === true && formats.pdf && !letterAcknowledged) {
+    // Only the PDF carries the letter (`ResumeHTML` never reads it).
+    if (isPrintedLetterOutdated(resume.coverLetter) && formats.pdf && !letterAcknowledged) {
       const choice = await confirm({
         title: t('sync.export_dialog.letter_confirm_title'),
         message: t('sync.export_dialog.letter_confirm_message'),
         confirmText: t('sync.export_dialog.letter_confirm_without'),
         cancelText: t('sync.export_dialog.letter_confirm_anyway'),
         preferredFocus: 'confirm',
+        // The trigger is busy by the time the confirm closes, so focus lands on
+        // this dialog rather than falling to <body>.
+        restoreFocusTo: () => rootRef.current?.closest<HTMLElement>('[role="dialog"]'),
       });
       if (choice === null) return;
       if (choice) {
-        // The same setting the row's switch writes, so the run reads it already off.
+        // The same setting the row's switch writes; `run` reads the store, so it sees it off.
         updateCoverLetter({ enabled: false });
       } else {
         setLetterAcknowledged(true);
       }
     }
-    void run(
-      targets,
-      projectName,
-      normalizePostingUrl(postingUrl),
-      useResumeStore.getState().resume,
-    );
+    void run(targets, projectName, normalizePostingUrl(postingUrl));
   };
 
   // Cmd/Ctrl+Enter from a text field presses the trigger itself, so the
@@ -171,7 +169,7 @@ export function ExportModalBody({
   }, [allOk, onClose]);
 
   return (
-    <div className="space-y-4" onKeyDown={handleKeyDown}>
+    <div ref={rootRef} className="space-y-4" onKeyDown={handleKeyDown}>
       <ExportNameFields
         base={base}
         company={company}

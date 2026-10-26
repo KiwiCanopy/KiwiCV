@@ -62,7 +62,7 @@ vi.mock('@/store/ui/useToastStore', () => ({
 
 const syncVersion = vi.fn();
 vi.mock('@/store/resume/useResumeStore', () => ({
-  useResumeStore: Object.assign(() => undefined, { getState: () => ({ syncVersion }) }),
+  useResumeStore: Object.assign(() => undefined, { getState: () => ({ syncVersion, resume }) }),
 }));
 
 vi.mock('@/components/preview/ThemeRegistry', () => ({
@@ -72,7 +72,7 @@ vi.mock('@/components/preview/ThemeRegistry', () => ({
 const resume = initialResumeState as ResumeData;
 
 function renderRun(formats = { pdf: true, html: true }) {
-  return renderHook(() => useExportRun({ resume, formats }));
+  return renderHook(() => useExportRun({ formats }));
 }
 
 describe('useExportRun', () => {

@@ -5,7 +5,7 @@ import { Switch } from '@/components/ui/Switch';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { cn } from '@/utils/cn';
-import { hasCoverLetterText } from '@/utils/coverLetter';
+import { hasCoverLetterText, isPrintedLetterOutdated } from '@/utils/coverLetter';
 import { TriangleAlert } from 'lucide-react';
 
 /**
@@ -21,7 +21,7 @@ export function CoverLetterRow({ disabled }: { disabled: boolean }) {
   if (!hasCoverLetterText(letter)) return null;
 
   const included = letter.enabled;
-  const warn = included && letter.outdated === true;
+  const warn = isPrintedLetterOutdated(letter);
 
   return (
     <div

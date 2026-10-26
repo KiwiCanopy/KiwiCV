@@ -13,7 +13,6 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useToastStore } from '@/store/ui/useToastStore';
-import { type ResumeData } from '@/types/resume';
 
 /** How long a fully successful export's toast stays, the dialog having closed (#34). */
 export const ALL_OK_TOAST_MS = 10_000;
@@ -27,7 +26,6 @@ const IDLE_STATE: ExportRunState = {
 };
 
 export interface UseExportRunParams {
-  resume: ResumeData;
   formats: Record<ExportFormatId, boolean>;
 }
 
@@ -39,16 +37,8 @@ export interface UseExportRun {
   failed: DestinationId[];
   /** Polite live-region text. Empty while nothing has happened. */
   announcement: string;
-  /**
-   * `postingUrl` is already normalized; `null` saves no link. `snapshot` replaces
-   * the rendered `resume` when the caller changed the store just before running.
-   */
-  run: (
-    ids: DestinationId[],
-    projectName: string,
-    postingUrl?: string | null,
-    snapshot?: ResumeData,
-  ) => Promise<void>;
+  /** `postingUrl` is already normalized; `null` saves no link. */
+  run: (ids: DestinationId[], projectName: string, postingUrl?: string | null) => Promise<void>;
 }
 
 /**
@@ -65,7 +55,7 @@ export interface UseExportRun {
  * so one failure leaves the others intact and the trigger can relabel to a
  * retry over exactly the failed set.
  */
-export function useExportRun({ resume: rendered, formats }: UseExportRunParams): UseExportRun {
+export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
   const { t } = useTranslation();
   const { handleSync } = useCloudSync();
   const addToast = useToastStore((state) => state.addToast);
@@ -76,14 +66,11 @@ export function useExportRun({ resume: rendered, formats }: UseExportRunParams):
   const [announcement, setAnnouncement] = useState('');
 
   const run = useCallback(
-    async (
-      ids: DestinationId[],
-      projectName: string,
-      postingUrl: string | null = null,
-      snapshot?: ResumeData,
-    ) => {
+    async (ids: DestinationId[], projectName: string, postingUrl: string | null = null) => {
       if (runningRef.current || ids.length === 0) return;
-      const resume = snapshot ?? rendered;
+      // Read at press time, as `handleSync` does: a write made just before the
+      // run (the outdated-letter confirm) must reach the build.
+      const resume = useResumeStore.getState().resume;
       runningRef.current = true;
 
       const total = ids.length;
@@ -183,7 +170,7 @@ export function useExportRun({ resume: rendered, formats }: UseExportRunParams):
         runningRef.current = false;
       }
     },
-    [addToast, formats, handleSync, rendered, t],
+    [addToast, formats, handleSync, t],
   );
 
   const entries = Object.entries(state.rows) as [DestinationId, { status: string }][];

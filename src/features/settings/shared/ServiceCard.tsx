@@ -97,7 +97,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         isLocked &&
           'border-muted hover:border-primary-strong/30 cursor-pointer opacity-70 grayscale-[0.8] hover:shadow-md active:scale-[0.99]',
         isActionRequired &&
-          'cursor-pointer border-amber-500/30 bg-amber-500/5 hover:border-amber-500/50 hover:shadow-md active:scale-[0.99]',
+          'dark:bg-secondary cursor-pointer border-amber-500/30 bg-amber-500/5 hover:border-amber-500/50 hover:shadow-md active:scale-[0.99]',
       )}
     >
       {/* Locked Banner */}
@@ -164,7 +164,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                   {title}
                 </h3>
                 {statusBadge && isEnabled && (
-                  <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-emerald-600 uppercase ring-1 ring-emerald-500/20 ring-inset">
+                  <span className="dark:bg-secondary inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-emerald-600 uppercase ring-1 ring-emerald-500/20 ring-inset dark:text-emerald-400">
                     {statusBadge}
                   </span>
                 )}
@@ -231,7 +231,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                 onActionRequiredClick();
               }}
               loading={isLoading}
-              className="h-10 w-full border-amber-500/40 text-amber-600 hover:bg-amber-500/10 active:bg-amber-500/20 dark:border-amber-400/40 dark:text-amber-400"
+              className="h-10 w-full border-amber-500/40 text-amber-600 hover:bg-amber-500/10 active:bg-amber-500/20 dark:border-amber-400/40 dark:text-amber-400 dark:hover:bg-amber-500/10 dark:active:bg-amber-500/20"
             >
               <Info className="h-4 w-4 shrink-0 text-amber-500" />
               <span className="truncate">{t('sync.grant_permission')}</span>

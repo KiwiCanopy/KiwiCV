@@ -67,7 +67,7 @@ export const DashboardHeaderActions = () => {
         {/* Error Tooltip */}
         {syncStatus === 'error' && errorMessage && (
           <div className="animate-in fade-in slide-in-from-top-1 absolute top-full right-0 z-[100] mt-2 w-64 duration-200">
-            <div className="bg-destructive/10 border-destructive/20 text-destructive flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold shadow-lg backdrop-blur-md">
+            <div className="bg-destructive/10 dark:bg-secondary border-destructive/20 text-destructive flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold shadow-lg backdrop-blur-md">
               <CircleAlert className="h-3.5 w-3.5 shrink-0" />
               <span className="truncate">{errorMessage}</span>
             </div>

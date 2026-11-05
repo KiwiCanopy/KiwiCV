@@ -64,7 +64,7 @@ export const LegalUpdateModal: React.FC = () => {
       maxWidth="lg"
       header={
         <div className="mb-6 flex items-center gap-3 px-6 pt-6">
-          <div className="rounded-xl bg-amber-500/10 p-2 text-amber-500">
+          <div className="dark:bg-secondary rounded-xl bg-amber-500/10 p-2 text-amber-500">
             <ShieldAlert className="h-6 w-6" />
           </div>
           <DialogFrameTitle className="text-foreground text-lg font-black tracking-tight sm:text-xl">
@@ -78,7 +78,7 @@ export const LegalUpdateModal: React.FC = () => {
           {t('legal.update.intro')}
         </DialogFrameDescription>
 
-        <div className="rounded-2xl border border-amber-500/10 bg-amber-500/5 p-5 dark:bg-amber-500/10">
+        <div className="dark:bg-secondary rounded-2xl border border-amber-500/10 bg-amber-500/5 p-5">
           <h4 className="mb-2 text-xs font-black tracking-wider text-amber-600 uppercase dark:text-amber-400">
             {t('legal.update.changes_title')}
           </h4>

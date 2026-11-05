@@ -152,7 +152,7 @@ export function OptimizedMedia({
       {/* Error Overlay */}
       {isError && (
         <div className="bg-muted/20 flex h-48 flex-col items-center justify-center gap-3 rounded-[2rem] p-6 text-center">
-          <div className="bg-destructive/10 text-destructive rounded-full p-3">
+          <div className="bg-destructive/10 dark:bg-secondary text-destructive rounded-full p-3">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"

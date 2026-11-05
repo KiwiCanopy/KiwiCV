@@ -59,9 +59,9 @@ export const LoginBenefits: React.FC<LoginBenefitsProps> = ({ requireDrive = fal
   const desktopColorMap: Record<InfoCardColor, { text: string; bg: string }> = {
     brand: { text: 'text-primary-strong', bg: 'bg-primary/10' },
     neutral: { text: 'text-muted-foreground', bg: 'bg-muted/40' },
-    success: { text: 'text-success', bg: 'bg-success/10' },
-    warning: { text: 'text-warning', bg: 'bg-warning/10' },
-    danger: { text: 'text-danger', bg: 'bg-danger/10' },
+    success: { text: 'text-success', bg: 'bg-success/10 dark:bg-secondary' },
+    warning: { text: 'text-warning', bg: 'bg-warning/10 dark:bg-secondary' },
+    danger: { text: 'text-danger', bg: 'bg-danger/10 dark:bg-secondary' },
   };
 
   return (

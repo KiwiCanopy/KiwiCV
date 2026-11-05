@@ -16,7 +16,7 @@ export function PdfErrorFallback({ t, onRetry, details }: PdfErrorFallbackProps)
         role="alert"
         className="border-border bg-card flex max-w-md flex-col items-center gap-4 rounded-2xl border p-8 text-center shadow-[var(--elevation-2)]"
       >
-        <div className="bg-destructive/10 text-destructive flex h-16 w-16 items-center justify-center rounded-full">
+        <div className="bg-destructive/10 dark:bg-secondary text-destructive flex h-16 w-16 items-center justify-center rounded-full">
           <CircleAlert className="h-10 w-10" aria-hidden="true" />
         </div>
         <div className="space-y-2">

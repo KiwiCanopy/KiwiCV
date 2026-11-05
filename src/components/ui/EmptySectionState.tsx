@@ -54,7 +54,7 @@ export const EmptySectionState = ({
       <span
         className={cn(
           'bg-muted text-primary-strong flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors',
-          onAction && 'group-hover:bg-mist',
+          onAction && 'group-hover:bg-mist dark:group-hover:bg-border/70',
         )}
       >
         <Icon className="h-5 w-5" aria-hidden="true" />

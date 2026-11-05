@@ -19,9 +19,9 @@ import { ChevronDown, History, Rocket } from 'lucide-react';
 const BADGE_CLASSES: Record<InfoCardColor, string> = {
   brand: 'text-primary-strong bg-primary/10 border-primary-strong/30',
   neutral: 'text-muted-foreground bg-muted/40 border-border',
-  success: 'text-success bg-success/10 border-success/30',
-  warning: 'text-warning bg-warning/10 border-warning/30',
-  danger: 'text-danger bg-danger/10 border-danger/30',
+  success: 'text-success bg-success/10 dark:bg-secondary border-success/30',
+  warning: 'text-warning bg-warning/10 dark:bg-secondary border-warning/30',
+  danger: 'text-danger bg-danger/10 dark:bg-secondary border-danger/30',
 };
 
 interface RawChangelogEntry {

@@ -187,6 +187,8 @@ describe('Button hover fill', () => {
     render(<Button>Restore</Button>);
     const classes = screen.getByRole('button', { name: 'Restore' }).className.split(' ');
     expect(classes).toContain('hover:bg-mist');
+    expect(classes).toContain('dark:hover:bg-border/70');
+    expect(classes).toContain('dark:active:bg-border');
     expect(classes).toContain('active:bg-border');
   });
 
@@ -203,8 +205,12 @@ describe('Button hover fill', () => {
     render(element);
     const classes = screen.getByRole('button', { name: 'Restore' }).className.split(' ');
     expect(classes).not.toContain('hover:bg-mist');
+    expect(classes).not.toContain('dark:hover:bg-border/70');
+    expect(classes).not.toContain('dark:active:bg-border');
     expect(classes).not.toContain('active:bg-border');
     expect(classes).toContain('hover:bg-secondary');
+    expect(classes).toContain('dark:hover:bg-secondary');
+    expect(classes).toContain('dark:active:bg-secondary');
     expect(classes).toContain('active:bg-secondary');
   });
 });

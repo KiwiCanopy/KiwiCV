@@ -116,25 +116,25 @@ uses local Inter at 400, 500, 600, 700, and 800. The semantic roles are:
 
 | Role           | Token                        | Light     | Dark      |
 | -------------- | ---------------------------- | --------- | --------- |
-| Canvas         | `--background`               | `#F4F8F4` | `#182620` |
-| Surface        | `--card`                     | `#FFFFFF` | `#21332B` |
-| Subtle surface | `--secondary` / `--accent`   | `#E5EDE6` | `#293D34` |
+| Canvas         | `--background`               | `#F4F8F4` | `#000000` |
+| Surface        | `--card`                     | `#FFFFFF` | `#08120C` |
+| Subtle surface | `--secondary` / `--accent`   | `#E5EDE6` | `#132318` |
 | Primary text   | `--foreground`               | `#0E241B` | `#F4F7F5` |
 | Muted text     | `--muted-foreground`         | `#4C6357` | `#B7C5BD` |
-| Border         | `--border`                   | `#C8D6CA` | `#3B4E44` |
-| Control edge   | `--input`                    | `#6B8174` | `#6B8B78` |
-| Primary action | `--primary`                  | `#A9CB59` | `#A9CB59` |
-| Primary drawn  | `--primary-strong`           | `#14503E` | `#A9CB59` |
+| Border         | `--border`                   | `#C8D6CA` | `#2B4534` |
+| Control edge   | `--input`                    | `#6B8174` | `#7A9583` |
+| Primary action | `--primary`                  | `#A9CB59` | `#AACB5D` |
+| Primary drawn  | `--primary-strong`           | `#14503E` | `#AACB5D` |
 | Kiwi accent    | `--kiwi`                     | `#A9CB59` | `#A9CB59` |
-| Mist / hover   | `--mist`                     | `#D8E5DA` | `#31473D` |
+| Mist           | `--mist`                     | `#D8E5DA` | `#16271A` |
 | Pass accent    | `--premium`                  | `#F6BF31` | `#F3C349` |
 | Pass deep stop | `--premium-deep`             | `#F59F0A` | `#F3A620` |
 | Pass label     | `--premium-foreground`       | `#12251A` | `#12251A` |
-| Destructive    | `--destructive` / `--danger` | `#BE272F` | `#E57D76` |
-| Info           | `--info`                     | `#1D67C9` | `#74A6E7` |
+| Destructive    | `--destructive` / `--danger` | `#BE272F` | `#EA9893` |
+| Info           | `--info`                     | `#1D67C9` | `#85B0E9` |
 
 **Muted text is the floor for information.** `--muted-foreground` clears 4.5:1
-on `--card` (6.5:1 light, 7.5:1 dark); any opacity under it does not —
+on `--card` (6.5:1 light, 10.65:1 dark); any opacity under it does not —
 `/60` is 2.7:1 light, and even `--foreground` at `opacity-60` is 4.4:1. Text a
 user reads (dates, subtitles, counts) steps down from its title by size and
 weight, never by opacity; the modifiers are for icons and dividers, which 3:1
@@ -142,14 +142,16 @@ governs.
 
 ### The Ink rail palette (2026-09-01)
 
-The teal is gone and colour is spent on **zones** — whole surfaces stepping by
+This section describes light; dark has no ladder (see Grüne Haarlinie below). The
+teal is gone and colour is spent on **zones** — whole surfaces stepping by
 value in one hue — rather than on hairlines. The nav column is the darkest
 surface on screen and the editor the lightest; that one dark edge is what makes
 the middle read as bright instead of washed out, and it is the first ground the
 kiwi green has ever had that it can carry (7.90:1).
 
-`--primary` is now `#A9CB59` in **both** themes with an ink label at 8.84:1, so
-the two themes stop disagreeing about what a primary action is. Every drawn
+`--primary` is `#A9CB59` in light and `#AACB5D` in dark (the owner's Grüne
+Haarlinie value, below), one ink-labelled green at 8.84:1 and 8.74:1, so the two
+themes do not disagree about what a primary action is. Every drawn
 green collapses into one deep pine, `#14503E`.
 
 ⚠️ **The fill is still low against its surface** — kiwi on `--card` is 1.85:1,
@@ -160,16 +162,16 @@ than from the button fighting its own background.
 
 | Zone token                | Surface                        | Light     | Dark      |
 | ------------------------- | ------------------------------ | --------- | --------- |
-| `--nav`                   | App sidebar                    | `#102E25` | `#0F1A15` |
+| `--nav`                   | App sidebar                    | `#102E25` | `#000000` |
 | `--nav-foreground`        | Nav labels and icons           | `#8FAB9C` | `#9DB2A6` |
 | `--nav-foreground-strong` | Selected / hovered nav label   | `#EAF3EC` | `#F4F7F5` |
-| `--nav-active`            | Selected nav row               | `#1C4033` | `#25392F` |
-| `--nav-border`            | Nav dividers                   | `#1E4437` | `#26382F` |
-| `--rail`                  | Editor section rail            | `#E5EDE6` | `#131F1A` |
-| `--rail-active`           | Selected rail row              | `#FFFFFF` | `#2B4036` |
-| `--workspace`             | Editor column behind the cards | `#F4F8F4` | `#182620` |
-| `--desk`                  | Behind the CV page             | `#DCE5DE` | `#1C2B24` |
-| `--divider`               | Resize seam                    | `#EDF2ED` | `#2A3D33` |
+| `--nav-active`            | Selected nav row               | `#1C4033` | `#132318` |
+| `--nav-border`            | Nav dividers                   | `#1E4437` | `#1A2C20` |
+| `--rail`                  | Editor section rail            | `#E5EDE6` | `#000000` |
+| `--rail-active`           | Selected rail row              | `#FFFFFF` | `#132318` |
+| `--workspace`             | Editor column behind the cards | `#F4F8F4` | `#000000` |
+| `--desk`                  | Behind the CV page             | `#DCE5DE` | `#000000` |
+| `--divider`               | Resize seam                    | `#EDF2ED` | `#1A2C20` |
 
 ⚠️ `--nav-foreground-strong` is named that way on purpose. The accent-label
 guard in `tests/lint/primary-role-split.test.mjs` derives families from every
@@ -186,9 +188,9 @@ as undocumented.
 ⚠️ A component that paints a zone reads its zone token, never `--background`.
 Falling back flattens the ladder to where it started.
 
-⚠️ Elevation is theme-specific now. Light `--elevation-1` is a near-black blur
-at 6% alpha, which is invisible on a dark card; dark takes a stronger blur plus
-an inset top rim, since on a dark surface a lighter edge is what reads as raised.
+⚠️ Elevation is theme-specific. Light `--elevation-1` is a near-black blur at 6%
+alpha. Dark has none at rest (see Grüne Haarlinie); only `--elevation-2` keeps a
+blur, for surfaces that float over something.
 
 > Hex values are **derived**, not authored — `src/styles/tokens.css` stores HSL
 > triples and these are the conversions. Recompute from the token before
@@ -215,6 +217,31 @@ shadows. The two-layer focus treatment uses a 2 px local-surface separator and
 colors uses the system outline. Reduced motion removes nonessential transforms
 and transitions. These variables live in `src/styles/tokens.css` and never flow
 into generated CV themes.
+
+### Grüne Haarlinie: the dark palette (2026-11-05)
+
+Owner's ruling. Dark is a pure black page. Containers sit barely above black
+(`--card` `#08120C`, 1.10:1) and take their shape from a line, not a fill. Kiwi
+green is the only strong colour. Light is unaffected: **the zone ladder above is
+now light-only.**
+
+- **Every zone is black** — nav, rail, workspace and desk — and lines separate
+  them. This reverses the ruling that near-black behind the CV made the page
+  "float on a hole". The owner looked at both and chose black.
+- **Status tints are the raised surface.** Each resting tint, status token or palette colour, carries
+  `dark:bg-secondary`, and `tests/lint/dark-status-tint.test.mjs` fails without it. Fill no longer separates success, warning and danger, so **icon and ink must**.
+  Hover fills are not status tints; that test names the decorative exemptions.
+- **Text and status inks did not move.** They only gained headroom: status inks clear 7:1 on
+  `--mist`.
+- **`--kiwi` stays `#A9CB59`.** It is root-only by guard, so dark holds two greens
+  one step apart. No one can see it; do not "fix" it by adding a dark `--kiwi`
+  without checking `tests/lint/primary-role-split.test.mjs`.
+
+⚠️ **`--mist` no longer works as a hover step on `--secondary` in dark** (1.05:1,
+measured in the app). The secondary button takes `dark:hover:bg-border/70`
+(1.27:1 against rest on `--card`) with `dark:active:bg-border` for press, since the dark hover out-specifies a plain
+`active:` (`:is(.dark *)`). Alpha hovers such as
+`hover:bg-muted/40` are faint on these surfaces too.
 
 ### A clipping track draws the focus ring inward (2026-09-07)
 
@@ -261,7 +288,7 @@ unselected:
 |                                     | vs thumb (`--card`) | vs track (`--muted`) |
 | ----------------------------------- | ------------------- | -------------------- |
 | Light — ink ring `rgb(14,36,27)`    | **16.32:1**         | **13.67:1**          |
-| Dark — mist ring `rgb(244,247,245)` | **12.38:1**         | **10.75:1**          |
+| Dark — mist ring `rgb(244,247,245)` | **17.66:1**         | **15.20:1**          |
 
 Every one far past 1.4.11's 3:1, so the separator was buying nothing and its
 outward spread was the artefact being measured.
@@ -309,9 +336,7 @@ whole rule a no-op in dark: moving a control from `--border` to `--input`
 changed nothing, and the boundary sat at **1.89:1** against `--card`, under
 1.4.11's 3:1. Every control-edge fix before that bought light mode only.
 
-Dark `--input` is now `148.4 13.9% 40%` — **3.28:1**. 38% was the true floor at
-3.02:1, which rounds to the minimum and leaves nothing for a later `--card`
-tweak, so 40% is the smallest step with headroom.
+Dark `--input` is now `#7A9583` — **5.86:1** on `--card`, 4.82:1 on `--mist`.
 
 It matters most where the edge is the sole resting affordance. On `OptionCard`
 the chevron sits at `text-muted-foreground/30` — about 1.52:1 light, 2.03:1 dark
@@ -405,7 +430,7 @@ role rather than globally: `bg-card` on `--card` is 1.00:1, so for those the
 edge **is** the button and `--input` is mandatory.
 
 ⚠️ **`.dark` aliases the two on purpose.** Dark surfaces are dark, so one light
-value already works as a fill (ink on it, 8.71:1) and as text (9.08:1 on dark
+value already works as a fill (ink on it, 8.74:1) and as text (10.35:1 on dark
 `--card`). Light and dark are now structurally identical — bright brand-family
 fill, ink label — and differ only in hue, which is the cross-theme disagreement
 this thread started from.

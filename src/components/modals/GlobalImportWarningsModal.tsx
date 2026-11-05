@@ -65,7 +65,7 @@ export function GlobalImportWarningsModal() {
                   'group flex flex-col rounded-xl border p-2.5 transition-all sm:p-3',
                   'border-border/40 bg-muted/20',
                   'hover:bg-muted/30 hover:border-border/60',
-                  isCritical && 'border-destructive/20 bg-destructive/5',
+                  isCritical && 'border-destructive/20 bg-destructive/5 dark:bg-secondary',
                 )}
               >
                 <div className="mb-1 flex items-center justify-between">

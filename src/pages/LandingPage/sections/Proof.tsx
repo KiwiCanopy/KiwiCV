@@ -30,7 +30,7 @@ export function Proof() {
         <div className="border-border divide-border divide-y border-y">
           {proofItems.map(({ key, icon: Icon }) => (
             <article key={key} className="grid grid-cols-[3rem_1fr] gap-4 py-7 sm:py-8">
-              <div className="bg-card text-primary-strong flex h-11 w-11 items-center justify-center rounded-xl shadow-[var(--elevation-1)]">
+              <div className="bg-card text-primary-strong flex h-11 w-11 items-center justify-center rounded-xl shadow-[var(--elevation-1)] dark:border">
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </div>
               <div>

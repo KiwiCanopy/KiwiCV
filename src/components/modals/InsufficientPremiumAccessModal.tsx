@@ -1,9 +1,11 @@
 import React from 'react';
 
 import { PricingDialog } from '@/components/monetization/PricingDialog';
+import { PLAN_ACCENT } from '@/components/monetization/pricing/accents';
 import { DialogFrame, DialogFrameDescription, DialogFrameTitle } from '@/components/ui/DialogFrame';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
+import { cn } from '@/utils/cn';
 import { CircleAlert, Crown, Sparkles } from 'lucide-react';
 
 interface InsufficientPremiumAccessModalProps {
@@ -58,7 +60,7 @@ export const InsufficientPremiumAccessModal: React.FC<InsufficientPremiumAccessM
         zIndexClassName="z-[80]"
         header={
           <div className="flex items-center gap-3 pt-6 pr-14 pb-2 pl-6 md:pr-16">
-            <div className="from-warning/20 to-warning/5 text-warning ring-warning/20 flex items-center justify-center rounded-xl bg-linear-to-br p-2.5 ring-1">
+            <div className="from-warning/20 to-warning/5 dark:from-secondary dark:to-secondary text-warning ring-warning/20 flex items-center justify-center rounded-xl bg-linear-to-br p-2.5 ring-1">
               <Sparkles className="h-5 w-5" />
             </div>
             <DialogFrameTitle className="text-foreground text-lg font-black tracking-tight">
@@ -69,7 +71,7 @@ export const InsufficientPremiumAccessModal: React.FC<InsufficientPremiumAccessM
       >
         {/* Content */}
         <div className="p-6 pt-4 text-center sm:p-10 sm:pt-4">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-amber-500/20 to-amber-500/5 shadow-[0_8px_16px_rgba(245,158,11,0.1)] ring-1 ring-amber-500/20">
+          <div className="dark:from-secondary dark:to-secondary mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-amber-500/20 to-amber-500/5 shadow-[0_8px_16px_rgba(245,158,11,0.1)] ring-1 ring-amber-500/20">
             <CircleAlert className="text-warning h-8 w-8" />
           </div>
 
@@ -87,7 +89,13 @@ export const InsufficientPremiumAccessModal: React.FC<InsufficientPremiumAccessM
               <button
                 type="button"
                 onClick={openPricing}
-                className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 py-4 text-sm font-bold text-amber-950 transition-all hover:scale-[1.02] hover:from-amber-500 hover:to-amber-600 focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:outline-none"
+                // The glow animates `box-shadow`, which hides a `ring-*`, so focus
+                // stays on the base outline in `tokens.css`.
+                className={cn(
+                  'group flex w-full items-center justify-center gap-3 rounded-2xl py-4 text-sm font-bold transition-all hover:scale-[1.02]',
+                  PLAN_ACCENT.passes.cta,
+                  'animate-heavenly-glow',
+                )}
               >
                 <Crown className="h-4 w-4 transition-transform group-hover:rotate-12" />
                 {t('ai.insufficient_premium_access_get_pass')}

@@ -55,7 +55,7 @@ export function AIAccessChip({ state, id, compact, className }: AIAccessChipProp
       id={id}
       className={cn(
         'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium',
-        'border-warning/30 bg-warning/10 text-warning',
+        'border-warning/30 bg-warning/10 dark:bg-secondary text-warning',
         className,
       )}
       title={label}

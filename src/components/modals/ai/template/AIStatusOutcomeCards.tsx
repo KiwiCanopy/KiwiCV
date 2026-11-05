@@ -39,7 +39,7 @@ export const AIStatusOutcomeCards: React.FC<AIStatusOutcomeCardsProps> = ({
     <div className={cn('grid grid-cols-1 gap-3', twoColumns && 'sm:grid-cols-2')}>
       {showItems && (
         <div className="border-border bg-card flex items-center gap-3 rounded-xl border p-4">
-          <span className="bg-success/10 text-success flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
+          <span className="bg-success/10 dark:bg-secondary text-success flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
             <CircleCheck className="h-5 w-5" aria-hidden="true" />
           </span>
           <p className="text-foreground min-w-0 text-sm leading-6 font-semibold">

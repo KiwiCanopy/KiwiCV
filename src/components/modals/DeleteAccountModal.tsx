@@ -116,7 +116,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
       }
     >
       <div className="space-y-6 p-6 pt-4">
-        <div className="bg-destructive/10 text-destructive flex items-start gap-4 rounded-xl p-4">
+        <div className="bg-destructive/10 dark:bg-secondary text-destructive flex items-start gap-4 rounded-xl p-4">
           <TriangleAlert className="h-6 w-6 shrink-0" aria-hidden="true" />
           <DialogFrameDescription className="text-sm leading-relaxed font-medium">
             {t('account.modals.delete_account.description')}

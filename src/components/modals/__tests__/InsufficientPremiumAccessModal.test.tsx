@@ -38,6 +38,13 @@ describe('InsufficientPremiumAccessModal', () => {
     expect(track).toHaveBeenCalledWith('paywall_option_selected', { mode: 'generic' });
   });
 
+  it('keeps the base focus outline on the glowing premium-pass action', () => {
+    renderModal();
+    const classes = screen.getByRole('button', { name: /premium pass/i }).className.split(' ');
+    expect(classes).toContain('animate-heavenly-glow');
+    expect(classes).not.toContain('focus-visible:outline-none');
+  });
+
   /**
    * ⚠️ `limit` offers no action at all. It used to show a "Top Up Credits"
    * button — the only button it showed — and buying another Pass does nothing

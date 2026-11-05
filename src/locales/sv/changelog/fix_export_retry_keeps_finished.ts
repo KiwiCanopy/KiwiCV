@@ -1,4 +1,4 @@
 export const fix_export_retry_keeps_finished = {
   fix_export_retry_keeps_finished:
-    'Retrying in the Export dialog keeps the destinations that already finished, with their check and lock, and its message counts them.',
+    'När du försöker igen i exportdialogen förblir destinationer som redan är färdiga markerade som klara, och meddelandet räknar med dem.',
 };

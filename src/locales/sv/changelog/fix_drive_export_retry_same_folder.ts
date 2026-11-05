@@ -1,4 +1,4 @@
 export const fix_drive_export_retry_same_folder = {
   fix_drive_export_retry_same_folder:
-    'Retrying a Google Drive export writes into the same folder instead of leaving a second one behind.',
+    'När du försöker exportera till Google Drive igen skrivs filerna nu till samma mapp i stället för att en andra lämnas kvar.',
 };

@@ -1,4 +1,4 @@
 export const fix_backup_failure_reported = {
   fix_backup_failure_reported:
-    'When Back up fails, its dialog names what went wrong and can be closed, and screen readers hear it.',
+    'Если резервное копирование не удалось, окно теперь указывает причину и его можно закрыть, а программы чтения с экрана об этом сообщают.',
 };

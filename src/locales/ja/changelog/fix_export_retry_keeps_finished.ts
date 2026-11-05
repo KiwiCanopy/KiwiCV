@@ -1,4 +1,4 @@
 export const fix_export_retry_keeps_finished = {
   fix_export_retry_keeps_finished:
-    'Retrying in the Export dialog keeps the destinations that already finished, with their check and lock, and its message counts them.',
+    'エクスポートのダイアログで再試行しても、完了済みの送信先は完了のまま残り、メッセージの件数にも含まれます。',
 };

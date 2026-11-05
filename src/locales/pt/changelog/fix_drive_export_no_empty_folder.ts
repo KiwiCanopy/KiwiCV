@@ -1,4 +1,4 @@
 export const fix_drive_export_no_empty_folder = {
   fix_drive_export_no_empty_folder:
-    'Exporting only the project file to Google Drive no longer creates an empty folder, and an earlier file with the same name stays safe.',
+    'Exportar apenas a cópia de segurança para o Google Drive já não cria uma pasta vazia, e um ficheiro anterior com o mesmo nome mantém-se intacto.',
 };

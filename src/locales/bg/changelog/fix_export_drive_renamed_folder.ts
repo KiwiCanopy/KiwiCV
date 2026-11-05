@@ -1,4 +1,4 @@
 export const fix_export_drive_renamed_folder = {
   fix_export_drive_renamed_folder:
-    "When Google Drive already has a folder with your export's name, the notice after the export and the Google Drive row in the Export dialog now name the folder your files went to, such as MyCV_2.",
+    'Ако в Google Drive вече има папка с името на твоя експорт, известието след експорта и редът за Google Drive в диалоговия прозорец за експорт вече посочват папката, в която са файловете ти, например MyCV_2.',
 };

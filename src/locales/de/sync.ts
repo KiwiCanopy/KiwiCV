@@ -82,6 +82,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Ein Archiv, direkt auf dieses Gerät.',
     dest_zip_label: 'Als ZIP herunterladen',
+    drive_folder_renamed:
+      'In Google Drive gab es schon einen Ordner mit demselben Namen, deshalb liegt dieser Export in {{folder}}.',
     filename_only:
       'Unternehmen und Position bestimmen den Dateinamen. Der Link zur Stellenanzeige wird mit Backups in Google Drive oder einem privaten GitHub-Repository gespeichert, nie in einem öffentlichen oder veröffentlichten.',
     letter_confirm_anyway: 'Trotzdem exportieren',

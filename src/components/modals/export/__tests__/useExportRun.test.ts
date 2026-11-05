@@ -36,7 +36,7 @@ type HandleSync = (
   options?: { providers?: string[] },
 ) => Promise<{
   success: boolean;
-  results: { service: string; success: boolean; error?: string }[];
+  results: { service: string; success: boolean; error?: string; renamedFolder?: string }[];
 }>;
 
 let handleSyncImpl: HandleSync = async () => ({ success: true, results: [] });
@@ -220,6 +220,108 @@ describe('useExportRun', () => {
     });
     expect(addToast).toHaveBeenLastCalledWith(expect.any(String), 'success', ALL_OK_TOAST_MS);
     expect(ALL_OK_TOAST_MS).toBe(10_000);
+  });
+
+  // The dialog closes on a full success, so a renamed folder has to reach the toast (#41).
+  it('carries a renamed Drive folder into the row, the toast and the announcement', async () => {
+    handleSyncImpl = async () => ({
+      success: true,
+      results: [{ service: 'google_drive', success: true, renamedFolder: 'Ada_Lovelace_2' }],
+    });
+    const { result } = renderRun();
+    await act(async () => {
+      await result.current.run(['google_drive'], 'Ada');
+    });
+
+    const message = addToast.mock.lastCall?.[0];
+    expect(message).toContain('sync.export_dialog.result_all_ok');
+    expect(message).toContain('sync.export_dialog.drive_folder_renamed');
+    expect(addToast).toHaveBeenCalledTimes(1);
+    expect(result.current.state.rows.google_drive?.notice).toBe(
+      'sync.export_dialog.drive_folder_renamed',
+    );
+    expect(result.current.announcement).toBe(message);
+  });
+
+  it('leaves the toast and row plain when Drive wrote the folder it was asked for', async () => {
+    handleSyncImpl = async () => ({
+      success: true,
+      results: [{ service: 'google_drive', success: true }],
+    });
+    const { result } = renderRun();
+    await act(async () => {
+      await result.current.run(['google_drive'], 'Ada');
+    });
+
+    expect(addToast.mock.lastCall?.[0]).toBe('sync.export_dialog.result_all_ok');
+    expect(result.current.state.rows.google_drive?.notice).toBeUndefined();
+  });
+
+  it('names the renamed folder in a partial run, and again in the retry that finishes it', async () => {
+    let githubFails = true;
+    handleSyncImpl = async (_variant, _name, _mode, options) => {
+      if (options?.providers?.includes('github')) {
+        return githubFails
+          ? { success: false, results: [{ service: 'github', success: false, error: 'expired' }] }
+          : { success: true, results: [{ service: 'github', success: true }] };
+      }
+      return {
+        success: true,
+        results: [{ service: 'google_drive', success: true, renamedFolder: 'Ada_Lovelace_2' }],
+      };
+    };
+    const { result } = renderRun();
+    await act(async () => {
+      await result.current.run(['github_repo', 'google_drive'], 'Ada');
+    });
+
+    const partial = addToast.mock.lastCall;
+    expect(partial?.[0]).toContain('sync.export_dialog.result_partial');
+    expect(partial?.[0]).toContain('sync.export_dialog.drive_folder_renamed');
+    expect(partial?.[1]).toBe('warning');
+
+    githubFails = false;
+    await act(async () => {
+      await result.current.run(result.current.failed, 'Ada');
+    });
+
+    expect(addToast.mock.lastCall?.[0]).toBe(
+      'sync.export_dialog.result_all_ok sync.export_dialog.drive_folder_renamed',
+    );
+  });
+
+  it('keeps the renamed folder out of an all-failed retry, and names it once one succeeds', async () => {
+    let githubFails = true;
+    handleSyncImpl = async (_variant, _name, _mode, options) => {
+      if (options?.providers?.includes('github')) {
+        return githubFails
+          ? { success: false, results: [{ service: 'github', success: false, error: 'expired' }] }
+          : { success: true, results: [{ service: 'github', success: true }] };
+      }
+      return {
+        success: true,
+        results: [{ service: 'google_drive', success: true, renamedFolder: 'Ada_Lovelace_2' }],
+      };
+    };
+    const { result } = renderRun();
+    await act(async () => {
+      await result.current.run(['github_repo', 'google_drive'], 'Ada');
+    });
+    await act(async () => {
+      await result.current.run(result.current.failed, 'Ada');
+    });
+
+    expect(addToast.mock.lastCall).toEqual(['sync.export_dialog.result_all_failed', 'error']);
+    expect(result.current.announcement).toBe('sync.export_dialog.result_all_failed');
+
+    githubFails = false;
+    await act(async () => {
+      await result.current.run(result.current.failed, 'Ada');
+    });
+
+    expect(addToast.mock.lastCall?.[0]).toBe(
+      'sync.export_dialog.result_all_ok sync.export_dialog.drive_folder_renamed',
+    );
   });
 
   it('does nothing at all when no destination is selected', async () => {

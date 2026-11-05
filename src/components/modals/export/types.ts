@@ -34,6 +34,8 @@ export type DestinationStatus = 'idle' | 'running' | 'done' | 'failed';
 export interface DestinationRunState {
   status: DestinationStatus;
   error?: string;
+  /** Shown under a finished row, e.g. the folder Drive actually wrote to. */
+  notice?: string;
 }
 
 export interface ExportRunState {

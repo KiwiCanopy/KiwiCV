@@ -136,7 +136,11 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
       // The requested name, as the check above compares; a renamed folder is Drive's choice.
       const stamp = await fullPushStamp(currentHash, backupFileName, params.postingUrl);
       connection.writeHash(GOOGLE_LAST_FULL_PUSH_HASH_KEY, stamp);
-      return { service: 'google_drive', success: true, folderName: finalFolderName };
+      return {
+        service: 'google_drive',
+        success: true,
+        ...(finalFolderName !== cleanFolderName && { renamedFolder: finalFolderName }),
+      };
     }
 
     return { service: 'google_drive', success: true };

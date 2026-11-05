@@ -2329,6 +2329,13 @@ const entries = [
   ],
   [
     'sync',
+    'export_dialog.drive_folder_renamed',
+    'Google Drive already had a folder with the same name, so this export went to {{folder}}.',
+    'Export dialog: appended to the result toast and shown under the Google Drive row when a folder with the export name already existed, so the files were written to an automatically renamed folder. {{folder}} is that folder name, e.g. MyCV_2. Nothing was overwritten or lost; do not phrase it as a warning or an error.',
+    ['Google Drive'],
+  ],
+  [
+    'sync',
     'export_dialog.filename_only',
     'Company and position shape the file name. The posting link is saved with backups to Google Drive or a private GitHub repository, never with a public or published one.',
     'Export dialog: note under the company, position and job posting link fields. Company and position only change the exported file name. The job posting link is saved only with backups to Google Drive or to a private GitHub repository, and is never written to a public repository or one published with GitHub Pages; ZIP downloads do not keep it. Do not widen the claim into "always saved". Take "backups" and the public/published repository wording from settings.github.public_repo_note in this locale, and the link noun from sync.export_modal_posting_label',

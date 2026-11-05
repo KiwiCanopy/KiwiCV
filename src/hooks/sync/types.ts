@@ -7,7 +7,8 @@ export interface SyncResult {
   service: string;
   success: boolean;
   error?: string;
-  folderName?: string;
+  /** The folder Drive wrote instead of the one asked for, after a name collision. */
+  renamedFolder?: string;
   alreadySynced?: boolean;
 }
 

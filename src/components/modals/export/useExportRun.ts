@@ -63,6 +63,8 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
   // A state read inside the run closure would be the value captured when the
   // trigger was last rendered, which is exactly the double-submit this guards.
   const runningRef = useRef(false);
+  // Outlives a retry, which drops the succeeded rows (#90): the toast ending it must still say (#41).
+  const noticesRef = useRef<string[]>([]);
   const [announcement, setAnnouncement] = useState('');
 
   const run = useCallback(
@@ -102,11 +104,14 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
           });
 
           if (result.success) succeededIds.push(id);
+          if (result.notice) noticesRef.current.push(result.notice);
           setState((prev) => ({
             ...prev,
             rows: {
               ...prev.rows,
-              [id]: result.success ? { status: 'done' } : { status: 'failed', error: result.error },
+              [id]: result.success
+                ? { status: 'done', notice: result.notice }
+                : { status: 'failed', error: result.error },
             },
           }));
           setAnnouncement(
@@ -139,16 +144,19 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
             : done === 0
               ? t('sync.export_dialog.result_all_failed')
               : t('sync.export_dialog.result_partial', { done, total });
-
         // Exactly one toast per run, so the result survives the user closing
         // the dialog. Every argument is a `t()` call — `i18n:literals` and the
         // bare-literal test both hunt `addToast` announcers.
         const outcome = done === total ? 'all_ok' : done === 0 ? 'failed' : 'partial';
+        // The row alone would not do: a full success closes the dialog (#34, #41). Not beside
+        // "nothing was exported", though. A plain space in every locale, CJK too: what follows
+        // the stop starts in Latin.
+        const message = [summary, ...(outcome === 'failed' ? [] : noticesRef.current)].join(' ');
         // The full success outlives the dialog, which closes on it (#34). The
         // toast regions stay audible under the modal: `aria-hidden` skips `[aria-live]`.
-        if (outcome === 'all_ok') addToast(summary, 'success', ALL_OK_TOAST_MS);
-        else addToast(summary, outcome === 'failed' ? 'error' : 'warning');
-        setAnnouncement(summary);
+        if (outcome === 'all_ok') addToast(message, 'success', ALL_OK_TOAST_MS);
+        else addToast(message, outcome === 'failed' ? 'error' : 'warning');
+        setAnnouncement(message);
         setState((prev) => ({ ...prev, isRunning: false, hasRun: true, outcome }));
       } catch (error) {
         // Act 1 failed: nothing was written anywhere, so every selected row

@@ -81,6 +81,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Един архив, директно на това устройство.',
     dest_zip_label: 'Изтегляне като ZIP',
+    drive_folder_renamed:
+      'В Google Drive вече имаше папка със същото име, затова този експорт е записан в папка {{folder}}.',
     filename_only:
       'Компанията и позицията определят името на файла. Линкът към обявата се пази с резервните копия в Google Drive или в поверително хранилище в GitHub, никога в публично или публикувано.',
     letter_confirm_anyway: 'Експортиране въпреки това',

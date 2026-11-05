@@ -8,6 +8,8 @@ import JSZip from 'jszip';
 export interface DestinationRunResult {
   success: boolean;
   error?: string;
+  /** Something a successful run must still tell the user, already translated. */
+  notice?: string;
 }
 
 export interface DestinationRunContext {
@@ -57,7 +59,15 @@ const cloudDestination =
   (variant: SyncVariant, provider: SyncProviderId, mode: 'sync' | 'push'): DestinationAdapter =>
   async ({ syncToCloud, t }) => {
     const { success, results, error } = await syncToCloud(variant, [provider], mode);
-    if (success) return { success: true };
+    if (success) {
+      const renamed = results.find((result) => result.renamedFolder)?.renamedFolder;
+      return renamed
+        ? {
+            success: true,
+            notice: t('sync.export_dialog.drive_folder_renamed', { folder: renamed }),
+          }
+        : { success: true };
+    }
 
     const failed = results.find((result) => !result.success);
     return { success: false, error: failed?.error || error || t('common.error') };

@@ -81,6 +81,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Un archivio, direttamente su questo dispositivo.',
     dest_zip_label: 'Scarica come ZIP',
+    drive_folder_renamed:
+      'Google Drive aveva già una cartella con lo stesso nome, quindi questa esportazione è stata salvata in {{folder}}.',
     filename_only:
       "Azienda e posizione determinano il nome del file. Il link all'annuncio viene salvato con i backup su Google Drive o in un repository GitHub privato, mai in uno pubblico o pubblicato.",
     letter_confirm_anyway: 'Esporta comunque',

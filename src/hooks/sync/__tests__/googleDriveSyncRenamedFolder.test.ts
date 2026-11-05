@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const drive = vi.hoisted(() => ({
   sync: vi.fn(async (..._args: unknown[]): Promise<{ folderName?: string }> => ({})),
+  listFiles: vi.fn(async () => []),
 }));
 vi.mock('@/services/google-drive', () => ({ googleDriveService: drive }));
 
@@ -19,7 +20,13 @@ const params = (): SyncParams => ({
   currentHash: 'a'.repeat(64),
   includeBackup: true,
   projectName: 'CV',
-  artifacts: { folderName: 'CV', backupFileName: 'CV', json: '{}', html: null, pdf: null },
+  artifacts: {
+    folderName: 'CV',
+    backupFileName: 'CV',
+    json: '{}',
+    html: '<html></html>',
+    pdf: null,
+  },
   postingUrl: null,
 });
 

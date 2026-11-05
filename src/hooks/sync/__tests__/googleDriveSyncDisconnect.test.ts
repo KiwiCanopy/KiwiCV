@@ -13,6 +13,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 /** A sync in flight across a disconnect must not stamp the next connection. */
 const drive = vi.hoisted(() => ({
   sync: vi.fn(async (..._args: unknown[]): Promise<{ folderName?: string }> => ({})),
+  listFiles: vi.fn(async () => []),
   revoke: vi.fn(async (..._args: unknown[]) => true),
 }));
 vi.mock('@/services/google-drive', () => ({ googleDriveService: drive }));

@@ -170,6 +170,74 @@ describe('useExportRun', () => {
     expect(result.current.failed).toEqual([]);
   });
 
+  it('keeps a succeeded row, with its notice, through a retry (#90)', async () => {
+    const drive = { service: 'google_drive', success: true, renamedFolder: 'Ada_2' };
+    handleSyncImpl = async (_variant, _name, _mode, options) =>
+      options?.providers?.includes('github')
+        ? { success: false, results: [{ service: 'github', success: false, error: 'expired' }] }
+        : { success: true, results: [drive] };
+    const { result } = renderRun();
+    await act(async () => {
+      await result.current.run(['github_repo', 'google_drive'], 'Ada');
+    });
+    const driveRow = result.current.state.rows.google_drive;
+    expect(driveRow?.status).toBe('done');
+
+    let retried: Promise<void> | undefined;
+    let release: () => void = () => {};
+    handleSyncImpl = () =>
+      new Promise((resolve) => {
+        release = () => resolve({ success: false, results: [] });
+      });
+    act(() => {
+      retried = result.current.run(result.current.failed, 'Ada');
+    });
+
+    expect(result.current.state.rows.google_drive).toEqual(driveRow);
+    expect(result.current.state.runIds).toEqual(['github_repo']);
+
+    await act(async () => {
+      await vi.waitFor(() =>
+        expect(handleSync).toHaveBeenLastCalledWith(
+          'full',
+          'Ada',
+          'sync',
+          expect.objectContaining({ providers: ['github'] }),
+        ),
+      );
+      release();
+      await retried;
+    });
+
+    expect(result.current.state.rows.google_drive).toEqual(driveRow);
+    expect(result.current.failed).toEqual(['github_repo']);
+    expect(result.current.succeeded).toEqual(['google_drive']);
+  });
+
+  it('keeps a succeeded row when the retry cannot build the package (#90)', async () => {
+    handleSyncImpl = async (_variant, _name, _mode, options) =>
+      options?.providers?.includes('github')
+        ? { success: false, results: [{ service: 'github', success: false, error: 'expired' }] }
+        : { success: true, results: [] };
+    const { result } = renderRun();
+    await act(async () => {
+      await result.current.run(['github_repo', 'google_drive'], 'Ada');
+    });
+
+    buildExportArtifacts.mockRejectedValueOnce(new Error('typst'));
+    await act(async () => {
+      await result.current.run(result.current.failed, 'Ada');
+    });
+
+    expect(result.current.state.rows.google_drive?.status).toBe('done');
+    expect(result.current.state.rows.github_repo?.error).toBe('sync.export_dialog.build_failed');
+    expect(result.current.failed).toEqual(['github_repo']);
+    expect(addToast.mock.lastCall).toEqual([
+      'sync.export_dialog.result_partial sync.export_dialog.build_failed_hint',
+      'warning',
+    ]);
+  });
+
   it('fires one analytics event per run, carrying the destinations that succeeded', async () => {
     handleSyncImpl = async (_variant, _name, _mode, options) => {
       if (options?.providers?.includes('github')) throw new Error('nope');
@@ -290,7 +358,7 @@ describe('useExportRun', () => {
     );
   });
 
-  it('keeps the renamed folder out of an all-failed retry, and names it once one succeeds', async () => {
+  it('still reports the finished destination and its folder when the retry fails again', async () => {
     let githubFails = true;
     handleSyncImpl = async (_variant, _name, _mode, options) => {
       if (options?.providers?.includes('github')) {
@@ -311,8 +379,9 @@ describe('useExportRun', () => {
       await result.current.run(result.current.failed, 'Ada');
     });
 
-    expect(addToast.mock.lastCall).toEqual(['sync.export_dialog.result_all_failed', 'error']);
-    expect(result.current.announcement).toBe('sync.export_dialog.result_all_failed');
+    const expected = 'sync.export_dialog.result_partial sync.export_dialog.drive_folder_renamed';
+    expect(addToast.mock.lastCall).toEqual([expected, 'warning']);
+    expect(result.current.announcement).toBe(expected);
 
     githubFails = false;
     await act(async () => {

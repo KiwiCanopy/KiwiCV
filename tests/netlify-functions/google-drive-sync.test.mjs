@@ -369,3 +369,138 @@ test('any other token-exchange failure stays a server error', async (context) =>
   assert.equal(result.statusCode, 500);
   assert.notEqual(result.body.error, 'INVALID_GRANT');
 });
+
+function listRequest(fetchImpl, context) {
+  context.mock.method(console, 'error', () => {});
+  context.mock.method(globalThis, 'fetch', async (url) => {
+    if (String(url).startsWith('https://oauth2.googleapis.com/token')) return tokenResponse();
+    const parsed = new URL(url);
+    if (parsed.searchParams.get('q')?.includes('mimeType')) return fetchImpl.folder(parsed);
+    return fetchImpl.list(parsed);
+  });
+  return handler({
+    httpMethod: 'POST',
+    body: JSON.stringify({
+      action: 'list-files',
+      refreshToken: 'refresh-token',
+      folderPath: ['KiwiCV'],
+    }),
+  });
+}
+const folderFound = () => jsonResponse({ files: [{ id: 'folder' }] });
+
+test('list-files follows every page, since the client picks a free name from it', async (context) => {
+  const response = await listRequest(
+    {
+      folder: folderFound,
+      // Drive returns only the fields it was asked for.
+      list: (url) =>
+        url.searchParams.get('pageToken') === 'next'
+          ? jsonResponse({ files: [{ name: 'b.json' }] })
+          : jsonResponse({
+              files: [{ name: 'a.json' }],
+              ...(url.searchParams.get('fields').includes('nextPageToken') && {
+                nextPageToken: 'next',
+              }),
+            }),
+    },
+    context,
+  );
+
+  assert.equal(response.statusCode, 200);
+  assert.deepEqual(JSON.parse(response.body), [{ name: 'a.json' }, { name: 'b.json' }]);
+});
+
+test('a failed listing is an error, never an empty folder', async (context) => {
+  const response = await listRequest(
+    { folder: folderFound, list: () => ({ ok: false, status: 500, json: async () => ({}) }) },
+    context,
+  );
+
+  assert.notEqual(response.statusCode, 200);
+});
+
+test('a failed folder search is an error, never a missing folder', async (context) => {
+  const response = await listRequest(
+    { folder: () => ({ ok: false, status: 429, json: async () => ({}) }), list: folderFound },
+    context,
+  );
+
+  assert.notEqual(response.statusCode, 200);
+});
+
+function uploadWith(answer, context, files = []) {
+  context.mock.method(console, 'error', () => {});
+  const fetchMock = context.mock.method(globalThis, 'fetch', async (url, init) => {
+    if (String(url).startsWith('https://oauth2.googleapis.com/token')) return tokenResponse();
+    return answer(new URL(url), init);
+  });
+  const request = handler({
+    httpMethod: 'POST',
+    body: JSON.stringify({
+      action: 'upload',
+      refreshToken: 'refresh-token',
+      folderPath: ['KiwiCV', 'exports', 'CV'],
+      files,
+      unique: true,
+    }),
+  });
+  return { request, fetchMock };
+}
+const uploadsAndCreates = (fetchMock) =>
+  fetchMock.mock.calls.filter((call) => ['POST', 'PATCH'].includes(call.arguments[1]?.method));
+const isTokenCall = (call) => String(call.arguments[0]).includes('oauth2');
+
+test('a failed probe for a free folder name writes nothing', async (context) => {
+  const { request, fetchMock } = uploadWith(
+    (url) =>
+      url.searchParams.get('q').includes("name = 'CV_")
+        ? { ok: false, status: 429, json: async () => ({}) }
+        : jsonResponse({ files: [{ id: 'existing' }] }),
+    context,
+    [{ fileName: 'CV.pdf', content: 'x', contentType: 'application/pdf' }],
+  );
+
+  assert.notEqual((await request).statusCode, 200);
+  assert.deepEqual(
+    uploadsAndCreates(fetchMock).filter((call) => !isTokenCall(call)),
+    [],
+  );
+});
+
+test('running out of folder names writes over nothing', async (context) => {
+  const { request, fetchMock } = uploadWith(
+    () => jsonResponse({ files: [{ id: 'existing' }] }),
+    context,
+    [{ fileName: 'CV.pdf', content: 'x', contentType: 'application/pdf' }],
+  );
+
+  assert.notEqual((await request).statusCode, 200);
+  assert.deepEqual(
+    uploadsAndCreates(fetchMock).filter((call) => !isTokenCall(call)),
+    [],
+  );
+});
+
+test('a failed search for an existing file uploads no duplicate', async (context) => {
+  const { request, fetchMock } = uploadWith(
+    (url) => {
+      const q = url.searchParams.get('q') ?? '';
+      if (q.includes('mimeType')) {
+        return q.includes("name = 'CV_")
+          ? jsonResponse({ files: [] })
+          : jsonResponse({ files: [{ id: 'folder' }] });
+      }
+      if (q) return { ok: false, status: 500, json: async () => ({}) };
+      return jsonResponse({ id: 'created' });
+    },
+    context,
+    [{ fileName: 'CV.pdf', content: 'x', contentType: 'application/pdf' }],
+  );
+
+  assert.notEqual((await request).statusCode, 200);
+  const uploads = uploadsAndCreates(fetchMock).filter(
+    (call) => !isTokenCall(call) && String(call.arguments[0]).includes('/upload/'),
+  );
+  assert.deepEqual(uploads, []);
+});

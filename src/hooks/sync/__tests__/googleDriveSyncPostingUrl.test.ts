@@ -10,6 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 /** A Drive snapshot carries the link in the file and in `appProperties` (#54). */
 const drive = vi.hoisted(() => ({
   sync: vi.fn(async (..._args: unknown[]): Promise<{ folderName?: string }> => ({})),
+  listFiles: vi.fn(async () => []),
 }));
 vi.mock('@/services/google-drive', () => ({ googleDriveService: drive }));
 

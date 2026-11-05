@@ -91,7 +91,7 @@ is untouched and still serves the Backup button.
    one failure leaves the others intact and the loop never breaks.
 
 Afterwards the trigger relabels to **Retry** over exactly the failed ids; succeeded rows lock
-with a check. A failure in act 1 fails every selected row with the same reason and surfaces
+with a check. A failure in act 1 fails every row of that run with the same reason and surfaces
 the "switch the PDF off under Change" recovery, which is why the format choice stays
 reachable. One `EXPORT_PERFORMED` event and one toast per run; `syncVersion()` once, not once
 per destination. `DialogFrame busy` blocks Escape while in flight. ⚠️ **The dialog closes on its
@@ -102,10 +102,29 @@ the per-destination report and Retry.
 ⚠️ **A renamed Drive folder is reported in the toast as well as the row** (#41). Drive
 auto-increments a colliding export folder (`MyCV` becomes `MyCV_2`), `performGoogleDriveSync`
 returns it as `renamedFolder`, and `cloudDestination` turns that into `notice`. The row alone would
-not do: a full success closes the dialog before anyone reads it, and a retry drops the rows that
-already succeeded (#90), so `useExportRun` carries notices across retries. An all-failed retry's toast
-leaves them out, since it says nothing was exported. An already-synced run writes nothing, so it
-renames nothing and says nothing.
+not do: a full success closes the dialog before anyone reads it. An already-synced run writes
+nothing, so it renames nothing and says nothing.
+
+⚠️ **A retry keeps what already succeeded** (#90). Rows merge across runs, so a finished row keeps
+its check, lock and notice, and `runIds` scopes the progress label to the run in flight. The toast
+counts the whole dialog session: a retry that fails again says "1 of 2 finished", never "nothing was
+exported".
+
+⚠️ **A retry reuses the folder the failed attempt wrote** (#91). `writeDeliverables` holds the name
+Drive returned in module state until the snapshot lands, so a snapshot failure leaves `MyCV`, not
+`MyCV` and `MyCV_2`. Only the same content under the same name and account counts as a retry, and a
+reload loses it. A failure inside the upload itself still leaves a folder the client cannot name
+(#98). **With no deliverables there is no folder at all** (#92).
+
+⚠️ **Every snapshot name comes from a listing of `backups/{lang}`** (#92). Folders and snapshots no
+longer advance together, so a free folder proves nothing about a free snapshot. `freeSnapshotName`
+prefers the folder's suffix and otherwise takes the first free `_N`. The listing must be complete or
+fail: `list-files` paginates and errors rather than answering `[]`, because a wrong "free" overwrites
+an earlier snapshot.
+
+**A failed Back up resolves its loading dialog in place** to an error naming each failed provider,
+or to the login dialog when the connection is what is missing (#93). `ConfirmModal`'s message is a
+live region, since a change inside an open dialog is otherwise silent.
 
 | Destination    | Adapter                                     | Available when                                 |
 | :------------- | :------------------------------------------ | :--------------------------------------------- |

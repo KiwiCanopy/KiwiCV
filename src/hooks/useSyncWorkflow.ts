@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 import { useSyncAuthGateway } from '@/hooks/sync/useSyncAuthGateway';
 import { useAuth } from '@/hooks/useAuth';
-import { type SyncVariant, useCloudSync } from '@/hooks/useCloudSync';
+import { type SyncProviderId, type SyncVariant, useCloudSync } from '@/hooks/useCloudSync';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { hasStoredGoogleDriveCreds } from '@/services/storage/googleStorage';
@@ -63,6 +63,20 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
     }
 
     useResumeStore.getState().syncVersion();
+    setErrorMessage('');
+
+    // Replaces the loading dialog, which has no way out of its own (#93).
+    const showError = (message: string) =>
+      useConfirmStore.getState().setOptions({
+        title: t('common.error'),
+        message,
+        isLoading: false,
+        confirmText: t('common.ok'),
+        cancelText: '',
+        showCloseButton: true,
+        closeOnConfirm: true,
+        variant: 'destructive',
+      });
 
     // Start Loading Modal
     confirm({
@@ -138,8 +152,23 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
           providers,
         });
       } else {
+        const providerLabels: Record<SyncProviderId, string> = {
+          github: t('sync.export_dialog.dest_github_repo_label'),
+          google_drive: t('sync.export_dialog.dest_google_drive_label'),
+        };
+        // Every provider, or a partial failure reads as if nothing was saved.
+        const outcomes = results
+          .map((r) => {
+            const outcome = r.success
+              ? t('sync.export_dialog.status_done')
+              : r.error || t('common.error');
+            return `${providerLabels[r.service]}: ${outcome}`;
+          })
+          .join(' ');
+
         const atLeastOneSuccess = results.some((r) => r.success);
         if (atLeastOneSuccess) {
+          showError(outcomes);
           setSyncStatus('success');
           setTimeout(() => {
             setSyncStatus('idle');
@@ -153,19 +182,24 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
         setErrorMessage(firstError);
 
         const needsConfig =
-          results.length === 0 ||
-          results.every((r) => r.error?.includes('config') || r.error?.includes('PAT'));
+          (results.length === 0 && !error) ||
+          (results.length > 0 &&
+            results.every((r) => r.error?.includes('config') || r.error?.includes('PAT')));
         const googleAuthError = results.some(
           (r) => r.service === 'google_drive' && r.error?.includes('connection missing'),
         );
 
         if ((needsConfig || googleAuthError) && location.pathname !== '/settings') {
+          // The login dialog says why, and two modals must not stack.
+          useConfirmStore.getState().close();
           useFlowStore.getState().openGoogleLogin({
             description: t('auth.sync_login_required'),
             source: 'sync',
             syncMode: mode as 'sync' | 'push',
             requireDrive: true,
           });
+        } else {
+          showError(outcomes || firstError);
         }
         setTimeout(() => setSyncStatus('idle'), 5000);
       }
@@ -173,18 +207,7 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
       const errorMsg = err instanceof Error ? err.message : 'Sync failed';
       setSyncStatus('error');
       setErrorMessage(errorMsg);
-
-      // Show Error Modal
-      useConfirmStore.getState().setOptions({
-        title: t('common.error'),
-        message: errorMsg || t('common.error_occurred'),
-        isLoading: false,
-        confirmText: t('common.ok'),
-        cancelText: '',
-        showCloseButton: true,
-        closeOnConfirm: true,
-        variant: 'destructive',
-      });
+      showError(errorMsg || t('common.error_occurred'));
       setTimeout(() => setSyncStatus('idle'), 5000);
     }
   }, [

@@ -17,7 +17,10 @@ const github = vi.hoisted(() => ({
   pushFile: vi.fn(async (..._args: unknown[]) => ({})),
   pushExport: vi.fn(async (..._args: unknown[]) => ({})),
 }));
-const drive = vi.hoisted(() => ({ sync: vi.fn(async (..._args: unknown[]) => ({})) }));
+const drive = vi.hoisted(() => ({
+  sync: vi.fn(async (..._args: unknown[]): Promise<{ folderName?: string }> => ({})),
+  listFiles: vi.fn(async () => []),
+}));
 
 vi.mock('@/services/github', () => ({
   GitHubService: vi.fn(function GitHubService() {

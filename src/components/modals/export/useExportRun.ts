@@ -20,6 +20,7 @@ export const ALL_OK_TOAST_MS = 10_000;
 const IDLE_STATE: ExportRunState = {
   isRunning: false,
   rows: {},
+  runIds: [],
   buildError: null,
   hasRun: false,
   outcome: null,
@@ -63,8 +64,8 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
   // A state read inside the run closure would be the value captured when the
   // trigger was last rendered, which is exactly the double-submit this guards.
   const runningRef = useRef(false);
-  // Outlives a retry, which drops the succeeded rows (#90): the toast ending it must still say (#41).
-  const noticesRef = useRef<string[]>([]);
+  // What the dialog session has written, with each one's notice: a retry's toast reports all of it.
+  const succeededRef = useRef(new Map<DestinationId, string | undefined>());
   const [announcement, setAnnouncement] = useState('');
 
   const run = useCallback(
@@ -75,15 +76,18 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
       const resume = useResumeStore.getState().resume;
       runningRef.current = true;
 
-      const total = ids.length;
-      setState({
+      setState((prev) => ({
         isRunning: true,
-        rows: Object.fromEntries(ids.map((id) => [id, { status: 'idle' as const }])),
+        rows: {
+          ...prev.rows,
+          ...Object.fromEntries(ids.map((id) => [id, { status: 'idle' as const }])),
+        },
+        runIds: ids,
         buildError: null,
         hasRun: false,
         outcome: null,
-      });
-      setAnnouncement(t('sync.export_dialog.progress', { done: 0, total }));
+      }));
+      setAnnouncement(t('sync.export_dialog.progress', { done: 0, total: ids.length }));
 
       // Idempotent, and the whole run is one export: pin the version once
       // rather than once per destination.
@@ -103,8 +107,10 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
               handleSync(variant, projectName, mode, { providers, artifacts, postingUrl }),
           });
 
-          if (result.success) succeededIds.push(id);
-          if (result.notice) noticesRef.current.push(result.notice);
+          if (result.success) {
+            succeededIds.push(id);
+            succeededRef.current.set(id, result.notice);
+          }
           setState((prev) => ({
             ...prev,
             rows: {
@@ -117,7 +123,7 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
           setAnnouncement(
             t('sync.export_dialog.progress', {
               done: ids.indexOf(id) + 1,
-              total,
+              total: ids.length,
             }),
           );
         }
@@ -137,7 +143,9 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
           }),
         });
 
-        const done = succeededIds.length;
+        // The whole session, not this run: a retry that fails again has still exported the rest.
+        const done = succeededRef.current.size;
+        const total = done + ids.length - succeededIds.length;
         const summary =
           done === total
             ? t('sync.export_dialog.result_all_ok', { count: total })
@@ -148,10 +156,9 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
         // the dialog. Every argument is a `t()` call — `i18n:literals` and the
         // bare-literal test both hunt `addToast` announcers.
         const outcome = done === total ? 'all_ok' : done === 0 ? 'failed' : 'partial';
-        // The row alone would not do: a full success closes the dialog (#34, #41). Not beside
-        // "nothing was exported", though. A plain space in every locale, CJK too: what follows
-        // the stop starts in Latin.
-        const message = [summary, ...(outcome === 'failed' ? [] : noticesRef.current)].join(' ');
+        // The row alone would not do: a full success closes the dialog (#34, #41). A plain space
+        // in every locale, CJK too: what follows the stop starts in Latin.
+        const message = [summary, ...succeededRef.current.values()].filter(Boolean).join(' ');
         // The full success outlives the dialog, which closes on it (#34). The
         // toast regions stay audible under the modal: `aria-hidden` skips `[aria-live]`.
         if (outcome === 'all_ok') addToast(message, 'success', ALL_OK_TOAST_MS);
@@ -159,20 +166,34 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
         setAnnouncement(message);
         setState((prev) => ({ ...prev, isRunning: false, hasRun: true, outcome }));
       } catch (error) {
-        // Act 1 failed: nothing was written anywhere, so every selected row
-        // carries the same reason.
+        // Act 1 failed: this run wrote nothing, so each of its rows carries the same reason.
         const detail = error instanceof Error ? error.message : String(error);
-        const message = t('sync.export_dialog.build_failed');
-        setState({
+        const buildFailed = t('sync.export_dialog.build_failed');
+        // "Nothing was sent" is untrue once an earlier run in this dialog wrote something.
+        const done = succeededRef.current.size;
+        const message = done
+          ? [
+              t('sync.export_dialog.result_partial', { done, total: done + ids.length }),
+              t('sync.export_dialog.build_failed_hint'),
+              ...succeededRef.current.values(),
+            ]
+              .filter(Boolean)
+              .join(' ')
+          : buildFailed;
+        setState((prev) => ({
           isRunning: false,
           hasRun: true,
           outcome: 'failed',
           buildError: detail,
-          rows: Object.fromEntries(
-            ids.map((id) => [id, { status: 'failed' as const, error: message }]),
-          ),
-        });
-        addToast(message, 'error');
+          runIds: ids,
+          rows: {
+            ...prev.rows,
+            ...Object.fromEntries(
+              ids.map((id) => [id, { status: 'failed' as const, error: buildFailed }]),
+            ),
+          },
+        }));
+        addToast(message, done ? 'warning' : 'error');
         setAnnouncement(message);
       } finally {
         runningRef.current = false;

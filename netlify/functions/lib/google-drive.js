@@ -149,6 +149,9 @@ export async function ensureFolderPath(accessToken, pathParts, create = true, un
       },
     );
 
+    // A failed search is not "no such folder": that would create a duplicate.
+    if (!searchRes.ok)
+      throw driveError('FOLDER_SEARCH_FAILED', 'Folder search failed', searchRes.status);
     const searchData = await searchRes.json();
     let folderId = searchData.files?.[0]?.id;
 
@@ -165,6 +168,9 @@ export async function ensureFolderPath(accessToken, pathParts, create = true, un
             headers: { Authorization: `Bearer ${accessToken}` },
           },
         );
+        if (!uSearchRes.ok) {
+          throw driveError('FOLDER_SEARCH_FAILED', 'Folder search failed', uSearchRes.status);
+        }
         const uSearchData = await uSearchRes.json();
         if (uSearchData.files && uSearchData.files.length === 0) {
           part = uniquePart;
@@ -174,7 +180,8 @@ export async function ensureFolderPath(accessToken, pathParts, create = true, un
         } else {
           counter++;
         }
-        if (counter > 20) break;
+        // Falling through here would write over the export in the existing folder.
+        if (counter > 20) throw driveError('FOLDER_NAMES_TAKEN', 'No free folder name', 409);
       }
     }
 
@@ -224,6 +231,9 @@ export async function uploadFiles(accessToken, folderInfo, files) {
         headers: { Authorization: `Bearer ${accessToken}` },
       },
     );
+    // A failed search is not "no such file": that would upload a duplicate beside it.
+    if (!searchRes.ok)
+      throw driveError('FILE_SEARCH_FAILED', 'File search failed', searchRes.status);
     const searchData = await searchRes.json();
     const existingFileId = searchData.files?.[0]?.id;
 

@@ -2,14 +2,18 @@
 import { ExportModal } from '@/components/modals/export/ExportModal';
 import { clearExportDraft } from '@/hooks/export/exportDraft';
 import { type ProviderState } from '@/hooks/sync/providerState';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string, vars?: Record<string, string | number>) =>
-      typeof vars?.count === 'number' ? `${key}_${vars.count === 1 ? 'one' : 'other'}` : key,
+      typeof vars?.count === 'number'
+        ? `${key}_${vars.count === 1 ? 'one' : 'other'}`
+        : key === 'sync.export_dialog.running'
+          ? `${key} ${vars?.done}/${vars?.total}`
+          : key,
     uiLanguage: 'en',
   }),
 }));
@@ -289,6 +293,24 @@ describe('ExportModal', () => {
     await user.click(await screen.findByRole('button', { name: /sync\.export_dialog\.retry_one/ }));
 
     await waitFor(() => expect(props.onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('counts only the retried destinations in the progress label (#90)', async () => {
+    providerStates.github = 'active';
+    runDestination.mockResolvedValueOnce({ success: true });
+    runDestination.mockResolvedValueOnce({ success: false, error: 'disk full' } as never);
+    const user = userEvent.setup();
+    renderModal();
+    await user.click(screen.getByRole('switch', { name: /dest_github_repo_label/ }));
+    await user.click(screen.getByRole('button', { name: /sync\.export_dialog\.trigger_other/ }));
+    const retry = await screen.findByRole('button', { name: /sync\.export_dialog\.retry_one/ });
+
+    let finish: (result: { success: boolean }) => void = () => {};
+    runDestination.mockImplementationOnce(() => new Promise((resolve) => (finish = resolve)));
+    await user.click(retry);
+
+    expect(await screen.findByRole('button', { name: /running 0\/1/ })).toBeTruthy();
+    await act(async () => finish({ success: true }));
   });
 
   it('stays open when the package cannot be built', async () => {

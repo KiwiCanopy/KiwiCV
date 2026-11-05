@@ -183,23 +183,19 @@ export const googleDriveService = {
       throw new Error(errorData.error || 'FETCH_ERROR');
     }
 
-    try {
-      const data = await response.json();
-      if (data.error) {
-        if (
-          data.error.includes('permission') ||
-          data.error.includes('scope') ||
-          data.error.includes('consent')
-        ) {
-          throw new Error('UNAUTHORIZED');
-        }
-        throw new Error(data.error);
+    // Throws on any doubt: the only caller picks a free file name from this answer (#92).
+    const data = await response.json();
+    if (data.error) {
+      if (
+        data.error.includes('permission') ||
+        data.error.includes('scope') ||
+        data.error.includes('consent')
+      ) {
+        throw new Error('UNAUTHORIZED');
       }
-      return data;
-    } catch (e: unknown) {
-      if (e instanceof Error && e.message === 'UNAUTHORIZED') throw e;
-      return [];
+      throw new Error(data.error);
     }
+    return data;
   },
 
   /**

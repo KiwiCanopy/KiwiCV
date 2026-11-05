@@ -16,8 +16,81 @@ import {
   getCleanProjectName,
   getProjectFilename,
   parseBackupFilename,
+  sanitizePath,
 } from '@/utils/export';
 import { stringifyResume } from '@/utils/passthrough';
+
+/**
+ * The folder an unfinished export wrote to, so its retry adds no second one (#91).
+ * Only the same content under the same name and account is a retry. Lost on reload.
+ */
+let claimedFolder: {
+  refreshToken: string;
+  requested: string;
+  currentHash: string;
+  folder: string;
+} | null = null;
+
+const writeDeliverables = async (
+  refreshToken: string,
+  requested: string,
+  currentHash: string,
+  files: DriveUploadFile[],
+) => {
+  const exportsPath = [GOOGLE_DRIVE_FOLDER, 'exports'];
+  if (
+    claimedFolder?.refreshToken === refreshToken &&
+    claimedFolder.requested === requested &&
+    claimedFolder.currentHash === currentHash
+  ) {
+    await googleDriveService.sync(refreshToken, [...exportsPath, claimedFolder.folder], files);
+    return claimedFolder.folder;
+  }
+  const { folderName } = await googleDriveService.sync(
+    refreshToken,
+    [...exportsPath, requested],
+    files,
+    true, // Auto-increment folder name on collision
+  );
+  const folder = folderName || requested;
+  claimedFolder = { refreshToken, requested, currentHash, folder };
+  return folder;
+};
+
+/** `sanitizePath` truncates a base here, which would otherwise eat the suffix. */
+const MAX_BASE_LENGTH = 50;
+
+/** Applies a folder-style `_2` to a snapshot name, past its base and before its metadata. */
+const withSuffix = (backupFileName: string, suffix: string) => {
+  if (!suffix) return backupFileName;
+  const meta = parseBackupFilename(backupFileName);
+  const base = sanitizePath(meta.base).slice(0, MAX_BASE_LENGTH - suffix.length) + suffix;
+  return constructBackupFilename(base, meta.company, meta.position, meta.theme);
+};
+
+const MAX_SNAPSHOT_COUNTER = 100;
+
+/**
+ * Picks a snapshot name nothing holds yet, preferring the folder's suffix. Folders
+ * and snapshots no longer advance together (#92), so a free folder proves nothing.
+ */
+const freeSnapshotName = async (
+  refreshToken: string,
+  backupPath: string[],
+  backupFileName: string,
+  folderSuffix: string,
+  t: SyncParams['t'],
+) => {
+  const files = await googleDriveService.listFiles(refreshToken, backupPath);
+  const taken = new Set(files.map((file) => file.name));
+  const preferred = withSuffix(backupFileName, folderSuffix);
+  if (!taken.has(`${preferred}.json`)) return preferred;
+  for (let counter = 2; counter <= MAX_SNAPSHOT_COUNTER; counter++) {
+    const name = withSuffix(backupFileName, `_${counter}`);
+    if (!taken.has(`${name}.json`)) return name;
+  }
+  throw new Error(t('common.error'));
+};
 
 export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncResult> => {
   const { resume, variant, lang, t, currentHash, includeBackup } = params;
@@ -74,8 +147,7 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
       const backupFileName = params.projectName || getProjectFilename(resume);
       const cleanFolderName = getCleanProjectName(backupFileName);
 
-      // --- Deliverables (PDF/HTML) to exports/{cleanFolderName}/ ---
-      const exportPath = [driveFolder, 'exports', cleanFolderName];
+      // --- Deliverables (PDF/HTML) to exports/{finalFolderName}/ ---
       const filesToPush: { name: string; content: string | Blob; contentType: string }[] = [];
 
       // The deliverables are built once per run by the caller. Compiling here
@@ -95,28 +167,24 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
         filesToPush.push({ name: 'index.html', content: artifacts.html, contentType: 'text/html' });
       }
 
+      const backupPath = [driveFolder, 'backups', lang];
       let finalFolderName = cleanFolderName;
-
-      const { folderName } = await googleDriveService.sync(
-        refreshToken,
-        exportPath,
-        filesToPush,
-        true, // Auto-increment folder name on collision
-      );
-      finalFolderName = folderName || cleanFolderName;
-
-      let finalBackupFileName = backupFileName;
-      if (finalFolderName !== cleanFolderName) {
-        // If the folder was auto-incremented (e.g. "_2"), apply that suffix to the backup filename
-        const suffix = finalFolderName.substring(cleanFolderName.length);
-        const meta = parseBackupFilename(backupFileName);
-        finalBackupFileName = constructBackupFilename(
-          meta.base + suffix,
-          meta.company,
-          meta.position,
-          meta.theme,
+      if (filesToPush.length > 0) {
+        finalFolderName = await writeDeliverables(
+          refreshToken,
+          cleanFolderName,
+          currentHash,
+          filesToPush,
         );
       }
+
+      const finalBackupFileName = await freeSnapshotName(
+        refreshToken,
+        backupPath,
+        backupFileName,
+        finalFolderName.substring(cleanFolderName.length),
+        t,
+      );
 
       // --- Project Snapshot (JSON) to backups/{lang}/{finalBackupFileName}.json ---
       // The link also goes in `appProperties`, which the library listing reads
@@ -130,8 +198,8 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
         appProperties: toDriveAppProperties(postingUrl),
       });
 
-      const backupPath = [driveFolder, 'backups', lang];
       await googleDriveService.sync(refreshToken, backupPath, snapshotFiles);
+      claimedFolder = null;
 
       // The requested name, as the check above compares; a renamed folder is Drive's choice.
       const stamp = await fullPushStamp(currentHash, backupFileName, params.postingUrl);

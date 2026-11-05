@@ -3,8 +3,10 @@ import { type ResumeData } from '@/types/resume';
 
 export type SyncVariant = 'standard' | 'full' | 'hosting' | 'config';
 
+export type SyncProviderId = 'github' | 'google_drive';
+
 export interface SyncResult {
-  service: string;
+  service: SyncProviderId;
   success: boolean;
   error?: string;
   /** The folder Drive wrote instead of the one asked for, after a name collision. */

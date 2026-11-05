@@ -17,7 +17,7 @@ export const DashboardTabs = ({ activeTab, onTabChange, showPreview }: Dashboard
     <SegmentedToggle
       value={activeTab}
       onChange={onTabChange}
-      className="w-auto sm:min-w-[190px]"
+      className="header-compact:w-20 header-compact:[&_button]:px-0 w-auto sm:min-w-[190px]"
       options={[
         {
           value: 'editor',

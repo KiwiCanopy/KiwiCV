@@ -59,7 +59,10 @@ export function MainLayout() {
             segmented switcher's `--muted` track and `bg-card` thumb are drawn
             against it — the white is the editor's surface, not an empty slab.
             Do not "finish the job" by extending the blend to this branch. */}
-        <Header className={isDashboard ? '' : 'bg-background lg:hidden'} showBrand={!isDashboard} />
+        <Header
+          className={isDashboard ? 'header-compact:px-2' : 'bg-background lg:hidden'}
+          showBrand={!isDashboard}
+        />
         <main
           ref={mainRef}
           id="main-content"

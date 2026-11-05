@@ -6,3 +6,6 @@
 @config '../tailwind.config.js';
 @plugin '@tailwindcss/typography';
 @plugin 'tailwindcss-animate';
+
+/* Below this the dashboard header's icon row outgrows its padding: UI_PATTERNS § Mobile Adaptation (#23). */
+@custom-variant header-compact (@media (max-width: 359.98px));

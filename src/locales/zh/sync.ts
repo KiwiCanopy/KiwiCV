@@ -74,6 +74,7 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: '一个压缩包，直接下载到此设备。',
     dest_zip_label: '下载为 ZIP',
+    drive_folder_renamed: 'Google Drive 中已有同名文件夹，因此本次导出已保存到 {{folder}}。',
     filename_only:
       '公司和职位决定文件名。招聘启事链接会随备份保存到 Google Drive 或私有 GitHub 仓库，绝不会写入公开或已发布的仓库。',
     letter_confirm_anyway: '仍然导出',

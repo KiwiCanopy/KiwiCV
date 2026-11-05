@@ -80,6 +80,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: '1 つのアーカイブをこのデバイスに直接保存。',
     dest_zip_label: 'ZIP としてダウンロード',
+    drive_folder_renamed:
+      'Google Drive に同じ名前のフォルダがすでにあったため、このエクスポートは {{folder}} に保存されました。',
     filename_only:
       '会社と役職はファイル名に使われます。求人情報のリンクは Google Drive またはプライベートの GitHub リポジトリへのバックアップと一緒に保存され、公開リポジトリや GitHub Pages で公開されたリポジトリには保存されません。',
     letter_confirm_anyway: 'このままエクスポート',

@@ -11,7 +11,7 @@ export function ToastContainer() {
   return (
     <>
       <ToastAnnouncer toasts={toasts} />
-      <div className="pointer-events-none fixed top-6 right-6 z-[100] flex flex-col gap-3">
+      <div className="pointer-events-none fixed top-6 right-6 z-[100] flex max-w-[calc(100vw-3rem)] flex-col gap-3">
         {toasts.map((toast) => (
           <Toast key={toast.id} toast={toast} />
         ))}
@@ -104,7 +104,7 @@ function Toast({ toast }: { toast: ToastType }) {
       )}
     >
       <div className="shrink-0">{icons[toast.type]}</div>
-      <p className="text-foreground text-sm font-medium">{toast.message}</p>
+      <p className="text-foreground min-w-0 text-sm font-medium break-words">{toast.message}</p>
       <button
         type="button"
         onClick={() => removeToast(toast.id)}

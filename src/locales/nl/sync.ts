@@ -79,6 +79,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Één archief, rechtstreeks naar dit apparaat.',
     dest_zip_label: 'Downloaden als ZIP',
+    drive_folder_renamed:
+      'Google Drive had al een map met dezelfde naam, dus deze export staat in {{folder}}.',
     filename_only:
       'Bedrijf en functie bepalen de bestandsnaam. De link naar de vacature wordt met back-ups opgeslagen in Google Drive of een privérepository op GitHub, nooit in een openbare of gepubliceerde.',
     letter_confirm_anyway: 'Toch exporteren',

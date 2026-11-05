@@ -1,9 +1,11 @@
 import React from 'react';
 
 import { PricingDialog } from '@/components/monetization/PricingDialog';
+import { PLAN_ACCENT } from '@/components/monetization/pricing/accents';
 import { DialogFrame, DialogFrameDescription, DialogFrameTitle } from '@/components/ui/DialogFrame';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
+import { cn } from '@/utils/cn';
 import { CircleAlert, Crown, Sparkles } from 'lucide-react';
 
 interface InsufficientPremiumAccessModalProps {
@@ -87,7 +89,11 @@ export const InsufficientPremiumAccessModal: React.FC<InsufficientPremiumAccessM
               <button
                 type="button"
                 onClick={openPricing}
-                className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 py-4 text-sm font-bold text-amber-950 transition-all hover:scale-[1.02] hover:from-amber-500 hover:to-amber-600 focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:outline-none"
+                className={cn(
+                  'group flex w-full items-center justify-center gap-3 rounded-2xl py-4 text-sm font-bold transition-all hover:scale-[1.02] focus-visible:ring-2 focus-visible:outline-none',
+                  PLAN_ACCENT.passes.cta,
+                  'animate-heavenly-glow',
+                )}
               >
                 <Crown className="h-4 w-4 transition-transform group-hover:rotate-12" />
                 {t('ai.insufficient_premium_access_get_pass')}

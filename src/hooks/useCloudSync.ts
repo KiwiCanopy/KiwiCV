@@ -1,7 +1,12 @@
 import { type ExportArtifacts } from '@/hooks/export/types';
 import { performGitHubSync } from '@/hooks/sync/githubSync';
 import { performGoogleDriveSync } from '@/hooks/sync/googleDriveSync';
-import { type SyncParams, type SyncResult, type SyncVariant } from '@/hooks/sync/types';
+import {
+  type SyncParams,
+  type SyncProviderId,
+  type SyncResult,
+  type SyncVariant,
+} from '@/hooks/sync/types';
 import { useTranslation } from '@/hooks/useTranslation';
 import { loadGoogleDriveCreds } from '@/services/storage/googleStorage';
 import { useResumeStore } from '@/store/resume/useResumeStore';
@@ -10,7 +15,7 @@ import { getResumeHash } from '@/utils/hash';
 export type { SyncResult, SyncVariant };
 
 /** The `service` values a `SyncResult` reports. */
-export type SyncProviderId = 'github' | 'google_drive';
+export type { SyncProviderId };
 
 export interface CloudSyncOptions {
   /**

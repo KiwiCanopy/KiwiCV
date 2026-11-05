@@ -12,7 +12,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useImportModalStore } from '@/store/ui/useImportModalStore';
 import { isMeaningfullyEmpty } from '@/utils/validation';
-import { Share } from 'lucide-react';
+import { CircleAlert, Share } from 'lucide-react';
 
 export const DashboardHeaderActions = () => {
   const { t } = useTranslation();
@@ -64,6 +64,16 @@ export const DashboardHeaderActions = () => {
   return (
     <HeaderActions>
       <div className="relative order-first flex h-10 items-center">
+        {/* Error Tooltip */}
+        {syncStatus === 'error' && errorMessage && (
+          <div className="animate-in fade-in slide-in-from-top-1 absolute top-full right-0 z-[100] mt-2 w-64 duration-200">
+            <div className="bg-destructive/10 dark:bg-secondary border-destructive/20 text-destructive flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold shadow-lg backdrop-blur-md">
+              <CircleAlert className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">{errorMessage}</span>
+            </div>
+          </div>
+        )}
+
         {/* The row's width budget: UI_PATTERNS § Mobile Adaptation (#23). */}
         <div className="header-compact:gap-1 header-compact:[&_button]:w-9 header-compact:[&_button]:min-w-0 header-compact:[&_button]:justify-center header-compact:[&_button]:px-0 flex h-10 items-center gap-3">
           <CloudSaveButton

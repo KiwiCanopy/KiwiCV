@@ -230,7 +230,9 @@ describe('useExportRun', () => {
     });
 
     expect(result.current.state.rows.google_drive?.status).toBe('done');
+    expect(result.current.state.rows.github_repo?.error).toBe('sync.export_dialog.build_failed');
     expect(result.current.failed).toEqual(['github_repo']);
+    expect(addToast.mock.lastCall).toEqual(['sync.export_dialog.result_partial', 'warning']);
   });
 
   it('fires one analytics event per run, carrying the destinations that succeeded', async () => {

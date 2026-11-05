@@ -5,7 +5,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { useSyncWorkflow } from '@/hooks/useSyncWorkflow';
 import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { useFlowStore } from '@/store/ui/useFlowStore';
-import { useToastStore } from '@/store/ui/useToastStore';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -42,24 +41,40 @@ async function backUp(outcome: Outcome | Error) {
   return result;
 }
 
-const toasts = () => useToastStore.getState().toasts.map(({ message, type }) => [message, type]);
+const dialog = () => {
+  const { isOpen, options } = useConfirmStore.getState();
+  return {
+    isOpen,
+    isLoading: options.isLoading,
+    variant: options.variant,
+    message: options.message,
+  };
+};
+const errorDialog = (message: string) => ({
+  isOpen: true,
+  isLoading: false,
+  variant: 'destructive',
+  message,
+});
 
 describe('Back up failing at a provider (#93)', () => {
   beforeEach(() => {
     useConfirmStore.getState().close();
-    useToastStore.setState({ toasts: [] });
     useFlowStore.getState().resetAuth();
   });
 
-  it('closes the loading dialog and announces a full failure', async () => {
+  it('resolves the loading dialog to the failure, with a way out', async () => {
     const result = await backUp({
       success: false,
       results: [{ service: 'github', success: false, error: 'Bad credentials' }],
     });
 
-    expect(useConfirmStore.getState().isOpen).toBe(false);
+    expect(dialog()).toEqual(
+      errorDialog('sync.export_dialog.dest_github_repo_label: Bad credentials'),
+    );
+    expect(useConfirmStore.getState().options.showCloseButton).toBe(true);
     expect(result.current.syncStatus).toBe('error');
-    expect(toasts()).toEqual([['Bad credentials', 'error']]);
+    expect(result.current.errorMessage).toBe('Bad credentials');
   });
 
   it('names what failed in a partial success', async () => {
@@ -71,14 +86,33 @@ describe('Back up failing at a provider (#93)', () => {
       ],
     });
 
-    expect(useConfirmStore.getState().isOpen).toBe(false);
+    expect(dialog()).toEqual(
+      errorDialog('sync.export_dialog.dest_github_repo_label: Bad credentials'),
+    );
     expect(result.current.syncStatus).toBe('success');
-    expect(toasts()).toEqual([
-      [
-        'sync.export_dialog.result_partial sync.export_dialog.dest_github_repo_label: Bad credentials',
-        'warning',
+  });
+
+  it('names every provider when all of them failed', async () => {
+    await backUp({
+      success: false,
+      results: [
+        { service: 'github', success: false, error: 'Bad credentials' },
+        { service: 'google_drive', success: false, error: 'Quota' },
       ],
-    ]);
+    });
+
+    expect(dialog()).toEqual(
+      errorDialog(
+        'sync.export_dialog.dest_github_repo_label: Bad credentials sync.export_dialog.dest_google_drive_label: Quota',
+      ),
+    );
+  });
+
+  it('shows an error the sync returned without any provider result', async () => {
+    await backUp({ success: false, results: [], error: 'Offline' });
+
+    expect(dialog()).toEqual(errorDialog('Offline'));
+    expect(useFlowStore.getState().auth.source).not.toBe('sync');
   });
 
   it('hands a missing connection to the login dialog, which says so itself', async () => {
@@ -89,14 +123,12 @@ describe('Back up failing at a provider (#93)', () => {
 
     expect(useConfirmStore.getState().isOpen).toBe(false);
     expect(useFlowStore.getState().auth.source).toBe('sync');
-    expect(toasts()).toEqual([]);
   });
 
   it('reports a thrown failure the same way', async () => {
     await backUp(new Error('Network down'));
 
-    expect(useConfirmStore.getState().isOpen).toBe(false);
-    expect(toasts()).toEqual([['Network down', 'error']]);
+    expect(dialog()).toEqual(errorDialog('Network down'));
   });
 
   it('keeps the success dialog on a full success', async () => {
@@ -108,7 +140,7 @@ describe('Back up failing at a provider (#93)', () => {
     const { isOpen, options } = useConfirmStore.getState();
     expect(isOpen).toBe(true);
     expect(options.isLoading).toBe(false);
+    expect(options.variant).toBe('primary');
     expect(result.current.syncStatus).toBe('success');
-    expect(toasts()).toEqual([]);
   });
 });

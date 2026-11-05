@@ -149,6 +149,9 @@ export async function ensureFolderPath(accessToken, pathParts, create = true, un
       },
     );
 
+    // A failed search is not "no such folder": that would create a duplicate.
+    if (!searchRes.ok)
+      throw driveError('FOLDER_SEARCH_FAILED', 'Folder search failed', searchRes.status);
     const searchData = await searchRes.json();
     let folderId = searchData.files?.[0]?.id;
 

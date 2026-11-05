@@ -7,7 +7,6 @@ import { constructBackupFilename } from '@/utils/export';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const drive = vi.hoisted(() => ({
-  resolveFolder: vi.fn(),
   sync: vi.fn(),
   listFiles: vi.fn(),
 }));
@@ -17,118 +16,124 @@ type Deliverables = { html: string | null; pdf: null };
 const WITH_HTML: Deliverables = { html: '<html></html>', pdf: null };
 const NO_DELIVERABLES: Deliverables = { html: null, pdf: null };
 
-const params = (
-  deliverables = WITH_HTML,
-  projectName = 'CV',
-  mode: SyncParams['mode'] = 'push',
-): SyncParams => ({
+const HASH = 'a'.repeat(64);
+const params = (deliverables = WITH_HTML, projectName = 'CV', currentHash = HASH): SyncParams => ({
   resume: buildSingleItemResume('lunar'),
   variant: 'full',
-  mode,
+  mode: 'push',
   lang: 'en',
   t: (key) => key,
-  currentHash: 'a'.repeat(64),
+  currentHash,
   includeBackup: true,
   projectName,
   artifacts: { folderName: projectName, backupFileName: projectName, json: '{}', ...deliverables },
   postingUrl: null,
 });
 
-const pathsWritten = () => drive.sync.mock.calls.map((call) => (call[1] as string[]).join('/'));
-const snapshotName = () =>
-  (drive.sync.mock.lastCall?.[2] as { name: string }[] | undefined)?.[0]?.name;
-
-/** Fails the upload into `backups/`, after the deliverables landed. */
-const failSnapshotOnce = () =>
-  drive.sync.mockImplementation(async (_token: string, path: string[]) => {
-    if (path.includes('backups')) throw new Error('Drive sync failed: quota');
-    return { folderId: 'id' };
+/** The Drive function: `unique` renames a taken folder. */
+const answerFolder = (folder: string) =>
+  drive.sync.mockImplementation(async (_token: string, path: string[], _files, unique) => ({
+    folderName: unique ? folder : path.at(-1),
+  }));
+const failSnapshotOnce = (folder = 'CV_2') => {
+  answerFolder(folder);
+  const answer = drive.sync.getMockImplementation()!;
+  drive.sync.mockImplementation(async (...args: Parameters<typeof answer>) => {
+    if (args[1].includes('backups')) {
+      answerFolder(folder);
+      throw new Error('Drive sync failed: quota');
+    }
+    return answer(...args);
   });
+};
+
+const exportCalls = () =>
+  drive.sync.mock.calls
+    .filter((call) => (call[1] as string[]).includes('exports'))
+    .map((call) => [(call[1] as string[]).join('/'), Boolean(call[3])]);
+const snapshotName = () => (drive.sync.mock.lastCall?.[2] as { name: string }[])[0].name;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  localStorage.clear();
+  saveGoogleDriveCreds('refresh-token');
+  answerFolder('CV');
+  drive.listFiles.mockResolvedValue([]);
+});
 
 describe('a Drive export failing partway (#91)', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    localStorage.clear();
-    saveGoogleDriveCreds('refresh-token');
-    drive.resolveFolder.mockResolvedValue({ folderId: 'id', folderName: 'CV_2' });
-    drive.sync.mockResolvedValue({ folderId: 'id' });
-    drive.listFiles.mockResolvedValue([]);
-  });
-
-  it('claims a folder once, and writes the retry into it', async () => {
+  it('writes the retry into the folder the failed attempt wrote', async () => {
     failSnapshotOnce();
-    const failed = await performGoogleDriveSync(params());
-    expect(failed.success).toBe(false);
+    expect((await performGoogleDriveSync(params())).success).toBe(false);
 
-    drive.sync.mockResolvedValue({ folderId: 'id' });
     const retried = await performGoogleDriveSync(params());
 
     expect(retried).toEqual({ service: 'google_drive', success: true, renamedFolder: 'CV_2' });
-    expect(drive.resolveFolder).toHaveBeenCalledTimes(1);
-    expect(pathsWritten().filter((path) => path.includes('exports'))).toEqual([
-      'KiwiCV/exports/CV_2',
-      'KiwiCV/exports/CV_2',
+    expect(exportCalls()).toEqual([
+      ['KiwiCV/exports/CV', true],
+      ['KiwiCV/exports/CV_2', false],
     ]);
     expect(snapshotName()).toMatch(/_2.*\.json$/);
   });
 
-  it('keeps the claim when the deliverables themselves fail', async () => {
-    drive.sync.mockRejectedValueOnce(new Error('Drive sync failed: timeout'));
+  it('gives the next export its own folder once one finished', async () => {
     await performGoogleDriveSync(params());
+    await performGoogleDriveSync(params(WITH_HTML, 'CV', 'b'.repeat(64)));
 
-    await performGoogleDriveSync(params());
-
-    expect(drive.resolveFolder).toHaveBeenCalledTimes(1);
+    expect(exportCalls()).toEqual([
+      ['KiwiCV/exports/CV', true],
+      ['KiwiCV/exports/CV', true],
+    ]);
   });
 
-  it('claims again once the export finished, so the next one gets its own folder', async () => {
-    await performGoogleDriveSync(params());
-    await performGoogleDriveSync({ ...params(), currentHash: 'b'.repeat(64) });
-
-    expect(drive.resolveFolder).toHaveBeenCalledTimes(2);
-  });
-
-  it('does not write a differently named export into the claim', async () => {
+  it.each([
+    ['another name', () => params(WITH_HTML, 'Other')],
+    ['changed content', () => params(WITH_HTML, 'CV', 'b'.repeat(64))],
+  ])('does not treat %s as a retry', async (_label, next) => {
     failSnapshotOnce();
     await performGoogleDriveSync(params());
-    drive.sync.mockResolvedValue({ folderId: 'id' });
-    drive.resolveFolder.mockResolvedValue({ folderId: 'id', folderName: 'Other' });
+    answerFolder('Fresh');
 
-    await performGoogleDriveSync(params(WITH_HTML, 'Other'));
+    await performGoogleDriveSync(next());
 
-    expect(drive.resolveFolder).toHaveBeenCalledTimes(2);
-    expect(pathsWritten()).toContain('KiwiCV/exports/Other');
-    // Lets the first claim go, or it would leak into the next test.
-    await performGoogleDriveSync(params());
+    expect(exportCalls()[1][1]).toBe(true);
   });
 
-  it('does not write another account into the claim', async () => {
+  it('does not treat another account as a retry', async () => {
     failSnapshotOnce();
     await performGoogleDriveSync(params());
     saveGoogleDriveCreds('other-account');
-    drive.sync.mockResolvedValue({ folderId: 'id' });
+    answerFolder('Fresh');
 
     await performGoogleDriveSync(params());
 
-    expect(drive.resolveFolder).toHaveBeenCalledTimes(2);
+    expect(exportCalls()[1][1]).toBe(true);
+  });
+
+  it('releases the folder when a retry finishes without deliverables', async () => {
+    failSnapshotOnce();
+    await performGoogleDriveSync(params());
+    answerFolder('CV');
+    await performGoogleDriveSync(params(NO_DELIVERABLES));
+    // Forgets the stamp, which would otherwise answer the same content as already synced.
+    localStorage.clear();
+    saveGoogleDriveCreds('refresh-token');
+
+    await performGoogleDriveSync(params());
+
+    expect(exportCalls()).toEqual([
+      ['KiwiCV/exports/CV', true],
+      ['KiwiCV/exports/CV', true],
+    ]);
   });
 });
 
-describe('a Drive export with no deliverables (#92)', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    localStorage.clear();
-    saveGoogleDriveCreds('refresh-token');
-    drive.sync.mockResolvedValue({ folderId: 'id' });
-    drive.listFiles.mockResolvedValue([]);
-  });
-
-  it('creates no folder and names none', async () => {
+describe('the name of a Drive snapshot (#92)', () => {
+  it('creates no folder for an export with no deliverables, and names none', async () => {
     const result = await performGoogleDriveSync(params(NO_DELIVERABLES));
 
     expect(result).toEqual({ service: 'google_drive', success: true });
-    expect(drive.resolveFolder).not.toHaveBeenCalled();
-    expect(pathsWritten()).toEqual(['KiwiCV/backups/en']);
+    expect(exportCalls()).toEqual([]);
     expect(snapshotName()).toBe('CV.json');
   });
 
@@ -139,16 +144,50 @@ describe('a Drive export with no deliverables (#92)', () => {
       { name: `${constructBackupFilename('CV_2')}.json` },
     ]);
 
-    const result = await performGoogleDriveSync(params(NO_DELIVERABLES, name));
+    await performGoogleDriveSync(params(NO_DELIVERABLES, name));
 
-    expect(result).toEqual({ service: 'google_drive', success: true });
     expect(snapshotName()).toBe(`${constructBackupFilename('CV_3')}.json`);
     expect(drive.listFiles).toHaveBeenCalledWith('refresh-token', ['KiwiCV', 'backups', 'en']);
   });
 
-  it('still writes the master backup on a backing-up export', async () => {
-    await performGoogleDriveSync(params(NO_DELIVERABLES, 'CV', 'sync'));
+  it('holds for an export with deliverables after a snapshot-only one', async () => {
+    const name = constructBackupFilename('CV');
+    drive.listFiles.mockResolvedValue([{ name: `${name}.json` }]);
 
-    expect(pathsWritten()).toEqual(['KiwiCV/backups/en', 'KiwiCV/backups/en']);
+    await performGoogleDriveSync(params(WITH_HTML, name));
+
+    expect(snapshotName()).toBe(`${constructBackupFilename('CV_2')}.json`);
+  });
+
+  it('keeps the suffix when the name is at its length limit', async () => {
+    const name = constructBackupFilename('x'.repeat(50));
+    drive.listFiles.mockResolvedValue([{ name: `${name}.json` }]);
+
+    await performGoogleDriveSync(params(NO_DELIVERABLES, name));
+
+    expect(snapshotName()).toBe(`${constructBackupFilename(`${'x'.repeat(48)}_2`)}.json`);
+  });
+
+  it('fails rather than overwriting when no name is free', async () => {
+    const name = constructBackupFilename('CV');
+    const taken = [
+      name,
+      ...Array.from({ length: 99 }, (_, i) => constructBackupFilename(`CV_${i + 2}`)),
+    ];
+    drive.listFiles.mockResolvedValue(taken.map((file) => ({ name: `${file}.json` })));
+
+    const result = await performGoogleDriveSync(params(NO_DELIVERABLES, name));
+
+    expect(result).toMatchObject({ success: false, error: 'common.error' });
+    expect(drive.sync).not.toHaveBeenCalled();
+  });
+
+  it('fails rather than guessing when the listing fails', async () => {
+    drive.listFiles.mockRejectedValue(new Error('LIST_FAILED'));
+
+    const result = await performGoogleDriveSync(params(NO_DELIVERABLES));
+
+    expect(result).toMatchObject({ success: false, error: 'LIST_FAILED' });
+    expect(drive.sync).not.toHaveBeenCalled();
   });
 });

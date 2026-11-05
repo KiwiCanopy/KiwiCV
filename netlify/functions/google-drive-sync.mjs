@@ -252,16 +252,24 @@ export const handler = async (event) => {
       }
 
       const query = `'${folderInfo.id}' in parents and trashed = false`;
-      const listRes = await fetch(
-        `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id, name, modifiedTime)`,
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
-      const listData = await listRes.json();
+      // Complete or an error: the client picks a free file name from this answer (#92).
+      const files = [];
+      let pageToken = '';
+      do {
+        const listRes = await fetch(
+          `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&pageSize=1000&fields=nextPageToken, files(id, name, modifiedTime)${pageToken && `&pageToken=${encodeURIComponent(pageToken)}`}`,
+          { headers: { Authorization: `Bearer ${accessToken}` } },
+        );
+        if (!listRes.ok) throw driveError('LIST_FAILED', 'Listing failed', listRes.status);
+        const listData = await listRes.json();
+        files.push(...(listData.files || []));
+        pageToken = listData.nextPageToken || '';
+      } while (pageToken);
 
       return {
         statusCode: 200,
         headers: { 'Access-Control-Allow-Origin': '*' },
-        body: JSON.stringify(listData.files || []),
+        body: JSON.stringify(files),
       };
     }
 

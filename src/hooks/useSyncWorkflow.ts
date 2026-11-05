@@ -3,14 +3,13 @@ import { useLocation } from 'react-router-dom';
 
 import { useSyncAuthGateway } from '@/hooks/sync/useSyncAuthGateway';
 import { useAuth } from '@/hooks/useAuth';
-import { type SyncVariant, useCloudSync } from '@/hooks/useCloudSync';
+import { type SyncProviderId, type SyncVariant, useCloudSync } from '@/hooks/useCloudSync';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { hasStoredGoogleDriveCreds } from '@/services/storage/googleStorage';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { useFlowStore } from '@/store/ui/useFlowStore';
-import { useToastStore } from '@/store/ui/useToastStore';
 import { useUIStore } from '@/store/ui/useUIStore';
 import type { SyncConfig } from '@/types/resume';
 import type { User } from '@supabase/supabase-js';
@@ -64,6 +63,20 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
     }
 
     useResumeStore.getState().syncVersion();
+    setErrorMessage('');
+
+    // Replaces the loading dialog, which has no way out of its own (#93).
+    const showError = (message: string) =>
+      useConfirmStore.getState().setOptions({
+        title: t('common.error'),
+        message,
+        isLoading: false,
+        confirmText: t('common.ok'),
+        cancelText: '',
+        showCloseButton: true,
+        closeOnConfirm: true,
+        variant: 'destructive',
+      });
 
     // Start Loading Modal
     confirm({
@@ -139,25 +152,18 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
           providers,
         });
       } else {
-        // A failure ends in a toast, which a screen reader hears and the user can dismiss (#93).
-        useConfirmStore.getState().close();
+        const providerLabels: Record<SyncProviderId, string> = {
+          github: t('sync.export_dialog.dest_github_repo_label'),
+          google_drive: t('sync.export_dialog.dest_google_drive_label'),
+        };
+        const failures = results
+          .filter((r) => !r.success)
+          .map((r) => `${providerLabels[r.service]}: ${r.error || t('common.error')}`)
+          .join(' ');
 
         const atLeastOneSuccess = results.some((r) => r.success);
         if (atLeastOneSuccess) {
-          const failures = results
-            .filter((r) => !r.success)
-            .map((r) => {
-              const provider =
-                r.service === 'github'
-                  ? t('sync.export_dialog.dest_github_repo_label')
-                  : t('sync.export_dialog.dest_google_drive_label');
-              return `${provider}: ${r.error || t('common.error')}`;
-            });
-          const summary = t('sync.export_dialog.result_partial', {
-            done: results.length - failures.length,
-            total: results.length,
-          });
-          useToastStore.getState().addToast([summary, ...failures].join(' '), 'warning');
+          showError(failures);
           setSyncStatus('success');
           setTimeout(() => {
             setSyncStatus('idle');
@@ -171,13 +177,16 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
         setErrorMessage(firstError);
 
         const needsConfig =
-          results.length === 0 ||
-          results.every((r) => r.error?.includes('config') || r.error?.includes('PAT'));
+          (results.length === 0 && !error) ||
+          (results.length > 0 &&
+            results.every((r) => r.error?.includes('config') || r.error?.includes('PAT')));
         const googleAuthError = results.some(
           (r) => r.service === 'google_drive' && r.error?.includes('connection missing'),
         );
 
         if ((needsConfig || googleAuthError) && location.pathname !== '/settings') {
+          // The login dialog says why, and two modals must not stack.
+          useConfirmStore.getState().close();
           useFlowStore.getState().openGoogleLogin({
             description: t('auth.sync_login_required'),
             source: 'sync',
@@ -185,16 +194,15 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
             requireDrive: true,
           });
         } else {
-          useToastStore.getState().addToast(firstError, 'error');
+          showError(failures || firstError);
         }
         setTimeout(() => setSyncStatus('idle'), 5000);
       }
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : t('common.error_occurred');
+      const errorMsg = err instanceof Error ? err.message : 'Sync failed';
       setSyncStatus('error');
       setErrorMessage(errorMsg);
-      useConfirmStore.getState().close();
-      useToastStore.getState().addToast(errorMsg, 'error');
+      showError(errorMsg || t('common.error_occurred'));
       setTimeout(() => setSyncStatus('idle'), 5000);
     }
   }, [

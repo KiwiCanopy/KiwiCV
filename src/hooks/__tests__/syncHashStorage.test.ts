@@ -18,8 +18,7 @@ const github = vi.hoisted(() => ({
   pushExport: vi.fn(async (..._args: unknown[]) => ({})),
 }));
 const drive = vi.hoisted(() => ({
-  sync: vi.fn(async (..._args: unknown[]) => ({})),
-  resolveFolder: vi.fn(async (..._args: unknown[]): Promise<{ folderName?: string }> => ({})),
+  sync: vi.fn(async (..._args: unknown[]): Promise<{ folderName?: string }> => ({})),
   listFiles: vi.fn(async () => []),
 }));
 
@@ -89,7 +88,9 @@ describe('sync hashes in localStorage', () => {
   });
 
   it('recognises an unchanged Drive full push after Drive renamed its export folder', async () => {
-    drive.resolveFolder.mockResolvedValueOnce({ folderName: `${PROJECT}_2` });
+    drive.sync.mockImplementation(async (...args: unknown[]) =>
+      (args[1] as string[]).includes('exports') ? { folderName: `${PROJECT}_2` } : {},
+    );
     const { result } = renderHook(() => useCloudSync());
     const options = { artifacts, providers: ['google_drive' as const] };
     await result.current.handleSync('full', PROJECT, 'sync', options);

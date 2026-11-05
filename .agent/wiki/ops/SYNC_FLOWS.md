@@ -91,7 +91,7 @@ is untouched and still serves the Backup button.
    one failure leaves the others intact and the loop never breaks.
 
 Afterwards the trigger relabels to **Retry** over exactly the failed ids; succeeded rows lock
-with a check. A failure in act 1 fails every selected row with the same reason and surfaces
+with a check. A failure in act 1 fails every row of that run with the same reason and surfaces
 the "switch the PDF off under Change" recovery, which is why the format choice stays
 reachable. One `EXPORT_PERFORMED` event and one toast per run; `syncVersion()` once, not once
 per destination. `DialogFrame busy` blocks Escape while in flight. ⚠️ **The dialog closes on its
@@ -110,12 +110,20 @@ its check, lock and notice, and `runIds` scopes the progress label to the run in
 counts the whole dialog session: a retry that fails again says "1 of 2 finished", never "nothing was
 exported".
 
-⚠️ **A Drive export claims its folder before writing to it** (#91). `claimExportFolder` resolves the
-free name once and holds it in module state until the snapshot lands, so a retry writes into the
-same folder instead of leaving `MyCV` and `MyCV_2`. The claim is per account and per requested name,
-and a reload loses it. **With no deliverables there is no folder at all** (#92): the snapshot takes
-its own first free `_N` name from a listing of `backups/{lang}`, and no notice is raised, since no
-folder was renamed.
+⚠️ **A retry reuses the folder the failed attempt wrote** (#91). `writeDeliverables` holds the name
+Drive returned in module state until the snapshot lands, so a snapshot failure leaves `MyCV`, not
+`MyCV` and `MyCV_2`. Only the same content under the same name and account counts as a retry, and a
+reload loses it. **With no deliverables there is no folder at all** (#92).
+
+⚠️ **Every snapshot name comes from a listing of `backups/{lang}`** (#92). Folders and snapshots no
+longer advance together, so a free folder proves nothing about a free snapshot. `freeSnapshotName`
+prefers the folder's suffix and otherwise takes the first free `_N`. The listing must be complete or
+fail: `list-files` paginates and errors rather than answering `[]`, because a wrong "free" overwrites
+an earlier snapshot.
+
+**A failed Back up resolves its loading dialog in place** to an error naming each failed provider,
+or to the login dialog when the connection is what is missing (#93). `ConfirmModal`'s message is a
+live region, since a change inside an open dialog is otherwise silent.
 
 | Destination    | Adapter                                     | Available when                                 |
 | :------------- | :------------------------------------------ | :--------------------------------------------- |

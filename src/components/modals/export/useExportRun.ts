@@ -168,7 +168,12 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
       } catch (error) {
         // Act 1 failed: this run wrote nothing, so each of its rows carries the same reason.
         const detail = error instanceof Error ? error.message : String(error);
-        const message = t('sync.export_dialog.build_failed');
+        const buildFailed = t('sync.export_dialog.build_failed');
+        // "Nothing was sent" is untrue once an earlier run in this dialog wrote something.
+        const done = succeededRef.current.size;
+        const message = done
+          ? t('sync.export_dialog.result_partial', { done, total: done + ids.length })
+          : buildFailed;
         setState((prev) => ({
           isRunning: false,
           hasRun: true,
@@ -178,11 +183,11 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
           rows: {
             ...prev.rows,
             ...Object.fromEntries(
-              ids.map((id) => [id, { status: 'failed' as const, error: message }]),
+              ids.map((id) => [id, { status: 'failed' as const, error: buildFailed }]),
             ),
           },
         }));
-        addToast(message, 'error');
+        addToast(message, done ? 'warning' : 'error');
         setAnnouncement(message);
       } finally {
         runningRef.current = false;

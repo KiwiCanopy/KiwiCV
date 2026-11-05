@@ -164,25 +164,6 @@ export const googleDriveService = {
   /**
    * Checks if files exist for a given folder path.
    */
-  /** Creates the folder path. With `unique`, a taken last part gets the next free name. */
-  async resolveFolder(
-    refreshToken: string,
-    folderPath: string[],
-    unique: boolean,
-  ): Promise<{ folderId: string; folderName: string }> {
-    const response = await fetch(FUNCTION_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'resolve-folder', refreshToken, folderPath, unique }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(`Drive sync failed: ${error.error}`);
-    }
-
-    return response.json();
-  },
-
   async listFiles(refreshToken: string, folderPath: string[]): Promise<DriveFile[]> {
     const response = await fetch(FUNCTION_URL, {
       method: 'POST',
@@ -202,23 +183,19 @@ export const googleDriveService = {
       throw new Error(errorData.error || 'FETCH_ERROR');
     }
 
-    try {
-      const data = await response.json();
-      if (data.error) {
-        if (
-          data.error.includes('permission') ||
-          data.error.includes('scope') ||
-          data.error.includes('consent')
-        ) {
-          throw new Error('UNAUTHORIZED');
-        }
-        throw new Error(data.error);
+    // Throws on any doubt: the only caller picks a free file name from this answer (#92).
+    const data = await response.json();
+    if (data.error) {
+      if (
+        data.error.includes('permission') ||
+        data.error.includes('scope') ||
+        data.error.includes('consent')
+      ) {
+        throw new Error('UNAUTHORIZED');
       }
-      return data;
-    } catch (e: unknown) {
-      if (e instanceof Error && e.message === 'UNAUTHORIZED') throw e;
-      return [];
+      throw new Error(data.error);
     }
+    return data;
   },
 
   /**

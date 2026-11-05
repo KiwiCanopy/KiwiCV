@@ -45,8 +45,8 @@ export interface ExportRunState {
   /** The destinations of the run in flight, or of the last one: what its progress counts. */
   runIds: DestinationId[];
   /**
-   * Set when the package itself could not be built, which fails every selected
-   * destination for the same reason.
+   * Set when the package itself could not be built, which fails every destination
+   * of that run for the same reason.
    */
   buildError: string | null;
   /** True once a run has finished, so the footer can report a result. */

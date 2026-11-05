@@ -369,3 +369,56 @@ test('any other token-exchange failure stays a server error', async (context) =>
   assert.equal(result.statusCode, 500);
   assert.notEqual(result.body.error, 'INVALID_GRANT');
 });
+
+function listRequest(fetchImpl, context) {
+  context.mock.method(console, 'error', () => {});
+  context.mock.method(globalThis, 'fetch', async (url) => {
+    if (String(url).startsWith('https://oauth2.googleapis.com/token')) return tokenResponse();
+    const parsed = new URL(url);
+    if (parsed.searchParams.get('q')?.includes('mimeType')) return fetchImpl.folder(parsed);
+    return fetchImpl.list(parsed);
+  });
+  return handler({
+    httpMethod: 'POST',
+    body: JSON.stringify({
+      action: 'list-files',
+      refreshToken: 'refresh-token',
+      folderPath: ['KiwiCV'],
+    }),
+  });
+}
+const folderFound = () => jsonResponse({ files: [{ id: 'folder' }] });
+
+test('list-files follows every page, since the client picks a free name from it', async (context) => {
+  const response = await listRequest(
+    {
+      folder: folderFound,
+      list: (url) =>
+        url.searchParams.get('pageToken') === 'next'
+          ? jsonResponse({ files: [{ name: 'b.json' }] })
+          : jsonResponse({ files: [{ name: 'a.json' }], nextPageToken: 'next' }),
+    },
+    context,
+  );
+
+  assert.equal(response.statusCode, 200);
+  assert.deepEqual(JSON.parse(response.body), [{ name: 'a.json' }, { name: 'b.json' }]);
+});
+
+test('a failed listing is an error, never an empty folder', async (context) => {
+  const response = await listRequest(
+    { folder: folderFound, list: () => ({ ok: false, status: 500, json: async () => ({}) }) },
+    context,
+  );
+
+  assert.notEqual(response.statusCode, 200);
+});
+
+test('a failed folder search is an error, never a missing folder', async (context) => {
+  const response = await listRequest(
+    { folder: () => ({ ok: false, status: 429, json: async () => ({}) }), list: folderFound },
+    context,
+  );
+
+  assert.notEqual(response.statusCode, 200);
+});

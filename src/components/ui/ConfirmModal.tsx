@@ -71,7 +71,8 @@ export const ConfirmModal = () => {
                 {options.title}
               </DialogFrameTitle>
               <DialogFrameDescription className="text-muted-foreground mt-2 leading-relaxed">
-                {options.message}
+                {/* The loading dialog's text changes in place, which nothing else announces (#93). */}
+                <span aria-live="polite">{options.message}</span>
               </DialogFrameDescription>
             </div>
           </div>

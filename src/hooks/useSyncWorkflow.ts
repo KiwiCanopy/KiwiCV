@@ -10,6 +10,7 @@ import { hasStoredGoogleDriveCreds } from '@/services/storage/googleStorage';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { useConfirmStore } from '@/store/ui/useConfirmStore';
 import { useFlowStore } from '@/store/ui/useFlowStore';
+import { useToastStore } from '@/store/ui/useToastStore';
 import { useUIStore } from '@/store/ui/useUIStore';
 import type { SyncConfig } from '@/types/resume';
 import type { User } from '@supabase/supabase-js';
@@ -138,8 +139,25 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
           providers,
         });
       } else {
+        // A failure ends in a toast, which a screen reader hears and the user can dismiss (#93).
+        useConfirmStore.getState().close();
+
         const atLeastOneSuccess = results.some((r) => r.success);
         if (atLeastOneSuccess) {
+          const failures = results
+            .filter((r) => !r.success)
+            .map((r) => {
+              const provider =
+                r.service === 'github'
+                  ? t('sync.export_dialog.dest_github_repo_label')
+                  : t('sync.export_dialog.dest_google_drive_label');
+              return `${provider}: ${r.error || t('common.error')}`;
+            });
+          const summary = t('sync.export_dialog.result_partial', {
+            done: results.length - failures.length,
+            total: results.length,
+          });
+          useToastStore.getState().addToast([summary, ...failures].join(' '), 'warning');
           setSyncStatus('success');
           setTimeout(() => {
             setSyncStatus('idle');
@@ -166,25 +184,17 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
             syncMode: mode as 'sync' | 'push',
             requireDrive: true,
           });
+        } else {
+          useToastStore.getState().addToast(firstError, 'error');
         }
         setTimeout(() => setSyncStatus('idle'), 5000);
       }
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : 'Sync failed';
+      const errorMsg = err instanceof Error ? err.message : t('common.error_occurred');
       setSyncStatus('error');
       setErrorMessage(errorMsg);
-
-      // Show Error Modal
-      useConfirmStore.getState().setOptions({
-        title: t('common.error'),
-        message: errorMsg || t('common.error_occurred'),
-        isLoading: false,
-        confirmText: t('common.ok'),
-        cancelText: '',
-        showCloseButton: true,
-        closeOnConfirm: true,
-        variant: 'destructive',
-      });
+      useConfirmStore.getState().close();
+      useToastStore.getState().addToast(errorMsg, 'error');
       setTimeout(() => setSyncStatus('idle'), 5000);
     }
   }, [

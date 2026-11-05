@@ -156,14 +156,19 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
           github: t('sync.export_dialog.dest_github_repo_label'),
           google_drive: t('sync.export_dialog.dest_google_drive_label'),
         };
-        const failures = results
-          .filter((r) => !r.success)
-          .map((r) => `${providerLabels[r.service]}: ${r.error || t('common.error')}`)
+        // Every provider, or a partial failure reads as if nothing was saved.
+        const outcomes = results
+          .map((r) => {
+            const outcome = r.success
+              ? t('sync.export_dialog.status_done')
+              : r.error || t('common.error');
+            return `${providerLabels[r.service]}: ${outcome}`;
+          })
           .join(' ');
 
         const atLeastOneSuccess = results.some((r) => r.success);
         if (atLeastOneSuccess) {
-          showError(failures);
+          showError(outcomes);
           setSyncStatus('success');
           setTimeout(() => {
             setSyncStatus('idle');
@@ -194,7 +199,7 @@ export function useSyncWorkflow({ mode, variant = 'root', onManage }: UseSyncWor
             requireDrive: true,
           });
         } else {
-          showError(failures || firstError);
+          showError(outcomes || firstError);
         }
         setTimeout(() => setSyncStatus('idle'), 5000);
       }

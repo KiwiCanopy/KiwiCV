@@ -172,7 +172,13 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
         // "Nothing was sent" is untrue once an earlier run in this dialog wrote something.
         const done = succeededRef.current.size;
         const message = done
-          ? t('sync.export_dialog.result_partial', { done, total: done + ids.length })
+          ? [
+              t('sync.export_dialog.result_partial', { done, total: done + ids.length }),
+              t('sync.export_dialog.build_failed_hint'),
+              ...succeededRef.current.values(),
+            ]
+              .filter(Boolean)
+              .join(' ')
           : buildFailed;
         setState((prev) => ({
           isRunning: false,

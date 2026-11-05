@@ -87,7 +87,9 @@ describe('Back up failing at a provider (#93)', () => {
     });
 
     expect(dialog()).toEqual(
-      errorDialog('sync.export_dialog.dest_github_repo_label: Bad credentials'),
+      errorDialog(
+        'sync.export_dialog.dest_google_drive_label: sync.export_dialog.status_done sync.export_dialog.dest_github_repo_label: Bad credentials',
+      ),
     );
     expect(result.current.syncStatus).toBe('success');
   });

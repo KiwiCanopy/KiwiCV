@@ -113,7 +113,8 @@ exported".
 ⚠️ **A retry reuses the folder the failed attempt wrote** (#91). `writeDeliverables` holds the name
 Drive returned in module state until the snapshot lands, so a snapshot failure leaves `MyCV`, not
 `MyCV` and `MyCV_2`. Only the same content under the same name and account counts as a retry, and a
-reload loses it. **With no deliverables there is no folder at all** (#92).
+reload loses it. A failure inside the upload itself still leaves a folder the client cannot name
+(#98). **With no deliverables there is no folder at all** (#92).
 
 ⚠️ **Every snapshot name comes from a listing of `backups/{lang}`** (#92). Folders and snapshots no
 longer advance together, so a free folder proves nothing about a free snapshot. `freeSnapshotName`

@@ -6,3 +6,7 @@
 @config '../tailwind.config.js';
 @plugin '@tailwindcss/typography';
 @plugin 'tailwindcss-animate';
+
+/* Below 360px the dashboard header's icon row no longer fits its padding (measured, #23).
+   One name for the threshold: the row's width is shared by four call sites. */
+@custom-variant header-compact (@media (max-width: 359.98px));

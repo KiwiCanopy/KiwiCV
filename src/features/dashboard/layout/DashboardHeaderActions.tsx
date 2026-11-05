@@ -74,7 +74,8 @@ export const DashboardHeaderActions = () => {
           </div>
         )}
 
-        <div className="flex h-10 items-center gap-3">
+        {/* Below 360px: 36px wide, as a stacked Design row (UI_PATTERNS § Mobile Adaptation, #23). */}
+        <div className="header-compact:gap-1 header-compact:[&_button]:w-9 header-compact:[&_button]:min-w-0 header-compact:[&_button]:justify-center header-compact:[&_button]:px-0 flex h-10 items-center gap-3">
           <CloudSaveButton
             status={syncStatus}
             isAlreadySynced={isAlreadySynced}

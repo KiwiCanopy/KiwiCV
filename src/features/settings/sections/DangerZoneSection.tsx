@@ -17,7 +17,7 @@ export const DangerZoneSection = ({
   onClearData,
 }: DangerZoneSectionProps) => {
   return (
-    <div className="border-destructive/20 bg-destructive/5 dark:border-destructive/40 dark:bg-destructive/15 overflow-hidden rounded-xl border">
+    <div className="border-destructive/20 bg-destructive/5 dark:bg-secondary dark:border-destructive/40 overflow-hidden rounded-xl border">
       <div className="border-destructive/20 flex items-center justify-between border-b px-6 py-5">
         <h3 className="text-destructive text-lg font-extrabold">{title}</h3>
         <CircleAlert className="text-destructive h-5 w-5" />

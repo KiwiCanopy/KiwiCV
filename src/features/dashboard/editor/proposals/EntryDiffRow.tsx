@@ -28,8 +28,8 @@ const MARK_LABEL_KEY: Record<DiffMark['mark'], string> = {
 // ⚠️ Hue alone does not separate these; the tint and the left rule give each
 // state a shape. Unchanged keeps a transparent rule so all three rows align.
 const MARK_ROW_CLASS: Record<DiffMark['mark'], string> = {
-  added: 'bg-success/10 border-l-success',
-  removed: 'bg-destructive/10 border-l-destructive',
+  added: 'bg-success/10 dark:bg-secondary border-l-success',
+  removed: 'bg-destructive/10 dark:bg-secondary border-l-destructive',
   unchanged: 'border-l-transparent',
 };
 

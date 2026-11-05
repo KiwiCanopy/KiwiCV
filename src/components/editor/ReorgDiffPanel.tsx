@@ -132,7 +132,7 @@ export const ReorgDiffPanel: React.FC = () => {
                     key={item._vId as string}
                     className={cn(
                       'rounded-xl border p-4 transition-all',
-                      'border-red-500/20 bg-red-500/5',
+                      'dark:bg-secondary border-red-500/20 bg-red-500/5',
                     )}
                   >
                     <div className="mb-2 flex items-center justify-between">
@@ -209,7 +209,7 @@ export const ReorgDiffPanel: React.FC = () => {
                       return (
                         <div
                           key={key}
-                          className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 transition-all"
+                          className="dark:bg-secondary rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 transition-all"
                         >
                           <div className="mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                             <span className="text-foreground text-sm font-bold">
@@ -240,7 +240,7 @@ export const ReorgDiffPanel: React.FC = () => {
                     {added.map(({ item, key }) => (
                       <div
                         key={key}
-                        className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 transition-all"
+                        className="dark:bg-secondary rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 transition-all"
                       >
                         <div className="mb-2 flex items-center justify-between">
                           <span className="text-foreground text-sm font-bold">

@@ -73,7 +73,7 @@ function GitHubSyncModalContent({
         />
 
         {status === 'error' && (
-          <div className="bg-destructive/10 text-destructive flex items-center gap-2 rounded-md px-4 py-3 text-sm">
+          <div className="bg-destructive/10 dark:bg-secondary text-destructive flex items-center gap-2 rounded-md px-4 py-3 text-sm">
             <CircleAlert className="h-4 w-4 flex-shrink-0" />
             <p className="leading-tight">{errorMessage}</p>
           </div>

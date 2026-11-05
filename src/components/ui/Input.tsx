@@ -174,7 +174,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               error
                 ? 'border-destructive focus:ring-destructive focus:border-destructive'
                 : warning
-                  ? 'border-warning bg-warning/5 focus:ring-warning focus:border-warning'
+                  ? 'border-warning bg-warning/5 dark:bg-secondary focus:ring-warning focus:border-warning'
                   : 'border-input focus:border-primary-strong focus:ring-primary-strong/20 bg-card',
               lock && LOCKED_CONTROL_CLASS,
               className,

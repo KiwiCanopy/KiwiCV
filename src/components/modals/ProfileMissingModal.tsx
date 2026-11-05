@@ -42,7 +42,7 @@ export const ProfileMissingModal: React.FC<ProfileMissingModalProps> = ({
       }
     >
       <div className="space-y-8 px-6 pb-6">
-        <div className="rounded-2xl border border-rose-100 bg-rose-50 p-6 text-rose-700 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
+        <div className="dark:bg-secondary rounded-2xl border border-rose-100 bg-rose-50 p-6 text-rose-700 dark:border-rose-500/20 dark:text-rose-400">
           <DialogFrameDescription className="text-sm leading-relaxed font-bold">
             {descriptionParts[0]}
             <a

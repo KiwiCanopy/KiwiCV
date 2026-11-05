@@ -83,10 +83,10 @@ function Toast({ toast }: { toast: ToastType }) {
   };
 
   const bgColors = {
-    success: 'bg-green-50/90 dark:bg-emerald-950/40 border-green-200 dark:border-emerald-800/50',
-    error: 'bg-red-50/90 dark:bg-red-950/40 border-red-200 dark:border-red-800/50',
-    info: 'bg-blue-50/90 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800/50',
-    warning: 'bg-yellow-50/90 dark:bg-yellow-950/40 border-yellow-200 dark:border-yellow-800/50',
+    success: 'bg-green-50/90 dark:bg-secondary border-green-200 dark:border-emerald-800/50',
+    error: 'bg-red-50/90 dark:bg-secondary border-red-200 dark:border-red-800/50',
+    info: 'bg-blue-50/90 dark:bg-secondary border-blue-200 dark:border-blue-800/50',
+    warning: 'bg-yellow-50/90 dark:bg-secondary border-yellow-200 dark:border-yellow-800/50',
   };
 
   return (

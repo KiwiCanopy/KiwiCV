@@ -138,7 +138,7 @@ export const MigrationGateway = () => {
             className={cn(
               'mb-10 rounded-xl border px-4 py-3 text-sm leading-relaxed',
               isDark
-                ? 'border-amber-500/20 bg-amber-500/5 text-amber-200/90'
+                ? 'bg-secondary border-amber-500/20 text-amber-200/90'
                 : 'border-amber-500/30 bg-amber-50 text-amber-900',
             )}
             dangerouslySetInnerHTML={{

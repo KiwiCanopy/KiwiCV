@@ -76,7 +76,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                   className={cn(
                     'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300',
                     copied
-                      ? 'bg-green-500/10 text-green-500'
+                      ? 'dark:bg-secondary bg-green-500/10 text-green-500'
                       : 'bg-background hover:bg-accent border-input hover:border-primary-strong/30 text-muted-foreground hover:text-primary-strong border shadow-sm',
                   )}
                   title={t('common.copied')}

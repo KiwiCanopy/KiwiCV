@@ -58,7 +58,7 @@ export const InsufficientPremiumAccessModal: React.FC<InsufficientPremiumAccessM
         zIndexClassName="z-[80]"
         header={
           <div className="flex items-center gap-3 pt-6 pr-14 pb-2 pl-6 md:pr-16">
-            <div className="from-warning/20 to-warning/5 text-warning ring-warning/20 flex items-center justify-center rounded-xl bg-linear-to-br p-2.5 ring-1">
+            <div className="from-warning/20 to-warning/5 dark:from-secondary dark:to-secondary text-warning ring-warning/20 flex items-center justify-center rounded-xl bg-linear-to-br p-2.5 ring-1">
               <Sparkles className="h-5 w-5" />
             </div>
             <DialogFrameTitle className="text-foreground text-lg font-black tracking-tight">

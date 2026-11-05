@@ -114,7 +114,7 @@ export const RoadmapTab = () => {
       {/* Released Section */}
       <div className="space-y-6">
         <div className="flex items-center gap-2">
-          <span className="bg-success/10 text-success rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase">
+          <span className="bg-success/10 dark:bg-secondary text-success rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase">
             {t('roadmap.status.released')}
           </span>
           <div className="bg-border/40 h-px flex-1" />
@@ -128,7 +128,7 @@ export const RoadmapTab = () => {
                 key={item.key}
                 className="bg-secondary border-border flex flex-col gap-4 rounded-2xl border p-6 sm:flex-row sm:items-center"
               >
-                <div className="bg-success/10 text-success flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+                <div className="bg-success/10 dark:bg-secondary text-success flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
                   <Check className="h-5 w-5" strokeWidth={3} />
                 </div>
 

@@ -84,7 +84,7 @@ export const BillingSection: React.FC<BillingSectionProps> = ({
               profile?.isPremium
                 ? 'via-background to-background border-premium/30 from-premium/10 shadow-premium/5 hover:shadow-premium/10 bg-gradient-to-br'
                 : profile?.premium_until
-                  ? 'via-background to-background border-destructive/25 from-destructive/10 bg-gradient-to-br'
+                  ? 'via-background to-background border-destructive/25 from-destructive/10 dark:from-secondary bg-gradient-to-br'
                   : 'border-premium/15 shadow-sm',
             )}
           >
@@ -118,8 +118,8 @@ export const BillingSection: React.FC<BillingSectionProps> = ({
                   profile?.isPremium
                     ? 'from-premium/85 to-premium-deep/85 text-premium-foreground ring-premium/30 bg-gradient-to-br ring-1'
                     : profile?.premium_until
-                      ? 'bg-destructive/10 text-destructive ring-destructive/25 ring-1'
-                      : 'bg-info/10 text-info ring-info/25 ring-1',
+                      ? 'bg-destructive/10 dark:bg-secondary text-destructive ring-destructive/25 ring-1'
+                      : 'bg-info/10 dark:bg-secondary text-info ring-info/25 ring-1',
                 )}
               >
                 {profile?.isPremium
@@ -168,7 +168,7 @@ export const BillingSection: React.FC<BillingSectionProps> = ({
 
             <div className="relative z-10 mt-auto flex justify-end pt-8">
               {isVerifyingPayment ? (
-                <div className="bg-warning/10 text-warning ring-warning/20 flex items-center gap-2 rounded-xl px-4 py-2 text-[10px] font-black tracking-widest uppercase ring-1">
+                <div className="bg-warning/10 dark:bg-secondary text-warning ring-warning/20 flex items-center gap-2 rounded-xl px-4 py-2 text-[10px] font-black tracking-widest uppercase ring-1">
                   <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
                   {t('monetization.processing_order')}
                 </div>

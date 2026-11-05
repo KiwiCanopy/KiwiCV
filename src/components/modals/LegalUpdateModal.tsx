@@ -78,7 +78,7 @@ export const LegalUpdateModal: React.FC = () => {
           {t('legal.update.intro')}
         </DialogFrameDescription>
 
-        <div className="rounded-2xl border border-amber-500/10 bg-amber-500/5 p-5 dark:bg-amber-500/10">
+        <div className="dark:bg-secondary rounded-2xl border border-amber-500/10 bg-amber-500/5 p-5">
           <h4 className="mb-2 text-xs font-black tracking-wider text-amber-600 uppercase dark:text-amber-400">
             {t('legal.update.changes_title')}
           </h4>

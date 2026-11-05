@@ -64,7 +64,7 @@ export const GithubSection = ({ t, lang }: GithubSectionProps) => {
                 tokens
               </p>
             </div>
-            <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800/50 dark:bg-blue-950/30">
+            <div className="dark:bg-secondary rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800/50">
               <p className="flex gap-2 text-sm leading-relaxed text-blue-800 dark:text-blue-200">
                 <span className="mt-0.5 shrink-0">🔒</span>
                 <span>{t('extras.howto.github.pat_security_tip')}</span>

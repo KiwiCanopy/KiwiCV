@@ -51,7 +51,7 @@ export const ConfirmModal = () => {
               className={cn(
                 'shrink-0 rounded-full p-2',
                 isDestructive
-                  ? 'bg-destructive/10 text-destructive'
+                  ? 'bg-destructive/10 dark:bg-secondary text-destructive'
                   : 'bg-primary/10 text-primary-strong',
               )}
             >

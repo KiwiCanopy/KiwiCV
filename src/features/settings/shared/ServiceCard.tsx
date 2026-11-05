@@ -164,7 +164,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                   {title}
                 </h3>
                 {statusBadge && isEnabled && (
-                  <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-emerald-600 uppercase ring-1 ring-emerald-500/20 ring-inset">
+                  <span className="dark:bg-secondary inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-emerald-600 uppercase ring-1 ring-emerald-500/20 ring-inset">
                     {statusBadge}
                   </span>
                 )}

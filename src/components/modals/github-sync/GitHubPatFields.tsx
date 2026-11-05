@@ -82,7 +82,7 @@ export function GitHubPatFields({
           </div>
         </div>
 
-        <div className="flex items-start gap-3 rounded-lg border border-amber-500/10 bg-amber-500/5 p-3.5 text-amber-600 sm:p-4 dark:text-amber-400">
+        <div className="dark:bg-secondary flex items-start gap-3 rounded-lg border border-amber-500/10 bg-amber-500/5 p-3.5 text-amber-600 sm:p-4 dark:text-amber-400">
           <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
           <div className="text-xs leading-relaxed">
             <p>

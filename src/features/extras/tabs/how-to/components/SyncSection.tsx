@@ -25,7 +25,7 @@ export const SyncSection = ({ t }: SyncSectionProps) => {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-900 dark:bg-blue-950/30">
+        <div className="dark:bg-secondary rounded-xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-900">
           <h4 className="mb-2 flex items-center gap-2 font-bold text-blue-900 dark:text-blue-100">
             <Globe className="h-4 w-4" />
             {t('extras.howto.sync_guide.language_specific_title')}
@@ -34,7 +34,7 @@ export const SyncSection = ({ t }: SyncSectionProps) => {
             {t('extras.howto.sync_guide.language_specific_desc')}
           </p>
         </div>
-        <div className="rounded-xl border border-green-200 bg-green-50 p-5 dark:border-green-900 dark:bg-green-950/30">
+        <div className="dark:bg-secondary rounded-xl border border-green-200 bg-green-50 p-5 dark:border-green-900">
           <h4 className="mb-2 flex items-center gap-2 font-bold text-green-900 dark:text-green-100">
             <CircleCheck className="h-4 w-4" />
             {t('extras.howto.sync_guide.auto_recognition_title')}

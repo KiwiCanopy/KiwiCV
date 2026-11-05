@@ -349,26 +349,26 @@
   }
 
   .dark {
-    --background: 154.3 22.6% 12.2%;
+    --background: 0 0% 0%;
     --foreground: 140 15.8% 96.3%;
-    --card: 153.3 21.4% 16.5%;
+    --card: 144 38.5% 5.1%;
     --card-foreground: 140 15.8% 96.3%;
-    --popover: 153.3 21.4% 16.5%;
+    --popover: 144 38.5% 5.1%;
     --popover-foreground: 140 15.8% 96.3%;
-    --primary: 77.9 52.3% 57.3%;
+    --primary: 78 51.4% 58%;
     /**
      * ⚠️ Deliberately an alias of `--primary`, not a second value. Surface
      * polarity: dark's surfaces are dark, so the same light value works as a
-     * fill (ink on it, 8.71:1) and as text (9.08:1 on dark `--card`). The token
+     * fill (ink on it, 8.74:1) and as text (10.35:1 on dark `--card`). The token
      * exists here only so the cascade resolves.
      */
-    --primary-strong: 77.9 52.3% 57.3%;
-    --primary-foreground: 155.5 44% 9.8%;
-    --secondary: 153 19.6% 20%;
+    --primary-strong: 78 51.4% 58%;
+    --primary-foreground: 145.3 34.5% 10.8%;
+    --secondary: 138.8 29.6% 10.6%;
     --secondary-foreground: 140 15.8% 96.3%;
-    --muted: 153 19.6% 20%;
+    --muted: 138.8 29.6% 10.6%;
     --muted-foreground: 145.7 10.8% 74.5%;
-    --accent: 153 19.6% 20%;
+    --accent: 138.8 29.6% 10.6%;
     --accent-foreground: 140 15.8% 96.3%;
     /* Muted toward Canopy's dark danger (#c76060) but held lighter than it:
        `bg-destructive` carries `--destructive-foreground` (deep ink), which
@@ -383,35 +383,21 @@
        `text-destructive` on the dark card AND light enough to carry an ink
        label on the filled button. Hue and chroma are the only levers here. */
     /*
-     * ⚠️ LIGHTENED for the Ink rail surfaces (2026-09-01). These kept their
-     * pre-palette values while every dark surface got LIGHTER — `--card`
-     * 10.2% -> 16.5%, `--secondary` 13.5% -> 20%, `--mist` -> 23.5% — so the
-     * old values stopped clearing AA as text. `--warning` was the worst at
-     * 4.27:1 on `--card`, which is the ordinary ground for text; destructive
-     * was 4.16:1 on `--secondary` and info 3.98:1 on `--mist`.
-     *
-     * Each is lifted in LIGHTNESS only, hue and saturation untouched, to the
-     * smallest value clearing 4.5:1 on `--mist` — the lightest ground any of
-     * them can land on, so the rest have headroom. Re-measure all three if a
-     * dark surface is ever lightened again; they are pinned to `--mist`.
+     * Lifted to clear 4.5:1 on the old, lighter `--mist`. On the Grüne Haarlinie
+     * surfaces all three have headroom (lowest: 5.6:1, danger on `--mist`).
      */
     --destructive: 4 68% 74.7%;
     --info: 214 70% 71.9%;
     --destructive-foreground: 145.3 34.5% 10.8%;
-    --border: 148.4 13.9% 26.9%;
+    --border: 140.8 23.2% 22%;
     /*
      * ⚠️ Lighter than `--border`, and it must stay that way. These two held the
-     * SAME value once, which made the whole control-edge rule a no-op in
-     * dark: moving a control from `border-border` to `border-input` changed
-     * nothing, and the boundary sat at 1.89:1 against `--card` — under 1.4.11's
-     * 3:1. Every control-edge fix before this one bought light mode only.
-     *
-     * 40% is the smallest step with real headroom: 38% lands on 3.02:1, which
-     * rounds to the minimum and leaves none. This is 3.28:1.
+     * SAME value once, which made the whole control-edge rule a no-op in dark.
+     * On the Haarlinie surfaces this is 5.86:1 on `--card`, 4.82:1 on `--mist`.
      */
-    --input: 144.4 13% 48.2%;
+    --input: 140 11.3% 53.1%;
     --ring: 177.1 38.2% 89.2%;
-    --mist: 152.7 18.3% 23.5%;
+    --mist: 134.1 27.9% 12%;
     --success: 148 63.3% 66.9%;
     --success-foreground: 155.5 44% 9.8%;
     --warning: 39 52% 59.8%;
@@ -421,34 +407,29 @@
     --premium-deep: 38 90% 54%;
     --premium-foreground: 145.3 34.5% 10.8%;
     --danger: 4 68% 74.7%;
-    --focus-separator: 154.3 22.6% 12.2%;
+    --focus-separator: 0 0% 0%;
     --focus-outer: 140 15.8% 96.3%;
 
     /*
-     * ⚠️ Elevation needs a dark variant; the light one is a no-op here. Light
-     * `--elevation-1` is a near-black blur at 6% alpha, which is invisible
-     * against a dark card — the boxes in the editor looked flat in dark while
-     * reading correctly in light, and the fill step plus the border were doing
-     * all the work. A darker blur alone still barely registers, so each role
-     * also takes an inset top rim: on a dark surface a lighter edge is what
-     * reads as "raised", the same way the shadow does on a light one.
+     * Grüne Haarlinie: containers take their shape from the line, and a shadow
+     * cannot show on black. Only floating surfaces keep one, for what is beneath.
      */
-    --elevation-1: 0 1px 2px rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 5%);
-    --elevation-2: 0 8px 24px rgb(0 0 0 / 55%), inset 0 1px 0 rgb(255 255 255 / 6%);
-    /* See the light block for what the zones are and why. Dark keeps the same
-       ordering: nav darkest, rail below the workspace, desk one step ABOVE the
-       workspace rather than below it — near-black behind the CV made the page
-       float on a hole and killed the hue. */
-    --nav: 152.7 26.8% 8%;
+    --elevation-1: none;
+    --elevation-2: 0 8px 24px rgb(0 0 0 / 55%);
+    /*
+     * Unlike light, dark has no zone ladder: every zone is the black page and
+     * lines separate them (code/DESIGN_LANGUAGE.md § Grüne Haarlinie).
+     */
+    --nav: 0 0% 0%;
     --nav-foreground: 145.7 12% 65.7%;
     --nav-foreground-strong: 140 15.8% 96.3%;
-    --nav-border: 150 19.1% 18.4%;
-    --nav-active: 150 21.3% 18.4%;
-    --rail: 155 24% 9.8%;
-    --rail-active: 151.4 19.6% 21%;
-    --workspace: 154.3 22.6% 12.2%;
-    --desk: 152 21.1% 13.9%;
-    --divider: 148.4 18.4% 20.2%;
+    --nav-border: 140 25.7% 13.7%;
+    --nav-active: 138.8 29.6% 10.6%;
+    --rail: 0 0% 0%;
+    --rail-active: 138.8 29.6% 10.6%;
+    --workspace: 0 0% 0%;
+    --desk: 0 0% 0%;
+    --divider: 140 25.7% 13.7%;
   }
 
   * {

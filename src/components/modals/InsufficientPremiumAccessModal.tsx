@@ -69,7 +69,7 @@ export const InsufficientPremiumAccessModal: React.FC<InsufficientPremiumAccessM
       >
         {/* Content */}
         <div className="p-6 pt-4 text-center sm:p-10 sm:pt-4">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-amber-500/20 to-amber-500/5 shadow-[0_8px_16px_rgba(245,158,11,0.1)] ring-1 ring-amber-500/20">
+          <div className="dark:from-secondary dark:to-secondary mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-linear-to-br from-amber-500/20 to-amber-500/5 shadow-[0_8px_16px_rgba(245,158,11,0.1)] ring-1 ring-amber-500/20">
             <CircleAlert className="text-warning h-8 w-8" />
           </div>
 

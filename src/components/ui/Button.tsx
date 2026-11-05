@@ -51,9 +51,9 @@ const variantClasses: Record<ButtonVariant, string> = {
   // Hover steps one shade away from rest to `--mist` (darker in light, lighter in
   // dark); an alpha fade like `secondary/80` measured 1.02:1, i.e. invisible.
   // Dark's `--mist` is 1.05:1 on `--secondary`, so dark hover steps to the line
-  // at 70% instead (1.27:1 on `--card`), short of the press fill.
+  // at 70% instead (1.27:1 against rest on `--card`), short of the press fill.
   secondary:
-    'bg-secondary text-foreground hover:bg-mist dark:hover:bg-border/70 active:bg-border border-transparent',
+    'bg-secondary text-foreground hover:bg-mist dark:hover:bg-border/70 active:bg-border dark:active:bg-border border-transparent',
   quiet: 'bg-transparent text-foreground hover:bg-muted border-transparent',
   danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 border-destructive',
 };
@@ -61,7 +61,8 @@ const variantClasses: Record<ButtonVariant, string> = {
 // Pins hover and press to the rest fill, so a refused button never reads as live.
 const inertFillClasses: Record<ButtonVariant, string> = {
   primary: 'hover:bg-primary active:bg-primary',
-  secondary: 'hover:bg-secondary dark:hover:bg-secondary active:bg-secondary',
+  secondary:
+    'hover:bg-secondary dark:hover:bg-secondary active:bg-secondary dark:active:bg-secondary',
   quiet: 'hover:bg-transparent active:bg-transparent',
   danger: 'hover:bg-destructive active:bg-destructive',
 };

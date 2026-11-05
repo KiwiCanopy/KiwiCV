@@ -122,7 +122,7 @@ export const CloudSyncGatewayModal: React.FC<CloudSyncGatewayModalProps> = ({
                   ? 'bg-muted/30 border-primary-strong/20 ring-primary-strong/5 shadow-sm ring-1'
                   : 'border-border bg-background hover:border-primary-strong/30 hover:shadow-md',
                 needsPermission &&
-                  'cursor-pointer border-amber-500/30 bg-amber-500/5 hover:border-amber-500/50 hover:shadow-md active:scale-[0.99]',
+                  'dark:bg-secondary cursor-pointer border-amber-500/30 bg-amber-500/5 hover:border-amber-500/50 hover:shadow-md active:scale-[0.99]',
               )}
             >
               <div className="flex w-full items-center gap-3 sm:gap-4">
@@ -156,7 +156,7 @@ export const CloudSyncGatewayModal: React.FC<CloudSyncGatewayModalProps> = ({
 
               {needsPermission ? (
                 <div className="mt-2 flex w-full flex-col items-stretch gap-1.5 sm:mt-0 sm:w-auto sm:items-end">
-                  <span className="inline-flex items-center justify-center rounded-full bg-amber-500/10 px-2 py-1 text-center text-[9px] font-bold tracking-wider text-amber-600 uppercase ring-1 ring-amber-500/20 ring-inset sm:justify-start sm:py-0.5">
+                  <span className="dark:bg-secondary inline-flex items-center justify-center rounded-full bg-amber-500/10 px-2 py-1 text-center text-[9px] font-bold tracking-wider text-amber-600 uppercase ring-1 ring-amber-500/20 ring-inset sm:justify-start sm:py-0.5">
                     {t('sync.drive_access_required_short')}
                   </span>
                   <button

@@ -52,7 +52,8 @@ export const CloudSaveButton: React.FC<CloudSaveButtonProps> = ({
           ? 'bg-success text-success-foreground'
           : cn(
               'bg-secondary text-foreground',
-              !disabled && 'hover:bg-mist dark:hover:bg-border/70 active:bg-border',
+              !disabled &&
+                'hover:bg-mist dark:hover:bg-border/70 active:bg-border dark:active:bg-border',
             ),
         disabled && 'cursor-not-allowed opacity-80',
         className,

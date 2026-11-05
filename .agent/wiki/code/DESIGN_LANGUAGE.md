@@ -126,7 +126,7 @@ uses local Inter at 400, 500, 600, 700, and 800. The semantic roles are:
 | Primary action | `--primary`                  | `#A9CB59` | `#AACB5D` |
 | Primary drawn  | `--primary-strong`           | `#14503E` | `#AACB5D` |
 | Kiwi accent    | `--kiwi`                     | `#A9CB59` | `#A9CB59` |
-| Mist / hover   | `--mist`                     | `#D8E5DA` | `#16271A` |
+| Mist           | `--mist`                     | `#D8E5DA` | `#16271A` |
 | Pass accent    | `--premium`                  | `#F6BF31` | `#F3C349` |
 | Pass deep stop | `--premium-deep`             | `#F59F0A` | `#F3A620` |
 | Pass label     | `--premium-foreground`       | `#12251A` | `#12251A` |
@@ -142,7 +142,8 @@ governs.
 
 ### The Ink rail palette (2026-09-01)
 
-The teal is gone and colour is spent on **zones** — whole surfaces stepping by
+This section describes light; dark has no ladder (see Grüne Haarlinie below). The
+teal is gone and colour is spent on **zones** — whole surfaces stepping by
 value in one hue — rather than on hairlines. The nav column is the darkest
 surface on screen and the editor the lightest; that one dark edge is what makes
 the middle read as bright instead of washed out, and it is the first ground the
@@ -227,19 +228,19 @@ now light-only.**
 - **Every zone is black** — nav, rail, workspace and desk — and lines separate
   them. This reverses the ruling that near-black behind the CV made the page
   "float on a hole". The owner looked at both and chose black.
-- **Status tints are the raised surface.** Each resting `bg-<status>/N` carries
-  `dark:bg-secondary`, and `tests/lint/dark-status-tint.test.mjs` fails without
-  it. Fill no longer separates success, warning and danger, so **icon and ink must**.
-  Interactive `hover:bg-destructive/10` and paid amber are not status tints.
-- **Text and status inks did not move.** They only gained headroom: the lowest
-  text pair is danger on `--mist`, 5.62:1.
+- **Status tints are the raised surface.** Each resting tint, status token or palette colour, carries
+  `dark:bg-secondary`, and `tests/lint/dark-status-tint.test.mjs` fails without it. Fill no longer separates success, warning and danger, so **icon and ink must**.
+  Hover fills are not status tints; that test names the decorative exemptions.
+- **Text and status inks did not move.** They only gained headroom: status inks clear 7:1 on
+  `--mist`.
 - **`--kiwi` stays `#A9CB59`.** It is root-only by guard, so dark holds two greens
   one step apart. No one can see it; do not "fix" it by adding a dark `--kiwi`
   without checking `tests/lint/primary-role-split.test.mjs`.
 
 ⚠️ **`--mist` no longer works as a hover step on `--secondary` in dark** (1.05:1,
 measured in the app). The secondary button takes `dark:hover:bg-border/70`
-(1.27:1 on `--card`) and keeps `--border` for press. Alpha hovers such as
+(1.27:1 against rest on `--card`) with `dark:active:bg-border` for press, since the dark hover out-specifies a plain
+`active:` (`:is(.dark *)`). Alpha hovers such as
 `hover:bg-muted/40` are faint on these surfaces too.
 
 ### A clipping track draws the focus ring inward (2026-09-07)

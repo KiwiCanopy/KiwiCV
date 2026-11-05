@@ -1,4 +1,4 @@
 export const ui_dark_mode_black = {
   ui_dark_mode_black:
-    'Dark mode now sits on a pure black page: cards are drawn with a fine green line, and kiwi green is the only strong colour.',
+    'Dark mode is now pure black, with cards outlined by a fine green line and kiwi green as the only strong accent.',
 };

@@ -64,7 +64,7 @@ export const LegalUpdateModal: React.FC = () => {
       maxWidth="lg"
       header={
         <div className="mb-6 flex items-center gap-3 px-6 pt-6">
-          <div className="rounded-xl bg-amber-500/10 p-2 text-amber-500">
+          <div className="dark:bg-secondary rounded-xl bg-amber-500/10 p-2 text-amber-500">
             <ShieldAlert className="h-6 w-6" />
           </div>
           <DialogFrameTitle className="text-foreground text-lg font-black tracking-tight sm:text-xl">

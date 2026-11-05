@@ -146,7 +146,7 @@ export const DashboardLayout = () => {
 
   const hasContent = !isMeaningfullyEmpty(resume);
   const tabSwitcher = (
-    <div className="flex min-w-0 items-center gap-2">
+    <div className="header-compact:gap-1 flex min-w-0 items-center gap-2">
       {/* ⚠️ The CV's name and its save status both used to sit here. The name is
           already on My CVs, in the browser tab, and on the document itself in
           the preview beside this; a truncated copy of it in the chrome told the

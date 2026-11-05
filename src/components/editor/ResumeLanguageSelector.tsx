@@ -146,6 +146,7 @@ export function ResumeLanguageSelector({
   // The `<select>` keeps its accessible name from `LocaleSelect`'s sr-only
   // label, and `showHelp` carries the "this is the CV's language, not the app's"
   // explanation that the dropped visible label used to imply.
+  // This width spends the header's measured budget: UI_PATTERNS § Mobile Adaptation (#23).
   if (variant === 'compact') {
     return (
       <div className="relative flex shrink-0 items-center gap-1" aria-busy={isLoading || undefined}>

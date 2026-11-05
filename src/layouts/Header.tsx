@@ -24,6 +24,7 @@ export function Header({
         className,
       )}
     >
+      {/* On the dashboard this row has a measured width budget: UI_PATTERNS § Mobile Adaptation (#23). */}
       <div className="flex shrink-0 items-center gap-2 lg:gap-4" id="header-tabs">
         {/* A menu glyph, not the logo: the logo read as brand, not as a drawer.
             Off the dashboard the brand sits beside it. */}

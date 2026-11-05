@@ -40,8 +40,10 @@ export interface DestinationRunState {
 
 export interface ExportRunState {
   isRunning: boolean;
-  /** Only destinations that took part in a run appear here. */
+  /** Every destination that took part in a run this dialog session; a retry keeps the rest (#90). */
   rows: Partial<Record<DestinationId, DestinationRunState>>;
+  /** The destinations of the run in flight, or of the last one: what its progress counts. */
+  runIds: DestinationId[];
   /**
    * Set when the package itself could not be built, which fails every selected
    * destination for the same reason.

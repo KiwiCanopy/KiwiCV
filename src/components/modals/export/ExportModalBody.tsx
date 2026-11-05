@@ -85,10 +85,11 @@ export function ExportModalBody({
     onChromeChange({ busy: state.isRunning, name: base });
   }, [onChromeChange, state.isRunning, base]);
 
-  const attempted = Object.keys(state.rows).length;
-  const finished = Object.values(state.rows).filter(
-    (row) => row?.status === 'done' || row?.status === 'failed',
-  ).length;
+  const attempted = state.runIds.length;
+  const finished = state.runIds.filter((id) => {
+    const status = state.rows[id]?.status;
+    return status === 'done' || status === 'failed';
+  }).length;
   const isRetry = state.hasRun && failed.length > 0;
   const targets = isRetry ? failed : selected;
   const canRun = preview.trim().length > 0;

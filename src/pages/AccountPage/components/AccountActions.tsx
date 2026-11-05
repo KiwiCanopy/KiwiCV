@@ -30,14 +30,14 @@ export const AccountActions: React.FC<AccountActionsProps> = ({
         <nav className="space-y-1">
           <button
             onClick={() => window.open(localizedPath('/privacy'), '_blank')}
-            className="hover:bg-muted text-muted-foreground hover:text-foreground flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+            className="hover:bg-hover-step text-muted-foreground hover:text-foreground flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors"
           >
             <span>{t('auth.privacy_link')}</span>
             <ExternalLink className="h-3.5 w-3.5 opacity-50" />
           </button>
           <button
             onClick={() => window.open(localizedPath('/terms?tab=terms'), '_blank')}
-            className="hover:bg-muted text-muted-foreground hover:text-foreground flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+            className="hover:bg-hover-step text-muted-foreground hover:text-foreground flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors"
           >
             <span>{t('auth.terms_link')}</span>
             <ExternalLink className="h-3.5 w-3.5 opacity-50" />

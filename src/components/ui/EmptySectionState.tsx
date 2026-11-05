@@ -54,7 +54,7 @@ export const EmptySectionState = ({
       <span
         className={cn(
           'bg-muted text-primary-strong flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors',
-          onAction && 'group-hover:bg-mist dark:group-hover:bg-border/70',
+          onAction && 'group-hover:bg-mist',
         )}
       >
         <Icon className="h-5 w-5" aria-hidden="true" />
@@ -88,7 +88,7 @@ export const EmptySectionState = ({
       onClick={(event) => onAction(isKeyboardActivation(event))}
       className={cn(
         shell,
-        'hover:bg-muted/40 focus-visible:ring-primary-strong group text-left transition-colors focus-visible:ring-2 focus-visible:outline-none',
+        'hover:bg-muted/40 dark:hover:bg-secondary focus-visible:ring-primary-strong group text-left transition-colors focus-visible:ring-2 focus-visible:outline-none',
         className,
       )}
     >

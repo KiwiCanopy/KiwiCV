@@ -187,9 +187,27 @@ describe('Button hover fill', () => {
     render(<Button>Restore</Button>);
     const classes = screen.getByRole('button', { name: 'Restore' }).className.split(' ');
     expect(classes).toContain('hover:bg-mist');
-    expect(classes).toContain('dark:hover:bg-border/70');
-    expect(classes).toContain('dark:active:bg-border');
     expect(classes).toContain('active:bg-border');
+  });
+
+  it('keeps a caller override of the quiet hover, and pins it when refused', () => {
+    render(
+      <>
+        <Button variant="quiet" className="hover:bg-destructive/10">
+          Delete
+        </Button>
+        <Button variant="quiet" disabled>
+          Move
+        </Button>
+      </>,
+    );
+    const live = screen.getByRole('button', { name: 'Delete' }).className.split(' ');
+    expect(live).toContain('hover:bg-destructive/10');
+    expect(live).not.toContain('hover:bg-hover-step');
+    expect(live.filter((name) => name.startsWith('dark:hover:'))).toEqual([]);
+    const refused = screen.getByRole('button', { name: 'Move' }).className.split(' ');
+    expect(refused).toContain('hover:bg-transparent');
+    expect(refused).not.toContain('hover:bg-hover-step');
   });
 
   it.each([
@@ -205,12 +223,8 @@ describe('Button hover fill', () => {
     render(element);
     const classes = screen.getByRole('button', { name: 'Restore' }).className.split(' ');
     expect(classes).not.toContain('hover:bg-mist');
-    expect(classes).not.toContain('dark:hover:bg-border/70');
-    expect(classes).not.toContain('dark:active:bg-border');
     expect(classes).not.toContain('active:bg-border');
     expect(classes).toContain('hover:bg-secondary');
-    expect(classes).toContain('dark:hover:bg-secondary');
-    expect(classes).toContain('dark:active:bg-secondary');
     expect(classes).toContain('active:bg-secondary');
   });
 });

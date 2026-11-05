@@ -121,11 +121,11 @@ function FooterButton({
 }) {
   const className: Record<typeof variant, string> = {
     muted:
-      'bg-muted text-foreground hover:bg-accent inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold transition-colors',
+      'bg-muted text-foreground hover:bg-hover-step inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold transition-colors',
     primary:
       'bg-primary text-primary-foreground inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold transition-colors hover:opacity-90',
     today:
-      'bg-muted text-foreground hover:bg-accent flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold transition-colors',
+      'bg-muted text-foreground hover:bg-hover-step flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold transition-colors',
   };
 
   return (

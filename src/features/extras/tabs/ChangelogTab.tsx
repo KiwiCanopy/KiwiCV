@@ -187,7 +187,7 @@ export const ChangelogTab = () => {
                   <button>s, so they live NEXT TO the toggle button rather than
                   inside it — a button nested in a button is invalid HTML and
                   React flags it as a hydration hazard. */}
-              <div className="border-border hover:bg-secondary flex w-full flex-col gap-4 border-b p-6 transition-colors sm:flex-row sm:items-center">
+              <div className="border-border hover:bg-hover-step dark:hover:bg-secondary flex w-full flex-col gap-4 border-b p-6 transition-colors sm:flex-row sm:items-center">
                 <button
                   type="button"
                   onClick={() => toggleVersion(entry.version)}

@@ -266,7 +266,7 @@ export const PhotoEditor = ({
           <div className="flex flex-col items-center justify-center p-2 text-center">
             <div className="relative mb-1">
               <CircleUserRound className="text-muted-foreground/40 group-hover:text-muted-foreground/60 h-12 w-12 transition-colors" />
-              <div className="bg-background border-border group-hover:bg-accent absolute -right-1 -bottom-1 rounded-full border p-1 shadow-sm transition-colors">
+              <div className="bg-background border-border group-hover:bg-hover-step absolute -right-1 -bottom-1 rounded-full border p-1 shadow-sm transition-colors">
                 <Camera className="text-muted-foreground h-3 w-3" />
               </div>
             </div>

@@ -28,7 +28,7 @@ export function PhoneGroupRow({
       <button
         type="button"
         onClick={onSelect}
-        className="border-border/60 bg-card hover:bg-muted/40 flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors duration-200"
+        className="border-border/60 bg-card hover:bg-muted/40 dark:hover:bg-mist flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors duration-200"
       >
         <Icon className="text-muted-foreground h-5 w-5 shrink-0" aria-hidden="true" />
         <span className="text-foreground min-w-0 flex-1 truncate text-sm font-medium">{label}</span>

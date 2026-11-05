@@ -29,7 +29,7 @@ export function Header({
             Off the dashboard the brand sits beside it. */}
         <button
           onClick={() => setSidebarOpen(true)}
-          className="text-foreground hover:bg-secondary active:bg-secondary -ml-1 flex h-11 w-11 items-center justify-center rounded-lg transition-colors lg:hidden"
+          className="text-foreground hover:bg-hover-step active:bg-secondary -ml-1 flex h-11 w-11 items-center justify-center rounded-lg transition-colors lg:hidden"
           aria-label={t('header.toggle_sidebar')}
           title={t('header.toggle_sidebar')}
         >

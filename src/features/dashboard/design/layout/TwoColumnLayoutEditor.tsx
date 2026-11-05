@@ -97,7 +97,7 @@ export const TwoColumnLayoutEditor = memo(() => {
               onClick={handleFlip}
               title={t('design.layout_flip')}
               aria-label={t('design.layout_flip')}
-              className="bg-background hover:bg-muted text-primary-strong hover:text-foreground group border-input rounded-full border p-2.5 shadow-md transition-all active:scale-95"
+              className="bg-background hover:bg-hover-step text-primary-strong hover:text-foreground group border-input rounded-full border p-2.5 shadow-md transition-all active:scale-95"
             >
               <FlipHorizontal
                 size={20}

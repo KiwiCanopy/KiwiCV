@@ -96,11 +96,16 @@ export function ScopeChips({ scope, counts, onChange, disabled }: ScopeChipsProp
               'border-input inline-flex min-h-9 items-center gap-2 rounded-full border px-3 text-xs font-semibold transition-colors disabled:opacity-50',
               isActive
                 ? 'bg-primary text-primary-foreground border-transparent'
-                : 'text-muted-foreground hover:bg-secondary',
+                : 'text-muted-foreground enabled:hover:bg-hover-step',
             )}
           >
             {label}
-            <span className={cn('tabular-nums', !isActive && 'text-muted-foreground/70')}>
+            <span
+              className={cn(
+                'tabular-nums',
+                !isActive && 'text-muted-foreground/70 dark:text-muted-foreground',
+              )}
+            >
               {counts[candidate]}
             </span>
           </button>

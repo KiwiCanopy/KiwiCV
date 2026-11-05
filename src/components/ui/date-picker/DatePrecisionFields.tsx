@@ -13,7 +13,7 @@ function PagerButton({ onClick, children }: { onClick: () => void; children: Rea
     <button
       type="button"
       onClick={onClick}
-      className="border-input hover:bg-muted rounded-md border p-1"
+      className="border-input hover:bg-hover-step rounded-md border p-1"
     >
       {children}
     </button>
@@ -58,7 +58,7 @@ export function DatePrecisionFields({ model }: DatePrecisionFieldsProps) {
                   model.tempDate.getMonth() === index &&
                   model.tempDate.getFullYear() === model.month.getFullYear()
                   ? 'bg-primary text-primary-foreground'
-                  : 'hover:bg-muted',
+                  : 'hover:bg-hover-step',
               )}
             >
               {name}
@@ -94,7 +94,7 @@ export function DatePrecisionFields({ model }: DatePrecisionFieldsProps) {
               'rounded-lg px-2 py-3 text-xs font-semibold transition-all active:scale-95',
               model.tempDate && model.tempDate.getFullYear() === year
                 ? 'bg-primary text-primary-foreground'
-                : 'hover:bg-muted',
+                : 'hover:bg-hover-step',
             )}
           >
             {year}

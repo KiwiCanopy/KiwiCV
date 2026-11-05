@@ -148,7 +148,7 @@ export function MobilePreviewAction() {
               onClick={() => openPreview('pdf')}
               disabled={isPdfRenderError}
               className={cn(
-                'hover:bg-secondary flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium',
+                'enabled:hover:bg-hover-step flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium',
                 isPdfRenderError && 'cursor-not-allowed opacity-50',
               )}
             >
@@ -163,7 +163,7 @@ export function MobilePreviewAction() {
             <button
               type="button"
               onClick={() => openPreview('html')}
-              className="hover:bg-secondary flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium"
+              className="enabled:hover:bg-hover-step flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium"
             >
               <Globe className="h-4 w-4" aria-hidden="true" />
               {t('preview.open_html')}

@@ -355,7 +355,7 @@ export function BlogPost() {
 
           <button
             onClick={handleShare}
-            className="border-input bg-card hover:bg-muted focus-visible:ring-primary-strong flex items-center gap-2 rounded-xl border px-6 py-2.5 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            className="border-input bg-card hover:bg-hover-step focus-visible:ring-primary-strong flex items-center gap-2 rounded-xl border px-6 py-2.5 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
           >
             <Share2 className="h-4 w-4" />
             {t('blog.share_article')}

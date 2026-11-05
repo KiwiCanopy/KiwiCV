@@ -42,7 +42,7 @@ export const SortableTag = memo(
         style={style}
         className={cn(
           'bg-card border-border group flex w-full items-center gap-2 rounded-lg border p-2 text-sm transition-colors duration-200',
-          !isOverlay && 'hover:bg-muted/30',
+          !isOverlay && 'hover:bg-muted/30 dark:hover:bg-secondary',
           isDragging && !isOverlay && 'pointer-events-none opacity-0',
           isOverlay &&
             'border-primary-strong ring-primary-strong/20 bg-card/95 shadow-[var(--elevation-2)] ring-2 backdrop-blur-sm',

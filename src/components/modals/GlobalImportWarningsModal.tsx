@@ -64,12 +64,12 @@ export function GlobalImportWarningsModal() {
                 className={cn(
                   'group flex flex-col rounded-xl border p-2.5 transition-all sm:p-3',
                   'border-border/40 bg-muted/20',
-                  'hover:bg-muted/30 hover:border-border/60',
+                  'hover:bg-muted/30 dark:hover:bg-mist hover:border-border/60',
                   isCritical && 'border-destructive/20 bg-destructive/5 dark:bg-secondary',
                 )}
               >
                 <div className="mb-1 flex items-center justify-between">
-                  <span className="text-destructive/80 flex items-center gap-1.5 text-[10px] font-black tracking-widest uppercase sm:text-xs">
+                  <span className="text-destructive/80 dark:text-destructive flex items-center gap-1.5 text-[10px] font-black tracking-widest uppercase sm:text-xs">
                     {sectionKey}
                   </span>
                 </div>

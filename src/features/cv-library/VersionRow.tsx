@@ -40,7 +40,7 @@ export function VersionRow({ version, index, onRestore, onDelete, onDownload }: 
   const rowMenuLabel = t('cvs.row_menu', { name: file.label });
 
   return (
-    <div className="border-border hover:bg-secondary/50 flex flex-wrap items-center gap-3 border-b px-3 py-3 transition-colors last:border-b-0 sm:flex-nowrap sm:gap-4 sm:px-4">
+    <div className="border-border hover:bg-secondary/50 dark:hover:bg-secondary flex flex-wrap items-center gap-3 border-b px-3 py-3 transition-colors last:border-b-0 sm:flex-nowrap sm:gap-4 sm:px-4">
       <VersionThumbnail theme={file.theme} />
 
       <div className="order-last min-w-0 flex-1 basis-full sm:order-none sm:basis-auto">
@@ -112,7 +112,7 @@ export function VersionRow({ version, index, onRestore, onDelete, onDownload }: 
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setMenuOpen(false)}
-                  className="text-foreground hover:bg-muted inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold transition-colors md:hidden"
+                  className="text-foreground hover:bg-hover-step inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold transition-colors md:hidden"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" aria-hidden="true" />
                   {t('cvs.open_posting')} <span className="sr-only">{t('cvs.opens_new_tab')}</span>

@@ -15,7 +15,7 @@ const ICON_BTN_BASE =
 const ICON_BTN_PRIMARY =
   'bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary-strong';
 const ICON_BTN_NEUTRAL =
-  'border-border bg-card text-foreground hover:bg-muted border focus-visible:ring-primary-strong';
+  'border-border bg-card text-foreground hover:bg-hover-step border focus-visible:ring-primary-strong';
 
 interface CvDefaultsSectionProps {
   title: string;

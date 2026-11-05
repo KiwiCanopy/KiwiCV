@@ -131,7 +131,7 @@ export function AccordionItem({
             <button
               type="button"
               aria-label={t('common.move_named', { name: itemLabel })}
-              className="text-muted-foreground hover:text-foreground hover:bg-muted touch-action-none mr-2 flex h-11 w-11 cursor-move items-center justify-center rounded transition-colors"
+              className="text-muted-foreground hover:text-foreground hover:bg-hover-step touch-action-none mr-2 flex h-11 w-11 cursor-move items-center justify-center rounded transition-colors"
               style={{ touchAction: 'none' }}
               {...dragHandleProps}
             >

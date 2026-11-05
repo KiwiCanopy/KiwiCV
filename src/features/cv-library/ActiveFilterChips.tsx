@@ -94,7 +94,7 @@ export function ActiveFilterChips({ filters }: ActiveFilterChipsProps) {
           type="button"
           onClick={chip.clear}
           aria-label={t('cvs.chip_remove', { name: chip.label })}
-          className="border-input bg-secondary text-foreground hover:bg-muted inline-flex min-h-9 max-w-full items-center gap-1.5 rounded-full border px-3 text-xs font-semibold transition-colors"
+          className="border-input bg-secondary text-foreground hover:bg-hover-step inline-flex min-h-9 max-w-full items-center gap-1.5 rounded-full border px-3 text-xs font-semibold transition-colors"
         >
           <span className="truncate">{chip.label}</span>
           <X className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

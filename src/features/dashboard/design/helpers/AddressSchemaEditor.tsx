@@ -112,7 +112,7 @@ export const AddressSchemaEditor = memo(() => {
                       'cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all duration-200 select-none',
                       isActive
                         ? 'border-primary-strong bg-primary/5 text-primary-strong font-bold shadow-xs'
-                        : 'border-input bg-muted/5 text-muted-foreground hover:bg-secondary hover:text-foreground hover:border-primary-strong/45',
+                        : 'border-input bg-muted/5 text-muted-foreground hover:bg-hover-step hover:text-foreground hover:border-primary-strong/45',
                     )}
                   >
                     {label}
@@ -179,7 +179,7 @@ export const AddressSchemaEditor = memo(() => {
                       key={field}
                       type="button"
                       onClick={() => handleAddField(field)}
-                      className="border-input bg-muted/20 text-muted-foreground hover:bg-secondary hover:text-primary-strong hover:border-primary-strong/45 flex cursor-pointer items-center gap-1 rounded-lg border border-dashed px-2.5 py-1.5 text-xs font-semibold transition-colors select-none"
+                      className="border-input bg-muted/20 text-muted-foreground hover:bg-hover-step hover:text-primary-strong hover:border-primary-strong/45 flex cursor-pointer items-center gap-1 rounded-lg border border-dashed px-2.5 py-1.5 text-xs font-semibold transition-colors select-none"
                     >
                       <Plus size={12} />
                       {labelFor(field)}

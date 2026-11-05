@@ -85,7 +85,7 @@ export function ProfileItem({
         'group flex w-full min-w-0 items-center gap-3 border p-3 transition-colors duration-200',
         'bg-card',
         isStandard ? 'border-border rounded-lg' : 'border-border/60 rounded-xl',
-        !forceCollapsed && 'hover:bg-muted/20',
+        !forceCollapsed && 'hover:bg-muted/20 dark:hover:bg-secondary',
         forceCollapsed &&
           'border-primary-strong bg-card/95 cursor-grabbing shadow-[var(--elevation-2)] backdrop-blur-sm',
       )}
@@ -202,7 +202,7 @@ export function ProfileItem({
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => selectNetwork(network)}
                         className={cn(
-                          'hover:bg-muted text-foreground flex w-full cursor-pointer items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors',
+                          'hover:bg-hover-step text-foreground flex w-full cursor-pointer items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors',
                           // A ring, not only a fill: bg-muted on the popover is ~1.2:1 (1.4.11).
                           optionIndex === highlighted &&
                             'bg-muted ring-primary-strong ring-2 ring-inset',

@@ -26,7 +26,7 @@ export const ExportOption = memo(
     const controlId = useId();
     const descriptionId = description ? `${controlId}-description` : undefined;
 
-    const cardClassName = `group border-border/50 bg-secondary/10 hover:bg-secondary/20 relative flex cursor-pointer gap-2 rounded-xl border p-2 transition-all hover:shadow-sm active:scale-[0.99] sm:gap-3 sm:p-4 ${
+    const cardClassName = `group border-border/50 bg-secondary/10 hover:bg-secondary/20 dark:hover:bg-mist relative flex cursor-pointer gap-2 rounded-xl border p-2 transition-all hover:shadow-sm active:scale-[0.99] sm:gap-3 sm:p-4 ${
       hideDescriptionOnMobile
         ? 'flex-col items-center justify-center text-center sm:flex-row sm:items-start sm:justify-start sm:text-left'
         : 'flex-row items-start text-left'

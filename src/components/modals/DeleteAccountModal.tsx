@@ -148,7 +148,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ isOpen, 
           </label>
         )}
 
-        <label className="border-border bg-accent/30 hover:bg-accent/50 flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors">
+        <label className="border-border bg-accent/30 hover:bg-accent/50 dark:hover:bg-mist flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors">
           <input
             type="checkbox"
             checked={isConfirmed}

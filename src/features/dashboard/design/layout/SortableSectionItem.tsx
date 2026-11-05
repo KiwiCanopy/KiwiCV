@@ -134,7 +134,7 @@ export const SortableSectionItem = memo(
         <span
           className={cn(
             'flex h-8 w-6 items-center justify-center rounded-md',
-            !isPlaceholder && 'bg-muted/60 group-hover:bg-muted',
+            !isPlaceholder && 'bg-muted/60 group-hover:bg-hover-step',
           )}
         >
           <GripVertical size={16} aria-hidden="true" />
@@ -241,8 +241,8 @@ export const SortableSectionItem = memo(
               onClick={() => !isPlaceholder && onToggleVisibility?.(id)}
               className={iconButtonClass(
                 isHidden
-                  ? 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  : 'text-muted-foreground hover:bg-muted hover:text-primary-strong',
+                  ? 'text-muted-foreground hover:bg-hover-step hover:text-foreground'
+                  : 'text-muted-foreground hover:bg-hover-step hover:text-primary-strong',
               )}
               title={visibilityTitle}
               aria-label={
@@ -260,7 +260,7 @@ export const SortableSectionItem = memo(
               type="button"
               onClick={() => !isPlaceholder && onSwap(id)}
               className={iconButtonClass(
-                'text-muted-foreground hover:bg-muted hover:text-primary-strong',
+                'text-muted-foreground hover:bg-hover-step hover:text-primary-strong',
               )}
               title={t('design.layout_swap_tooltip')}
               aria-label={t('design.swap_column_named', { name: label })}

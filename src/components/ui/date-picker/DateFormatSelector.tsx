@@ -46,7 +46,7 @@ export function DateFormatSelector({ value, onChange, translate }: DateFormatSel
           event.stopPropagation();
           setIsOpen(!isOpen);
         }}
-        className="border-input bg-card hover:bg-muted group focus-visible:ring-primary-strong flex h-8 shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border px-2.5 text-xs font-bold transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-none"
+        className="border-input bg-card hover:bg-hover-step group focus-visible:ring-primary-strong flex h-8 shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border px-2.5 text-xs font-bold transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-none"
       >
         <span className="truncate">{currentOption.label}</span>
         <ChevronDown
@@ -72,7 +72,7 @@ export function DateFormatSelector({ value, onChange, translate }: DateFormatSel
                 setIsOpen(false);
               }}
               className={cn(
-                'hover:bg-muted flex w-full cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-xs font-semibold transition-colors',
+                'hover:bg-hover-step flex w-full cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-xs font-semibold transition-colors',
                 value === option.value ? 'bg-muted text-foreground font-bold' : 'text-foreground',
               )}
             >

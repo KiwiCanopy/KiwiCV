@@ -59,7 +59,7 @@ export function GitHubSyncModalFooter({
             onClose();
           }
         }}
-        className="border-input bg-card text-foreground hover:bg-muted focus-visible:ring-primary-strong flex items-center justify-center gap-2 rounded-xl border px-5 py-2.5 font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50 sm:px-6 sm:py-3"
+        className="border-input bg-card text-foreground enabled:hover:bg-hover-step focus-visible:ring-primary-strong flex items-center justify-center gap-2 rounded-xl border px-5 py-2.5 font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50 sm:px-6 sm:py-3"
       >
         <ChevronLeft className="h-4 w-4" />
         {t('common.back')}

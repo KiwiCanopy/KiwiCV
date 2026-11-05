@@ -89,8 +89,10 @@ export const InsufficientPremiumAccessModal: React.FC<InsufficientPremiumAccessM
               <button
                 type="button"
                 onClick={openPricing}
+                // The glow animates `box-shadow`, which hides a `ring-*`, so focus
+                // stays on the base outline in `tokens.css`.
                 className={cn(
-                  'group flex w-full items-center justify-center gap-3 rounded-2xl py-4 text-sm font-bold transition-all hover:scale-[1.02] focus-visible:ring-2 focus-visible:outline-none',
+                  'group flex w-full items-center justify-center gap-3 rounded-2xl py-4 text-sm font-bold transition-all hover:scale-[1.02]',
                   PLAN_ACCENT.passes.cta,
                   'animate-heavenly-glow',
                 )}

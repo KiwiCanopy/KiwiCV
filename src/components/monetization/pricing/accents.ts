@@ -43,6 +43,6 @@ export const PLAN_ACCENT: Record<PricingTab, PlanAccent> = {
     border: 'border-premium-deep',
     well: 'bg-premium/20',
     pill: 'from-premium to-premium-deep text-premium-foreground bg-gradient-to-r',
-    cta: 'bg-gradient-to-r from-premium to-premium-deep text-premium-foreground hover:from-premium-deep hover:to-premium-deep focus-visible:ring-premium/50',
+    cta: 'bg-gradient-to-r from-premium to-premium-deep text-premium-foreground hover:from-premium-deep hover:to-premium-deep',
   },
 };

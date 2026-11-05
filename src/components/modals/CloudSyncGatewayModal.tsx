@@ -165,7 +165,7 @@ export const CloudSyncGatewayModal: React.FC<CloudSyncGatewayModalProps> = ({
                       e.stopPropagation();
                       service.onActionRequiredClick?.();
                     }}
-                    className="animate-gold-pulse flex w-full items-center justify-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-xs font-bold whitespace-nowrap text-amber-700 transition-all hover:translate-x-1 hover:bg-amber-500/20 focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:outline-none sm:w-auto dark:text-amber-400"
+                    className="animate-gold-pulse flex w-full items-center justify-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-xs font-bold whitespace-nowrap text-amber-700 transition-all hover:translate-x-1 hover:bg-amber-500/20 sm:w-auto dark:text-amber-400"
                   >
                     {t('sync.grant_permission')}
                     <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />

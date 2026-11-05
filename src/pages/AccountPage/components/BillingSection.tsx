@@ -35,7 +35,7 @@ import { ChevronRight, Crown, LoaderCircle } from 'lucide-react';
 // asserting the two gradients matched — a claim nothing checked.
 const GOLD_CTA = PLAN_ACCENT.passes.cta;
 const CTA_BASE =
-  'flex items-center gap-2 rounded-xl px-4 py-2 text-[11px] font-black tracking-widest uppercase shadow-sm transition-colors focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98]';
+  'flex items-center gap-2 rounded-xl px-4 py-2 text-[11px] font-black tracking-widest uppercase shadow-sm transition-colors active:scale-[0.98]';
 
 interface BillingSectionProps {
   profile: Profile | null;

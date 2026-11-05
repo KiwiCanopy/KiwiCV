@@ -1,4 +1,4 @@
 export const fix_drive_export_no_empty_folder = {
   fix_drive_export_no_empty_folder:
-    'Exporting only the project file to Google Drive no longer creates an empty folder, and an earlier file with the same name stays safe.',
+    'バックアップだけを Google Drive にエクスポートしても空のフォルダは作成されなくなり、同じ名前の以前のファイルもそのまま残ります。',
 };

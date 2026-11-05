@@ -1,4 +1,4 @@
 export const fix_dashboard_header_narrow_phones = {
   fix_dashboard_header_narrow_phones:
-    'On the narrowest phones, the dashboard header now fits on screen, so the Export button is no longer cut off.',
+    'Op de smalste telefoons past de koptekst van het dashboard nu op het scherm, zodat de knop Exporteer niet meer wordt afgesneden.',
 };

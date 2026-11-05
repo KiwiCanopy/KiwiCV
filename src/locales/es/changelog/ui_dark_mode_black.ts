@@ -1,4 +1,4 @@
 export const ui_dark_mode_black = {
   ui_dark_mode_black:
-    'Dark mode is now pure black, with cards outlined by a fine green line and kiwi green as the only strong accent.',
+    'El modo oscuro ahora es negro puro, con tarjetas perfiladas por una fina línea verde y el verde kiwi como único acento fuerte.',
 };

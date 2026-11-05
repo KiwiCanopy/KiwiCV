@@ -1,4 +1,4 @@
 export const fix_drive_export_no_empty_folder = {
   fix_drive_export_no_empty_folder:
-    'Exporting only the project file to Google Drive no longer creates an empty folder, and an earlier file with the same name stays safe.',
+    'Als je alleen de back-up naar Google Drive exporteert, ontstaat er geen lege map meer, en een eerder bestand met dezelfde naam blijft bewaard.',
 };

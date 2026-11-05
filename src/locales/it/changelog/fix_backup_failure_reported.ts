@@ -1,4 +1,4 @@
 export const fix_backup_failure_reported = {
   fix_backup_failure_reported:
-    'When Back up fails, its dialog names what went wrong and can be closed, and screen readers hear it.',
+    'Quando «Salva backup» non riesce, la finestra ora indica cosa è andato storto e si può chiudere, e gli screen reader lo annunciano.',
 };

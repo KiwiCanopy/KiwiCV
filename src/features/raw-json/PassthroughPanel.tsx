@@ -26,7 +26,7 @@ export const PassthroughPanel = () => {
       <Disclosure
         open={open}
         onOpenChange={setOpen}
-        triggerClassName="hover:bg-muted flex items-center gap-2 rounded-lg px-3"
+        triggerClassName="hover:bg-hover-step flex items-center gap-2 rounded-lg px-3"
         trigger={
           <span className="flex min-w-0 flex-1 items-center gap-2">
             <ChevronRight

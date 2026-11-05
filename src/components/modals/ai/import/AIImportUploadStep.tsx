@@ -33,7 +33,7 @@ export const AIImportUploadStep: React.FC<AIImportUploadStepProps> = ({ onFileDr
         />
         <label
           htmlFor="ai-file-upload"
-          className="border-border bg-muted/30 hover:bg-muted/50 peer-focus-visible:outline-ring flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center transition-colors peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 sm:p-10"
+          className="border-border bg-muted/30 hover:bg-muted/50 dark:hover:bg-mist peer-focus-visible:outline-ring flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center transition-colors peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 sm:p-10"
         >
           <Upload className="text-primary-strong mb-4 h-10 w-10" aria-hidden="true" />
           <span className="font-semibold">{t('ai.import_drop_zone')}</span>

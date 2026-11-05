@@ -42,7 +42,9 @@ export function SectionRailRow({
         className={cn(
           'group relative flex min-h-11 w-full items-center rounded-xl text-left transition-colors duration-200',
           isCollapsed ? 'justify-center px-2 py-2' : 'gap-3 px-3 py-2',
-          isActive ? 'bg-rail-active text-foreground font-semibold' : 'hover:bg-muted/60',
+          isActive
+            ? 'bg-rail-active text-foreground font-semibold'
+            : 'hover:bg-muted/60 dark:hover:bg-mist',
         )}
       >
         {isActive && (

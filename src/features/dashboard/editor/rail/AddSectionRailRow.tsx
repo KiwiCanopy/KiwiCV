@@ -22,7 +22,7 @@ export function AddSectionRailRow({ isCollapsed, onAdd }: AddSectionRailRowProps
         onClick={onAdd}
         title={isCollapsed ? label : undefined}
         className={cn(
-          'group text-muted-foreground hover:text-foreground hover:bg-muted/60 flex min-h-11 w-full items-center rounded-xl text-left transition-colors duration-200',
+          'group text-muted-foreground hover:text-foreground hover:bg-muted/60 dark:hover:bg-mist flex min-h-11 w-full items-center rounded-xl text-left transition-colors duration-200',
           isCollapsed ? 'justify-center px-2 py-2' : 'gap-3 px-3 py-2',
         )}
       >

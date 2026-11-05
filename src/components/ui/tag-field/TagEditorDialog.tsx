@@ -97,7 +97,7 @@ export function TagEditorDialog({
           <button
             type="button"
             onClick={cancel}
-            className="border-input bg-card text-foreground hover:bg-muted focus-visible:ring-primary-strong rounded-xl border px-4 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            className="border-input bg-card text-foreground hover:bg-hover-step focus-visible:ring-primary-strong rounded-xl border px-4 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none"
           >
             {t('common.cancel')}
           </button>

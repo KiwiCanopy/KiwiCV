@@ -188,7 +188,7 @@ export const AISuggestButton: React.FC<AISuggestButtonProps> = ({
     ? 'border-primary-strong/30 bg-primary/10 text-primary-strong hover:bg-primary/15'
     : isRefused
       ? 'border-input bg-card text-primary-strong px-2 py-1 cursor-not-allowed'
-      : 'border-input bg-card text-primary-strong hover:bg-muted px-2 py-1';
+      : 'border-input bg-card text-primary-strong hover:bg-hover-step px-2 py-1';
 
   const isPill = hasPendingSuggestions && suggestionsCount > 0;
 

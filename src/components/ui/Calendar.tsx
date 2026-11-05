@@ -19,10 +19,10 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         caption_label: 'text-sm font-medium',
         nav: 'pointer-events-none absolute top-0 left-0 right-0 flex h-8 items-center justify-between z-10',
         button_previous: cn(
-          'text-muted-foreground hover:bg-accent hover:text-accent-foreground pointer-events-auto absolute left-1 inline-flex h-8 w-8 items-center justify-center rounded-md opacity-50 transition-colors transition-opacity hover:opacity-100',
+          'text-muted-foreground hover:bg-hover-step hover:text-accent-foreground pointer-events-auto absolute left-1 inline-flex h-8 w-8 items-center justify-center rounded-md opacity-50 transition-colors transition-opacity hover:opacity-100',
         ),
         button_next: cn(
-          'text-muted-foreground hover:bg-accent hover:text-accent-foreground pointer-events-auto absolute right-1 inline-flex h-8 w-8 items-center justify-center rounded-md opacity-50 transition-colors transition-opacity hover:opacity-100',
+          'text-muted-foreground hover:bg-hover-step hover:text-accent-foreground pointer-events-auto absolute right-1 inline-flex h-8 w-8 items-center justify-center rounded-md opacity-50 transition-colors transition-opacity hover:opacity-100',
         ),
         month_grid: 'w-full table-fixed border-collapse',
         weekdays: 'border-b border-transparent',
@@ -31,7 +31,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         day_button: cn(
           // ⚠️ `disabled:pointer-events-none`, or a cell that cannot be clicked
           // still fills under the cursor (`code/UI_PATTERNS.md`).
-          'hover:bg-accent hover:text-accent-foreground focus:ring-ring mx-auto flex h-9 w-9 items-center justify-center rounded-md p-0 text-sm font-normal transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none',
+          'hover:bg-hover-step hover:text-accent-foreground focus:ring-ring mx-auto flex h-9 w-9 items-center justify-center rounded-md p-0 text-sm font-normal transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none',
         ),
         selected:
           '[&>button]:bg-primary [&>button]:text-primary-foreground [&>button:hover]:bg-primary [&>button:hover]:text-primary-foreground',

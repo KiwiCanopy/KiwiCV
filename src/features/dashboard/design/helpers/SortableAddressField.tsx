@@ -50,7 +50,7 @@ function SeparatorSelector({ currentSeparator, onUpdate, t, isHidden }: Separato
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="group border-input bg-background text-foreground hover:bg-muted hover:border-primary-strong/40 flex h-11 min-w-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-2 text-xs font-semibold transition-colors"
+          className="group border-input bg-background text-foreground hover:bg-hover-step hover:border-primary-strong/40 flex h-11 min-w-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-2 text-xs font-semibold transition-colors"
           title={t('design.address_schema_toggle_separator')}
         >
           <span className="text-[13px] leading-none">
@@ -77,14 +77,14 @@ function SeparatorSelector({ currentSeparator, onUpdate, t, isHidden }: Separato
               }}
               aria-pressed={currentSeparator === separator.value}
               className={cn(
-                'hover:bg-muted flex w-full cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
+                'hover:bg-hover-step flex w-full cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
                 currentSeparator === separator.value
                   ? 'bg-primary/10 text-primary-strong font-bold'
                   : 'text-foreground',
               )}
             >
               <span>{separator.label}</span>
-              <span className="text-muted-foreground/60 ml-2 font-mono">
+              <span className="text-muted-foreground/60 dark:text-muted-foreground ml-2 font-mono">
                 ({separator.indicator})
               </span>
             </button>
@@ -134,7 +134,7 @@ export function SortableAddressField({
         <div
           {...attributes}
           {...listeners}
-          className="text-muted-foreground hover:text-primary-strong hover:bg-muted flex h-11 w-11 cursor-grab items-center justify-center rounded-lg active:cursor-grabbing"
+          className="text-muted-foreground hover:text-primary-strong hover:bg-hover-step flex h-11 w-11 cursor-grab items-center justify-center rounded-lg active:cursor-grabbing"
           style={{ touchAction: 'none' }}
           role="button"
           tabIndex={0}
@@ -149,7 +149,7 @@ export function SortableAddressField({
             event.stopPropagation();
             onRemove();
           }}
-          className="text-muted-foreground hover:text-destructive hover:bg-muted flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg transition-colors"
+          className="text-muted-foreground hover:text-destructive hover:bg-hover-step flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg transition-colors"
           aria-label={t('common.remove_named', { name: label })}
         >
           <X size={12} />

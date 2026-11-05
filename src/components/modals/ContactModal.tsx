@@ -77,7 +77,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                     'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300',
                     copied
                       ? 'dark:bg-secondary bg-green-500/10 text-green-500'
-                      : 'bg-background hover:bg-accent border-input hover:border-primary-strong/30 text-muted-foreground hover:text-primary-strong border shadow-sm',
+                      : 'bg-background hover:bg-hover-step border-input hover:border-primary-strong/30 text-muted-foreground hover:text-primary-strong border shadow-sm',
                   )}
                   title={t('common.copied')}
                 >
@@ -109,7 +109,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
               <button
                 type="button"
                 onClick={onClose}
-                className="border-input bg-card text-foreground hover:bg-muted focus-visible:ring-primary-strong w-full rounded-xl border py-3 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                className="border-input bg-card text-foreground hover:bg-hover-step focus-visible:ring-primary-strong w-full rounded-xl border py-3 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none"
               >
                 {t('common.back')}
               </button>

@@ -31,7 +31,8 @@ export function InterfaceLanguageSelect({ isCollapsed }: { isCollapsed?: boolean
         // Nav zone, not a form: the shared LocaleSelect defaults to a card
         // fill and an --input edge, which rendered a white chip on the dark
         // rail. Overridden here rather than in the primitive — everywhere else
-        // it really is a form control.
+        // it really is a form control. The language code and chevron identify
+        // it, so the edge's 1.43:1 on black is decorative under 1.4.11 (#88).
         'bg-nav-active text-nav-foreground-strong border-nav-border hover:bg-nav cursor-pointer transition-colors',
         isCollapsed ? 'px-1 text-xs font-semibold' : 'px-3 text-sm',
       )}

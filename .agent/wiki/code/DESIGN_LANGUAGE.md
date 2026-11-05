@@ -126,7 +126,7 @@ uses local Inter at 400, 500, 600, 700, and 800. The semantic roles are:
 | Primary action | `--primary`                  | `#A9CB59` | `#AACB5D` |
 | Primary drawn  | `--primary-strong`           | `#14503E` | `#AACB5D` |
 | Kiwi accent    | `--kiwi`                     | `#A9CB59` | `#A9CB59` |
-| Mist           | `--mist`                     | `#D8E5DA` | `#16271A` |
+| Mist           | `--mist`                     | `#D8E5DA` | `#213628` |
 | Pass accent    | `--premium`                  | `#F6BF31` | `#F3C349` |
 | Pass deep stop | `--premium-deep`             | `#F59F0A` | `#F3A620` |
 | Pass label     | `--premium-foreground`       | `#12251A` | `#12251A` |
@@ -231,17 +231,34 @@ now light-only.**
 - **Status tints are the raised surface.** Each resting tint, status token or palette colour, carries
   `dark:bg-secondary`, and `tests/lint/dark-status-tint.test.mjs` fails without it. Fill no longer separates success, warning and danger, so **icon and ink must**.
   Hover fills are not status tints; that test names the decorative exemptions.
-- **Text and status inks did not move.** They only gained headroom: status inks clear 7:1 on
-  `--mist`.
+- **Text and status inks did not move.** Status inks clear 5.8:1 on `--mist`, the lightest fill
+  text sits on.
 - **`--kiwi` stays `#A9CB59`.** It is root-only by guard, so dark holds two greens
   one step apart. No one can see it; do not "fix" it by adding a dark `--kiwi`
   without checking `tests/lint/primary-role-split.test.mjs`.
 
-⚠️ **`--mist` no longer works as a hover step on `--secondary` in dark** (1.05:1,
-measured in the app). The secondary button takes `dark:hover:bg-border/70`
-(1.27:1 against rest on `--card`) with `dark:active:bg-border` for press, since the dark hover out-specifies a plain
-`active:` (`:is(.dark *)`). Alpha hovers such as
-`hover:bg-muted/40` are faint on these surfaces too.
+⚠️ **`--mist` is `#213628`, the dark hover step, not the original palette's `#16271A`** (owner,
+2026-11-05, #89). `#16271A` was 1.05:1 on `--secondary`, so the secondary button had no visible
+hover. It is now 1.27:1 there, 1.47:1 on `--card` and 1.62:1 on black. The accepted cost is that a
+hovered row is brighter than the selected row (`--rail-active`, 1.27:1).
+
+**A solid hover to a raised fill is `hover:bg-hover-step`.** `--muted`, `--secondary` and `--accent`
+share one value in each theme, so in dark a hover from one to another is 1.00:1. `--hover-step` is
+that value in light and `--mist` in dark, which leaves light unchanged.
+
+⚠️ **It is a token rather than `hover:bg-muted dark:hover:bg-mist` on purpose.** `dark:` compiles to
+`:is(.dark *)` and out-specifies a plain `hover:` or `active:`, and `twMerge` drops only the `hover:`
+half when a caller overrides it. A pair on `Button`'s `quiet` variant erased the delete buttons' red
+hover, and a pair on a calendar day beat the selected day's pin and left its number at 1.24:1.
+
+**An alpha hover states its dark step beside it,** since no token can carry the alpha:
+`hover:bg-muted/40` measured 1.05:1 on `--card`. It takes `dark:hover:bg-mist`, the specificity trap
+above included, so keep it to leaf rows no caller overrides.
+
+**A row that holds controls steps to `dark:hover:bg-secondary` instead.** Pointing at a child also
+hovers the row, so a row on `--mist` leaves a `quiet` child's own hover at 1.00:1.
+
+`tests/lint/dark-hover-step.test.mjs` pins the visible step, including `@apply`, and the token values and config mapping. The row and leaf rules are for review: no test can tell a row holding controls from one that does not.
 
 ### A clipping track draws the focus ring inward (2026-09-07)
 
@@ -336,7 +353,7 @@ whole rule a no-op in dark: moving a control from `--border` to `--input`
 changed nothing, and the boundary sat at **1.89:1** against `--card`, under
 1.4.11's 3:1. Every control-edge fix before that bought light mode only.
 
-Dark `--input` is now `#7A9583` — **5.86:1** on `--card`, 4.82:1 on `--mist`.
+Dark `--input` is now `#7A9583` — **5.86:1** on `--card`, 3.98:1 on `--mist`.
 
 It matters most where the edge is the sole resting affordance. On `OptionCard`
 the chevron sits at `text-muted-foreground/30` — about 1.52:1 light, 2.03:1 dark

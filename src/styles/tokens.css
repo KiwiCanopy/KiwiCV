@@ -160,7 +160,7 @@
    A naive `--accent` swap therefore paints every hover surface brand green.
    `--secondary` (pale green subtle surface) and `--mist` (pale green band) are
    two roles in both repos and stay separate on purpose. In KiwiCV `--mist` is
-   also the secondary button's hover step in light: re-check that contrast if it moves.
+   also the secondary button's hover step, and `--hover-step` in dark: re-check that contrast if it moves.
 
    `--kiwi` is FILL/RING-ONLY (`bg-kiwi/*`, `ring-kiwi`) — never `text-kiwi`
    on light surfaces: #A9CB59 sits at ~1.7:1 on the light background, far
@@ -247,6 +247,8 @@
     --kiwi: 77.9 52.3% 57.3%;
     --pale-kiwi: 79 50% 76%;
     --mist: 129.2 20% 87.3%;
+    /* The fill a control hovers to. `--muted` here; `--mist` in dark, where `--muted` is `--secondary`. */
+    --hover-step: var(--muted);
     --success: 137.8 33.8% 31.4%;
     /*
      * ⚠️ The label INVERTS between themes, like the two paid families. Light
@@ -383,8 +385,8 @@
        `text-destructive` on the dark card AND light enough to carry an ink
        label on the filled button. Hue and chroma are the only levers here. */
     /*
-     * Lifted to clear 4.5:1 on the old, lighter `--mist`. On the Grüne Haarlinie
-     * surfaces all three clear 7:1 on `--mist`.
+     * Lifted to clear 4.5:1 on `--mist`, the hover fill text sits on: 5.80:1
+     * destructive, 5.84:1 info, 8.00:1 success.
      */
     --destructive: 4 68% 74.7%;
     --info: 214 70% 71.9%;
@@ -393,11 +395,12 @@
     /*
      * ⚠️ Lighter than `--border`, and it must stay that way. These two held the
      * SAME value once, which made the whole control-edge rule a no-op in dark.
-     * On the Haarlinie surfaces this is 5.86:1 on `--card`, 4.82:1 on `--mist`.
+     * On the Haarlinie surfaces this is 5.86:1 on `--card`, 3.98:1 on `--mist`.
      */
     --input: 140 11.3% 53.1%;
     --ring: 177.1 38.2% 89.2%;
-    --mist: 134.1 27.9% 12%;
+    --mist: 140 24.1% 17.1%;
+    --hover-step: var(--mist);
     --success: 148 63.3% 66.9%;
     --success-foreground: 155.5 44% 9.8%;
     --warning: 39 52% 59.8%;

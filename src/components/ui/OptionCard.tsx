@@ -54,7 +54,10 @@ export const OptionCard: React.FC<OptionCardProps> = ({
         // modals that pass `onClick` — sync, import and the AI action cards —
         // all decision points, and the import step is a first-run surface.
         isButton ? 'border-input' : 'border-border',
-        isButton && 'hover:bg-muted/40 active:scale-[0.99]',
+        isButton &&
+          !disabled &&
+          !loading &&
+          'hover:bg-muted/40 dark:hover:bg-mist active:scale-[0.99]',
         (disabled || loading) && 'cursor-not-allowed opacity-60',
         className,
       )}
@@ -87,7 +90,12 @@ export const OptionCard: React.FC<OptionCardProps> = ({
           {customIndicator ? (
             customIndicator
           ) : chevron ? (
-            <ChevronRight className="text-muted-foreground/30 group-hover:text-muted-foreground h-5 w-5" />
+            <ChevronRight
+              className={cn(
+                'text-muted-foreground/30 h-5 w-5',
+                !disabled && !loading && 'group-hover:text-muted-foreground',
+              )}
+            />
           ) : null}
         </div>
       )}

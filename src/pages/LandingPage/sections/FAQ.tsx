@@ -120,7 +120,7 @@ export function FAQ({ hasCv, onCreate, onImport }: FAQProps) {
             href={KIWICV_SOURCE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="border-input bg-card text-muted-foreground hover:bg-accent hover:text-accent-foreground inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors"
+            className="border-input bg-card text-muted-foreground hover:bg-hover-step hover:text-accent-foreground inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors"
           >
             <SiGithub className="h-4 w-4" aria-hidden="true" />
             GitHub
@@ -129,7 +129,7 @@ export function FAQ({ hasCv, onCreate, onImport }: FAQProps) {
             href={KIWICV_KOFI_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="border-input bg-card text-muted-foreground hover:bg-accent hover:text-accent-foreground inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors"
+            className="border-input bg-card text-muted-foreground hover:bg-hover-step hover:text-accent-foreground inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors"
           >
             <SiKofi className="h-4 w-4" aria-hidden="true" />
             {t('landing.closing.kofi')}

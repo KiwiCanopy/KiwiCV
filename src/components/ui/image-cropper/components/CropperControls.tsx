@@ -95,7 +95,7 @@ export function CropperControls({
               const next = rotation - 90;
               setRotation(next < -180 ? next + 360 : next);
             }}
-            className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-2.5 transition-colors"
+            className="hover:bg-hover-step text-muted-foreground hover:text-foreground rounded-full p-2.5 transition-colors"
             title={t('image_cropper.rotate_ccw')}
           >
             <RotateCcw className="h-5 w-5" />
@@ -105,7 +105,7 @@ export function CropperControls({
               const next = rotation + 90;
               setRotation(next > 180 ? next - 360 : next);
             }}
-            className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-2.5 transition-colors"
+            className="hover:bg-hover-step text-muted-foreground hover:text-foreground rounded-full p-2.5 transition-colors"
             title={t('image_cropper.rotate_cw')}
           >
             <RotateCw className="h-5 w-5" />
@@ -118,7 +118,7 @@ export function CropperControls({
           <button
             onClick={() => setFlip((f) => ({ ...f, x: !f.x }))}
             className={cn(
-              'hover:bg-muted rounded-full p-2.5 transition-colors',
+              'hover:bg-hover-step rounded-full p-2.5 transition-colors',
               flip.x
                 ? 'text-primary-strong bg-primary/5'
                 : 'text-muted-foreground hover:text-foreground',
@@ -130,7 +130,7 @@ export function CropperControls({
           <button
             onClick={() => setFlip((f) => ({ ...f, y: !f.y }))}
             className={cn(
-              'hover:bg-muted rounded-full p-2.5 transition-colors',
+              'hover:bg-hover-step rounded-full p-2.5 transition-colors',
               flip.y
                 ? 'text-primary-strong bg-primary/5'
                 : 'text-muted-foreground hover:text-foreground',
@@ -145,7 +145,7 @@ export function CropperControls({
 
         <button
           onClick={handleReset}
-          className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-2.5 transition-colors"
+          className="hover:bg-hover-step text-muted-foreground hover:text-foreground rounded-full p-2.5 transition-colors"
           title={t('common.reset')}
         >
           <Undo2 className="h-5 w-5" />

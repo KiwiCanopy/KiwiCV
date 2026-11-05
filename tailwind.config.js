@@ -11,6 +11,7 @@ export default {
         kiwi: 'hsl(var(--kiwi))',
         'pale-kiwi': 'hsl(var(--pale-kiwi))',
         mist: 'hsl(var(--mist))',
+        'hover-step': 'hsl(var(--hover-step))',
         // The zones. A component that paints one of these surfaces reads its
         // zone token, never `background` — see tokens.css for why.
         nav: {

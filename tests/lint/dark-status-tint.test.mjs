@@ -1,11 +1,9 @@
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import ts from 'typescript';
 
-import { PRODUCT_SOURCE_SKIP, sourceFiles } from '../../src/test/sourceFiles.ts';
+import { splitVariants, walkStringLiterals } from './classStrings.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -30,23 +28,6 @@ const EXEMPT = {
   'src/pages/MigrationGateway.tsx': ['bg-amber-50'],
   // The grant-permission control's own fill, beside its converted chip.
   'src/components/modals/CloudSyncGatewayModal.tsx': ['bg-amber-500/10'],
-};
-
-const splitVariants = (token) => {
-  const parts = [];
-  let depth = 0;
-  let current = '';
-  for (const char of token) {
-    if (char === '[') depth += 1;
-    if (char === ']') depth -= 1;
-    if (char === ':' && depth === 0) {
-      parts.push(current);
-      current = '';
-    } else {
-      current += char;
-    }
-  }
-  return [...parts, current];
 };
 
 /** The tokens in one class string that keep their colour in dark. */
@@ -96,34 +77,13 @@ test('every resting status tint takes the raised surface in dark', () => {
   const offenders = [];
   const seen = new Set();
 
-  for (const file of sourceFiles(path.join(ROOT, 'src'), {
-    extensions: ['.ts', '.tsx'],
-    skip: PRODUCT_SOURCE_SKIP,
-  })) {
-    const relative = path.relative(ROOT, file);
-    const source = fs.readFileSync(file, 'utf8');
-    const tree = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true);
-    const visit = (node) => {
-      if (
-        ts.isStringLiteralLike(node) ||
-        ts.isTemplateMiddleOrTemplateTail(node) ||
-        ts.isTemplateHead(node)
-      ) {
-        for (const match of node.text.matchAll(
-          /\bbg-(success|warning|danger|destructive|info)\//g,
-        )) {
-          seen.add(match[1]);
-        }
-        const bad = untintedTokens(node.text, EXEMPT[relative]);
-        if (bad.length > 0) {
-          const { line } = tree.getLineAndCharacterOfPosition(node.getStart());
-          offenders.push(`${relative}:${line + 1} ${bad.join(' ')}`);
-        }
-      }
-      ts.forEachChild(node, visit);
-    };
-    visit(tree);
-  }
+  walkStringLiterals(ROOT, (text, relative, line) => {
+    for (const match of text.matchAll(/\bbg-(success|warning|danger|destructive|info)\//g)) {
+      seen.add(match[1]);
+    }
+    const bad = untintedTokens(text, EXEMPT[relative]);
+    if (bad.length > 0) offenders.push(`${relative}:${line} ${bad.join(' ')}`);
+  });
 
   assert.deepEqual(
     offenders,

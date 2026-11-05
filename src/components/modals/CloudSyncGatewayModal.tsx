@@ -202,7 +202,7 @@ export const CloudSyncGatewayModal: React.FC<CloudSyncGatewayModalProps> = ({
                 <button
                   type="button"
                   onClick={service.onConnect}
-                  className="border-input bg-card text-foreground hover:bg-muted focus-visible:ring-primary-strong flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition-all hover:translate-x-1 focus-visible:ring-2 focus-visible:outline-none sm:w-auto"
+                  className="border-input bg-card text-foreground hover:bg-hover-step focus-visible:ring-primary-strong flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition-all hover:translate-x-1 focus-visible:ring-2 focus-visible:outline-none sm:w-auto"
                 >
                   {t('sync.setup')}
                   <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />

@@ -62,7 +62,7 @@ export const CoreSection = ({ t }: CoreSectionProps) => {
         ].map((item) => (
           <div
             key={item.id}
-            className="bg-muted/30 border-border/50 hover:bg-muted/50 rounded-xl border p-5 transition-colors"
+            className="bg-muted/30 border-border/50 hover:bg-muted/50 dark:hover:bg-mist rounded-xl border p-5 transition-colors"
           >
             <div className="bg-primary/10 text-primary-strong mb-4 flex h-10 w-10 items-center justify-center rounded-lg">
               <item.icon className="h-5 w-5" />

@@ -66,7 +66,7 @@ export function VersionUpdateChangelog({
           disabled={!hasHighlights}
           className={cn(
             'flex w-full items-center justify-between p-4 text-left transition-colors',
-            hasHighlights ? 'hover:bg-muted/50' : 'cursor-default',
+            hasHighlights ? 'hover:bg-muted/50 dark:hover:bg-mist' : 'cursor-default',
           )}
         >
           <div className="flex items-center gap-3">

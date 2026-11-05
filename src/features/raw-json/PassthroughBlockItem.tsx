@@ -33,7 +33,7 @@ export const PassthroughBlockItem = ({ block, onRemove }: PassthroughBlockItemPr
         open={open}
         onOpenChange={setOpen}
         headerClassName="gap-1 pr-1"
-        triggerClassName="hover:bg-muted flex items-center gap-2 rounded-md px-2"
+        triggerClassName="hover:bg-hover-step flex items-center gap-2 rounded-md px-2"
         trigger={
           <>
             <ChevronRight

@@ -379,7 +379,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
       // 44px box INSIDE this one so the glyph still lands on the rail icons
       // below it — that alignment is measured, and `-ml-3.5` still moves the
       // outer box rather than the glyph.
-      className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring -ml-3.5 flex shrink-0 items-center gap-3 rounded-lg pr-3 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+      className="text-muted-foreground hover:bg-hover-step hover:text-foreground focus-visible:ring-ring -ml-3.5 flex shrink-0 items-center gap-3 rounded-lg pr-3 transition-colors focus-visible:ring-2 focus-visible:outline-none"
     >
       <span className="flex h-11 w-11 shrink-0 items-center justify-center">
         {isCollapsed ? (
@@ -442,7 +442,7 @@ export function AIComposerBar({ isPhone, workspaceWidth }: AIComposerBarProps) {
           // tap will bounce is announced by nothing at all.
           aria-describedby={composer.accessState ? phoneBlockerId : undefined}
           aria-busy={composer.isGenerating || undefined}
-          className="hover:bg-muted/40 focus-visible:ring-ring flex min-h-14 w-full items-center gap-3 px-4 text-left transition-colors focus-visible:ring-2 focus-visible:-outline-offset-2"
+          className="hover:bg-muted/40 dark:hover:bg-mist focus-visible:ring-ring flex min-h-14 w-full items-center gap-3 px-4 text-left transition-colors focus-visible:ring-2 focus-visible:-outline-offset-2"
         >
           <span
             className="bg-secondary text-primary-strong flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"

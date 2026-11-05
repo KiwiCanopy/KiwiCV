@@ -177,8 +177,8 @@ this makes the count checkable rather than asserted.
   under the button; `tooltip` puts it in the shared refusal tooltip and takes no room,
   for a control inside a one-line row.
   **`secondary` hovers one step away from rest and never fades toward the surface** (2026-10-26): it
-  rests on `--secondary`, hovers to `--mist` (`--border` at 70% in dark, where `--mist` is
-  1.05:1 against rest), presses to `--border`. The old
+  rests on `--secondary`, hovers to `--mist`, presses to `--border`.
+  The old
   `hover:bg-secondary/80` alpha-blended into the surface and measured 1.02:1 against
   rest in light, 1.01:1 in dark — no visible hover. A disabled or `aria-disabled` button
   pins hover and press to its rest fill (`inertFillClasses`), since a now-visible hover on
@@ -335,7 +335,7 @@ the cheaper loss: the month chevrons remain, and arrow keys still cross the
 boundary on their own.
 
 **A disabled day must not light up on hover.** `day_button` carries
-`hover:bg-accent` and needs `disabled:pointer-events-none` beside it, or a cell
+`hover:bg-hover-step` and needs `disabled:pointer-events-none` beside it, or a cell
 that cannot be clicked still fills under the cursor. ⚠️ With outside days hidden
 and no call site passing bounds (see below), **nothing in the app renders a
 disabled day today** — the guard is defensive, and goes live the moment one does.
@@ -601,8 +601,7 @@ length preset, a tone and a writing-sample choice, and that does not fit beside 
   Edit affordance. Every row an add-on reveals comes out of the workspace below it: this one
   costs 102px at 800×860, and 158 once a sample is chosen.
 - **Surface: `--secondary` or `--card`, never `--mist`.** `--input` on `--mist` is 3.22:1 light,
-  the tightest margin over 1.4.11; on `--secondary` it is 3.50:1. Dark clears both (4.82:1 and
-  5.04:1).
+  the tightest margin over 1.4.11; on `--secondary` it is 3.50:1. Dark clears both.
 - **The three add-on labels are one tier.** All `text-foreground`. Two peer options at two
   levels of emphasis says a hierarchy exists that nobody can name.
 

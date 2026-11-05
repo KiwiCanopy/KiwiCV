@@ -48,7 +48,7 @@ export function LibraryFilterPanel({
         'border-input inline-flex min-h-9 items-center rounded-full border px-3 text-xs font-semibold transition-colors',
         activeFilters.has(filter)
           ? 'bg-secondary text-foreground'
-          : 'text-muted-foreground hover:bg-secondary',
+          : 'text-muted-foreground hover:bg-hover-step',
       )}
     >
       {label}
@@ -125,7 +125,7 @@ export function LibraryFilterPanel({
                     'border-input inline-flex min-h-9 items-center rounded-full border px-3 text-xs font-semibold capitalize transition-colors',
                     isSelected
                       ? 'bg-primary text-primary-foreground border-transparent'
-                      : 'text-muted-foreground hover:bg-secondary',
+                      : 'text-muted-foreground hover:bg-hover-step',
                   )}
                 >
                   {theme}

@@ -72,7 +72,7 @@ export function PhoneSectionList({
             <button
               type="button"
               onClick={onAddCustomSection}
-              className="border-input bg-card text-muted-foreground hover:text-foreground hover:bg-muted/40 flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors duration-200"
+              className="border-input bg-card text-muted-foreground hover:text-foreground hover:bg-muted/40 dark:hover:bg-mist flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors duration-200"
             >
               <Plus className="h-5 w-5 shrink-0" aria-hidden="true" />
               <span className="min-w-0 flex-1 truncate text-sm font-medium">

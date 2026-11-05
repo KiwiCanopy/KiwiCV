@@ -173,11 +173,7 @@ export const performGitHubSync = async (
       connection.writeHash(GITHUB_LAST_SYNC_HASH_KEY, currentHash);
     }
 
-    return {
-      service: 'github',
-      success: true,
-      ...(variant === 'full' && { folderName: cleanFolderName }),
-    };
+    return { service: 'github', success: true };
   } catch (err: unknown) {
     return { service: 'github', success: false, error: (err as Error).message };
   }

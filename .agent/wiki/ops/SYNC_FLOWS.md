@@ -99,6 +99,14 @@ own only when every destination succeeded** (owner, 2026-10-24, #34): its succes
 10 s (`ALL_OK_TOAST_MS`) and carries the result. A partial or failed run keeps the dialog open on
 the per-destination report and Retry.
 
+⚠️ **A renamed Drive folder is reported in the toast as well as the row** (#41). Drive
+auto-increments a colliding export folder (`MyCV` becomes `MyCV_2`), `performGoogleDriveSync`
+returns it as `renamedFolder`, and `cloudDestination` turns that into `notice`. The row alone would
+not do: a full success closes the dialog before anyone reads it, and a retry drops the rows that
+already succeeded (#90), so `useExportRun` carries notices across retries. An all-failed retry's toast
+leaves them out, since it says nothing was exported. An already-synced run writes nothing, so it
+renames nothing and says nothing.
+
 | Destination    | Adapter                                     | Available when                                 |
 | :------------- | :------------------------------------------ | :--------------------------------------------- |
 | `zip`          | `saveArtifactsAsZip`                        | always                                         |

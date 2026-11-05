@@ -88,6 +88,11 @@ export function DestinationRow({
           {run && (
             <div className="mt-1.5">
               <StatusPill run={run} />
+              {run.notice && (
+                <p className="text-muted-foreground mt-1 text-xs leading-relaxed break-words">
+                  {run.notice}
+                </p>
+              )}
             </div>
           )}
         </div>

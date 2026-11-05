@@ -78,6 +78,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Doğrudan bu cihaza tek bir arşiv.',
     dest_zip_label: 'ZIP olarak indir',
+    drive_folder_renamed:
+      "Google Drive'da aynı adda bir klasör zaten vardı, bu nedenle bu dışa aktarma {{folder}} klasörüne kaydedildi.",
     filename_only:
       "Şirket ve pozisyon dosya adını belirler. İlan bağlantısı, Google Drive'a veya özel bir GitHub deposuna alınan yedeklerle saklanır; herkese açık ya da yayınlanmış bir depoda asla saklanmaz.",
     letter_confirm_anyway: 'Yine de dışa aktar',

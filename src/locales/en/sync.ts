@@ -77,6 +77,8 @@ export const sync = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'One archive, straight to this device.',
     dest_zip_label: 'Download as ZIP',
+    drive_folder_renamed:
+      'Google Drive already had a folder with the same name, so this export went to {{folder}}.',
     filename_only:
       'Company and position shape the file name. The posting link is saved with backups to Google Drive or a private GitHub repository, never with a public or published one.',
     letter_confirm_anyway: 'Export anyway',

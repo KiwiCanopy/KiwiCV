@@ -80,6 +80,8 @@ export const sync: Translations['sync'] = {
     dest_google_drive_label: 'Google Drive',
     dest_zip_desc: 'Ett arkiv, direkt till denna enhet.',
     dest_zip_label: 'Ladda ned som ZIP',
+    drive_folder_renamed:
+      'Google Drive hade redan en mapp med samma namn, så den här exporten hamnade i {{folder}}.',
     filename_only:
       'Företag och position avgör filnamnet. Länken till annonsen sparas med säkerhetskopior i Google Drive eller ett privat GitHub-arkiv, aldrig i ett offentligt eller publicerat.',
     letter_confirm_anyway: 'Exportera ändå',

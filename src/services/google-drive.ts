@@ -164,6 +164,25 @@ export const googleDriveService = {
   /**
    * Checks if files exist for a given folder path.
    */
+  /** Creates the folder path. With `unique`, a taken last part gets the next free name. */
+  async resolveFolder(
+    refreshToken: string,
+    folderPath: string[],
+    unique: boolean,
+  ): Promise<{ folderId: string; folderName: string }> {
+    const response = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'resolve-folder', refreshToken, folderPath, unique }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(`Drive sync failed: ${error.error}`);
+    }
+
+    return response.json();
+  },
+
   async listFiles(refreshToken: string, folderPath: string[]): Promise<DriveFile[]> {
     const response = await fetch(FUNCTION_URL, {
       method: 'POST',

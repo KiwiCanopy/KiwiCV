@@ -102,10 +102,20 @@ the per-destination report and Retry.
 ⚠️ **A renamed Drive folder is reported in the toast as well as the row** (#41). Drive
 auto-increments a colliding export folder (`MyCV` becomes `MyCV_2`), `performGoogleDriveSync`
 returns it as `renamedFolder`, and `cloudDestination` turns that into `notice`. The row alone would
-not do: a full success closes the dialog before anyone reads it, and a retry drops the rows that
-already succeeded (#90), so `useExportRun` carries notices across retries. An all-failed retry's toast
-leaves them out, since it says nothing was exported. An already-synced run writes nothing, so it
-renames nothing and says nothing.
+not do: a full success closes the dialog before anyone reads it. An already-synced run writes
+nothing, so it renames nothing and says nothing.
+
+⚠️ **A retry keeps what already succeeded** (#90). Rows merge across runs, so a finished row keeps
+its check, lock and notice, and `runIds` scopes the progress label to the run in flight. The toast
+counts the whole dialog session: a retry that fails again says "1 of 2 finished", never "nothing was
+exported".
+
+⚠️ **A Drive export claims its folder before writing to it** (#91). `claimExportFolder` resolves the
+free name once and holds it in module state until the snapshot lands, so a retry writes into the
+same folder instead of leaving `MyCV` and `MyCV_2`. The claim is per account and per requested name,
+and a reload loses it. **With no deliverables there is no folder at all** (#92): the snapshot takes
+its own first free `_N` name from a listing of `backups/{lang}`, and no notice is raised, since no
+folder was renamed.
 
 | Destination    | Adapter                                     | Available when                                 |
 | :------------- | :------------------------------------------ | :--------------------------------------------- |

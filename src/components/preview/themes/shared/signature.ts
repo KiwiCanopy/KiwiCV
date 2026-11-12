@@ -24,6 +24,13 @@ export type SignatureFaceId = SignatureFace['id'];
 
 export const DEFAULT_SIGNATURE_FACE: SignatureFaceId = 'herr-von-muellerhoff';
 
+/**
+ * The exact `font:` argument a typed signature emits. The worker prefetches a
+ * lazy face only when the markup contains it, so both read this one function.
+ */
+export const signatureFontDirective = (face: Pick<SignatureFace, 'family'>): string =>
+  `font: "${face.family}"`;
+
 export const getSignatureFace = (id: string): SignatureFace | undefined =>
   SIGNATURE_FACES.find((face) => face.id === id);
 
@@ -47,13 +54,10 @@ export type TypstSignature =
  */
 export const SIGNATURE_MARK_HEIGHT = 28;
 
-/** Typed baseline above the mark's bottom, in pt before `fontScale`. */
-const TYPED_BASELINE_LIFT = 6;
-
 /** The signature mark alone, fitted to `width` (pt, already scaled). */
 export function renderTypstSignatureMark(
   signature: TypstSignature,
-  { width, fontScale }: { width: number; fontScale: number },
+  { width, fontScale, typedHeight }: { width: number; fontScale: number; typedHeight: number },
 ): string {
   if (signature.kind === 'image') {
     const height = SIGNATURE_MARK_HEIGHT * fontScale;
@@ -64,16 +68,16 @@ export function renderTypstSignatureMark(
   const text = signature.text.trim();
   if (!face || !text) return '';
 
-  // Same reserved height as an image, with the baseline on the block's bottom
-  // edge, so descenders cross the rule as a pen does. A long name shrinks to
-  // the rule's width rather than wrapping: two lines read as two signatures.
-  const height = SIGNATURE_MARK_HEIGHT * fontScale;
-  // The baseline rides above the rule, so descenders, not letters, cross it.
-  return `#block(width: ${width}pt, height: ${height}pt)[#align(center + bottom)[#pad(bottom: ${TYPED_BASELINE_LIFT * fontScale}pt)[#context {
-  let mark = text(font: "${face.family}", size: ${face.sizePt * fontScale}pt, fill: rgb("${SIGNATURE_INK}"), fallback: false, top-edge: "ascender", bottom-edge: "baseline")[${escapeTypst(text)}]
-  let k = calc.min(1, ${width}pt / measure(mark).width)
+  // Measured by its ink bounds and scaled to fit the slot in both directions,
+  // so no capital, accent or descender reaches the date line or the printed
+  // name, and a long name shrinks rather than wrapping (two lines read as two
+  // signatures). `sizePt` is the size before that fit.
+  return `#block(width: ${width}pt, height: ${typedHeight}pt)[#align(center + bottom)[#context {
+  let mark = text(${signatureFontDirective(face)}, size: ${face.sizePt * fontScale}pt, fill: rgb("${SIGNATURE_INK}"), fallback: false, top-edge: "bounds", bottom-edge: "bounds")[${escapeTypst(text)}]
+  let size = measure(mark)
+  let k = calc.min(1, ${width}pt / size.width, ${typedHeight}pt / size.height)
   scale(x: k * 100%, y: k * 100%, origin: bottom, reflow: true, mark)
-}]]]`;
+}]]`;
 }
 
 /**

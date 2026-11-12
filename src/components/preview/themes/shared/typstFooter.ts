@@ -313,6 +313,12 @@ interface TypstSignatureFooterOptions {
  * placeholder CV from one page to two (#103).
  */
 const SIGNATURE_DROP = 2;
+/**
+ * A typed mark's slot runs from this far above the rule to 1pt above the
+ * printed name, in pt before `fontScale`; it stays clear of the date line
+ * that ends `textToLineGap` above the rule.
+ */
+const TYPED_RISE = 22;
 
 export function renderTypstSignatureFooter({
   showFooter,
@@ -333,7 +339,11 @@ export function renderTypstSignatureFooter({
   if (showFooter === false || (!joinFooterParts(parts) && !name && !signature)) return '';
 
   const mark = signature
-    ? renderTypstSignatureMark(signature, { width: width * fontScale, fontScale })
+    ? renderTypstSignatureMark(signature, {
+        width: width * fontScale,
+        fontScale,
+        typedHeight: (TYPED_RISE + lineInsetTop - 1) * fontScale,
+      })
     : '';
   const lineText = joinFooterParts(parts);
 
@@ -349,7 +359,7 @@ export function renderTypstSignatureFooter({
     ${lineText ? `#text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(lineText)}]\n    #v(${textToLineGap * fontScale}pt)` : ''}
     ${
       name || mark
-        ? `#box(width: ${width * fontScale}pt, stroke: (top: 1pt + ${borderColor}), inset: (top: ${lineInsetTop * fontScale}pt))[${mark ? `\n      #place(top + center, dy: ${-(lineInsetTop + SIGNATURE_MARK_HEIGHT - SIGNATURE_DROP) * fontScale}pt)[${mark}]` : ''}
+        ? `#box(width: ${width * fontScale}pt, stroke: (top: 1pt + ${borderColor}), inset: (top: ${lineInsetTop * fontScale}pt))[${mark ? `\n      #place(top + center, dy: ${-(lineInsetTop + (signature?.kind === 'typed' ? TYPED_RISE : SIGNATURE_MARK_HEIGHT - SIGNATURE_DROP)) * fontScale}pt)[${mark}]` : ''}
       #align(center)[
         #text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(name ?? '')}]
       ]

@@ -2,7 +2,11 @@ import { paletteIconFills } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS } from '@/components/preview/themeIds';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
-import { NO_SIGNATURE, SIGNATURE_FACES } from '@/components/preview/themes/shared/signature';
+import {
+  NO_SIGNATURE,
+  SIGNATURE_FACES,
+  signatureFontDirective,
+} from '@/components/preview/themes/shared/signature';
 import { type StoredSignature, signatureCompileInputs } from '@/store/signature/useSignatureStore';
 import { buildPlaceholderResume } from '@/test/placeholderResume';
 import { buildSingleItemResume } from '@/test/singleItemResume';
@@ -73,7 +77,7 @@ describe('the signature in the compiled PDF', () => {
           text: 'Jane Doe',
         });
         // Twice: the fixture's letter is on, so the CV footer and the letter footer.
-        expect(markup.split(`font: "${face.family}"`).length - 1).toBe(2);
+        expect(markup.split(signatureFontDirective(face)).length - 1).toBe(2);
         expect(latin1(pdf), face.family).toContain(postscriptName(face.family));
       }
 
@@ -83,24 +87,26 @@ describe('the signature in the compiled PDF', () => {
     120_000,
   );
 
-  it('a signature costs no page: the placeholder CV keeps its page count', async () => {
-    // Measured once: a signature with a height of its own pushed this CV from
-    // one page to two. The mark is placed over the signing gap instead.
-    const resume = buildPlaceholderResume('lunar');
-    const without = readPdfPageCount((await compile('lunar', resume, null)).pdf);
-    const withImage = readPdfPageCount((await compile('lunar', resume, IMAGE)).pdf);
-    const typed = readPdfPageCount(
-      (
-        await compile('lunar', resume, {
-          kind: 'typed',
-          id: 'compile-test',
-          faceId: 'herr-von-muellerhoff',
-          text: 'Max Mustermann',
-        })
-      ).pdf,
-    );
-    expect([withImage, typed]).toEqual([without, without]);
-  }, 60_000);
+  it.each(ALL_THEME_IDS)(
+    '%s: a signature costs no page, the placeholder CV keeps its page count',
+    async (themeId) => {
+      // Measured once: a signature with a height of its own pushed this CV from
+      // one page to two. The mark is placed over the signing gap instead.
+      const resume = buildPlaceholderResume(themeId);
+      const pages = async (signature: StoredSignature | null) =>
+        readPdfPageCount((await compile(themeId, resume, signature)).pdf);
+      const without = await pages(null);
+      const withImage = await pages(IMAGE);
+      const typed = await pages({
+        kind: 'typed',
+        id: 'compile-test',
+        faceId: 'herr-von-muellerhoff',
+        text: 'Max Mustermann',
+      });
+      expect([withImage, typed]).toEqual([without, without]);
+    },
+    60_000,
+  );
 
   it('no signature leaves no trace in the markup', async () => {
     const { markup } = await compile('elegant', buildSingleItemResume('elegant'), null);

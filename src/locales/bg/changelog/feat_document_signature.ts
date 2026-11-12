@@ -1,4 +1,4 @@
 export const feat_document_signature = {
   feat_document_signature:
-    'Add your signature to the PDF footer of your CV and cover letter: draw it, type your name in one of four handwriting styles, or upload or paste a photo you can crop and rotate. It stays on this device, and you can also save a copy to Google Drive or a private GitHub repository.',
+    'Добави подписа си във футъра на PDF файла на своето CV и мотивационно писмо: нарисувай го, въведи името си в един от четири ръкописни стила или качи или постави снимка, която можеш да изрежеш и завъртиш. Той остава на това устройство, а копие от него можеш да запазиш и в Google Drive или в частно хранилище в GitHub.',
 };

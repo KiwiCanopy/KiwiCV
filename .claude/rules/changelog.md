@@ -103,9 +103,11 @@ Do not repeat the category in the text; the UI already renders it under a
 
 ## Stage English as you go, translate once before release
 
-Same packet-routed rule as every other locale file, but on a **per-release**
-cadence rather than per-key: stage the entry in English, run
-`npm run changelog:sync` so it lands in all 15 locales as placeholders, and
-leave it. **Do not translate per PR.** One pass before the release covers the
-accumulated entries at once; review English and German closely, since those are
-the two read at a glance.
+Stage the entry in English, run `npm run changelog:sync` so it lands in all 15
+locales as placeholders, and leave it. **Do not translate per PR.** One pass
+before the release covers the accumulated entries at once; review English and
+German closely, since those are the two read at a glance.
+
+⚠️ **The handoff packet does not carry changelog entries** — `handoff-catalog.cjs`
+has no rows for them. The release pass edits `src/locales/*/changelog/*.ts`
+directly, derived from shipped siblings, then goes to `i18n-auditor`.

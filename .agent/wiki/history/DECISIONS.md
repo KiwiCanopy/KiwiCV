@@ -47,7 +47,8 @@ This document is a historical record of the major architectural decisions taken 
 - **Rationale**: the résumé beside the signature also survives sign-out, so clearing only the signature protects little on a shared profile; a different person is the case worth guarding. The writing sample is the wrong precedent: it is account-bound and sent to the AI. A Drive or private-repo PDF is the user's own document in the user's own storage, and stripping it would make the export differ from the preview. A public signature image is an easy forgery source. The policy itemises each locally kept item, and the signature leaves the device inside PDFs.
 - **Also stated** (privacy review): the account ID is kept with the signature (it is how a different account is recognised); the Drive PDF passes through the US server functions; PDFs already created keep the signature after it is removed.
 - **Not claimed**: that the signature never leaves the device. Not biometric as built (no stroke timing or pressure kept); storing stroke dynamics would reopen that.
-- **Status**: Implemented in #109; ships with a `--legal` release.
+- **Update (owner, 2026-11-12, #106)**: an opt-in copy to Google Drive or a gated private GitHub repo, as a separate file. GitHub is not refused for being changeable to public (that is the user's choice, as for `resume.json`); it is the more direct route, with no KiwiCV function in the path. The policy names the copy and that GitHub history keeps earlier versions.
+- **Status**: Implemented in #109 and #106; ships with one `--legal` release.
 
 ## [2026-10-26] Privacy Policy Names the Job Posting Link
 

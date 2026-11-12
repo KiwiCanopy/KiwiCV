@@ -8,7 +8,7 @@ import {
 } from 'react-image-crop';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { encodeOpaqueJpeg } from '@/utils/image';
+import { encodeOpaqueJpeg, encodeOpaquePng } from '@/utils/image';
 
 import { type AspectMode, getAspectOptions } from './constants';
 
@@ -17,6 +17,11 @@ interface UseImageCropperProps {
   initialShape?: 'circle' | 'square';
   onCropComplete: (croppedImage: string, shape: 'circle' | 'square') => void;
   isEditMode?: boolean;
+  /**
+   * `signature` (#103): starts on the whole image, keeps no shape, and encodes
+   * losslessly at a larger size, since its output is keyed and trimmed after.
+   */
+  purpose?: 'photo' | 'signature';
 }
 
 function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number): Crop {
@@ -32,9 +37,10 @@ export function useImageCropper({
   initialShape = 'square',
   onCropComplete,
   isEditMode = false,
+  purpose = 'photo',
 }: UseImageCropperProps) {
   const { t } = useTranslation();
-  const defaultAspectMode = isEditMode ? 'full' : '4:5';
+  const defaultAspectMode = isEditMode || purpose === 'signature' ? 'full' : '4:5';
 
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
@@ -118,7 +124,7 @@ export function useImageCropper({
       const image = imgRef.current;
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
-      const MAX_DIMENSION = 800;
+      const MAX_DIMENSION = purpose === 'signature' ? 1600 : 800;
       const pixelRatio = window.devicePixelRatio || 1;
 
       let targetWidth = completedCrop.width * scaleX;
@@ -163,7 +169,10 @@ export function useImageCropper({
         );
       };
 
-      const base64 = encodeOpaqueJpeg(canvasWidth, canvasHeight, drawCrop, 0.85);
+      const base64 =
+        purpose === 'signature'
+          ? encodeOpaquePng(canvasWidth, canvasHeight, drawCrop)
+          : encodeOpaqueJpeg(canvasWidth, canvasHeight, drawCrop, 0.85);
       if (!base64) return;
       onCropComplete(base64, isRound ? 'circle' : 'square');
     } catch (e) {

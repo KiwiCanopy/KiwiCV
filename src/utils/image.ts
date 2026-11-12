@@ -60,3 +60,13 @@ export function encodeOpaqueJpegBlob(
   if (!canvas) return Promise.resolve(null);
   return new Promise((resolve) => canvas.toBlob(resolve, JPEG_MIME, quality));
 }
+
+/** `encodeOpaqueJpeg`, lossless: for line art, where JPEG rings the strokes. */
+export function encodeOpaquePng(
+  width: number,
+  height: number,
+  draw: (ctx: CanvasRenderingContext2D) => void,
+): string | null {
+  const encoded = drawOpaqueCanvas(width, height, draw)?.toDataURL('image/png');
+  return encoded?.startsWith('data:image/png') ? encoded : null;
+}

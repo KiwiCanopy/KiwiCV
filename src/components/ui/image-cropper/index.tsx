@@ -13,6 +13,12 @@ interface ImageCropperProps {
   onCancel: () => void;
   onCropComplete: (croppedImage: string, shape: 'circle' | 'square') => void;
   isEditMode?: boolean;
+  /** `signature` hides format and shape, which a signature has no use for. */
+  purpose?: 'photo' | 'signature';
+  /** Title, image alt and description for a non-photo purpose. */
+  title?: string;
+  imageAlt?: string;
+  description?: string;
 }
 
 export function ImageCropper({
@@ -21,6 +27,10 @@ export function ImageCropper({
   onCancel,
   onCropComplete,
   isEditMode = false,
+  purpose = 'photo',
+  title,
+  imageAlt,
+  description,
 }: ImageCropperProps) {
   const { t } = useTranslation();
   const {
@@ -51,6 +61,7 @@ export function ImageCropper({
     initialShape,
     onCropComplete,
     isEditMode,
+    purpose,
   });
 
   return (
@@ -65,7 +76,7 @@ export function ImageCropper({
       header={
         <div className="border-border flex items-center border-b p-4 pr-14">
           <DialogFrameTitle className="text-foreground font-semibold">
-            {t('image_cropper.title')}
+            {title ?? t('image_cropper.title')}
           </DialogFrameTitle>
         </div>
       }
@@ -82,7 +93,7 @@ export function ImageCropper({
         imageSrc={imageSrc}
         onImageLoad={onImageLoad}
         imageTransform={imageTransform}
-        imageAlt={t('image_cropper.alt_crop')}
+        imageAlt={imageAlt ?? t('image_cropper.alt_crop')}
       />
 
       {/* Controls. No `overflow` here: it would become the sticky footer's
@@ -90,12 +101,13 @@ export function ImageCropper({
           is ModalContainer's, which the footer pins against. */}
       <div className="flex flex-col">
         <DialogFrameDescription className="sr-only">
-          {t('image_cropper.description')}
+          {description ?? t('image_cropper.description')}
         </DialogFrameDescription>
 
         <CropperControls
           t={t}
           aspectMode={aspectMode}
+          showFormat={purpose === 'photo'}
           handleAspectChange={handleAspectChange}
           aspects={ASPECTS}
           isRound={isRound}

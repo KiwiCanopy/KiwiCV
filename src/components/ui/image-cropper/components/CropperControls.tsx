@@ -18,6 +18,8 @@ import { type AspectMode, type AspectOption, type TFunction } from '../constants
 interface CropperControlsProps {
   t: TFunction;
   aspectMode: AspectMode;
+  /** The format and shape row; off for a signature. */
+  showFormat: boolean;
   handleAspectChange: (mode: AspectMode) => void;
   aspects: AspectOption[];
   isRound: boolean;
@@ -34,6 +36,7 @@ interface CropperControlsProps {
 export function CropperControls({
   t,
   aspectMode,
+  showFormat,
   handleAspectChange,
   aspects,
   isRound,
@@ -49,43 +52,45 @@ export function CropperControls({
   return (
     <div className="space-y-6 overflow-y-auto p-4">
       {/* Row 1: Aspect Ratio & Shape Toggle */}
-      <div className="border-border/30 flex flex-col justify-between gap-4 border-b pb-6 sm:flex-row sm:items-center">
-        <div className="w-full space-y-3 sm:w-auto">
-          <SectionLabel label={t('image_cropper.format')} variant="minimal" />
-          <SegmentedToggle
-            value={aspectMode}
-            onChange={handleAspectChange}
-            options={aspects.map((asp) => ({
-              value: asp.mode,
-              label: asp.label,
-            }))}
-            className="w-full sm:w-80"
-          />
-        </div>
+      {showFormat && (
+        <div className="border-border/30 flex flex-col justify-between gap-4 border-b pb-6 sm:flex-row sm:items-center">
+          <div className="w-full space-y-3 sm:w-auto">
+            <SectionLabel label={t('image_cropper.format')} variant="minimal" />
+            <SegmentedToggle
+              value={aspectMode}
+              onChange={handleAspectChange}
+              options={aspects.map((asp) => ({
+                value: asp.mode,
+                label: asp.label,
+              }))}
+              className="w-full sm:w-80"
+            />
+          </div>
 
-        <div className="w-full space-y-3 sm:w-auto">
-          <SectionLabel label={t('image_cropper.shape')} variant="minimal" />
-          <SegmentedToggle
-            value={isRound}
-            onChange={setIsRound}
-            options={[
-              {
-                value: false,
-                label: '',
-                icon: <Square size={14} />,
-                hint: t('image_cropper.rect_tooltip'),
-              },
-              {
-                value: true,
-                label: '',
-                icon: <Circle size={14} />,
-                hint: t('image_cropper.round_tooltip'),
-              },
-            ]}
-            className="w-full sm:w-24"
-          />
+          <div className="w-full space-y-3 sm:w-auto">
+            <SectionLabel label={t('image_cropper.shape')} variant="minimal" />
+            <SegmentedToggle
+              value={isRound}
+              onChange={setIsRound}
+              options={[
+                {
+                  value: false,
+                  label: '',
+                  icon: <Square size={14} />,
+                  hint: t('image_cropper.rect_tooltip'),
+                },
+                {
+                  value: true,
+                  label: '',
+                  icon: <Circle size={14} />,
+                  hint: t('image_cropper.round_tooltip'),
+                },
+              ]}
+              className="w-full sm:w-24"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Row 2: Quick Actions */}
       <div className="flex justify-center gap-4 py-2 sm:gap-6">

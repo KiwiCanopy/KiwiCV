@@ -1,6 +1,7 @@
 import { getCityCountry } from '@/components/preview/themes/shared/address';
 import { getPlaceholderCity } from '@/components/preview/themes/shared/levels';
 import {
+  SIGNATURE_MARK_HEIGHT,
   type TypstSignature,
   renderTypstSignatureMark,
 } from '@/components/preview/themes/shared/signature';
@@ -305,8 +306,13 @@ interface TypstSignatureFooterOptions {
  * not of the rule's width, so their narrower `width: 160` buys no reduction.
  * `footerGeometry.test.ts` pins all three equal across the two families.
  */
-/** Space between the signature mark and the rule, in pt before `fontScale`. */
-const SIGNATURE_TO_LINE_GAP = 0;
+/**
+ * How far the mark's bottom sits below the rule, in pt before `fontScale`. The
+ * mark is `place`d over the signing gap rather than given its own height, so a
+ * signature costs no page-flow budget: measured, a reserved block pushed the
+ * placeholder CV from one page to two (#103).
+ */
+const SIGNATURE_DROP = 2;
 
 export function renderTypstSignatureFooter({
   showFooter,
@@ -340,11 +346,10 @@ export function renderTypstSignatureFooter({
 #v(${topGap * fontScale}pt)
 #block(width: 100%, breakable: false${inset.length ? `, inset: (${inset.join(', ')})` : ''})[
   #align(right)[
-    ${lineText ? `#text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(lineText)}]\n    ${mark ? '' : `#v(${textToLineGap * fontScale}pt)`}` : ''}
-    ${mark ? `${mark}\n    #v(${SIGNATURE_TO_LINE_GAP * fontScale}pt)` : ''}
+    ${lineText ? `#text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(lineText)}]\n    #v(${textToLineGap * fontScale}pt)` : ''}
     ${
       name || mark
-        ? `#box(width: ${width * fontScale}pt, stroke: (top: 1pt + ${borderColor}), inset: (top: ${lineInsetTop * fontScale}pt))[
+        ? `#box(width: ${width * fontScale}pt, stroke: (top: 1pt + ${borderColor}), inset: (top: ${lineInsetTop * fontScale}pt))[${mark ? `\n      #place(top + center, dy: ${-(lineInsetTop + SIGNATURE_MARK_HEIGHT - SIGNATURE_DROP) * fontScale}pt)[${mark}]` : ''}
       #align(center)[
         #text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(name ?? '')}]
       ]

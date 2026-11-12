@@ -12,11 +12,11 @@ export const SIGNATURE_FACES = [
     id: 'herr-von-muellerhoff',
     family: 'Herr Von Muellerhoff',
     file: 'herr-von-muellerhoff-regular.ttf',
-    sizePt: 30,
+    sizePt: 26,
   },
-  { id: 'great-vibes', family: 'Great Vibes', file: 'great-vibes-regular.ttf', sizePt: 25 },
-  { id: 'alex-brush', family: 'Alex Brush', file: 'alex-brush-regular.ttf', sizePt: 26 },
-  { id: 'pinyon-script', family: 'Pinyon Script', file: 'pinyon-script-regular.ttf', sizePt: 25 },
+  { id: 'great-vibes', family: 'Great Vibes', file: 'great-vibes-regular.ttf', sizePt: 23 },
+  { id: 'alex-brush', family: 'Alex Brush', file: 'alex-brush-regular.ttf', sizePt: 24 },
+  { id: 'pinyon-script', family: 'Pinyon Script', file: 'pinyon-script-regular.ttf', sizePt: 23 },
 ] as const;
 
 export type SignatureFace = (typeof SIGNATURE_FACES)[number];
@@ -41,8 +41,14 @@ export const SIGNATURE_INK = '#1c1f24';
 export type TypstSignature =
   { kind: 'image'; path: string } | { kind: 'typed'; faceId: SignatureFaceId; text: string };
 
-/** Height of the drawn or uploaded mark, in pt before `fontScale`. */
-export const SIGNATURE_IMAGE_HEIGHT = 34;
+/**
+ * Height of the mark, in pt before `fontScale`. It overlaps the 24pt signing
+ * gap above the rule (`renderTypstSignatureFooter`) and takes no space of its own.
+ */
+export const SIGNATURE_MARK_HEIGHT = 28;
+
+/** Typed baseline above the mark's bottom, in pt before `fontScale`. */
+const TYPED_BASELINE_LIFT = 6;
 
 /** The signature mark alone, fitted to `width` (pt, already scaled). */
 export function renderTypstSignatureMark(
@@ -50,7 +56,7 @@ export function renderTypstSignatureMark(
   { width, fontScale }: { width: number; fontScale: number },
 ): string {
   if (signature.kind === 'image') {
-    const height = SIGNATURE_IMAGE_HEIGHT * fontScale;
+    const height = SIGNATURE_MARK_HEIGHT * fontScale;
     return `#block(width: ${width}pt, height: ${height}pt)[#image("${escapeTypstString(signature.path)}", width: 100%, height: 100%, fit: "contain")]`;
   }
 
@@ -61,12 +67,13 @@ export function renderTypstSignatureMark(
   // Same reserved height as an image, with the baseline on the block's bottom
   // edge, so descenders cross the rule as a pen does. A long name shrinks to
   // the rule's width rather than wrapping: two lines read as two signatures.
-  const height = SIGNATURE_IMAGE_HEIGHT * fontScale;
-  return `#block(width: ${width}pt, height: ${height}pt)[#align(center + bottom)[#context {
+  const height = SIGNATURE_MARK_HEIGHT * fontScale;
+  // The baseline rides above the rule, so descenders, not letters, cross it.
+  return `#block(width: ${width}pt, height: ${height}pt)[#align(center + bottom)[#pad(bottom: ${TYPED_BASELINE_LIFT * fontScale}pt)[#context {
   let mark = text(font: "${face.family}", size: ${face.sizePt * fontScale}pt, fill: rgb("${SIGNATURE_INK}"), fallback: false, top-edge: "ascender", bottom-edge: "baseline")[${escapeTypst(text)}]
   let k = calc.min(1, ${width}pt / measure(mark).width)
   scale(x: k * 100%, y: k * 100%, origin: bottom, reflow: true, mark)
-}]]`;
+}]]]`;
 }
 
 /**

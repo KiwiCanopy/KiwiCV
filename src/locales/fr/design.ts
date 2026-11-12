@@ -68,7 +68,20 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Ajouter une signature',
+    backup_delete_failed:
+      "Ta signature est retirée de cet appareil, mais sa copie de sauvegarde n'a pas pu être supprimée. Supprime toi-même KiwiCV/signature/signature.json dans Google Drive ou signature/signature.json dans GitHub.",
+    backup_failed:
+      "Ta signature est enregistrée sur cet appareil, mais la sauvegarde n'a pas pu être mise à jour.",
+    backup_github_history:
+      'La retirer la supprime de ton dépôt ; les versions antérieures de son historique la conservent.',
+    backup_label: 'Enregistrer aussi une copie dans {{targets}}',
+    backup_note:
+      "Enregistrée sur cet appareil et dans {{targets}}. Les PDF que tu crées l'incluent.",
+    backup_unreachable:
+      "Enregistrée sur cet appareil. Ta copie de sauvegarde est inaccessible pour le moment. Les PDF que tu crées l'incluent.",
     change: 'Changer',
+    commit_removed: 'Supprimer la sauvegarde de la signature',
+    commit_saved: 'Sauvegarder la signature',
     crop_description:
       "Recadre, fais pivoter ou mets en miroir l'image. Le fond du papier est retiré ensuite.",
     crop_title: 'Recadrer ta signature',
@@ -81,6 +94,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Ce style ne peut pas afficher toutes les lettres de ce nom.',
     footer_off: 'Apparaît dans le pied de page PDF, qui est désactivé.',
     preview_alt: 'Ta signature',
+    restore_found: 'Ta sauvegarde contient une signature enregistrée.',
+    restore_use: "L'utiliser",
     row_empty: 'Aucune signature sur cet appareil',
     row_label: 'Signature',
     tab_draw: 'Dessiner',

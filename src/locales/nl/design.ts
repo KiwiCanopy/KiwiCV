@@ -67,7 +67,19 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Handtekening toevoegen',
+    backup_delete_failed:
+      'Je handtekening is van dit apparaat verwijderd, maar de back-up kon niet worden verwijderd. Verwijder zelf KiwiCV/signature/signature.json op Google Drive of signature/signature.json op GitHub.',
+    backup_failed:
+      'Je handtekening is op dit apparaat opgeslagen, maar de back-up kon niet worden bijgewerkt.',
+    backup_github_history:
+      'Verwijderen haalt hem uit je repository; eerdere versies in de geschiedenis behouden hem.',
+    backup_label: 'Ook een kopie opslaan in {{targets}}',
+    backup_note: 'Opgeslagen op dit apparaat en in {{targets}}. PDF’s die je maakt bevatten hem.',
+    backup_unreachable:
+      'Opgeslagen op dit apparaat. Je back-up is op dit moment niet bereikbaar. PDF’s die je maakt bevatten hem.',
     change: 'Wijzigen',
+    commit_removed: 'Back-up van handtekening verwijderen',
+    commit_saved: 'Back-up van handtekening maken',
     crop_description:
       'Snijd de afbeelding bij, draai of spiegel hem. Daarna wordt de papieren achtergrond verwijderd.',
     crop_title: 'Handtekening bijsnijden',
@@ -80,6 +92,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Deze stijl kan niet elke letter van deze naam tonen.',
     footer_off: 'Verschijnt in de PDF-voettekst, die uit staat.',
     preview_alt: 'Je handtekening',
+    restore_found: 'Je back-up bevat een opgeslagen handtekening.',
+    restore_use: 'Gebruiken',
     row_empty: 'Geen handtekening op dit apparaat',
     row_label: 'Handtekening',
     tab_draw: 'Tekenen',

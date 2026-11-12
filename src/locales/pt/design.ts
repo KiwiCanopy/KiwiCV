@@ -67,7 +67,19 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Adicionar assinatura',
+    backup_delete_failed:
+      'A tua assinatura foi removida deste dispositivo, mas não foi possível eliminar a cópia de segurança. Elimina tu próprio KiwiCV/signature/signature.json no Google Drive ou signature/signature.json no GitHub.',
+    backup_failed:
+      'A tua assinatura está guardada neste dispositivo, mas não foi possível atualizar a cópia de segurança.',
+    backup_github_history:
+      'Removê-la elimina-a do teu repositório; as versões anteriores no histórico mantêm-na.',
+    backup_label: 'Guardar também uma cópia no {{targets}}',
+    backup_note: 'Guardada neste dispositivo e no {{targets}}. Os PDF que crias incluem-na.',
+    backup_unreachable:
+      'Guardada neste dispositivo. A tua cópia de segurança não está acessível neste momento. Os PDF que crias incluem-na.',
     change: 'Alterar',
+    commit_removed: 'Remover cópia da assinatura',
+    commit_saved: 'Guardar cópia da assinatura',
     crop_description: 'Recorta, roda ou vira a imagem. O fundo do papel é removido a seguir.',
     crop_title: 'Recortar a tua assinatura',
     device_note:
@@ -79,6 +91,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Este estilo não consegue mostrar todas as letras deste nome.',
     footer_off: 'Aparece no rodapé do PDF, que está desativado.',
     preview_alt: 'A tua assinatura',
+    restore_found: 'A tua cópia de segurança tem uma assinatura guardada.',
+    restore_use: 'Usar',
     row_empty: 'Nenhuma assinatura neste dispositivo',
     row_label: 'Assinatura',
     tab_draw: 'Desenhar',

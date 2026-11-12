@@ -66,7 +66,17 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'İmza ekle',
+    backup_delete_failed:
+      'İmzan bu cihazdan kaldırıldı, ancak yedek kopyası silinemedi. Google Drive’daki KiwiCV/signature/signature.json veya GitHub’daki signature/signature.json dosyasını kendin sil.',
+    backup_failed: 'İmzan bu cihazda kayıtlı, ancak yedek güncellenemedi.',
+    backup_github_history: 'Kaldırmak onu depondan siler; geçmişteki önceki sürümler onu korur.',
+    backup_label: 'Bir kopyasını da şuraya kaydet: {{targets}}',
+    backup_note: 'Bu cihazda ve şurada kaydedilir: {{targets}}. Oluşturduğun PDF’ler onu içerir.',
+    backup_unreachable:
+      'Bu cihazda kaydedildi. Yedek kopyana şu anda ulaşılamıyor. Oluşturduğun PDF’ler onu içerir.',
     change: 'Değiştir',
+    commit_removed: 'İmza yedeğini kaldır',
+    commit_saved: 'İmzayı yedekle',
     crop_description: 'Görseli kırp, döndür veya çevir. Ardından kâğıt arka planı kaldırılır.',
     crop_title: 'İmzanı kırp',
     device_note:
@@ -78,6 +88,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Bu stil bu addaki her harfi gösteremez.',
     footer_off: 'Kapalı olan PDF altbilgisinde gösterilir.',
     preview_alt: 'İmzan',
+    restore_found: 'Yedeğinde kayıtlı bir imza var.',
+    restore_use: 'Kullan',
     row_empty: 'Bu cihazda imza yok',
     row_label: 'İmza',
     tab_draw: 'Çiz',

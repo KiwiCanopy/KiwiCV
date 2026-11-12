@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SIGNATURE_INK, getSignatureFace } from '@/components/preview/themes/shared/signature';
 import { Button } from '@/components/ui/Button';
 import { SignatureDialog } from '@/features/signature/SignatureDialog';
+import { removeSignature } from '@/features/signature/signatureActions';
 import { loadSignatureFace } from '@/features/signature/signatureFonts';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
@@ -17,7 +18,6 @@ import { PenLine, Plus } from 'lucide-react';
 export function SignatureRow({ compact = false }: { compact?: boolean }) {
   const { t } = useTranslation();
   const signature = useSignatureStore((state) => state.signature);
-  const removeSignature = useSignatureStore((state) => state.removeSignature);
   const footerShown = useResumeStore(
     (state) => state.resume.meta.theme.params?.showFooter !== false,
   );
@@ -110,7 +110,7 @@ export function SignatureRow({ compact = false }: { compact?: boolean }) {
             variant="quiet"
             size="sm"
             onClick={() => {
-              removeSignature();
+              void removeSignature(t);
               requestAnimationFrame(() => addRef.current?.focus());
             }}
           >

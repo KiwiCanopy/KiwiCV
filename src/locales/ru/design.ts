@@ -63,7 +63,19 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Добавить подпись',
+    backup_delete_failed:
+      'Подпись удалена с этого устройства, но ее резервную копию удалить не удалось. Удали KiwiCV/signature/signature.json в Google Drive или signature/signature.json в GitHub самостоятельно.',
+    backup_failed: 'Подпись сохранена на этом устройстве, но резервную копию не удалось обновить.',
+    backup_github_history:
+      'При удалении подпись удаляется из репозитория; более ранние версии в его истории ее сохраняют.',
+    backup_label: 'Также сохранить копию в {{targets}}',
+    backup_note:
+      'Сохранено на этом устройстве и в {{targets}}. Создаваемые тобой PDF включают подпись.',
+    backup_unreachable:
+      'Сохранено на этом устройстве. Резервная копия сейчас недоступна. Создаваемые тобой PDF включают подпись.',
     change: 'Изменить',
+    commit_removed: 'Удалить копию подписи',
+    commit_saved: 'Сохранить копию подписи',
     crop_description: 'Обрежь, поверни или отрази изображение. Затем фон бумаги будет удалён.',
     crop_title: 'Обрезать подпись',
     device_note:
@@ -75,6 +87,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Этот стиль не может показать все буквы этого имени.',
     footer_off: 'Отображается в нижнем колонтитуле PDF, который выключен.',
     preview_alt: 'Твоя подпись',
+    restore_found: 'В твоей резервной копии есть сохраненная подпись.',
+    restore_use: 'Использовать',
     row_empty: 'На этом устройстве нет подписи',
     row_label: 'Подпись',
     tab_draw: 'Нарисовать',

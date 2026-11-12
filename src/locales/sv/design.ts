@@ -65,7 +65,19 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Lägg till signatur',
+    backup_delete_failed:
+      'Din signatur är borttagen från den här enheten, men säkerhetskopian kunde inte raderas. Radera själv KiwiCV/signature/signature.json på Google Drive eller signature/signature.json på GitHub.',
+    backup_failed:
+      'Din signatur är sparad på den här enheten, men säkerhetskopian kunde inte uppdateras.',
+    backup_github_history:
+      'Om du tar bort den raderas den från ditt arkiv; tidigare versioner i historiken behåller den.',
+    backup_label: 'Spara även en kopia i {{targets}}',
+    backup_note: 'Sparas på den här enheten och i {{targets}}. PDF:er du skapar innehåller den.',
+    backup_unreachable:
+      'Sparad på den här enheten. Din säkerhetskopia går inte att nå just nu. PDF:er du skapar innehåller den.',
     change: 'Ändra',
+    commit_removed: 'Ta bort säkerhetskopia av signatur',
+    commit_saved: 'Säkerhetskopiera signatur',
     crop_description: 'Beskär, rotera eller vänd bilden. Pappersbakgrunden tas bort efteråt.',
     crop_title: 'Beskär din signatur',
     device_note:
@@ -77,6 +89,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Den här stilen kan inte visa alla bokstäver i namnet.',
     footer_off: 'Visas i PDF-sidfoten, som är avstängd.',
     preview_alt: 'Din signatur',
+    restore_found: 'Din säkerhetskopia har en sparad signatur.',
+    restore_use: 'Använd den',
     row_empty: 'Ingen signatur på den här enheten',
     row_label: 'Signatur',
     tab_draw: 'Rita',

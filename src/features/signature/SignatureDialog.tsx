@@ -16,6 +16,14 @@ import {
 } from '@/features/signature/SignatureDrawPad';
 import { SignatureTypePanel } from '@/features/signature/SignatureTypePanel';
 import { SignatureUploadPanel, type UploadState } from '@/features/signature/SignatureUploadPanel';
+import {
+  fetchSignatureBackup,
+  hasBackupTarget,
+  removeSignature,
+  resolveBackupTargets,
+  saveSignature,
+} from '@/features/signature/signatureActions';
+import { type SignatureBackupTargets } from '@/features/signature/signatureBackup';
 import { faceCovers, loadSignatureCoverage } from '@/features/signature/signatureFonts';
 import { dataUrlToSignaturePng, fileToWorkingDataUrl } from '@/features/signature/signatureImage';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -25,6 +33,7 @@ import {
   newSignatureId,
   useSignatureStore,
 } from '@/store/signature/useSignatureStore';
+import { useUIStore } from '@/store/ui/useUIStore';
 import { type FocusAnchor } from '@/utils/focus';
 import { PenLine, Signature } from 'lucide-react';
 
@@ -47,10 +56,16 @@ const firstCoveringFace = (coverage: Coverage, text: string): SignatureFaceId | 
  */
 export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProps) {
   const { t } = useTranslation();
+  const locale = useUIStore((state) => state.appLanguage);
   const name = useResumeStore((state) => state.resume.basics.name).trim();
   const stored = useSignatureStore((state) => state.signature);
-  const setSignature = useSignatureStore((state) => state.setSignature);
-  const removeSignature = useSignatureStore((state) => state.removeSignature);
+  const backupEnabled = useSignatureStore((state) => state.backupEnabled);
+  const [targets, setTargets] = useState<SignatureBackupTargets | null>(null);
+  // Where an existing copy could be deleted from, for naming it while it cannot be written.
+  const [deleteTargets, setDeleteTargets] = useState<SignatureBackupTargets | null>(null);
+  const [backupChecked, setBackupChecked] = useState(backupEnabled);
+  const [restoreCandidate, setRestoreCandidate] = useState<StoredSignature | null>(null);
+  const backupNoteId = useId();
 
   const [coverage, setCoverage] = useState<Coverage | null>(null);
   const [tab, setTab] = useState<Tab | null>(null);
@@ -61,9 +76,9 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
   const [faceId, setFaceId] = useState<SignatureFaceId>(DEFAULT_SIGNATURE_FACE);
   const [hasInk, setHasInk] = useState(false);
   const [upload, setUpload] = useState<UploadState>(() =>
-    stored?.kind === 'image' && stored.source === 'upload'
-      ? { status: 'ready', dataUrl: stored.dataUrl }
-      : { status: 'idle' },
+    // Any stored image opens as the current one, drawn or uploaded: a blank pad
+    // read as a lost signature, and Save can apply a new backup choice to it.
+    stored?.kind === 'image' ? { status: 'ready', dataUrl: stored.dataUrl } : { status: 'idle' },
   );
   const padRef = useRef<SignatureDrawPadHandle>(null);
 
@@ -81,7 +96,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
     // Opens on Type when a face covers the name, otherwise on Draw.
     setTab((current) => {
       if (current) return current;
-      if (stored?.kind === 'image') return stored.source === 'upload' ? 'upload' : 'draw';
+      if (stored?.kind === 'image') return 'upload';
       return textFace ? 'type' : 'draw';
     });
   });
@@ -97,6 +112,46 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
       current = false;
     };
   }, []);
+
+  // Which backups are connected, and on a device with no signature yet, whether
+  // one of them holds one to offer (never applied silently, #106).
+  const offerRestore = useEffectEvent((found: StoredSignature | null) => {
+    if (!found || useSignatureStore.getState().signature) return;
+    setRestoreCandidate(found);
+    // The copy exists by consent given on another device: the box says so, and
+    // unticking it before saving withdraws that consent.
+    setBackupChecked(true);
+  });
+  useEffect(() => {
+    let current = true;
+    void resolveBackupTargets().then(async (resolved) => {
+      if (!current) return;
+      setTargets(resolved);
+      if (useSignatureStore.getState().backupEnabled && !hasBackupTarget(resolved)) {
+        const reachable = await resolveBackupTargets({ forDelete: true });
+        if (current) setDeleteTargets(reachable);
+      }
+      if (!hasBackupTarget(resolved) || useSignatureStore.getState().signature) return;
+      const found = await fetchSignatureBackup(resolved);
+      if (current) offerRestore(found);
+    });
+    return () => {
+      current = false;
+    };
+  }, []);
+  const canBackUp = targets !== null && hasBackupTarget(targets);
+  // The box stays while a copy exists even if it cannot be written right now:
+  // unticking it is how the policy says consent is withdrawn.
+  const showBackupChoice = canBackUp || (backupEnabled && targets !== null);
+  const backupWanted = showBackupChoice ? backupChecked : backupEnabled;
+  // Named, not "your backup": the user should see the copy leaves the device.
+  const named = canBackUp ? targets : deleteTargets;
+  const nameList = [named?.drive && 'Google Drive', named?.github && 'GitHub'].filter(
+    (name): name is string => Boolean(name),
+  );
+  const backupNames = new Intl.ListFormat(locale, { type: 'conjunction' }).format(
+    nameList.length ? nameList : ['Google Drive', 'GitHub'],
+  );
 
   const typeAvailable = !initialText || !coverage || !!firstCoveringFace(coverage, initialText);
   const typeReasonId = useId();
@@ -192,7 +247,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
           : { kind: 'image', id: newSignatureId(), dataUrl: upload.dataUrl, source: 'upload' };
     }
     if (!next) return;
-    setSignature(next);
+    void saveSignature(next, backupWanted, t, { copyExists: restoreCandidate !== null });
     onClose();
   };
 
@@ -209,13 +264,19 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
       title={t('design.signature.dialog_title')}
       footer={
         <div className="border-border flex flex-col gap-3 border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-muted-foreground text-xs">{t('design.signature.device_note')}</p>
+          <p id={backupNoteId} className="text-muted-foreground text-xs">
+            {backupWanted && canBackUp
+              ? t('design.signature.backup_note', { targets: backupNames })
+              : backupEnabled && targets !== null && !canBackUp
+                ? t('design.signature.backup_unreachable')
+                : t('design.signature.device_note')}
+          </p>
           <div className="flex justify-end gap-2">
             {stored && (
               <Button
                 variant="quiet"
                 onClick={() => {
-                  removeSignature();
+                  void removeSignature(t);
                   onClose();
                 }}
               >
@@ -233,6 +294,24 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
       }
     >
       <div className="space-y-4 px-6 pb-4">
+        {restoreCandidate && (
+          <div
+            role="status"
+            className="border-input bg-muted/40 flex flex-wrap items-center justify-between gap-2 rounded-lg border p-3"
+          >
+            <p className="text-sm">{t('design.signature.restore_found')}</p>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                void saveSignature(restoreCandidate, backupWanted, t, { copyExists: true });
+                onClose();
+              }}
+            >
+              {t('design.signature.restore_use')}
+            </Button>
+          </div>
+        )}
         <SegmentedToggle<Tab>
           // No segment reads as selected until the opening tab is known.
           value={tab ?? ('' as Tab)}
@@ -301,6 +380,25 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
               setCropOpen(true);
             }}
           />
+        )}
+        {showBackupChoice && (
+          <div className="space-y-1">
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={backupChecked}
+                onChange={(event) => setBackupChecked(event.target.checked)}
+                aria-describedby={backupNoteId}
+                className="accent-primary h-4 w-4"
+              />
+              {t('design.signature.backup_label', { targets: backupNames })}
+            </label>
+            {backupChecked && targets?.github && (
+              <p className="text-muted-foreground pl-6 text-xs">
+                {t('design.signature.backup_github_history')}
+              </p>
+            )}
+          </div>
         )}
         {cropOpen && cropSource && (
           <ImageCropper

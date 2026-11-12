@@ -89,6 +89,9 @@ each of those roads and fails if the signature appears.
   a change, so a stale tab cannot write its old copy back. A signed-out edit keeps the owner; one
   saved unowned (signed out, after Remove) goes to whoever
   signs in next.
+- `backupEnabled` (persisted, off by default) is the #106 opt-in copy; a different account
+  signing in resets it with the signature. Saves and removals go through
+  `src/features/signature/signatureActions.ts`, which never lets the network block the device copy.
 
 ## Auth & Persistence (`AuthProvider.tsx`)
 

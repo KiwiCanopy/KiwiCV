@@ -66,7 +66,18 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: '署名を追加',
+    backup_delete_failed:
+      '署名はこのデバイスから削除されましたが、バックアップのコピーを削除できませんでした。Google DriveのKiwiCV/signature/signature.jsonまたはGitHubのsignature/signature.jsonをご自身で削除してください。',
+    backup_failed: '署名はこのデバイスに保存されていますが、バックアップを更新できませんでした。',
+    backup_github_history:
+      '削除するとリポジトリからも削除されますが、履歴にある以前のバージョンには残ります。',
+    backup_label: '{{targets}} にもコピーを保存',
+    backup_note: 'このデバイスと {{targets}} に保存されます。作成したPDFにも含まれます。',
+    backup_unreachable:
+      'このデバイスに保存されています。バックアップのコピーには現在アクセスできません。作成したPDFには含まれます。',
     change: '変更',
+    commit_removed: '署名のバックアップを削除',
+    commit_saved: '署名をバックアップ',
     crop_description: '画像を切り抜き、回転、反転できます。その後、紙の背景が取り除かれます。',
     crop_title: '署名を切り抜く',
     device_note:
@@ -78,6 +89,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'このスタイルでは、この名前のすべての文字を表示できません。',
     footer_off: 'PDFフッターに表示されますが、フッターはオフになっています。',
     preview_alt: 'あなたの署名',
+    restore_found: 'バックアップに保存済みの署名があります。',
+    restore_use: '使用する',
     row_empty: 'このデバイスには署名がありません',
     row_label: '署名',
     tab_draw: '描く',

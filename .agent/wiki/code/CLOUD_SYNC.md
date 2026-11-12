@@ -62,8 +62,28 @@ Pages-published): there `githubSync.ts` recompiles without it, as it already did
 cover letter, because a public signature image is an easy forgery source. Drive and private-repo
 PDFs keep it by owner ruling (#108): the user's own document in the user's own storage.
 `buildExportArtifacts` takes the signature as a required parameter so every caller decides
-(`githubSyncSignature.test.ts`). An opt-in sync to a separate file was proposed by the
-owner and designed in #106 (opt-in, Drive and gated private GitHub, a separate file); until it lands, do not add the signature to any sync payload.
+(`githubSyncSignature.test.ts`). **Opt-in backup (#106).** "Also save a copy to Google Drive / GitHub" in the signature dialog,
+off by default, writes a separate `signature.json` (`src/features/signature/signatureBackup.ts`):
+Drive at `KiwiCV/signature/` (outside `backups/`, so discovery never lists it as a CV; the hidden
+app-data folder would need the `drive.appdata` scope and a fresh consent from every user), GitHub at
+`signature/signature.json` behind `isPrivateBackupRepo` (`src/services/githubRepoAccess.ts`, the
+same gate as the full backup). Remove and switching it off delete the copy; GitHub history keeps
+earlier versions, and the dialog says so. A device with no signature is offered the saved one,
+never given it silently. The signature is still never in `resume.json` or any sync payload.
+
+- **Writes** go only to a destination switched on in the sync settings and, for GitHub, a repo
+  passing `isPrivateBackupRepo`. **Deletes** skip both checks (`forDelete`): deleting leaks
+  nothing, and a repo made public since must still lose the file. One queue runs backup jobs in
+  order and each reads the store when it starts, so a Remove is never undone by a slower upload.
+- **Withdrawal works on every device.** Remove always sweeps the connected destinations (quietly
+  when this device never opted in), and a restored signature arrives with the box ticked, so
+  unticking it deletes the copy. While a copy exists but cannot be written, the box stays: the
+  policy names unticking as the way to withdraw consent.
+- ⚠️ **A named exception to "identity is the Drive file id"** (`rules/cloud-sync.md`): delete
+  removes every file named `signature.json` in `KiwiCV/signature/`, KiwiCV's own folder that holds
+  nothing else. Known limit: with duplicate `KiwiCV` roots, `ensureFolderPath` takes the first
+  match, so a copy under the other root survives; the failure toast names both paths to delete by
+  hand.
 
 ## Validation
 

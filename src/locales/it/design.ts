@@ -68,7 +68,19 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Aggiungi firma',
+    backup_delete_failed:
+      'La tua firma è stata rimossa da questo dispositivo, ma non è stato possibile eliminarne il backup. Elimina tu KiwiCV/signature/signature.json su Google Drive o signature/signature.json su GitHub.',
+    backup_failed:
+      'La tua firma è salvata su questo dispositivo, ma non è stato possibile aggiornare il backup.',
+    backup_github_history:
+      'Rimuoverla la elimina dal tuo repository; le versioni precedenti nella sua cronologia la conservano.',
+    backup_label: 'Salva anche una copia su {{targets}}',
+    backup_note: 'Salvata su questo dispositivo e su {{targets}}. I PDF che crei la includono.',
+    backup_unreachable:
+      'Salvata su questo dispositivo. Il tuo backup non è raggiungibile in questo momento. I PDF che crei la includono.',
     change: 'Cambia',
+    commit_removed: 'Rimuovi backup della firma',
+    commit_saved: 'Salva backup della firma',
     crop_description:
       "Ritaglia, ruota o rifletti l'immagine. Lo sfondo della carta viene rimosso dopo.",
     crop_title: 'Ritaglia la tua firma',
@@ -81,6 +93,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Questo stile non può mostrare tutte le lettere di questo nome.',
     footer_off: 'Appare nel piè di pagina PDF, che è disattivato.',
     preview_alt: 'La tua firma',
+    restore_found: 'Il tuo backup contiene una firma salvata.',
+    restore_use: 'Usala',
     row_empty: 'Nessuna firma su questo dispositivo',
     row_label: 'Firma',
     tab_draw: 'Disegna',

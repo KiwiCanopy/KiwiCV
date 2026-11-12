@@ -14,6 +14,7 @@ import {
   type LucideIcon,
   Newspaper,
   ScrollText,
+  Signature,
   Sparkles,
 } from 'lucide-react';
 
@@ -75,6 +76,8 @@ export const HIGHLIGHT_STYLES: Record<string, HighlightStyle> = {
   one_day_pass: { icon: CalendarClock, token: 'brand' },
   // Link: the news is the posting link saved with each backup.
   job_posting_link: { icon: Link, token: 'brand' },
+  // Signature: the glyph of the signature dialog itself (#103, owner 2026-11-12).
+  signatures: { icon: Signature, token: 'brand' },
 };
 
 export const getHighlightStyle = (id: string): HighlightStyle =>

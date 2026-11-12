@@ -67,7 +67,20 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Unterschrift hinzufügen',
+    backup_delete_failed:
+      'Deine Unterschrift ist von diesem Gerät entfernt, aber ihre Sicherungskopie konnte nicht gelöscht werden. Lösche KiwiCV/signature/signature.json in Google Drive oder signature/signature.json in GitHub selbst.',
+    backup_failed:
+      'Deine Unterschrift ist auf diesem Gerät gespeichert, aber die Sicherung konnte nicht aktualisiert werden.',
+    backup_github_history:
+      'Beim Entfernen wird sie aus deinem Repository gelöscht; frühere Versionen in seiner Historie behalten sie.',
+    backup_label: 'Auch eine Kopie in {{targets}} speichern',
+    backup_note:
+      'Auf diesem Gerät und in {{targets}} gespeichert. PDFs, die du erstellst, enthalten sie.',
+    backup_unreachable:
+      'Auf diesem Gerät gespeichert. Deine Sicherungskopie ist gerade nicht erreichbar. PDFs, die du erstellst, enthalten sie.',
     change: 'Ändern',
+    commit_removed: 'Sicherung der Unterschrift entfernen',
+    commit_saved: 'Unterschrift sichern',
     crop_description:
       'Schneide das Bild zu, drehe oder spiegle es. Der Papierhintergrund wird danach entfernt.',
     crop_title: 'Unterschrift zuschneiden',
@@ -80,6 +93,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Dieser Stil kann nicht jeden Buchstaben dieses Namens darstellen.',
     footer_off: 'Erscheint in der PDF-Fußzeile, die ausgeschaltet ist.',
     preview_alt: 'Deine Unterschrift',
+    restore_found: 'Deine Sicherung enthält eine gespeicherte Unterschrift.',
+    restore_use: 'Verwenden',
     row_empty: 'Keine Unterschrift auf diesem Gerät',
     row_label: 'Unterschrift',
     tab_draw: 'Zeichnen',

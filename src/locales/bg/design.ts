@@ -68,7 +68,7 @@ export const design: Translations['design'] = {
   signature: {
     add: 'Добави подпис',
     backup_delete_failed:
-      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
+      'Подписът ти е премахнат от това устройство, но резервното му копие не можа да се изтрие. Изтрий сам KiwiCV/signature/signature.json в Google Drive или signature/signature.json в GitHub.',
     backup_failed:
       'Подписът ти е запазен на това устройство, но резервното копие не можа да се актуализира.',
     backup_github_history:
@@ -77,10 +77,10 @@ export const design: Translations['design'] = {
     backup_note:
       'Запазен на това устройство и в {{targets}}. PDF файловете, които създаваш, го съдържат.',
     backup_unreachable:
-      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
+      'Запазен на това устройство. Резервното ти копие в момента е недостъпно. PDF файловете, които създаваш, го съдържат.',
     change: 'Промени',
     commit_removed: 'Премахване на резервното копие на подписа',
-    commit_saved: 'Резервно копие на подписа',
+    commit_saved: 'Създаване на резервно копие на подписа',
     crop_description:
       'Изрежи, завърти или обърни изображението. След това фонът на хартията се премахва.',
     crop_title: 'Изрежи подписа си',

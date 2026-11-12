@@ -69,16 +69,16 @@ export const design: Translations['design'] = {
   signature: {
     add: 'Ajouter une signature',
     backup_delete_failed:
-      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
+      "Ta signature est retirée de cet appareil, mais sa copie de sauvegarde n'a pas pu être supprimée. Supprime toi-même KiwiCV/signature/signature.json dans Google Drive ou signature/signature.json dans GitHub.",
     backup_failed:
-      'Ta signature est enregistrée sur cet appareil, mais la sauvegarde n’a pas pu être mise à jour.',
+      "Ta signature est enregistrée sur cet appareil, mais la sauvegarde n'a pas pu être mise à jour.",
     backup_github_history:
       'La retirer la supprime de ton dépôt ; les versions antérieures de son historique la conservent.',
     backup_label: 'Enregistrer aussi une copie dans {{targets}}',
     backup_note:
-      'Enregistrée sur cet appareil et dans {{targets}}. Les PDF que tu crées l’incluent.',
+      "Enregistrée sur cet appareil et dans {{targets}}. Les PDF que tu crées l'incluent.",
     backup_unreachable:
-      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
+      "Enregistrée sur cet appareil. Ta copie de sauvegarde est inaccessible pour le moment. Les PDF que tu crées l'incluent.",
     change: 'Changer',
     commit_removed: 'Supprimer la sauvegarde de la signature',
     commit_saved: 'Sauvegarder la signature',
@@ -95,7 +95,7 @@ export const design: Translations['design'] = {
     footer_off: 'Apparaît dans le pied de page PDF, qui est désactivé.',
     preview_alt: 'Ta signature',
     restore_found: 'Ta sauvegarde contient une signature enregistrée.',
-    restore_use: 'L’utiliser',
+    restore_use: "L'utiliser",
     row_empty: 'Aucune signature sur cet appareil',
     row_label: 'Signature',
     tab_draw: 'Dessiner',

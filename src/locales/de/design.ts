@@ -68,7 +68,7 @@ export const design: Translations['design'] = {
   signature: {
     add: 'Unterschrift hinzufügen',
     backup_delete_failed:
-      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
+      'Deine Unterschrift ist von diesem Gerät entfernt, aber ihre Sicherungskopie konnte nicht gelöscht werden. Lösche KiwiCV/signature/signature.json in Google Drive oder signature/signature.json in GitHub selbst.',
     backup_failed:
       'Deine Unterschrift ist auf diesem Gerät gespeichert, aber die Sicherung konnte nicht aktualisiert werden.',
     backup_github_history:
@@ -77,9 +77,9 @@ export const design: Translations['design'] = {
     backup_note:
       'Auf diesem Gerät und in {{targets}} gespeichert. PDFs, die du erstellst, enthalten sie.',
     backup_unreachable:
-      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
+      'Auf diesem Gerät gespeichert. Deine Sicherungskopie ist gerade nicht erreichbar. PDFs, die du erstellst, enthalten sie.',
     change: 'Ändern',
-    commit_removed: 'Unterschrift-Sicherung entfernen',
+    commit_removed: 'Sicherung der Unterschrift entfernen',
     commit_saved: 'Unterschrift sichern',
     crop_description:
       'Schneide das Bild zu, drehe oder spiegle es. Der Papierhintergrund wird danach entfernt.',

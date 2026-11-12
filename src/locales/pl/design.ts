@@ -65,7 +65,7 @@ export const design: Translations['design'] = {
   signature: {
     add: 'Dodaj podpis',
     backup_delete_failed:
-      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
+      'Podpis został usunięty z tego urządzenia, ale nie udało się usunąć jego kopii zapasowej. Usuń samodzielnie KiwiCV/signature/signature.json w Google Drive lub signature/signature.json w GitHub.',
     backup_failed:
       'Podpis jest zapisany na tym urządzeniu, ale nie udało się zaktualizować kopii zapasowej.',
     backup_github_history:
@@ -74,7 +74,7 @@ export const design: Translations['design'] = {
     backup_note:
       'Zapisany na tym urządzeniu i w {{targets}}. Tworzone przez Ciebie pliki PDF go zawierają.',
     backup_unreachable:
-      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
+      'Zapisany na tym urządzeniu. Kopia zapasowa jest teraz niedostępna. Tworzone przez Ciebie pliki PDF go zawierają.',
     change: 'Zmień',
     commit_removed: 'Usuń kopię zapasową podpisu',
     commit_saved: 'Utwórz kopię zapasową podpisu',

@@ -16,8 +16,7 @@ const commitMessages = (t: Translate) => ({
   removed: `${t('sync.commit_prefix')} ${t('design.signature.commit_removed')}`,
 });
 
-const toast = (t: Translate, key: string) =>
-  useToastStore.getState().addToast(t(key), 'warning', 8000);
+const toast = (message: string) => useToastStore.getState().addToast(message, 'warning', 8000);
 
 /**
  * Backup work runs one job at a time, and each job reads the store when it
@@ -37,7 +36,7 @@ const writeCurrentBackup = (t: Translate) =>
     const targets = await resolveBackupTargets();
     if (!hasBackupTarget(targets)) return;
     if (!(await pushSignatureBackup(signature, targets, commitMessages(t)))) {
-      toast(t, 'design.signature.backup_failed');
+      toast(t('design.signature.backup_failed'));
     }
   });
 
@@ -47,7 +46,7 @@ const deleteBackup = (t: Translate) =>
     // A copy that cannot be reached is a copy the user believes is gone: say so.
     const ok =
       hasBackupTarget(targets) && (await deleteSignatureBackup(targets, commitMessages(t)));
-    if (!ok) toast(t, 'design.signature.backup_delete_failed');
+    if (!ok) toast(t('design.signature.backup_delete_failed'));
   });
 
 /**

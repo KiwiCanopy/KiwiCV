@@ -67,13 +67,13 @@ export const design: Translations['design'] = {
   signature: {
     add: 'İmza ekle',
     backup_delete_failed:
-      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
+      'İmzan bu cihazdan kaldırıldı, ancak yedek kopyası silinemedi. Google Drive’daki KiwiCV/signature/signature.json veya GitHub’daki signature/signature.json dosyasını kendin sil.',
     backup_failed: 'İmzan bu cihazda kayıtlı, ancak yedek güncellenemedi.',
-    backup_github_history: 'Kaldırmak onu deponden siler; geçmişteki önceki sürümler onu korur.',
-    backup_label: 'Bir kopyasını {{targets}} hesabına da kaydet',
-    backup_note: 'Bu cihazda ve {{targets}} hesabında kaydedilir. Oluşturduğun PDF’ler onu içerir.',
+    backup_github_history: 'Kaldırmak onu depondan siler; geçmişteki önceki sürümler onu korur.',
+    backup_label: 'Bir kopyasını da şuraya kaydet: {{targets}}',
+    backup_note: 'Bu cihazda ve şurada kaydedilir: {{targets}}. Oluşturduğun PDF’ler onu içerir.',
     backup_unreachable:
-      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
+      'Bu cihazda kaydedildi. Yedek kopyana şu anda ulaşılamıyor. Oluşturduğun PDF’ler onu içerir.',
     change: 'Değiştir',
     commit_removed: 'İmza yedeğini kaldır',
     commit_saved: 'İmzayı yedekle',

@@ -67,14 +67,14 @@ export const design: Translations['design'] = {
   signature: {
     add: '署名を追加',
     backup_delete_failed:
-      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
-    backup_failed: '署名はこの端末に保存されていますが、バックアップを更新できませんでした。',
+      '署名はこのデバイスから削除されましたが、バックアップのコピーを削除できませんでした。Google DriveのKiwiCV/signature/signature.jsonまたはGitHubのsignature/signature.jsonをご自身で削除してください。',
+    backup_failed: '署名はこのデバイスに保存されていますが、バックアップを更新できませんでした。',
     backup_github_history:
       '削除するとリポジトリからも削除されますが、履歴にある以前のバージョンには残ります。',
     backup_label: '{{targets}} にもコピーを保存',
-    backup_note: 'この端末と {{targets}} に保存されます。作成したPDFには含まれます。',
+    backup_note: 'このデバイスと {{targets}} に保存されます。作成したPDFにも含まれます。',
     backup_unreachable:
-      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
+      'このデバイスに保存されています。バックアップのコピーには現在アクセスできません。作成したPDFには含まれます。',
     change: '変更',
     commit_removed: '署名のバックアップを削除',
     commit_saved: '署名をバックアップ',

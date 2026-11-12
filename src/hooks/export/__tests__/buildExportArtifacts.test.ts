@@ -59,7 +59,10 @@ describe('buildExportArtifacts', () => {
   });
 
   it('builds the PDF, the HTML and the snapshot exactly once', async () => {
-    const artifacts = await buildExportArtifacts({ resume: resumeWithTheme('default') });
+    const artifacts = await buildExportArtifacts({
+      signature: null,
+      resume: resumeWithTheme('default'),
+    });
 
     expect(compileTypstPdf).toHaveBeenCalledTimes(1);
     expect(generateThemedHTML).toHaveBeenCalledTimes(1);
@@ -70,20 +73,21 @@ describe('buildExportArtifacts', () => {
 
   it('writes pass-through blocks at the top level of the snapshot', async () => {
     const resume = { ...resumeWithTheme('default'), passthrough: { kiwitalents: { a: 1 } } };
-    const json = JSON.parse((await buildExportArtifacts({ resume })).json);
+    const json = JSON.parse((await buildExportArtifacts({ signature: null, resume })).json);
 
     expect(json.kiwitalents).toEqual({ a: 1 });
     expect(json).not.toHaveProperty('passthrough');
   });
 
   it('throws when the active theme has no Typst serializer', async () => {
-    await expect(buildExportArtifacts({ resume: resumeWithTheme('nonexistent') })).rejects.toThrow(
-      /Serializer not found/,
-    );
+    await expect(
+      buildExportArtifacts({ signature: null, resume: resumeWithTheme('nonexistent') }),
+    ).rejects.toThrow(/Serializer not found/);
   });
 
   it('omits the PDF, and never compiles, when the format is switched off', async () => {
     const artifacts = await buildExportArtifacts({
+      signature: null,
       resume: resumeWithTheme('default'),
       formats: { pdf: false },
     });
@@ -94,6 +98,7 @@ describe('buildExportArtifacts', () => {
 
   it('omits the HTML, and never renders, when the format is switched off', async () => {
     const artifacts = await buildExportArtifacts({
+      signature: null,
       resume: resumeWithTheme('default'),
       formats: { html: false },
     });
@@ -105,6 +110,7 @@ describe('buildExportArtifacts', () => {
   it('names the folder the way every destination already names it', async () => {
     const projectName = constructBackupFilename('Ada_Lovelace', 'Figma', 'Product_Designer');
     const artifacts = await buildExportArtifacts({
+      signature: null,
       resume: resumeWithTheme('default'),
       projectName,
     });
@@ -126,10 +132,10 @@ describe('buildExportArtifacts', () => {
       meta: { ...resume.meta, content: { ...resume.meta.content, hiddenIds } },
     });
 
-    await buildExportArtifacts({ resume: withHidden(['basics:image']) });
+    await buildExportArtifacts({ signature: null, resume: withHidden(['basics:image']) });
     expect((compileTypstPdf.mock.lastCall as unknown[] | undefined)?.[2]).toBeUndefined();
 
-    await buildExportArtifacts({ resume: withHidden([]) });
+    await buildExportArtifacts({ signature: null, resume: withHidden([]) });
     expect((compileTypstPdf.mock.lastCall as unknown[] | undefined)?.[2]).toBe(
       'data:image/png;base64,AAAA',
     );

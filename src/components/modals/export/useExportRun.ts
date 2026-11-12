@@ -12,6 +12,7 @@ import { type SyncProviderId, useCloudSync } from '@/hooks/useCloudSync';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ANALYTICS_EVENTS, analytics } from '@/services/analytics';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { useSignatureStore } from '@/store/signature/useSignatureStore';
 import { useToastStore } from '@/store/ui/useToastStore';
 
 /** How long a fully successful export's toast stays, the dialog having closed (#34). */
@@ -94,7 +95,12 @@ export function useExportRun({ formats }: UseExportRunParams): UseExportRun {
       useResumeStore.getState().syncVersion();
 
       try {
-        const artifacts = await buildExportArtifacts({ resume, projectName, formats });
+        const artifacts = await buildExportArtifacts({
+          resume,
+          projectName,
+          formats,
+          signature: useSignatureStore.getState().signature,
+        });
 
         const succeededIds: DestinationId[] = [];
         for (const id of ids) {

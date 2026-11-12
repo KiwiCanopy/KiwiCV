@@ -3,7 +3,7 @@ import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
 import { type BuildExportArtifactsParams, type ExportArtifacts } from '@/hooks/export/types';
 import { compileTypstPdf } from '@/hooks/useTypst';
-import { signatureCompileInputs, useSignatureStore } from '@/store/signature/useSignatureStore';
+import { signatureCompileInputs } from '@/store/signature/useSignatureStore';
 import { getCleanProjectName, getProjectFilename } from '@/utils/export';
 import { generateThemedHTML } from '@/utils/html-generator';
 import { stringifyResume } from '@/utils/passthrough';
@@ -26,6 +26,7 @@ export async function buildExportArtifacts({
   resume,
   projectName,
   formats,
+  signature: storedSignature,
 }: BuildExportArtifactsParams): Promise<ExportArtifacts> {
   const backupFileName = projectName || getProjectFilename(resume);
   const folderName = getCleanProjectName(backupFileName) || 'Resume';
@@ -40,7 +41,7 @@ export async function buildExportArtifacts({
 
     // Enrich data with placeholders if empty (the HTML export does the same via ResumeHTML)
     const enrichedResume = enrichResumeWithPlaceholders(resume);
-    const signature = signatureCompileInputs(useSignatureStore.getState().signature);
+    const signature = signatureCompileInputs(storedSignature);
     const markup = serializer(enrichedResume, signature.ctx);
     if (!markup) {
       throw new Error(`Serializer not found for Typst theme: ${themeMeta.id}`);

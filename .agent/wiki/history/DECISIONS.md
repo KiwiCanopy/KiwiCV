@@ -1,9 +1,10 @@
 # Architecture Decisions
 
-> **Last Updated: 2026-10-26**
+> **Last Updated: 2026-11-12**
 
 ## Contents
 
+- [[2026-11-12] Signature Lifecycle and Privacy Policy](#2026-11-12-signature-lifecycle-and-privacy-policy)
 - [[2026-10-26] Privacy Policy Names the Job Posting Link](#2026-10-26-privacy-policy-names-the-job-posting-link)
 - [[2026-10-12] One Rule for All Four AI Character Counters](#2026-10-12-one-rule-for-all-four-ai-character-counters)
 - [[2026-10-12] No Cover-Letter SEO Pages](#2026-10-12-no-cover-letter-seo-pages)
@@ -39,6 +40,13 @@
 - [[2025-10-01] JSON Resume Schema Adoption](#2025-10-01-json-resume-schema-adoption)
 
 This document is a historical record of the major architectural decisions taken during the **CVCanvas** era (the project has since rebranded to **KiwiCV**). It preserves the context for _why_ things ended up the way they are; entries describe the reasoning at the time they were made and are not rewritten to match later branding.
+
+## [2026-11-12] Signature Lifecycle and Privacy Policy
+
+- **Decision** (owner, #108): the device-only document signature (#103) survives sign-out and account deletion, and is cleared when a **different account** signs in on the browser, like the GitHub PAT. Drive and private-repo PDFs keep the signature; a repo anyone can read gets the PDF without it. `legal.ts` §4 Storage gains a paragraph on the signature and §7 a sentence that account deletion does not remove it; the `--legal` release bumps `LAST_LEGAL_UPDATE`, with a `legal.update` text that names only this change.
+- **Rationale**: the résumé beside the signature also survives sign-out, so clearing only the signature protects little on a shared profile; a different person is the case worth guarding. The writing sample is the wrong precedent: it is account-bound and sent to the AI. A Drive or private-repo PDF is the user's own document in the user's own storage, and stripping it would make the export differ from the preview. A public signature image is an easy forgery source. The policy itemises each locally kept item, and the signature leaves the device inside PDFs.
+- **Not claimed**: that the signature never leaves the device. Not biometric as built (no stroke timing or pressure kept); storing stroke dynamics would reopen that.
+- **Status**: Implemented in #109; ships with a `--legal` release.
 
 ## [2026-10-26] Privacy Policy Names the Job Posting Link
 

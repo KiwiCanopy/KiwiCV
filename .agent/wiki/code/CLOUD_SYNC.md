@@ -59,7 +59,8 @@ The document signature (`code/STATE.md` § Signature Store) is device-only. It i
 `resume.json` on Drive or GitHub, never in the JSON export, never in an AI payload. The PDF
 carries it — that is the document — **except in a repo anyone can read** (public, internal or
 Pages-published): there `githubSync.ts` recompiles without it, as it already did without the
-cover letter, because a public signature image is an easy forgery source.
+cover letter, because a public signature image is an easy forgery source. Drive and private-repo
+PDFs keep it by owner ruling (#108): the user's own document in the user's own storage.
 `buildExportArtifacts` takes the signature as a required parameter so every caller decides
 (`githubSyncSignature.test.ts`). An opt-in sync to a separate file was proposed by the
 owner and deferred to #106; until then, do not add the signature to any sync payload.

@@ -83,8 +83,10 @@ each of those roads and fails if the signature appears.
 - `parseStoredSignature` runs on rehydrate and drops anything invalid rather than trusting
   storage. `id` is restricted to `[a-z0-9-]` because it names a virtual compile path
   (`/signature/<id>.png`).
-- It is **not cleared on sign-out** — current behaviour, and an open owner question, #108 (a shared
-  device keeps the previous user's signature).
+- **Lifecycle** (owner, #108): sign-out and account deletion keep it; a **different account**
+  signing in clears it. `ownerUserId` is persisted beside it, so a switch after a reload is caught;
+  `AuthProvider` calls `bindToUser` on every session change. One saved signed out goes to whoever
+  signs in next.
 
 ## Auth & Persistence (`AuthProvider.tsx`)
 

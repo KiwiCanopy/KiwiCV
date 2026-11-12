@@ -3,8 +3,8 @@ export const highlight_signatures = {
     signatures: {
       badge: 'Unterschriften',
       content:
-        'Zeichne sie, tippe deinen Namen in einem Handschriftstil oder lade ein Foto hoch: Deine Unterschrift erscheint über deinem Namen in der PDF-Fußzeile deines Lebenslaufs und deines Anschreibens. Sie bleibt auf diesem Gerät und, wenn du möchtest, als Kopie in Google Drive oder deinem privaten GitHub-Repository.',
-      title: 'Deine Unterschrift auf jedem PDF',
+        'Zeichne deine Unterschrift selbst, lade sie hoch oder wähle eine geschwungene Handschrift, und sie erscheint in der Fußzeile deines Lebenslaufs und Anschreibens. Wie immer gilt: Privatsphäre zuerst. Behalte sie nur auf diesem Gerät, oder speichere eine Kopie in deinem eigenen Google Drive oder privaten GitHub-Repository, neben deinen anderen Daten.',
+      title: 'Unterschreib deine Bewerbungen',
     },
   },
 };

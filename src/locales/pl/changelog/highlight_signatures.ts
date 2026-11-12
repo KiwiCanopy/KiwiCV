@@ -3,8 +3,8 @@ export const highlight_signatures = {
     signatures: {
       badge: 'Podpisy',
       content:
-        'Narysuj go, wpisz swoje imię i nazwisko stylem odręcznym albo prześlij zdjęcie: Twój podpis pojawia się nad Twoim imieniem i nazwiskiem w stopce PDF Twojego CV i listu motywacyjnego. Zostaje na tym urządzeniu i, jeśli chcesz, jako kopia w Google Drive lub w Twoim prywatnym repozytorium GitHub.',
-      title: 'Twój podpis na każdym pliku PDF',
+        'Narysuj podpis samodzielnie, prześlij go albo wybierz zamaszysty styl odręczny, a pojawi się w stopce Twojego CV i listu motywacyjnego. Jak zawsze prywatność przede wszystkim: zachowaj go tylko na tym urządzeniu albo zapisz kopię we własnym Google Drive lub w prywatnym repozytorium GitHub, obok pozostałych danych.',
+      title: 'Podpisuj swoje dokumenty aplikacyjne',
     },
   },
 };

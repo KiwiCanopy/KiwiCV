@@ -3,8 +3,8 @@ export const highlight_signatures = {
     signatures: {
       badge: 'İmzalar',
       content:
-        'Çiz, adını bir el yazısı stiliyle yaz ya da bir fotoğraf yükle: imzan, CV’nin ve ön yazının PDF altbilgisinde adının üstünde görünür. Bu cihazda kalır ve istersen bir kopyası Google Drive’da veya özel GitHub deponda durur.',
-      title: 'Her PDF’de imzan',
+        'İmzanı kendin çiz, yükle ya da zarif bir el yazısı stili seç; imzan CV’nin ve ön yazının altbilgisinde görünür. Her zamanki gibi önce gizlilik: imzanı yalnızca bu cihazda tut ya da bir kopyasını diğer verilerinin yanında kendi Google Drive’ına veya özel GitHub depona kaydet.',
+      title: 'Başvurularını imzala',
     },
   },
 };

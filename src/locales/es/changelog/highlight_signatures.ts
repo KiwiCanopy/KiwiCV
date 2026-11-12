@@ -3,8 +3,8 @@ export const highlight_signatures = {
     signatures: {
       badge: 'Firmas',
       content:
-        'Dibújala, escribe tu nombre con un estilo manuscrito o sube una foto: tu firma aparece sobre tu nombre en el pie de página PDF de tu CV y tu carta de presentación. Se queda en este dispositivo y, si quieres, como copia en Google Drive o en tu repositorio privado de GitHub.',
-      title: 'Tu firma en cada PDF',
+        'Dibuja tu firma tú mismo, súbela o elige un estilo manuscrito fluido, y aparecerá en el pie de página de tu CV y tu carta de presentación. Como siempre, la privacidad primero: guárdala solo en este dispositivo o guarda una copia en tu propio Google Drive o en tu repositorio privado de GitHub, junto a tus demás datos.',
+      title: 'Firma tus candidaturas',
     },
   },
 };

@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 import { getThemeList } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { type ResumeData, initialResumeState } from '@/types/resume';
 import { enrichResumeWithPlaceholders } from '@/utils/placeholder-fallback';
 import { EAGER_FONT_FILES } from '@/workers/eagerFonts';
@@ -229,7 +230,7 @@ const htmlSites: Site[] = getThemeList().flatMap((theme) => {
 });
 
 const typstSites: Site[] = Object.entries(SERIALIZERS).flatMap(([themeId, serialize]) =>
-  typstFontStacksIn(serialize(buildResume(themeId))).map((stack) => ({
+  typstFontStacksIn(serialize(buildResume(themeId), NO_SIGNATURE)).map((stack) => ({
     themeId,
     stack,
     families: splitFontStack(stack),

@@ -10,6 +10,7 @@ import {
   googleDriveConnection,
 } from '@/services/storage/googleStorage';
 import { fullPushStamp } from '@/services/storage/syncHashes';
+import { useSignatureStore } from '@/store/signature/useSignatureStore';
 import { toDriveAppProperties, wrapBackupJson } from '@/utils/applicationMeta';
 import {
   constructBackupFilename,
@@ -153,7 +154,12 @@ export const performGoogleDriveSync = async (params: SyncParams): Promise<SyncRe
       // The deliverables are built once per run by the caller. Compiling here
       // would drive the single Typst worker a second time for the same export.
       const artifacts =
-        params.artifacts ?? (await buildExportArtifacts({ resume, projectName: backupFileName }));
+        params.artifacts ??
+        (await buildExportArtifacts({
+          resume,
+          projectName: backupFileName,
+          signature: useSignatureStore.getState().signature,
+        }));
 
       if (artifacts.pdf) {
         filesToPush.push({

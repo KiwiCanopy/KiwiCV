@@ -10,6 +10,7 @@ import {
   resolvePalette,
 } from '@/components/preview/themes/shared';
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
+import type { SerializeContext } from '@/components/preview/themes/shared/signature';
 import {
   getTypstFooterParts,
   renderTypstSignatureFooter,
@@ -40,7 +41,7 @@ import {
 } from './helpers/typst/educationSkills';
 import { serializeProjects, serializeVolunteer, serializeWork } from './helpers/typst/experience';
 
-export function serializeToTypst(data: ResumeData): string {
+export function serializeToTypst(data: ResumeData, ctx: SerializeContext): string {
   const { meta, basics } = data;
   const { cvLocale, cvTitle, formatCVDate, formatCVDateRange } = getBoundFormatters(data);
   // ⚠️ `getSectionLabels`, not `cvLocale.sections`. The locale map holds
@@ -77,6 +78,7 @@ export function serializeToTypst(data: ResumeData): string {
 )`;
 
   const coverLetterMarkup = buildCoverLetterTypst(data, {
+    signature: ctx.signature,
     footerParts: getTypstFooterParts(data, cvLocale),
     fontScale,
     pageMargin: '(x: 40pt, y: 40pt)',
@@ -287,6 +289,7 @@ ${
   });
 
   markup += renderTypstSignatureFooter({
+    signature: ctx.signature,
     showFooter: meta?.theme?.params?.showFooter,
     parts: getTypstFooterParts(data, cvLocale),
     name: basics.name,

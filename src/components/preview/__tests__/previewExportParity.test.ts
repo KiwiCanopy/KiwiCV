@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ThemeRegistry } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { getBoundFormatters } from '@/components/preview/themes/shared/translations';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import { PLACEMENT_RUNS, type Placement, applyPlacement } from '@/test/themePlacements';
@@ -190,7 +191,7 @@ function measure(themeId: ThemeId, placement: Placement, boldHeader: BoldHeader)
       formatCVDateRange: bound.formatCVDateRange,
     }),
   );
-  const typst = SERIALIZERS[themeId](data);
+  const typst = SERIALIZERS[themeId](data, NO_SIGNATURE);
 
   const mismatches: string[] = [];
   let both = 0;

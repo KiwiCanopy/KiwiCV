@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ThemeRegistry } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import type { ResumeData } from '@/types/resume';
 import { createEmptyItem } from '@/utils/items';
@@ -253,7 +254,7 @@ describe('neither renderer throws on a malformed array field', () => {
     for (const value of ['a, b', [{}], [42]]) {
       const data = withHighlights(themeId, value);
       expect(() => html(themeId, data)).not.toThrow();
-      expect(() => SERIALIZERS[themeId](data)).not.toThrow();
+      expect(() => SERIALIZERS[themeId](data, NO_SIGNATURE)).not.toThrow();
     }
   });
 
@@ -266,6 +267,8 @@ describe('neither renderer throws on a malformed array field', () => {
   it.each(ALL_THEME_IDS)('%s still renders a well-formed highlight', (themeId) => {
     const data = withHighlights(themeId, ['A REAL HIGHLIGHT']);
     expect(data.work[0].highlights).toEqual(['A REAL HIGHLIGHT']);
-    expect(html(themeId, data) + SERIALIZERS[themeId](data)).toContain('A REAL HIGHLIGHT');
+    expect(html(themeId, data) + SERIALIZERS[themeId](data, NO_SIGNATURE)).toContain(
+      'A REAL HIGHLIGHT',
+    );
   });
 });

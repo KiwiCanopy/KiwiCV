@@ -10,6 +10,7 @@ import { Section } from '@/components/ui/Section';
 import { SegmentedToggle } from '@/components/ui/SegmentedToggle';
 import { EntryDiffPanel } from '@/features/dashboard/editor/proposals/EntryDiffPanel';
 import { useLockedFields } from '@/features/dashboard/editor/proposals/useLockedFields';
+import { SignatureRow } from '@/features/signature/SignatureRow';
 import { useAIEntryGuard } from '@/hooks/useAIEntryGuard';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUIStore } from '@/store/ui/useUIStore';
@@ -283,6 +284,7 @@ export function CoverLetterForm() {
               ]}
             />
           </ToggleRow>
+          {layout.showFooter && <SignatureRow />}
           <ToggleRow
             label={t('editor.coverLetter.layout_style')}
             hint={t('editor.coverLetter.layout_style_hint')}

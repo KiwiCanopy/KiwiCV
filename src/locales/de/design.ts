@@ -65,6 +65,41 @@ export const design: Translations['design'] = {
       'Die Abschnitte erscheinen in dieser Reihenfolge im Lebenslauf. Nutze die Pfeile zum Verschieben oder halte den Griff gedrückt und ziehe.',
     title: 'Abschnittsreihenfolge',
   },
+  signature: {
+    add: 'Unterschrift hinzufügen',
+    change: 'Ändern',
+    crop_description:
+      'Schneide das Bild zu, drehe oder spiegle es. Der Papierhintergrund wird danach entfernt.',
+    crop_title: 'Unterschrift zuschneiden',
+    device_note:
+      'Nur auf diesem Gerät gespeichert, außerhalb deiner Sicherungen und Synchronisierung. PDFs, die du erstellst, enthalten sie.',
+    dialog_title: 'Deine Unterschrift',
+    draw_hint: 'Zeichne mit Maus, Finger oder Stift.',
+    draw_label: 'Zeichenfläche für deine Unterschrift',
+    edit_label: 'Unterschrift ändern',
+    face_unavailable: 'Dieser Stil kann nicht jeden Buchstaben dieses Namens darstellen.',
+    footer_off: 'Erscheint in der PDF-Fußzeile, die ausgeschaltet ist.',
+    preview_alt: 'Deine Unterschrift',
+    row_empty: 'Keine Unterschrift auf diesem Gerät',
+    row_label: 'Unterschrift',
+    tab_draw: 'Zeichnen',
+    tab_type: 'Tippen',
+    tab_upload: 'Hochladen',
+    type_name: 'Name',
+    type_style: 'Stil',
+    type_unavailable:
+      'Handschrift-Stile können nicht jeden Buchstaben dieses Namens darstellen. Zeichne deine Unterschrift oder lade sie stattdessen hoch.',
+    upload_another: 'Anderes Bild wählen',
+    upload_choose: 'Bild auswählen',
+    upload_empty:
+      'In diesem Bild wurde keine Unterschrift gefunden. Am besten klappt ein dunkler Stift auf weißem Papier.',
+    upload_hint:
+      'Ein Foto oder Scan auf weißem Papier. Der Hintergrund wird auf diesem Gerät entfernt. Du kannst auch ein Bild einfügen. Exportiere die Unterschrift aus der macOS-App Vorschau zuerst als PNG.',
+    upload_ready: 'Unterschrift bereit. Prüfe sie und speichere dann.',
+    upload_too_large: 'Das Bild ist zu groß (max. {{size}} MB).',
+    upload_unreadable: 'Diese Datei kann nicht als Bild gelesen werden. Versuche PNG oder JPG.',
+    upload_working: 'Hintergrund wird entfernt…',
+  },
   swap_column_named: '„{{name}}“ in andere Spalte verschieben',
   template: 'Template',
 };

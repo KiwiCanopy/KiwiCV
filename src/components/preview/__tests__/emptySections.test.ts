@@ -1,5 +1,6 @@
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import type { ResumeData } from '@/types/resume';
 import { getSectionItemHash } from '@/utils/hash';
@@ -87,8 +88,14 @@ function withSectionEmptied(themeId: string, section: SectionKey, pageBreaks: bo
 const mismatchedSections = (themeId: ThemeId, pageBreaks: boolean) =>
   ALL_SECTION_KEYS.filter(
     (section) =>
-      SERIALIZERS[themeId](withSectionItemsHidden(themeId, section, pageBreaks) as ResumeData) !==
-      SERIALIZERS[themeId](withSectionEmptied(themeId, section, pageBreaks) as ResumeData),
+      SERIALIZERS[themeId](
+        withSectionItemsHidden(themeId, section, pageBreaks) as ResumeData,
+        NO_SIGNATURE,
+      ) !==
+      SERIALIZERS[themeId](
+        withSectionEmptied(themeId, section, pageBreaks) as ResumeData,
+        NO_SIGNATURE,
+      ),
   );
 
 describe('a section with every item hidden leaves no trace', () => {

@@ -23,6 +23,7 @@ import {
   saveGoogleDriveCreds,
 } from '@/services/storage/googleStorage';
 import { useCvLibraryStore } from '@/store/library/useCvLibraryStore';
+import { useSignatureStore } from '@/store/signature/useSignatureStore';
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -1233,5 +1234,41 @@ describe('AuthProvider writing sample', () => {
 
     expect(readCoverLetterStyle()).toBe('User A writes like this.');
     expect(result.current.sample).toBe('User A writes like this.');
+  });
+});
+
+describe('AuthProvider and the device-only signature (#108)', () => {
+  const SIGNATURE = {
+    kind: 'typed' as const,
+    id: 'sig',
+    faceId: 'great-vibes' as const,
+    text: 'Ada',
+  };
+
+  beforeEach(() => {
+    useSignatureStore.setState({ signature: null, ownerUserId: null });
+  });
+
+  it('keeps it through a sign-out, and drops it when a different account signs in', async () => {
+    await emit('SIGNED_IN', sessionFor(USER_A));
+    useSignatureStore.getState().setSignature(SIGNATURE);
+
+    await emit('SIGNED_OUT', null);
+    expect(useSignatureStore.getState().signature).toEqual(SIGNATURE);
+
+    await emit('SIGNED_IN', sessionFor(USER_B));
+    await waitFor(() => expect(useSignatureStore.getState().signature).toBeNull());
+  });
+
+  it('adopts one saved after the session ended for the next account', async () => {
+    await emit('SIGNED_IN', sessionFor(USER_A));
+    await emit('SIGNED_OUT', null);
+    useSignatureStore.getState().removeSignature();
+    useSignatureStore.getState().setSignature(SIGNATURE);
+    expect(useSignatureStore.getState().ownerUserId).toBeNull();
+
+    await emit('SIGNED_IN', sessionFor(USER_B));
+    expect(useSignatureStore.getState().signature).toEqual(SIGNATURE);
+    expect(useSignatureStore.getState().ownerUserId).toBe(USER_B);
   });
 });

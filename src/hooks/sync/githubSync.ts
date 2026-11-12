@@ -8,6 +8,7 @@ import {
   githubConnection,
 } from '@/services/storage/githubStorage';
 import { fullPushStamp } from '@/services/storage/syncHashes';
+import { useSignatureStore } from '@/store/signature/useSignatureStore';
 import { wrapBackupJson, writeCachedPostingUrl } from '@/utils/applicationMeta';
 import { getCleanProjectName, getProjectFilename, normalizeHostingPath } from '@/utils/export';
 import { generateThemedHTML } from '@/utils/html-generator';
@@ -80,16 +81,25 @@ export const performGitHubSync = async (
       // The deliverables are built once per run by the caller. Compiling here
       // would drive the single Typst worker a second time for the same export.
       const artifacts =
-        params.artifacts ?? (await buildExportArtifacts({ resume, projectName: backupFileName }));
+        params.artifacts ??
+        (await buildExportArtifacts({
+          resume,
+          projectName: backupFileName,
+          signature: useSignatureStore.getState().signature,
+        }));
       // ⚠️ The one second compile: a repo anyone can read gets the PDF without the
-      // cover letter, whose recipient is a third party (owner 2026-10-05).
+      // cover letter, whose recipient is a third party (owner 2026-10-05), and
+      // without the signature, which a public file would hand to anyone (#103).
       const repoPdf =
-        artifacts.pdf && !isPrivateRepo && resume.coverLetter?.enabled
+        artifacts.pdf &&
+        !isPrivateRepo &&
+        (resume.coverLetter?.enabled || useSignatureStore.getState().signature)
           ? (
               await buildExportArtifacts({
                 resume: { ...resume, coverLetter: { ...resume.coverLetter, enabled: false } },
                 projectName: backupFileName,
                 formats: { html: false },
+                signature: null,
               })
             ).pdf
           : artifacts.pdf;

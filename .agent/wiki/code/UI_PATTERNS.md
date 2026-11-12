@@ -1,6 +1,6 @@
 # UI Patterns & Components
 
-> **Last Updated: 2026-10-13** (a custom section heading proposal is reviewed at its title; one rule for all four AI character counters; a pending AI proposal locks the fields it covers)
+> **Last Updated: 2026-11-12** (signature entry points and dialog)
 
 ## Contents
 
@@ -20,6 +20,7 @@
 - [One AI Control Per Section, Branching in the Handler](#one-ai-control-per-section-branching-in-the-handler)
 - [Focus Handoff When a Control Removes Itself](#focus-handoff-when-a-control-removes-itself)
 - [Installing the App](#installing-the-app)
+- [Document Signature Entry Points](#document-signature-entry-points)
 - [Mobile Adaptation Patterns](#mobile-adaptation-patterns)
 - [Scrollbar Utilities](#scrollbar-utilities)
 - [Overflow & Dropdowns](#overflow-dropdowns)
@@ -1291,6 +1292,24 @@ address-bar icon either way.
 The manifest `start_url` is `/dashboard`, not `/` (owner, 2026-10-08): someone
 who installed the app wants the tool, not the sales page. `RootLanguageGate`
 still sends a visitor with a saved UI language to `/xx/dashboard`.
+
+## Document Signature Entry Points
+
+Three entry points open the one `SignatureDialog` (`src/features/signature/`): a compact
+`SignatureRow` under the photo in Basics, the CV PDF footer section, and the letter footer row.
+The Basics entry exists because the owner reversed the earlier "no Basics entry" ruling on
+2026-11-12 after seeing the UI — the footer rows alone were too hidden. Do not remove it on the
+strength of the old ruling.
+
+- Draw / Type / Upload is a `SegmentedToggle`; `SegmentedOption` gained `disabled` (Type is
+  disabled when no face covers the name).
+- Paste is dialog-wide and feeds the Upload path; it has no tab. ⚠️ Never promise paste from macOS
+  Preview: measured, it puts only the private `com.apple.AnnotationKit.AnnotationItem` type on the
+  pasteboard.
+- Every upload or paste goes through `ImageCropper` with `purpose="signature"` (no format/shape
+  row, lossless PNG) before the local near-white luminance key (`signatureImage.ts`).
+- The draw pad is white paper with near-black ink in both app themes (`SIGNATURE_INK`): what is
+  signed is what prints.
 
 ## Mobile Adaptation Patterns
 

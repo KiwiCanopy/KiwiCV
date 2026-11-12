@@ -1,3 +1,4 @@
+import type { StoredSignature } from '@/store/signature/useSignatureStore';
 import { type ResumeData } from '@/types/resume';
 
 /**
@@ -44,4 +45,9 @@ export interface BuildExportArtifactsParams {
   projectName?: string;
   /** Omitted formats default to on. */
   formats?: Partial<ExportFormatSelection>;
+  /**
+   * The device-only signature for the PDF footer (#103), or `null` for none.
+   * Required so each caller decides: a repo anyone can read gets `null`.
+   */
+  signature: StoredSignature | null;
 }

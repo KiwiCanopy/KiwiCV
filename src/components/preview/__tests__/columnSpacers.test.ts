@@ -1,5 +1,6 @@
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import type { ResumeData } from '@/types/resume';
 import { ALL_SECTION_KEYS } from '@/utils/layout/constants';
@@ -171,9 +172,9 @@ const STATES: Array<[string, (data: ResumeData) => ResumeData]> = [
 describe('column spacers', () => {
   it.each(ALL_THEME_IDS)('%s never opens or closes a column on a spacer', (themeId) => {
     const offenders = STATES.flatMap(([label, mutate]) =>
-      findBoundarySpacers(SERIALIZERS[themeId](mutate(buildSingleItemResume(themeId)))).map(
-        (offender) => `${label}: ${offender}`,
-      ),
+      findBoundarySpacers(
+        SERIALIZERS[themeId](mutate(buildSingleItemResume(themeId)), NO_SIGNATURE),
+      ).map((offender) => `${label}: ${offender}`),
     );
 
     expect(offenders).toEqual([]);
@@ -188,7 +189,7 @@ describe('column spacers', () => {
   it('drives eight distinct, non-empty documents per theme', () => {
     for (const themeId of ALL_THEME_IDS) {
       const documents = STATES.map(([, mutate]) =>
-        SERIALIZERS[themeId](mutate(buildSingleItemResume(themeId))),
+        SERIALIZERS[themeId](mutate(buildSingleItemResume(themeId)), NO_SIGNATURE),
       );
 
       expect(documents.every((document) => document.length > 500)).toBe(true);

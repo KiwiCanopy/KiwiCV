@@ -9,6 +9,7 @@ import {
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
 import { resolvePalette } from '@/components/preview/themes/shared/palette';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { en as translations } from '@/locales/en';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import { sourceFiles } from '@/test/sourceFiles';
@@ -130,7 +131,7 @@ const renderTheme = (themeId: ThemeId, palette: string | undefined): string =>
   );
 
 const serializeTheme = (themeId: ThemeId, palette: string | undefined): string =>
-  SERIALIZERS[themeId](withPalette(themeId, palette));
+  SERIALIZERS[themeId](withPalette(themeId, palette), NO_SIGNATURE);
 
 describe('resolvePalette', () => {
   const map = { default: 'D', light: 'L', ocean: 'O' };

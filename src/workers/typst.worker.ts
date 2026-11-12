@@ -1,3 +1,7 @@
+import {
+  SIGNATURE_FACES,
+  signatureFontDirective,
+} from '@/components/preview/themes/shared/signature';
 import { getProfileImagePath } from '@/components/preview/themes/shared/typstUtils';
 import { EAGER_FONT_FILES, typstFontLoaders } from '@/workers/eagerFonts';
 import lazyFontInfo from '@/workers/lazy-font-info.json';
@@ -23,6 +27,9 @@ $typst.setRendererInitOptions({
 
 let fontsInitialized = false;
 let initFontsPromise: Promise<void> | null = null;
+
+/** Virtual paths of the data-URL images mapped by the last compile. */
+const mappedImagePaths = new Set<string>();
 
 /** Lazy-font bytes already downloaded, keyed by URL. See `prefetchLazyFonts`. */
 const lazyFontCache = new Map<string, Uint8Array>();
@@ -70,17 +77,27 @@ const CJK_PATTERN = new RegExp(
  * worker can await, and the synchronous callback then serves from the cache.
  */
 async function prefetchLazyFonts(markup: string) {
-  if (!CJK_PATTERN.test(markup)) return;
+  const needsCjk = CJK_PATTERN.test(markup);
 
   await Promise.all(
     lazyFontInfo.fonts.map(async (entry) => {
+      // A signature face is named only by a typed signature's `font:`; the CJK
+      // faces sit in every theme's font stack, so they key on the text instead.
+      const signatureFace = SIGNATURE_FACES.find((face) => face.file === entry.file);
+      const needed = signatureFace
+        ? markup.includes(signatureFontDirective(signatureFace))
+        : needsCjk;
+      if (!needed) return;
+
       const url = `${self.location.origin}/fonts/${entry.file}`;
       if (lazyFontCache.has(url)) return;
 
       try {
         const res = await fetch(url);
         if (!res.ok) return; // fetchFontSync will retry and report properly
-        lazyFontCache.set(url, new Uint8Array(await res.arrayBuffer()));
+        const bytes = new Uint8Array(await res.arrayBuffer());
+        // Same check as `fetchFontSync`: a cached SPA page would skip it there.
+        if (isSfnt(bytes)) lazyFontCache.set(url, bytes);
       } catch {
         // Leave it uncached; the synchronous path is still there as a fallback.
       }
@@ -100,6 +117,12 @@ async function prefetchLazyFonts(markup: string) {
  * `prefetchLazyFonts` normally fills the cache first, so this is the fallback
  * for a glyph the prefetch heuristic did not anticipate.
  */
+/** `OTTO` for CFF outlines (the Noto CJK faces), 0x00010000 or 'true' for TrueType. */
+function isSfnt(bytes: Uint8Array): boolean {
+  const magic = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3] ?? 0);
+  return magic === 0x4f54544f || magic === 0x00010000 || magic === 0x74727565;
+}
+
 function fetchFontSync(url: string): Uint8Array {
   const cached = lazyFontCache.get(url);
   if (cached) return cached;
@@ -120,11 +143,7 @@ function fetchFontSync(url: string): Uint8Array {
   // status check alone would hand Typst a few KB of markup as a typeface. Check
   // the sfnt magic instead — `OTTO` for CFF outlines (the Noto CJK faces),
   // 0x00010000 for TrueType.
-  const magic = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3] ?? 0);
-  const isOpenType = magic === 0x4f54544f; // 'OTTO'
-  const isTrueType = magic === 0x00010000 || magic === 0x74727565; // 'true'
-
-  if (!isOpenType && !isTrueType) {
+  if (!isSfnt(bytes)) {
     throw new Error(
       `Lazy font is not a font: ${url} returned ${bytes.length} bytes ` +
         'that are not sfnt-tagged (an SPA fallback page, most likely)',
@@ -218,8 +237,17 @@ async function initFonts() {
   return initFontsPromise;
 }
 
+function dataUrlBytes(dataUrl: string): Uint8Array {
+  const binaryString = atob(dataUrl.replace(/^data:image\/[^;]+;base64,/, ''));
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
 self.onmessage = async (event: MessageEvent) => {
-  const { type, id, markup, assets, profileImage } = event.data;
+  const { type, id, markup, assets, profileImage, images } = event.data;
 
   try {
     // Ensure compiler and fonts are initialized
@@ -246,6 +274,7 @@ self.onmessage = async (event: MessageEvent) => {
       $typst as unknown as { getCompiler: () => Promise<unknown> }
     ).getCompiler()) as {
       mapShadow: (path: string, content: Uint8Array) => void;
+      unmapShadow: (path: string) => void;
     };
 
     // Map the profile image if present
@@ -254,12 +283,7 @@ self.onmessage = async (event: MessageEvent) => {
         let bytes: Uint8Array;
 
         if (profileImage.startsWith('data:image/')) {
-          const base64Data = profileImage.replace(/^data:image\/[^;]+;base64,/, '');
-          const binaryString = atob(base64Data);
-          bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
+          bytes = dataUrlBytes(profileImage);
         } else {
           // Resolve relative to host origin if it's a relative path
           const url = profileImage.startsWith('http')
@@ -275,6 +299,25 @@ self.onmessage = async (event: MessageEvent) => {
         compiler.mapShadow(imagePath, bytes);
       } catch (err) {
         console.error('Failed to map profile image in Web Worker:', err);
+      }
+    }
+
+    // Data-URL images at the virtual paths the markup names: the device-only
+    // signature, which is not in the résumé the serializer reads (#103). Each
+    // saved signature has a new path, so paths no longer sent are unmapped.
+    const nextImages = (images ?? {}) as Record<string, string>;
+    for (const path of mappedImagePaths) {
+      if (!(path in nextImages)) {
+        compiler.unmapShadow(path);
+        mappedImagePaths.delete(path);
+      }
+    }
+    for (const [path, dataUrl] of Object.entries(nextImages)) {
+      try {
+        compiler.mapShadow(path, dataUrlBytes(dataUrl));
+        mappedImagePaths.add(path);
+      } catch (err) {
+        console.error('Failed to map image in Web Worker:', err);
       }
     }
 

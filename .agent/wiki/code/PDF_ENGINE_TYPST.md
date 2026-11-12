@@ -1,6 +1,6 @@
 # Typst PDF Rendering Engine
 
-> **Last Updated: 2026-09-05**
+> **Last Updated: 2026-11-12**
 
 ## Contents
 
@@ -9,6 +9,7 @@
 - [Text Escaping & URL Sanitization (2026-07-24)](#text-escaping-url-sanitization-2026-07-24)
 - [Compile Smoke Test (2026-07-25)](#compile-smoke-test-2026-07-25)
 - [Rendering One Theme to a PDF You Can Open](#rendering-one-theme-to-a-pdf-you-can-open)
+- [The Signature (#103)](#the-signature-103)
 - [See Also](#see-also)
 
 This page covers the **compile engine and runtime**: the WASM worker, eager and
@@ -382,6 +383,36 @@ from the pinned 0.7.0 WASM; and its import chain pulled `src/lib/supabase.ts`,
 which throws `supabaseUrl is required.` without a `.env`. It also carried a
 hand-written twelve-branch `if (theme === …)` chain whose section orders had
 already drifted.
+
+## The Signature (#103)
+
+The device-only signature (`code/STATE.md` § Signature Store) is drawn in the signing footer.
+
+- **Serializer context.** Serializers take a second `SerializeContext` argument. It is required
+  on `SERIALIZERS` (`ThemeSerializers.ts`) so every app call site states it, and defaulted on each
+  serializer so tests may omit it.
+- **Image path.** The image reaches the compile as a data URL in the worker message's `images`
+  map, mapped with `mapShadow` at `/signature/<id>.png`. The compile cache key includes it.
+- **Typed faces.** Herr Von Muellerhoff, Great Vibes, Alex Brush and Pinyon Script
+  (`SIGNATURE_FACES`, `themes/shared/signature.ts`) are lazy faces in `public/fonts/`, registered
+  through `lazy-font-info.json` (`LAZY_FONTS` in `scripts/generate-font-info.mjs`). The worker
+  prefetches one only when the markup contains `font: "<family>"`; the CJK faces still key on CJK
+  text because they sit in every font stack. `tests/lint/font-info.test.mjs` accepts
+  `SIGNATURE_FACES` as the owner of their family names.
+- **Coverage differs per face.** Only Great Vibes covers Cyrillic; Herr Von Muellerhoff lacks
+  several Polish, Turkish and Czech letters. The dialog decodes the same Typst coverage tables
+  (`signatureFonts.ts`), so what the UI offers is what the PDF can print.
+- **Geometry (measured).** The mark is `#place`d over the existing 24pt signing gap inside the rule
+  box, so a signature adds **no flow height**. A first version that reserved its own block pushed
+  the placeholder CV from one page to two; `signatureCompile.test.ts` "a signature costs no page"
+  pins it on every theme. An image mark is 28pt tall, its bottom 2pt below the rule. A typed mark
+  is measured by its **ink bounds** and scaled to fit a slot from 22pt above the rule to 1pt above
+  the printed name, in both directions: descenders crossed the name and accented capitals touched
+  the date line when it was sized by font metrics instead. `sizePt` (26/23/24/23) is the size
+  before that fit. A long name shrinks to the rule width rather than wrapping — two lines read as
+  two signatures.
+- **Looking at it.** `RENDER_SIGNATURE=image|typed:<faceId>` (and `RENDER_SIGNATURE_TEXT`) on
+  `npm run pdf:render` renders one.
 
 ---
 

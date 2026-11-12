@@ -1,4 +1,5 @@
 import { markdownToTypst } from '@/components/preview/themes/shared/markdownTypst';
+import type { TypstSignature } from '@/components/preview/themes/shared/signature';
 import { renderTypstSignatureFooter } from '@/components/preview/themes/shared/typstFooter';
 import { escapeTypst } from '@/components/preview/themes/shared/typstUtils';
 import type { ResumeData } from '@/types/resume';
@@ -14,6 +15,8 @@ import { isCoverLetterPrinted } from '@/utils/coverLetter';
  */
 export interface CoverLetterTypstOptions {
   fontScale: number;
+  /** The device-only signature (#103); required so a serializer cannot forget it. */
+  signature: TypstSignature | undefined;
   /** The theme's page margin tuple (e.g. `(x: 40pt, y: 40pt)`), used by the theme-header variant. */
   pageMargin: string;
   /**
@@ -185,6 +188,7 @@ export function buildCoverLetterTypst(data: ResumeData, options: CoverLetterTyps
     : '';
 
   const footerMarkup = renderTypstSignatureFooter({
+    signature: options.signature,
     showFooter: layout.showFooter,
     parts: options.footerParts,
     name: basics.name,

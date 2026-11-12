@@ -66,6 +66,41 @@ export const design: Translations['design'] = {
       'Le sezioni appaiono nel tuo CV in questo ordine. Usa le frecce per spostare una riga, oppure tieni premuta la maniglia e trascina.',
     title: 'Ordine delle sezioni',
   },
+  signature: {
+    add: 'Aggiungi firma',
+    change: 'Cambia',
+    crop_description:
+      "Ritaglia, ruota o rifletti l'immagine. Lo sfondo della carta viene rimosso dopo.",
+    crop_title: 'Ritaglia la tua firma',
+    device_note:
+      'Salvata solo su questo dispositivo, fuori dai tuoi backup e dalla sincronizzazione. I PDF che crei la includono.',
+    dialog_title: 'La tua firma',
+    draw_hint: 'Disegna con il mouse, il dito o una penna.',
+    draw_label: 'Area di disegno per la tua firma',
+    edit_label: 'Cambia firma',
+    face_unavailable: 'Questo stile non può mostrare tutte le lettere di questo nome.',
+    footer_off: 'Appare nel piè di pagina PDF, che è disattivato.',
+    preview_alt: 'La tua firma',
+    row_empty: 'Nessuna firma su questo dispositivo',
+    row_label: 'Firma',
+    tab_draw: 'Disegna',
+    tab_type: 'Scrivi',
+    tab_upload: 'Carica',
+    type_name: 'Nome',
+    type_style: 'Stile',
+    type_unavailable:
+      'Gli stili calligrafici non possono mostrare tutte le lettere di questo nome. Disegna o carica la firma.',
+    upload_another: "Scegline un'altra",
+    upload_choose: "Scegli un'immagine",
+    upload_empty:
+      'Nessuna firma trovata in questa immagine. Una penna scura su carta bianca funziona meglio.',
+    upload_hint:
+      "Una foto o una scansione su carta bianca. Lo sfondo viene rimosso su questo dispositivo. Puoi anche incollare un'immagine. Da Anteprima di macOS, esporta prima la firma come PNG.",
+    upload_ready: 'Firma pronta. Controllala, poi salva.',
+    upload_too_large: "L'immagine è troppo grande (max {{size}} MB).",
+    upload_unreadable: 'Questo file non può essere letto come immagine. Prova con PNG o JPG.',
+    upload_working: 'Rimozione dello sfondo…',
+  },
   swap_column_named: "Sposta «{{name}}» nell'altra colonna",
   template: 'Modello',
 };

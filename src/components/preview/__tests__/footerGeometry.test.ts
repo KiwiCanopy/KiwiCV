@@ -1,5 +1,6 @@
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import * as typstFooter from '@/components/preview/themes/shared/typstFooter';
 import { renderTypstSignatureFooter } from '@/components/preview/themes/shared/typstFooter';
 import { applyThemeLayout } from '@/test/fixtureLayout';
@@ -51,6 +52,7 @@ const GEOMETRY_KEYS = ['topGap', 'textToLineGap', 'lineInsetTop'] as const;
  */
 function emittedDefaultGeometry(): Record<(typeof GEOMETRY_KEYS)[number], number> {
   const markup = renderTypstSignatureFooter({
+    signature: undefined,
     parts: ['London, GB', 'July 26, 2026'],
     name: 'Ada Lovelace',
     fontScale: 1,
@@ -168,7 +170,7 @@ function serialize(themeId: ThemeId): string {
   data.coverLetter.enabled = false;
   data.meta.theme.name = themeId;
   applyThemeLayout(data, themeId);
-  return SERIALIZERS[themeId](data);
+  return SERIALIZERS[themeId](data, NO_SIGNATURE);
 }
 
 /**

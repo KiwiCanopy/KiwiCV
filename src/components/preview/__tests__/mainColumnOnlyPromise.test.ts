@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ThemeRegistry } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { THEME_LAYOUTS, type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { getBoundFormatters } from '@/components/preview/themes/shared/translations';
 import { en } from '@/locales/en/index';
 import { buildSingleItemResume } from '@/test/singleItemResume';
@@ -140,7 +141,7 @@ function measure(themeId: ThemeId, placement: Placement, bold: BoldHeader): Outc
       formatCVDateRange: bound.formatCVDateRange,
     }),
   );
-  const typst = SERIALIZERS[themeId](data);
+  const typst = SERIALIZERS[themeId](data, NO_SIGNATURE);
 
   const { main, sidebar } = data.meta.content.order.twoColumn;
   const leaks: string[] = [];

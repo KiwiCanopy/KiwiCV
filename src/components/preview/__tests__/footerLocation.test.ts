@@ -1,6 +1,7 @@
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { type ThemeId } from '@/components/preview/themeIds';
 import { getPlaceholderCity } from '@/components/preview/themes/shared/levels';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { getThemeTranslations } from '@/components/preview/themes/shared/translations';
 import {
   getFooterDate,
@@ -180,7 +181,7 @@ const footerText = (markup: string, ...dates: string[]): string => {
 };
 
 const serialize = (themeId: ThemeId, location: Partial<ResumeData['basics']['location']>): string =>
-  SERIALIZERS[themeId](withLocation(themeId, location));
+  SERIALIZERS[themeId](withLocation(themeId, location), NO_SIGNATURE);
 
 const serializeWith = (
   themeId: ThemeId,
@@ -188,7 +189,7 @@ const serializeWith = (
 ): string => {
   const data = withLocation(themeId, input.location ?? {});
   if (input.params) data.meta.theme.params = { ...data.meta.theme.params, ...input.params };
-  return SERIALIZERS[themeId](data);
+  return SERIALIZERS[themeId](data, NO_SIGNATURE);
 };
 
 /**
@@ -466,11 +467,17 @@ describe('every footer applies the same location rule', () => {
   it.each(FOOTER_THEMES)('%s resolves the country code from the CV locale, not en', (themeId) => {
     const both = [dateIn('fr-FR'), today()];
     const suppressed = footerText(
-      SERIALIZERS[themeId](withLocale(themeId, 'fr', { city: 'Berlin', countryCode: 'FR' })),
+      SERIALIZERS[themeId](
+        withLocale(themeId, 'fr', { city: 'Berlin', countryCode: 'FR' }),
+        NO_SIGNATURE,
+      ),
       ...both,
     );
     const printed = footerText(
-      SERIALIZERS[themeId](withLocale(themeId, 'fr', { city: 'Berlin', countryCode: 'US' })),
+      SERIALIZERS[themeId](
+        withLocale(themeId, 'fr', { city: 'Berlin', countryCode: 'US' }),
+        NO_SIGNATURE,
+      ),
       ...both,
     );
 
@@ -512,6 +519,7 @@ describe('every footer applies the same location rule', () => {
   )('%s formats the footer date in the CV locale (%s)', (themeId, locale, bcp47) => {
     const markup = SERIALIZERS[themeId](
       withLocale(themeId, locale, { city: 'Berlin', countryCode: 'US' }),
+      NO_SIGNATURE,
     );
 
     expect(footerText(markup, dateIn(bcp47), today())).toBe(`[Berlin, US, ${dateIn(bcp47)}]`);
@@ -680,7 +688,7 @@ describe('showFooter: false suppresses the whole footer, box included', () => {
     // and the control passed 12/12. Scoped to the résumé it scores 0 and fails.
     data.coverLetter.enabled = false;
 
-    const body = SERIALIZERS[themeId](data)
+    const body = SERIALIZERS[themeId](data, NO_SIGNATURE)
       .split('\n')
       .filter((line) => !line.startsWith('#set document('))
       .join('\n');
@@ -880,7 +888,9 @@ describe('the footer ignores addressSchema, on every theme that emits one', () =
     const data = withLocation(themeId, { city: 'Berlin', countryCode: 'DE' });
     data.meta.theme.params = { ...data.meta.theme.params, addressSchema: EXCLUDES_CITY };
 
-    expect(footerText(SERIALIZERS[themeId](data), today())).toBe(`[Berlin, DE, ${today()}]`);
+    expect(footerText(SERIALIZERS[themeId](data, NO_SIGNATURE), today())).toBe(
+      `[Berlin, DE, ${today()}]`,
+    );
   });
 
   /**
@@ -891,7 +901,7 @@ describe('the footer ignores addressSchema, on every theme that emits one', () =
   it('the excluding schema does reach the header address line', () => {
     const data = withLocation('stackoverflow', { city: 'Berlin', countryCode: 'DE' });
     data.meta.theme.params = { ...data.meta.theme.params, addressSchema: EXCLUDES_CITY };
-    const markup = SERIALIZERS.stackoverflow(data);
+    const markup = SERIALIZERS.stackoverflow(data, NO_SIGNATURE);
 
     expect(markup).not.toContain('12 Nowhere Lane, W1A 1AA Berlin, DE');
   });

@@ -6,6 +6,7 @@ import { ExportOption } from '@/components/ui/ExportOption';
 import { Input } from '@/components/ui/Input';
 import { SectionLabel } from '@/features/dashboard/design/helpers/SectionLabel';
 import { useEditorBreakpoints } from '@/features/dashboard/layout/EditorLayoutContext';
+import { SignatureRow } from '@/features/signature/SignatureRow';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
@@ -142,6 +143,7 @@ export const PdfFooterSection = memo(() => {
           </div>
         </div>
       )}
+      {resume.meta.theme.params?.showFooter !== false && <SignatureRow />}
     </div>
   );
 });

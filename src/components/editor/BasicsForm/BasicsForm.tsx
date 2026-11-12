@@ -9,6 +9,7 @@ import { type SectionVariant } from '@/components/ui/section/types';
 import { EntryDiffPanel } from '@/features/dashboard/editor/proposals/EntryDiffPanel';
 import { useLockedFields } from '@/features/dashboard/editor/proposals/useLockedFields';
 import { useEditorBreakpoints } from '@/features/dashboard/layout/EditorLayoutContext';
+import { SignatureRow } from '@/features/signature/SignatureRow';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { ResumeData } from '@/types/resume';
 import { itemTarget } from '@/utils/aiTarget';
@@ -115,6 +116,9 @@ export function BasicsForm({ variant = 'nested', defaultCollapsed = true }: Basi
                 />
               </div>
             )}
+            <div className="mt-3 w-full">
+              <SignatureRow compact />
+            </div>
           </div>
 
           {/* Right: Core Identity (Name & Title) */}

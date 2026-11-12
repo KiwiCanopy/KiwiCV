@@ -10,6 +10,10 @@ export interface SegmentedOption<T> {
   labelClassName?: string;
   icon?: ReactNode;
   hint?: string;
+  /** Kept visible, as `ui.md` asks; the caller shows the reason beside the control. */
+  disabled?: boolean;
+  /** Id of the visible reason, when there is one, for assistive tech. */
+  describedBy?: string;
 }
 
 interface SegmentedToggleProps<T> {
@@ -92,6 +96,8 @@ export const SegmentedToggle = memo(function SegmentedToggle<T extends string | 
           <button
             key={String(option.value)}
             type="button"
+            disabled={option.disabled}
+            aria-describedby={option.describedBy}
             onClick={() => onChange(option.value)}
             title={isSmallScreen || !option.label ? option.hint : undefined}
             aria-pressed={isActive}
@@ -108,6 +114,7 @@ export const SegmentedToggle = memo(function SegmentedToggle<T extends string | 
               variant === 'pill' ? 'rounded-full' : 'rounded-md',
               // Active text color handling
               isActive ? activeTextClass : 'text-muted-foreground hover:text-foreground',
+              option.disabled && 'hover:text-muted-foreground cursor-not-allowed opacity-50',
             )}
           >
             {option.icon && (

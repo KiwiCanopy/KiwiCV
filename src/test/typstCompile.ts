@@ -1,3 +1,4 @@
+import { SIGNATURE_FACES } from '@/components/preview/themes/shared/signature';
 import { getProfileImagePath } from '@/components/preview/themes/shared/typstUtils';
 import { REPO_ROOT } from '@/test/sourceFiles';
 import { EAGER_FONT_FILES, typstFontLoaders } from '@/workers/eagerFonts';
@@ -67,11 +68,17 @@ export const TYPST_INIT_TIMEOUT_MS = 60_000;
  * faces must be its own file — vitest isolates module state per file — and must
  * not also assert the Latin-only behaviour.
  */
-export function initTypstCompiler(options: { cjk?: boolean } = {}): Promise<void> {
+export function initTypstCompiler(
+  options: { cjk?: boolean; signatureFaces?: boolean } = {},
+): Promise<void> {
   if (started) return started;
 
   const compilerModule = readFileSync(COMPILER_WASM);
-  const files = options.cjk ? [...EAGER_FONT_FILES, ...CJK_FONT_FILES] : EAGER_FONT_FILES;
+  const files = [
+    ...EAGER_FONT_FILES,
+    ...(options.cjk ? CJK_FONT_FILES : []),
+    ...(options.signatureFaces ? SIGNATURE_FACES.map((face) => face.file) : []),
+  ];
   const fonts = files.map(
     (file) => new Uint8Array(readFileSync(resolve(REPO_ROOT, 'public/fonts', file))),
   );
@@ -135,6 +142,22 @@ export async function mapProfileImage(image: string): Promise<void> {
     : new Uint8Array(readFileSync(resolve(REPO_ROOT, 'public', image.replace(/^\//, ''))));
 
   compiler.mapShadow(getProfileImagePath(image), bytes);
+}
+
+/** Maps data-URL images at their virtual paths, as the worker does for the signature. */
+export async function mapImages(images: Record<string, string> | undefined): Promise<void> {
+  if (!images) return;
+  const compiler = (await (
+    $typst as unknown as { getCompiler: () => Promise<unknown> }
+  ).getCompiler()) as {
+    mapShadow: (path: string, content: Uint8Array) => void;
+  };
+  for (const [path, dataUrl] of Object.entries(images)) {
+    compiler.mapShadow(
+      path,
+      Uint8Array.from(Buffer.from(dataUrl.replace(/^data:image\/[^;]+;base64,/, ''), 'base64')),
+    );
+  }
 }
 
 /**

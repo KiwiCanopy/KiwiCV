@@ -6,6 +6,7 @@ import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
 import { getBoundFormatters, getThemeTranslations } from '@/components/preview/themes/shared';
 import { formatDateRange } from '@/components/preview/themes/shared/dates';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import { PLACEMENT_RUNS, type Placement, applyPlacement } from '@/test/themePlacements';
 import { ONGOING_DATE_WORDS, isOngoingEndDate } from '@/utils/ongoingDate';
@@ -44,7 +45,7 @@ describe('an ongoing word as an end date', () => {
     data.meta.theme = { ...data.meta.theme, locale: 'ja' };
     data.work[0].endDate = 'Present';
 
-    const typst = SERIALIZERS[themeId](data);
+    const typst = SERIALIZERS[themeId](data, NO_SIGNATURE);
 
     expect(typst).toContain(ja.present);
     expect(typst).not.toContain('Present年');
@@ -71,7 +72,7 @@ describe('an ongoing word as an end date', () => {
     'treats it exactly as an empty end date in the %s PDF (%s)',
     (themeId, placement) => {
       const typst = (endDate: string) =>
-        SERIALIZERS[themeId](withEndDate(themeId, placement, endDate));
+        SERIALIZERS[themeId](withEndDate(themeId, placement, endDate), NO_SIGNATURE);
 
       expect(typst('Present')).toBe(typst(''));
     },

@@ -6,6 +6,7 @@ import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
 import { getBoundFormatters } from '@/components/preview/themes/shared';
 import { formatFullAddress } from '@/components/preview/themes/shared/address';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import type { ResumeData } from '@/types/resume';
@@ -81,7 +82,7 @@ const renderTheme = (themeId: ThemeId, schema: unknown, override?: ResumeData): 
   );
 
 const serializeTheme = (themeId: ThemeId, schema: unknown, override?: ResumeData): string =>
-  SERIALIZERS[themeId](override ?? withSchema(themeId, schema));
+  SERIALIZERS[themeId](override ?? withSchema(themeId, schema), NO_SIGNATURE);
 
 const DEFAULT_MODE = { mode: 'default' } as const;
 /** Resolvable, and formatted unlike `default` mode on this fixture's location. */

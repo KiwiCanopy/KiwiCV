@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ThemeRegistry } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import {
   ALL_SECTION_LABEL_KEYS,
   getBoundFormatters,
@@ -126,7 +127,7 @@ function measure(themeId: ThemeId, placement: Placement): Outcome {
       formatCVDateRange: bound.formatCVDateRange,
     }),
   );
-  const typst = SERIALIZERS[themeId](data);
+  const typst = SERIALIZERS[themeId](data, NO_SIGNATURE);
 
   const mismatches: string[] = [];
   let both = 0;

@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ThemeRegistry } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import type { ResumeData } from '@/types/resume';
 import { generateJSONWithPlaceholders, isResumeEmpty } from '@/utils/placeholder-fallback';
@@ -225,7 +226,7 @@ describe('neither renderer throws on a non-string basics field', () => {
       for (const value of [42, {}, ['x']]) {
         const data = withBasics(themeId, path, value);
         expect(() => html(themeId, data)).not.toThrow();
-        expect(() => SERIALIZERS[themeId](data)).not.toThrow();
+        expect(() => SERIALIZERS[themeId](data, NO_SIGNATURE)).not.toThrow();
         expect(() => isResumeEmpty(data)).not.toThrow();
         expect(() => generateJSONWithPlaceholders(data, (key) => key)).not.toThrow();
       }
@@ -241,6 +242,6 @@ describe('neither renderer throws on a non-string basics field', () => {
     const data = withBasics(themeId, 'name', 'ZQNAME Person');
     expect(data.basics.name).toBe('ZQNAME Person');
     expect(html(themeId, data)).toContain('ZQNAME');
-    expect(SERIALIZERS[themeId](data)).toContain('ZQNAME');
+    expect(SERIALIZERS[themeId](data, NO_SIGNATURE)).toContain('ZQNAME');
   });
 });

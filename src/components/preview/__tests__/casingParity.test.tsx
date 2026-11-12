@@ -6,6 +6,7 @@ import { ThemeRegistry, paletteIconFills } from '@/components/preview/ThemeRegis
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { type ThemeId } from '@/components/preview/themeIds';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import {
   ALL_SECTION_LABEL_KEYS,
   getBoundFormatters,
@@ -151,7 +152,7 @@ const PROBED_CV_UPPER = `
 const DOCUMENT_PROBE = `#show regex("${TYPST_PROBE_RE}"): it => [#metadata((if upper(it.text) == it.text { "upper" } else { "asis" }, it.text))<casing-probe>]\n`;
 
 async function pdfCensus(themeId: ThemeId, data: ResumeData): Promise<Census> {
-  const typst = SERIALIZERS[themeId](data);
+  const typst = SERIALIZERS[themeId](data, NO_SIGNATURE);
   if (!typst.includes(TYPST_CV_UPPER)) throw new Error(`${themeId} does not define cv-upper`);
   await mapIcons(
     serializeIconsMap(data, paletteIconFills(themeId, data.meta.theme.params?.palette)),

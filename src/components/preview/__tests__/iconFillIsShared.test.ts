@@ -121,6 +121,7 @@ const EXPECTED_SITES = [
   'components/preview/__tests__/iconGeometryParity.test.ts',
   'components/preview/__tests__/pdfPageCount.compile.test.ts',
   'components/preview/__tests__/renderThemePdf.test.ts',
+  'components/preview/__tests__/signatureCompile.test.ts',
   'components/preview/__tests__/typstCompile.test.ts',
   'features/dashboard/preview/Viewer.tsx',
   // The three export paths (download ZIP, GitHub push, Drive push) each built

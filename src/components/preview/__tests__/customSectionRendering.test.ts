@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ThemeRegistry } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, THEME_LAYOUTS, type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { getBoundFormatters } from '@/components/preview/themes/shared/translations';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import type { ResumeData } from '@/types/resume';
@@ -62,7 +63,10 @@ function render(themeId: ThemeId, data: ResumeData) {
       formatCVDateRange: bound.formatCVDateRange,
     }),
   );
-  return { html: html.toLowerCase(), typst: SERIALIZERS[themeId](data).toLowerCase() };
+  return {
+    html: html.toLowerCase(),
+    typst: SERIALIZERS[themeId](data, NO_SIGNATURE).toLowerCase(),
+  };
 }
 
 const RUNS = ALL_THEME_IDS.flatMap((themeId) =>

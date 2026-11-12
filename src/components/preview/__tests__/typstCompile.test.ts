@@ -2,6 +2,7 @@ import { ThemeRegistry, paletteIconFills } from '@/components/preview/ThemeRegis
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, THEME_LAYOUTS, type ThemeId } from '@/components/preview/themeIds';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { TYPST_FONTS, getTypstFontList } from '@/components/preview/themes/shared/typstUtils';
 import { themes } from '@/locales/en/themes';
 import { buildPlaceholderResume } from '@/test/placeholderResume';
@@ -300,7 +301,7 @@ describe('Typst compile smoke test', () => {
       );
       await mapProfileImage(resume.basics.image);
 
-      const markup = SERIALIZERS[themeId](resume);
+      const markup = SERIALIZERS[themeId](resume, NO_SIGNATURE);
       const pdf = await compileToPdf(markup);
 
       expect(isPdf(pdf)).toBe(true);
@@ -323,7 +324,7 @@ describe('Typst compile smoke test', () => {
       );
       await mapProfileImage(resume.basics.image);
 
-      const markup = SERIALIZERS[themeId](resume);
+      const markup = SERIALIZERS[themeId](resume, NO_SIGNATURE);
       const pdf = await compileToPdf(markup);
 
       expect(isPdf(pdf)).toBe(true);
@@ -390,11 +391,12 @@ describe('manual page breaks', () => {
   };
 
   it.each(ALL_THEME_IDS)('%s honours a break on each of the twelve sections', (themeId) => {
-    const unbroken = SERIALIZERS[themeId](buildSingleItemResume(themeId));
+    const unbroken = SERIALIZERS[themeId](buildSingleItemResume(themeId), NO_SIGNATURE);
 
     const ignored = ALL_SECTION_KEYS.filter(
       (sectionKey) =>
-        SERIALIZERS[themeId](breakOn(buildSingleItemResume(themeId), sectionKey)) === unbroken,
+        SERIALIZERS[themeId](breakOn(buildSingleItemResume(themeId), sectionKey), NO_SIGNATURE) ===
+        unbroken,
     );
 
     expect(ignored).toEqual([]);
@@ -446,8 +448,8 @@ describe('manual page breaks', () => {
 
     const stray = ALL_SECTION_KEYS.filter(
       (sectionKey) =>
-        SERIALIZERS[themeId](breakOn(allHidden(sectionKey), sectionKey)) !==
-        SERIALIZERS[themeId](allHidden(sectionKey)),
+        SERIALIZERS[themeId](breakOn(allHidden(sectionKey), sectionKey), NO_SIGNATURE) !==
+        SERIALIZERS[themeId](allHidden(sectionKey), NO_SIGNATURE),
     );
 
     expect(stray).toEqual([]);

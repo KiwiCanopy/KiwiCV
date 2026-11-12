@@ -67,14 +67,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Adicionar assinatura',
-    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_failed:
+      'A tua assinatura está guardada neste dispositivo, mas não foi possível atualizar a cópia de segurança.',
     backup_github_history:
-      'Removing it deletes it from your repository; earlier versions in its history keep it.',
-    backup_label: 'Also save a copy to {{targets}}',
-    backup_note: 'Saved on this device and in {{targets}}. PDFs you create include it.',
+      'Removê-la elimina-a do teu repositório; as versões anteriores no histórico mantêm-na.',
+    backup_label: 'Guardar também uma cópia em {{targets}}',
+    backup_note: 'Guardada neste dispositivo e em {{targets}}. Os PDF que crias incluem-na.',
     change: 'Alterar',
-    commit_removed: 'Remove signature backup',
-    commit_saved: 'Back up signature',
+    commit_removed: 'Remover cópia da assinatura',
+    commit_saved: 'Guardar cópia da assinatura',
     crop_description: 'Recorta, roda ou vira a imagem. O fundo do papel é removido a seguir.',
     crop_title: 'Recortar a tua assinatura',
     device_note:
@@ -86,8 +87,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Este estilo não consegue mostrar todas as letras deste nome.',
     footer_off: 'Aparece no rodapé do PDF, que está desativado.',
     preview_alt: 'A tua assinatura',
-    restore_found: 'Your backup has a saved signature.',
-    restore_use: 'Use it',
+    restore_found: 'A tua cópia de segurança tem uma assinatura guardada.',
+    restore_use: 'Usar',
     row_empty: 'Nenhuma assinatura neste dispositivo',
     row_label: 'Assinatura',
     tab_draw: 'Desenhar',

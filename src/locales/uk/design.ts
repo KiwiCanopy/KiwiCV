@@ -64,14 +64,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Додати підпис',
-    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_failed: 'Підпис збережено на цьому пристрої, але резервну копію не вдалося оновити.',
     backup_github_history:
-      'Removing it deletes it from your repository; earlier versions in its history keep it.',
-    backup_label: 'Also save a copy to {{targets}}',
-    backup_note: 'Saved on this device and in {{targets}}. PDFs you create include it.',
+      'Видалення прибирає його з репозиторію; попередні версії в його історії його зберігають.',
+    backup_label: 'Також зберегти копію в {{targets}}',
+    backup_note:
+      'Збережено на цьому пристрої та в {{targets}}. PDF, які ти створюєш, містять підпис.',
     change: 'Змінити',
-    commit_removed: 'Remove signature backup',
-    commit_saved: 'Back up signature',
+    commit_removed: 'Видалити копію підпису',
+    commit_saved: 'Зберегти копію підпису',
     crop_description: 'Обріж, поверни або віддзеркаль зображення. Потім фон паперу буде видалено.',
     crop_title: 'Обрізати підпис',
     device_note:
@@ -83,8 +84,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Цей стиль не може показати всі літери цього імені.',
     footer_off: 'Показується в нижньому колонтитулі PDF, який вимкнено.',
     preview_alt: 'Твій підпис',
-    restore_found: 'Your backup has a saved signature.',
-    restore_use: 'Use it',
+    restore_found: 'У твоїй резервній копії є збережений підпис.',
+    restore_use: 'Використати',
     row_empty: 'На цьому пристрої немає підпису',
     row_label: 'Підпис',
     tab_draw: 'Намалювати',

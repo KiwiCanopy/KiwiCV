@@ -64,14 +64,16 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Dodaj podpis',
-    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_failed:
+      'Podpis jest zapisany na tym urządzeniu, ale nie udało się zaktualizować kopii zapasowej.',
     backup_github_history:
-      'Removing it deletes it from your repository; earlier versions in its history keep it.',
-    backup_label: 'Also save a copy to {{targets}}',
-    backup_note: 'Saved on this device and in {{targets}}. PDFs you create include it.',
+      'Usunięcie kasuje go z repozytorium; wcześniejsze wersje w jego historii go zachowują.',
+    backup_label: 'Zapisz też kopię w {{targets}}',
+    backup_note:
+      'Zapisany na tym urządzeniu i w {{targets}}. Tworzone przez Ciebie pliki PDF go zawierają.',
     change: 'Zmień',
-    commit_removed: 'Remove signature backup',
-    commit_saved: 'Back up signature',
+    commit_removed: 'Usuń kopię zapasową podpisu',
+    commit_saved: 'Utwórz kopię zapasową podpisu',
     crop_description: 'Przytnij, obróć lub odbij obraz. Tło papieru zostanie potem usunięte.',
     crop_title: 'Przytnij podpis',
     device_note:
@@ -83,8 +85,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Ten styl nie pokaże wszystkich liter tego imienia i nazwiska.',
     footer_off: 'Pojawia się w stopce PDF, która jest wyłączona.',
     preview_alt: 'Twój podpis',
-    restore_found: 'Your backup has a saved signature.',
-    restore_use: 'Use it',
+    restore_found: 'Twoja kopia zapasowa zawiera zapisany podpis.',
+    restore_use: 'Użyj',
     row_empty: 'Brak podpisu na tym urządzeniu',
     row_label: 'Podpis',
     tab_draw: 'Rysuj',

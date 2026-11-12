@@ -63,14 +63,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Добавить подпись',
-    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_failed: 'Подпись сохранена на этом устройстве, но резервную копию не удалось обновить.',
     backup_github_history:
-      'Removing it deletes it from your repository; earlier versions in its history keep it.',
-    backup_label: 'Also save a copy to {{targets}}',
-    backup_note: 'Saved on this device and in {{targets}}. PDFs you create include it.',
+      'При удалении подпись удаляется из репозитория; более ранние версии в его истории ее сохраняют.',
+    backup_label: 'Также сохранить копию в {{targets}}',
+    backup_note:
+      'Сохранено на этом устройстве и в {{targets}}. Создаваемые тобой PDF включают подпись.',
     change: 'Изменить',
-    commit_removed: 'Remove signature backup',
-    commit_saved: 'Back up signature',
+    commit_removed: 'Удалить копию подписи',
+    commit_saved: 'Сохранить копию подписи',
     crop_description: 'Обрежь, поверни или отрази изображение. Затем фон бумаги будет удалён.',
     crop_title: 'Обрезать подпись',
     device_note:
@@ -82,8 +83,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Этот стиль не может показать все буквы этого имени.',
     footer_off: 'Отображается в нижнем колонтитуле PDF, который выключен.',
     preview_alt: 'Твоя подпись',
-    restore_found: 'Your backup has a saved signature.',
-    restore_use: 'Use it',
+    restore_found: 'В твоей резервной копии есть сохраненная подпись.',
+    restore_use: 'Использовать',
     row_empty: 'На этом устройстве нет подписи',
     row_label: 'Подпись',
     tab_draw: 'Нарисовать',

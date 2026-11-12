@@ -10,9 +10,10 @@ import { useToastStore } from '@/store/ui/useToastStore';
 
 type Translate = (key: string) => string;
 
+// Prefixed like every other KiwiCV commit (`githubSync.ts`).
 const commitMessages = (t: Translate) => ({
-  saved: t('design.signature.commit_saved'),
-  removed: t('design.signature.commit_removed'),
+  saved: `${t('sync.commit_prefix')} ${t('design.signature.commit_saved')}`,
+  removed: `${t('sync.commit_prefix')} ${t('design.signature.commit_removed')}`,
 });
 
 const reportBackupFailure = (t: Translate) =>

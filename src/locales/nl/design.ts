@@ -67,14 +67,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Handtekening toevoegen',
-    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_failed:
+      'Je handtekening is op dit apparaat opgeslagen, maar de back-up kon niet worden bijgewerkt.',
     backup_github_history:
-      'Removing it deletes it from your repository; earlier versions in its history keep it.',
-    backup_label: 'Also save a copy to {{targets}}',
-    backup_note: 'Saved on this device and in {{targets}}. PDFs you create include it.',
+      'Verwijderen haalt hem uit je repository; eerdere versies in de geschiedenis behouden hem.',
+    backup_label: 'Ook een kopie opslaan in {{targets}}',
+    backup_note: 'Opgeslagen op dit apparaat en in {{targets}}. PDF’s die je maakt bevatten hem.',
     change: 'Wijzigen',
-    commit_removed: 'Remove signature backup',
-    commit_saved: 'Back up signature',
+    commit_removed: 'Back-up van handtekening verwijderen',
+    commit_saved: 'Back-up van handtekening maken',
     crop_description:
       'Snijd de afbeelding bij, draai of spiegel hem. Daarna wordt de papieren achtergrond verwijderd.',
     crop_title: 'Handtekening bijsnijden',
@@ -87,8 +88,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Deze stijl kan niet elke letter van deze naam tonen.',
     footer_off: 'Verschijnt in de PDF-voettekst, die uit staat.',
     preview_alt: 'Je handtekening',
-    restore_found: 'Your backup has a saved signature.',
-    restore_use: 'Use it',
+    restore_found: 'Je back-up bevat een opgeslagen handtekening.',
+    restore_use: 'Gebruiken',
     row_empty: 'Geen handtekening op dit apparaat',
     row_label: 'Handtekening',
     tab_draw: 'Tekenen',

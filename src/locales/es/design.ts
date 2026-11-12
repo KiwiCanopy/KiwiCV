@@ -68,14 +68,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Añadir firma',
-    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_failed:
+      'Tu firma está guardada en este dispositivo, pero no se pudo actualizar la copia de seguridad.',
     backup_github_history:
-      'Removing it deletes it from your repository; earlier versions in its history keep it.',
-    backup_label: 'Also save a copy to {{targets}}',
-    backup_note: 'Saved on this device and in {{targets}}. PDFs you create include it.',
+      'Al quitarla, se elimina de tu repositorio; las versiones anteriores de su historial la conservan.',
+    backup_label: 'Guardar también una copia en {{targets}}',
+    backup_note: 'Guardada en este dispositivo y en {{targets}}. Los PDF que creas la incluyen.',
     change: 'Cambiar',
-    commit_removed: 'Remove signature backup',
-    commit_saved: 'Back up signature',
+    commit_removed: 'Eliminar la copia de la firma',
+    commit_saved: 'Guardar copia de la firma',
     crop_description: 'Recorta, rota o voltea la imagen. Después se quita el fondo del papel.',
     crop_title: 'Recortar tu firma',
     device_note:
@@ -87,8 +88,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Este estilo no puede mostrar todas las letras de este nombre.',
     footer_off: 'Aparece en el pie de página PDF, que está desactivado.',
     preview_alt: 'Tu firma',
-    restore_found: 'Your backup has a saved signature.',
-    restore_use: 'Use it',
+    restore_found: 'Tu copia de seguridad tiene una firma guardada.',
+    restore_use: 'Usarla',
     row_empty: 'No hay firma en este dispositivo',
     row_label: 'Firma',
     tab_draw: 'Dibujar',

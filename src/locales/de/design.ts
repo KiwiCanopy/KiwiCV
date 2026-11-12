@@ -67,14 +67,16 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Unterschrift hinzufügen',
-    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_failed:
+      'Deine Unterschrift ist auf diesem Gerät gespeichert, aber die Sicherung konnte nicht aktualisiert werden.',
     backup_github_history:
-      'Removing it deletes it from your repository; earlier versions in its history keep it.',
-    backup_label: 'Also save a copy to {{targets}}',
-    backup_note: 'Saved on this device and in {{targets}}. PDFs you create include it.',
+      'Beim Entfernen wird sie aus deinem Repository gelöscht; frühere Versionen in seiner Historie behalten sie.',
+    backup_label: 'Auch eine Kopie in {{targets}} speichern',
+    backup_note:
+      'Auf diesem Gerät und in {{targets}} gespeichert. PDFs, die du erstellst, enthalten sie.',
     change: 'Ändern',
-    commit_removed: 'Remove signature backup',
-    commit_saved: 'Back up signature',
+    commit_removed: 'Unterschrift-Sicherung entfernen',
+    commit_saved: 'Unterschrift sichern',
     crop_description:
       'Schneide das Bild zu, drehe oder spiegle es. Der Papierhintergrund wird danach entfernt.',
     crop_title: 'Unterschrift zuschneiden',
@@ -87,8 +89,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Dieser Stil kann nicht jeden Buchstaben dieses Namens darstellen.',
     footer_off: 'Erscheint in der PDF-Fußzeile, die ausgeschaltet ist.',
     preview_alt: 'Deine Unterschrift',
-    restore_found: 'Your backup has a saved signature.',
-    restore_use: 'Use it',
+    restore_found: 'Deine Sicherung enthält eine gespeicherte Unterschrift.',
+    restore_use: 'Verwenden',
     row_empty: 'Keine Unterschrift auf diesem Gerät',
     row_label: 'Unterschrift',
     tab_draw: 'Zeichnen',

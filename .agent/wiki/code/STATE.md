@@ -83,7 +83,7 @@ each of those roads and fails if the signature appears.
 - `parseStoredSignature` runs on rehydrate and drops anything invalid rather than trusting
   storage. `id` is restricted to `[a-z0-9-]` because it names a virtual compile path
   (`/signature/<id>.png`).
-- It is **not cleared on sign-out** — current behaviour, and an open owner question (a shared
+- It is **not cleared on sign-out** — current behaviour, and an open owner question, #108 (a shared
   device keeps the previous user's signature).
 
 ## Auth & Persistence (`AuthProvider.tsx`)

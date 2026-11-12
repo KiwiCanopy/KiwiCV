@@ -62,7 +62,7 @@ Pages-published): there `githubSync.ts` recompiles without it, as it already did
 cover letter, because a public signature image is an easy forgery source.
 `buildExportArtifacts` takes the signature as a required parameter so every caller decides
 (`githubSyncSignature.test.ts`). An opt-in sync to a separate file was proposed by the
-owner and deferred to a follow-up issue; until then, do not add the signature to any sync payload.
+owner and deferred to #106; until then, do not add the signature to any sync payload.
 
 ## Validation
 

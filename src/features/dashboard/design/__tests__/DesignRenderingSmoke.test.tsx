@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 import { getThemeList } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { type ResumeData, initialResumeState } from '@/types/resume';
 import { enrichResumeWithPlaceholders } from '@/utils/placeholder-fallback';
 import { describe, expect, it } from 'vitest';
@@ -32,7 +33,7 @@ describe('Design rendering boundary', () => {
   it.each(Object.entries(SERIALIZERS))(
     'serializes the %s Typst template with the same resume content',
     (themeId, serialize) => {
-      const markup = serialize(buildResume(themeId));
+      const markup = serialize(buildResume(themeId), NO_SIGNATURE);
 
       expect(markup.length).toBeGreaterThan(500);
       expect(markup).toContain('John Doe');

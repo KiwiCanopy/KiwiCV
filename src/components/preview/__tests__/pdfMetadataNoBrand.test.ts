@@ -1,5 +1,6 @@
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import { describe, expect, it } from 'vitest';
 
@@ -9,7 +10,7 @@ const THEME_IDS = Object.keys(SERIALIZERS) as ThemeId[];
 const metadataLine = (themeId: ThemeId, name: string): string | undefined => {
   const data = buildSingleItemResume(themeId);
   data.basics.name = name;
-  return SERIALIZERS[themeId](data)
+  return SERIALIZERS[themeId](data, NO_SIGNATURE)
     .split('\n')
     .find((line) => line.startsWith('#set document('));
 };

@@ -5,6 +5,7 @@ import { serializeToTypst as plain2Serialize } from '@/components/preview/themes
 import { serializeToTypst as plainSerialize } from '@/components/preview/themes/oneColumn/plain/PlainSerializer';
 import { serializeToTypst as stackOverflowSerialize } from '@/components/preview/themes/oneColumn/stackoverflow/StackOverflowSerializer';
 import { serializeToTypst as timelessSerialize } from '@/components/preview/themes/oneColumn/timeless/TimelessSerializer';
+import type { SerializeContext } from '@/components/preview/themes/shared/signature';
 import { serializeToTypst as foggySerialize } from '@/components/preview/themes/twoColumn/foggy/FoggySerializer';
 import { serializeToTypst as lunarSerialize } from '@/components/preview/themes/twoColumn/lunar/LunarSerializer';
 import { serializeToTypst as mistySerialize } from '@/components/preview/themes/twoColumn/misty/MistySerializer';
@@ -21,8 +22,11 @@ import type { ResumeData } from '@/types/resume';
  * previewable in HTML but with no PDF at all — is a compile error here instead
  * of a silent gap. `__tests__/typstCompile.test.ts` asserts the same property
  * at runtime, since that is what keeps its table from shrinking unnoticed.
+ *
+ * `ctx` is required here although each serializer defaults it: every app call
+ * site must state the signature, and only tests may omit it.
  */
-export const SERIALIZERS: Record<ThemeId, (resume: ResumeData) => string> = {
+export const SERIALIZERS: Record<ThemeId, (resume: ResumeData, ctx: SerializeContext) => string> = {
   elegant: elegantSerialize,
   plain: plainSerialize,
   plain2: plain2Serialize,

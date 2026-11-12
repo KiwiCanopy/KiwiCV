@@ -3,6 +3,7 @@ import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { type LetterFurniture, furnitureBlocks } from '@/components/preview/letterCapacity';
 import type { ThemeId } from '@/components/preview/themeIds';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { compileToPdf, mapIcons } from '@/test/typstCompile';
 import type { ResumeData } from '@/types/resume';
 import { readPdfPageCount } from '@/utils/pdf-page-count';
@@ -33,7 +34,7 @@ export async function letterPages(themeId: ThemeId, withLetter: ResumeData): Pro
     serializeIconsMap(withLetter, paletteIconFills(themeId, withLetter.meta.theme.params?.palette)),
   );
   const count = async (data: ResumeData) => {
-    const pages = readPdfPageCount(await compileToPdf(SERIALIZERS[themeId](data)));
+    const pages = readPdfPageCount(await compileToPdf(SERIALIZERS[themeId](data, NO_SIGNATURE)));
     if (pages === null) throw new Error(`no page tree read for ${themeId}`);
     return pages;
   };

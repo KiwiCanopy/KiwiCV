@@ -10,6 +10,7 @@ import { usePdfSync } from '@/hooks/usePdfSync';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useTypst } from '@/hooks/useTypst';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { signatureCompileInputs, useSignatureStore } from '@/store/signature/useSignatureStore';
 import type { ViewMode } from '@/store/ui/useUIStore';
 import { getProjectFilename } from '@/utils/export';
 import { readPdfPageCount } from '@/utils/pdf-page-count';
@@ -47,13 +48,16 @@ export function Viewer({ viewMode }: ViewerProps) {
 
   const hasSerializer = !!SERIALIZERS[themeMeta.id];
 
+  const storedSignature = useSignatureStore((state) => state.signature);
+  const signature = useMemo(() => signatureCompileInputs(storedSignature), [storedSignature]);
+
   const markup = useMemo(() => {
     const serializer = SERIALIZERS[themeMeta.id];
     if (!serializer) {
       return '';
     }
-    return serializer(enrichedPdfResume);
-  }, [themeMeta.id, enrichedPdfResume]);
+    return serializer(enrichedPdfResume, signature.ctx);
+  }, [themeMeta.id, enrichedPdfResume, signature]);
 
   // Retry is only meaningful when a recompile could produce a different
   // outcome. A theme with no serializer fails identically every time.
@@ -113,7 +117,7 @@ export function Viewer({ viewMode }: ViewerProps) {
       paletteIconFills(themeMeta.id, resume.meta?.theme?.params?.palette),
     );
     const profileImage = shownProfileImage(enrichedPdfResume);
-    compilePdf(markup, assets, profileImage)
+    compilePdf(markup, assets, profileImage, signature.images)
       .then((pdfBytes) => {
         if (isCurrent) {
           const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
@@ -162,6 +166,7 @@ export function Viewer({ viewMode }: ViewerProps) {
     themeMeta.id,
     hasSerializer,
     enrichedPdfResume,
+    signature,
     retryToken,
   ]);
 

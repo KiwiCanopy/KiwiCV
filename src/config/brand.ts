@@ -99,6 +99,11 @@ export const BRAND_STORAGE_KEYS = {
    * claimed the writing sample since. New, no migration.
    */
   coverLetterStyleFreshSignIn: 'kiwicv-cover-letter-style-fresh-sign-in',
+  /**
+   * The document signature (#103). Device-only by ruling: it is never part of
+   * `ResumeData`, so no sync, export or AI payload can carry it. New, no migration.
+   */
+  signature: 'kiwicv-signature',
   /** sessionStorage: when the last stale-chunk reload ran. New, no migration. */
   chunkReloadAt: 'kiwicv-chunk-reload-at',
 } as const;

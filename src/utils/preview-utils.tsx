@@ -2,6 +2,7 @@ import { getThemeMeta, paletteIconFills } from '@/components/preview/ThemeRegist
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
 import { compileTypstPdf } from '@/hooks/useTypst';
+import { signatureCompileInputs, useSignatureStore } from '@/store/signature/useSignatureStore';
 import { type ResumeData } from '@/types/resume';
 import { sanitizePath } from '@/utils/export';
 import { generateThemedHTML } from '@/utils/html-generator';
@@ -83,13 +84,14 @@ export const openPDFPreview = async (
     const serializer = SERIALIZERS[themeMeta.id];
     if (!serializer) throw new Error(`Serializer not found for Typst theme: ${themeMeta.id}`);
 
-    const markup = serializer(enrichedResume);
+    const signature = signatureCompileInputs(useSignatureStore.getState().signature);
+    const markup = serializer(enrichedResume, signature.ctx);
     const assets = serializeIconsMap(
       enrichedResume,
       paletteIconFills(themeMeta.id, resume.meta?.theme?.params?.palette),
     );
     const profileImage = shownProfileImage(enrichedResume);
-    const pdfBytes = await compileTypstPdf(markup, assets, profileImage);
+    const pdfBytes = await compileTypstPdf(markup, assets, profileImage, signature.images);
     const url = URL.createObjectURL(
       new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' }),
     );

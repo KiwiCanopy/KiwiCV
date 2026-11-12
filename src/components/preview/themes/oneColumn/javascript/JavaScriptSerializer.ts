@@ -11,6 +11,7 @@ import {
   resolvePalette,
 } from '@/components/preview/themes/shared';
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
+import { NO_SIGNATURE, type SerializeContext } from '@/components/preview/themes/shared/signature';
 import {
   getTypstFooterParts,
   renderTypstSignatureFooter,
@@ -78,7 +79,7 @@ function escapeString(str: string | null | undefined): string {
   return escapeTypst(str).replace(/"/g, '\\"');
 }
 
-export function serializeToTypst(data: ResumeData): string {
+export function serializeToTypst(data: ResumeData, ctx: SerializeContext = NO_SIGNATURE): string {
   const { meta, basics } = data;
   const { cvLocale, cvTitle, formatCVDate, formatCVDateRange } = getBoundFormatters(data);
   // ⚠️ `getSectionLabels`, not `cvLocale.sections`. The locale map holds
@@ -220,6 +221,7 @@ export function serializeToTypst(data: ResumeData): string {
   const contactItems = getContactItems(basics, v.profiles, address);
 
   const coverLetterMarkup = buildCoverLetterTypst(data, {
+    signature: ctx.signature,
     footerParts: getTypstFooterParts(data, cvLocale),
     fontScale,
     // Conventional letter margins — the theme's 24pt side margins are an IDE
@@ -533,6 +535,7 @@ ${pageSetup}
   // to spell out — the colour, the 180pt rule, the `#888888` text — is what the
   // renderer emits with no options at all.
   markup += renderTypstSignatureFooter({
+    signature: ctx.signature,
     showFooter,
     parts: footerParts,
     name: basics.name,

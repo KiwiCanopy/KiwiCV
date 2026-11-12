@@ -1,5 +1,6 @@
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { type ResumeData, initialResumeState } from '@/types/resume';
 import { describe, expect, it } from 'vitest';
 
@@ -9,6 +10,7 @@ const THEME_OPTIONS = {
   // The letter now renders exactly these, so a case about the signature block
   // sets them here rather than through `coverLetter.date`.
   footerParts: ['Berlin, DE', '24 July 2026'],
+  signature: undefined,
   pageMargin: '(x: 40pt, y: 40pt)',
   themeHeader: '#text[THEME-HEADER]',
   senderAddress: 'Musterstraße 1, 12345 Berlin',
@@ -330,13 +332,13 @@ describe('theme serializers', () => {
 
   it.each(serializers)('%s: emits no cover letter when disabled', (_name, serialize) => {
     const data = resumeWithLetter({ enabled: false });
-    expect(serialize(data)).not.toContain('Cover letter');
+    expect(serialize(data, NO_SIGNATURE)).not.toContain('Cover letter');
   });
 
   it.each(serializers)(
     '%s: prepends the letter before the résumé page setup when enabled',
     (_name, serialize) => {
-      const markup = serialize(resumeWithLetter());
+      const markup = serialize(resumeWithLetter(), NO_SIGNATURE);
       const letterAt = markup.indexOf('Cover letter');
       expect(letterAt).toBeGreaterThan(-1);
       expect(markup).toContain('#strong[Jane]');
@@ -376,7 +378,7 @@ describe('single-highlight Typst arrays', () => {
     ['plain', SERIALIZERS.plain],
     ['plain2', SERIALIZERS.plain2],
   ] as const)('%s: emits a valid array for exactly one highlight', (_name, serialize) => {
-    const markup = serialize(resumeWithOneHighlight());
+    const markup = serialize(resumeWithOneHighlight(), NO_SIGNATURE);
     expect(markup).toContain('highlights: ([Solo bullet],)');
     expect(markup).not.toContain('highlights: ([Solo bullet])');
   });
@@ -396,6 +398,7 @@ describe('single-highlight Typst arrays', () => {
   it('misty: single skill keyword and main-column interest emit valid arrays', () => {
     const markup = SERIALIZERS.misty(
       mistyData({ main: ['skills', 'interests'], sidebar: [], sidebarPosition: 'left' }),
+      NO_SIGNATURE,
     );
     // skill keywords: `([Solo],).map(...)`, never `([Solo]).map(...)`
     expect(markup).toContain('([Solo],).map(kw => misty-badge');
@@ -407,6 +410,7 @@ describe('single-highlight Typst arrays', () => {
   it('misty: single sidebar interest emits a valid array', () => {
     const markup = SERIALIZERS.misty(
       mistyData({ main: [], sidebar: ['interests'], sidebarPosition: 'left' }),
+      NO_SIGNATURE,
     );
     expect(markup).toContain(']],).map(item => box(');
     expect(markup).not.toContain(']]).map(item => box(');

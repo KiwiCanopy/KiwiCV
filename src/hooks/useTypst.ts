@@ -68,6 +68,7 @@ function postCompile(
   markup: string,
   assets?: Record<string, string>,
   profileImage?: string,
+  images?: Record<string, string>,
 ): Promise<unknown> {
   const id = String(nextRequestId++);
   return new Promise<unknown>((resolve, reject) => {
@@ -89,7 +90,7 @@ function postCompile(
     });
 
     const worker = getWorker();
-    worker.postMessage({ type, id, markup, assets, profileImage });
+    worker.postMessage({ type, id, markup, assets, profileImage, images });
   });
 }
 
@@ -122,8 +123,18 @@ let lastPdf: { key: string; promise: Promise<Uint8Array> } | null = null;
 // Length-prefixed rather than joined on a separator: a raw concatenation lets
 // a different split of the same characters produce the same key, and a NUL
 // separator would make git treat this source file as binary.
-const pdfCacheKey = (markup: string, assets?: Record<string, string>, profileImage?: string) =>
-  [markup, assets ? JSON.stringify(assets) : '', profileImage ?? '']
+const pdfCacheKey = (
+  markup: string,
+  assets?: Record<string, string>,
+  profileImage?: string,
+  images?: Record<string, string>,
+) =>
+  [
+    markup,
+    assets ? JSON.stringify(assets) : '',
+    profileImage ?? '',
+    images ? JSON.stringify(images) : '',
+  ]
     .map((part) => `${part.length}:${part}`)
     .join('');
 
@@ -131,11 +142,18 @@ export async function compileTypstPdf(
   markup: string,
   assets?: Record<string, string>,
   profileImage?: string,
+  images?: Record<string, string>,
 ): Promise<Uint8Array> {
-  const key = pdfCacheKey(markup, assets, profileImage);
+  const key = pdfCacheKey(markup, assets, profileImage, images);
   if (lastPdf?.key === key) return lastPdf.promise;
 
-  const promise = postCompile('compile-pdf', markup, assets, profileImage) as Promise<Uint8Array>;
+  const promise = postCompile(
+    'compile-pdf',
+    markup,
+    assets,
+    profileImage,
+    images,
+  ) as Promise<Uint8Array>;
   const entry = { key, promise };
   lastPdf = entry;
 
@@ -177,11 +195,18 @@ export function useTypst() {
       markup: string,
       assets?: Record<string, string>,
       profileImage?: string,
+      images?: Record<string, string>,
     ): Promise<Uint8Array> => {
       setLoading(true);
       setError(null);
       try {
-        return (await postCompile('compile-pdf', markup, assets, profileImage)) as Uint8Array;
+        return (await postCompile(
+          'compile-pdf',
+          markup,
+          assets,
+          profileImage,
+          images,
+        )) as Uint8Array;
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : String(err);
         setError(errorMsg);

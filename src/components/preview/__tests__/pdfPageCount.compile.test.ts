@@ -1,6 +1,7 @@
 import { paletteIconFills } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { buildPlaceholderResume } from '@/test/placeholderResume';
 import {
   TYPST_INIT_TIMEOUT_MS,
@@ -59,7 +60,7 @@ describe('the page count survives the real compiler', () => {
     // (access denied)" — a hard compile failure, not a missing picture.
     await mapProfileImage(resume.basics.image);
 
-    const bytes = await compileToPdf(SERIALIZERS[THEME_ID](resume));
+    const bytes = await compileToPdf(SERIALIZERS[THEME_ID](resume, NO_SIGNATURE));
     expect(isPdf(bytes)).toBe(true);
 
     const parsed = readPdfPageCount(bytes);

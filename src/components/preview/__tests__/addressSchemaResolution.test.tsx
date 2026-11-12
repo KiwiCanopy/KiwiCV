@@ -6,6 +6,7 @@ import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
 import { getBoundFormatters } from '@/components/preview/themes/shared';
 import { formatFullAddress, getCityCountry } from '@/components/preview/themes/shared/address';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { ALL_ADDRESS_FIELD_KEYS } from '@/features/dashboard/design/helpers/addressSchemaTypes';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import type { ResumeData } from '@/types/resume';
@@ -118,7 +119,7 @@ const renderTheme = (themeId: ThemeId, field: string, blankField?: string): stri
   );
 
 const serializeTheme = (themeId: ThemeId, field: string, blankField?: string): string =>
-  SERIALIZERS[themeId](withAddressField(themeId, field, blankField));
+  SERIALIZERS[themeId](withAddressField(themeId, field, blankField), NO_SIGNATURE);
 
 describe('formatFullAddress with a custom address schema', () => {
   const location = { address: '10 Downing St', postalCode: 'SW1A', city: 'London', region: 'GL' };
@@ -511,7 +512,7 @@ describe('formatFullAddress trims every field', () => {
   };
 
   describe.each([
-    ['serializer', (data: ResumeData, id: ThemeId) => SERIALIZERS[id](data)],
+    ['serializer', (data: ResumeData, id: ThemeId) => SERIALIZERS[id](data, NO_SIGNATURE)],
     [
       'HTML component',
       (data: ResumeData, id: ThemeId) =>

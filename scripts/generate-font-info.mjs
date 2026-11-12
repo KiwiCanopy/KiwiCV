@@ -29,7 +29,15 @@ const FONT_DIR = path.join(ROOT, 'public', 'fonts');
 const OUT_FILE = path.join(ROOT, 'src', 'workers', 'lazy-font-info.json');
 
 /** Faces registered lazily. Keep in sync with `LAZY_FONT_FILES` in the worker. */
-const LAZY_FONTS = ['noto-sans-cjk-sc-regular.otf', 'noto-sans-cjk-jp-regular.otf'];
+const LAZY_FONTS = [
+  'noto-sans-cjk-sc-regular.otf',
+  'noto-sans-cjk-jp-regular.otf',
+  // The typed-signature faces (`signatureFaces.ts`), fetched only when a signature names one.
+  'herr-von-muellerhoff-regular.ttf',
+  'great-vibes-regular.ttf',
+  'alex-brush-regular.ttf',
+  'pinyon-script-regular.ttf',
+];
 
 // Resolved as a package — `ops/TESTING.md` § Paths in tests.
 const require = createRequire(import.meta.url);

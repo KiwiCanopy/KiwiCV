@@ -30,6 +30,11 @@ import {
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
 import { getProfileDisplayPDF } from '@/components/preview/themes/shared/profiles-pdf';
 import {
+  NO_SIGNATURE,
+  type SerializeContext,
+  type TypstSignature,
+} from '@/components/preview/themes/shared/signature';
+import {
   getTypstFooterParts,
   renderTypstSignatureFooter,
 } from '@/components/preview/themes/shared/typstFooter';
@@ -107,10 +112,16 @@ function getHeaderContacts(data: ResumeData, cvLocale: CVLocaleMetadata): string
  * it, so the check is now genuinely made — once, by the renderer.
  * `footerLocation.test.ts`'s name-count cases are what hold that.
  */
-function footerMarkup(data: ResumeData, cvLocale: CVLocaleMetadata, fontScale: number): string {
+function footerMarkup(
+  data: ResumeData,
+  cvLocale: CVLocaleMetadata,
+  fontScale: number,
+  signature: TypstSignature | undefined,
+): string {
   const { meta, basics } = data;
 
   return renderTypstSignatureFooter({
+    signature,
     showFooter: meta?.theme?.params?.showFooter,
     parts: getTypstFooterParts(data, cvLocale),
     name: basics.name,
@@ -119,7 +130,7 @@ function footerMarkup(data: ResumeData, cvLocale: CVLocaleMetadata, fontScale: n
   });
 }
 
-export function serializeToTypst(data: ResumeData): string {
+export function serializeToTypst(data: ResumeData, ctx: SerializeContext = NO_SIGNATURE): string {
   const { basics, meta } = data;
   const { cvLocale, cvTitle, formatCVDate, formatCVDateRange } = getBoundFormatters(data);
   const labels = getSectionLabels(cvLocale.sections || {}, meta?.theme?.params?.sectionLabels);
@@ -138,6 +149,7 @@ export function serializeToTypst(data: ResumeData): string {
   const pageSetup = `#set page(paper: "a4", margin: (top: 30pt, bottom: 30pt, left: 40pt, right: 40pt), fill: rgb("${p.bg}"))`;
 
   const coverLetterMarkup = buildCoverLetterTypst(data, {
+    signature: ctx.signature,
     footerParts: getTypstFooterParts(data, cvLocale),
     fontScale,
     pageMargin: '(top: 30pt, bottom: 30pt, left: 40pt, right: 40pt)',
@@ -280,6 +292,6 @@ ${
     markup += serializeSection(section.key, { ...context, v: section.v, labels: section.labels });
   });
 
-  markup += footerMarkup(data, cvLocale, fontScale);
+  markup += footerMarkup(data, cvLocale, fontScale, ctx.signature);
   return markup;
 }

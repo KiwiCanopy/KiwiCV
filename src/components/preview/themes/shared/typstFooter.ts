@@ -1,5 +1,9 @@
 import { getCityCountry } from '@/components/preview/themes/shared/address';
 import { getPlaceholderCity } from '@/components/preview/themes/shared/levels';
+import {
+  type TypstSignature,
+  renderTypstSignatureMark,
+} from '@/components/preview/themes/shared/signature';
 import type { CVLocaleMetadata } from '@/components/preview/themes/shared/types';
 import { escapeTypst } from '@/components/preview/themes/shared/typstUtils';
 import type { ResumeData } from '@/types/resume';
@@ -246,6 +250,12 @@ interface TypstSignatureFooterOptions {
    */
   insetTop?: number;
   insetLeft?: number;
+  /**
+   * The device-only signature (#103), drawn above the rule in place of the
+   * signing gap. Never read from `ResumeData`: every serializer takes it from
+   * its `SerializeContext`.
+   */
+  signature: TypstSignature | undefined;
 }
 
 /**
@@ -295,6 +305,9 @@ interface TypstSignatureFooterOptions {
  * not of the rule's width, so their narrower `width: 160` buys no reduction.
  * `footerGeometry.test.ts` pins all three equal across the two families.
  */
+/** Space between the signature mark and the rule, in pt before `fontScale`. */
+const SIGNATURE_TO_LINE_GAP = 0;
+
 export function renderTypstSignatureFooter({
   showFooter,
   parts,
@@ -309,8 +322,14 @@ export function renderTypstSignatureFooter({
   lineInsetTop = 6,
   insetTop = 0,
   insetLeft = 0,
+  signature,
 }: TypstSignatureFooterOptions): string {
-  if (showFooter === false || (!joinFooterParts(parts) && !name)) return '';
+  if (showFooter === false || (!joinFooterParts(parts) && !name && !signature)) return '';
+
+  const mark = signature
+    ? renderTypstSignatureMark(signature, { width: width * fontScale, fontScale })
+    : '';
+  const lineText = joinFooterParts(parts);
 
   const inset = [
     insetTop ? `top: ${insetTop * fontScale}pt` : '',
@@ -321,12 +340,13 @@ export function renderTypstSignatureFooter({
 #v(${topGap * fontScale}pt)
 #block(width: 100%, breakable: false${inset.length ? `, inset: (${inset.join(', ')})` : ''})[
   #align(right)[
-    ${joinFooterParts(parts) ? `#text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(joinFooterParts(parts))}]\n    #v(${textToLineGap * fontScale}pt)` : ''}
+    ${lineText ? `#text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(lineText)}]\n    ${mark ? '' : `#v(${textToLineGap * fontScale}pt)`}` : ''}
+    ${mark ? `${mark}\n    #v(${SIGNATURE_TO_LINE_GAP * fontScale}pt)` : ''}
     ${
-      name
+      name || mark
         ? `#box(width: ${width * fontScale}pt, stroke: (top: 1pt + ${borderColor}), inset: (top: ${lineInsetTop * fontScale}pt))[
       #align(center)[
-        #text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(name)}]
+        #text(size: ${textSize * fontScale}pt, fill: ${textColor})[${escapeTypst(name ?? '')}]
       ]
     ]`
         : ''

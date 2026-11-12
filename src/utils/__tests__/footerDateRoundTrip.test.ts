@@ -1,5 +1,6 @@
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, type ThemeId } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { getThemeTranslations } from '@/components/preview/themes/shared/translations';
 import { getTypstFooterParts } from '@/components/preview/themes/shared/typstFooter';
 import { useResumeStore } from '@/store/resume/useResumeStore';
@@ -137,7 +138,7 @@ describe('every theme that has a footer date honours the setting', () => {
   const serialize = (themeId: ThemeId, footerDate: string): string => {
     const data = buildSingleItemResume(themeId) as ResumeData;
     data.meta.theme.params = { ...data.meta.theme.params, footerDate };
-    return SERIALIZERS[themeId](data);
+    return SERIALIZERS[themeId](data, NO_SIGNATURE);
   };
 
   const withFooterDate = ALL_THEME_IDS.filter(

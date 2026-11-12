@@ -1,3 +1,4 @@
+import { SIGNATURE_FACES } from '@/components/preview/themes/shared/signature';
 import { getProfileImagePath } from '@/components/preview/themes/shared/typstUtils';
 import { EAGER_FONT_FILES, typstFontLoaders } from '@/workers/eagerFonts';
 import lazyFontInfo from '@/workers/lazy-font-info.json';
@@ -70,10 +71,16 @@ const CJK_PATTERN = new RegExp(
  * worker can await, and the synchronous callback then serves from the cache.
  */
 async function prefetchLazyFonts(markup: string) {
-  if (!CJK_PATTERN.test(markup)) return;
+  const needsCjk = CJK_PATTERN.test(markup);
 
   await Promise.all(
     lazyFontInfo.fonts.map(async (entry) => {
+      // A signature face is named only by a typed signature's `font:`; the CJK
+      // faces sit in every theme's font stack, so they key on the text instead.
+      const signatureFace = SIGNATURE_FACES.find((face) => face.file === entry.file);
+      const needed = signatureFace ? markup.includes(`font: "${signatureFace.family}"`) : needsCjk;
+      if (!needed) return;
+
       const url = `${self.location.origin}/fonts/${entry.file}`;
       if (lazyFontCache.has(url)) return;
 
@@ -218,8 +225,17 @@ async function initFonts() {
   return initFontsPromise;
 }
 
+function dataUrlBytes(dataUrl: string): Uint8Array {
+  const binaryString = atob(dataUrl.replace(/^data:image\/[^;]+;base64,/, ''));
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
 self.onmessage = async (event: MessageEvent) => {
-  const { type, id, markup, assets, profileImage } = event.data;
+  const { type, id, markup, assets, profileImage, images } = event.data;
 
   try {
     // Ensure compiler and fonts are initialized
@@ -254,12 +270,7 @@ self.onmessage = async (event: MessageEvent) => {
         let bytes: Uint8Array;
 
         if (profileImage.startsWith('data:image/')) {
-          const base64Data = profileImage.replace(/^data:image\/[^;]+;base64,/, '');
-          const binaryString = atob(base64Data);
-          bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
+          bytes = dataUrlBytes(profileImage);
         } else {
           // Resolve relative to host origin if it's a relative path
           const url = profileImage.startsWith('http')
@@ -275,6 +286,18 @@ self.onmessage = async (event: MessageEvent) => {
         compiler.mapShadow(imagePath, bytes);
       } catch (err) {
         console.error('Failed to map profile image in Web Worker:', err);
+      }
+    }
+
+    // Data-URL images at the virtual paths the markup names: the device-only
+    // signature, which is not in the résumé the serializer reads (#103).
+    if (images) {
+      for (const [path, dataUrl] of Object.entries(images as Record<string, string>)) {
+        try {
+          compiler.mapShadow(path, dataUrlBytes(dataUrl));
+        } catch (err) {
+          console.error('Failed to map image in Web Worker:', err);
+        }
       }
     }
 

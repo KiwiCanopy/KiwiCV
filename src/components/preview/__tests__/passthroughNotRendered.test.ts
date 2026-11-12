@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { ThemeRegistry } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS } from '@/components/preview/themeIds';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import { getBoundFormatters } from '@/components/preview/themes/shared/translations';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import { describe, expect, it } from 'vitest';
@@ -27,7 +28,7 @@ const render = (themeId: (typeof ALL_THEME_IDS)[number], sentinelIn: 'passthroug
       formatCVDateRange: bound.formatCVDateRange,
     }),
   );
-  return { html, typst: SERIALIZERS[themeId](data) };
+  return { html, typst: SERIALIZERS[themeId](data, NO_SIGNATURE) };
 };
 
 describe('pass-through data in the 12 themes', () => {

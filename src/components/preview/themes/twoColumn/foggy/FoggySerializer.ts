@@ -9,6 +9,7 @@ import {
   resolvePalette,
 } from '@/components/preview/themes/shared';
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
+import { NO_SIGNATURE, type SerializeContext } from '@/components/preview/themes/shared/signature';
 import {
   getTypstFooterParts,
   renderTypstSignatureFooter,
@@ -40,7 +41,7 @@ import {
 } from './helpers/typst/educationSkills';
 import { serializeProjects, serializeVolunteer, serializeWork } from './helpers/typst/experience';
 
-export function serializeToTypst(data: ResumeData): string {
+export function serializeToTypst(data: ResumeData, ctx: SerializeContext = NO_SIGNATURE): string {
   const { basics, meta } = data;
   const { cvLocale, cvTitle, formatCVDate, formatCVDateRange } = getBoundFormatters(data);
   const labels = getSectionLabels(cvLocale.sections || {}, meta?.theme?.params?.sectionLabels);
@@ -69,6 +70,7 @@ export function serializeToTypst(data: ResumeData): string {
 )`;
 
   const coverLetterMarkup = buildCoverLetterTypst(data, {
+    signature: ctx.signature,
     footerParts: getTypstFooterParts(data, cvLocale),
     fontScale,
     pageMargin: '(top: 35pt, bottom: 35pt, left: 30pt, right: 30pt)',
@@ -327,6 +329,7 @@ ${pageSetup}
 `;
 
   markup += renderTypstSignatureFooter({
+    signature: ctx.signature,
     showFooter: meta?.theme?.params?.showFooter,
     parts,
     name: basics.name,

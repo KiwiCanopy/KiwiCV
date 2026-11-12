@@ -2,16 +2,24 @@ import { paletteIconFills } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { ALL_THEME_IDS, resolveThemeId } from '@/components/preview/themeIds';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
+import { getSignatureFace } from '@/components/preview/themes/shared/signature';
 import { COVER_LETTER_MAX_WORDS } from '@/constants/ai';
+import { type StoredSignature, signatureCompileInputs } from '@/store/signature/useSignatureStore';
 import { PLACEHOLDER_LETTER_EN, buildLetterResume } from '@/test/coverLetterProse';
 import { buildPlaceholderResume } from '@/test/placeholderResume';
 import { buildRealExportResume } from '@/test/realExportResume';
 import { buildSingleItemResume } from '@/test/singleItemResume';
 import { REPO_ROOT } from '@/test/sourceFiles';
-import { compileToPdf, initTypstCompiler, mapIcons, mapProfileImage } from '@/test/typstCompile';
+import {
+  compileToPdf,
+  initTypstCompiler,
+  mapIcons,
+  mapImages,
+  mapProfileImage,
+} from '@/test/typstCompile';
 import type { ResumeData } from '@/types/resume';
 import { coverLetterWordTarget } from '@/utils/coverLetterLength';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -46,6 +54,30 @@ import { describe, expect, it } from 'vitest';
 
 const theme = process.env.RENDER_THEME;
 const fixture = process.env.RENDER_FIXTURE ?? 'single';
+/** `image`, or `typed:<faceId>`, to look at the footer with a signature (#103). */
+const signatureEnv = process.env.RENDER_SIGNATURE;
+
+function renderSignature(): StoredSignature | null {
+  if (!signatureEnv) return null;
+  if (signatureEnv === 'image') {
+    const bytes = readFileSync(resolve(REPO_ROOT, 'src/test/fixtures/signature-sample.png'));
+    return {
+      kind: 'image',
+      id: 'sample',
+      dataUrl: `data:image/png;base64,${bytes.toString('base64')}`,
+      source: 'upload',
+    };
+  }
+  const faceId = signatureEnv.replace(/^typed:/, '');
+  const face = getSignatureFace(faceId);
+  expect(face, `RENDER_SIGNATURE="${signatureEnv}" names no face`).toBeDefined();
+  return {
+    kind: 'typed',
+    id: 'sample',
+    faceId: face!.id,
+    text: process.env.RENDER_SIGNATURE_TEXT ?? 'Jane Doe',
+  };
+}
 
 /**
  * `single` is the suite's own fixture — exactly one of every array-bearing
@@ -150,7 +182,9 @@ describe.skipIf(!theme)('render a theme to scratch/', () => {
     const themeId = theme as (typeof ALL_THEME_IDS)[number];
     const resume = FIXTURES[fixture](themeId);
 
-    await initTypstCompiler();
+    await initTypstCompiler({ signatureFaces: !!signatureEnv });
+    const signature = signatureCompileInputs(renderSignature());
+    await mapImages(signature.images);
     // The same two steps the render worker runs: the serializers emit
     // `image("/icons/<name>.svg")` and `image("/profile-image.<ext>")` for
     // files that exist only at render time. The icon fill comes from the
@@ -161,7 +195,7 @@ describe.skipIf(!theme)('render a theme to scratch/', () => {
     );
     await mapProfileImage(resume.basics.image);
 
-    const pdf = await compileToPdf(SERIALIZERS[themeId](resume));
+    const pdf = await compileToPdf(SERIALIZERS[themeId](resume, signature.ctx));
 
     // Resolved from the repository root, not `process.cwd()`: a direct
     // `npx vitest` from a subdirectory would otherwise write a `scratch/` there
@@ -169,7 +203,8 @@ describe.skipIf(!theme)('render a theme to scratch/', () => {
     // entry matches at any depth, so nothing would ever show it.
     const dir = resolve(REPO_ROOT, 'scratch');
     mkdirSync(dir, { recursive: true });
-    const path = resolve(dir, `${themeId}-${fixture}.pdf`);
+    const suffix = signatureEnv ? `-sig-${signatureEnv.replace(/[^a-z0-9-]/gi, '_')}` : '';
+    const path = resolve(dir, `${themeId}-${fixture}${suffix}.pdf`);
     writeFileSync(path, pdf);
 
     // The point of the run is the path, not the green tick — and it goes

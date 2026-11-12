@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 import { ThemeRegistry } from '@/components/preview/ThemeRegistry';
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import {
   getBoundFormatters,
   getSectionLabels,
@@ -113,7 +114,7 @@ describe('skyline main-column timeline', () => {
   });
 
   describe('PDF', () => {
-    const typst = SERIALIZERS.skyline(swappedSkyline());
+    const typst = SERIALIZERS.skyline(swappedSkyline(), NO_SIGNATURE);
 
     const section = (label: string) => {
       const start = typst.indexOf(`#skyline-section("${label}"`);

@@ -7,6 +7,7 @@ import { ThemeRegistry, paletteIconFills } from '@/components/preview/ThemeRegis
 import { SERIALIZERS } from '@/components/preview/ThemeSerializers';
 import { type ThemeId } from '@/components/preview/themeIds';
 import { serializeIconsMap } from '@/components/preview/themes/shared/iconSerializer';
+import { NO_SIGNATURE } from '@/components/preview/themes/shared/signature';
 import {
   ALL_SECTION_LABEL_KEYS,
   getBoundFormatters,
@@ -260,7 +261,7 @@ function measure(themeId: ThemeId, placement: Placement): Outcome {
       formatCVDateRange: bound.formatCVDateRange,
     }),
   );
-  const typst = SERIALIZERS[themeId](data);
+  const typst = SERIALIZERS[themeId](data, NO_SIGNATURE);
   // ⚠️ Through `paletteIconFills`, like every other call site — `iconFillIsShared.test.ts`
   // is the guard, and a literal here is exactly the seventh copy of the grey that was removed.
   // The fill is irrelevant to this file (the fingerprint drops paint entirely), which is

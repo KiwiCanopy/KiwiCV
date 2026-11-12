@@ -10,6 +10,7 @@ import {
   resolvePalette,
 } from '@/components/preview/themes/shared';
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
+import { NO_SIGNATURE, type SerializeContext } from '@/components/preview/themes/shared/signature';
 import {
   getTypstFooterParts,
   renderTypstSignatureFooter,
@@ -43,7 +44,7 @@ import {
 } from './helpers/typst/educationSkills';
 import { serializeProjects, serializeVolunteer, serializeWork } from './helpers/typst/experience';
 
-export function serializeToTypst(data: ResumeData): string {
+export function serializeToTypst(data: ResumeData, ctx: SerializeContext = NO_SIGNATURE): string {
   const { basics, meta } = data;
   const { cvLocale, cvTitle, formatCVDate, formatCVDateRange } = getBoundFormatters(data);
   const labels = getSectionLabels(cvLocale.sections || {}, meta?.theme?.params?.sectionLabels);
@@ -82,6 +83,7 @@ export function serializeToTypst(data: ResumeData): string {
   const contactItems = getContactItems(basics, v.profiles, address);
 
   const coverLetterMarkup = buildCoverLetterTypst(data, {
+    signature: ctx.signature,
     footerParts: getTypstFooterParts(data, cvLocale),
     fontScale,
     // The letter page gets conventional margins — the résumé's zero side
@@ -287,6 +289,7 @@ ${pageSetup}
   );
 
   const footerContent = renderTypstSignatureFooter({
+    signature: ctx.signature,
     showFooter: meta?.theme?.params?.showFooter,
     parts: footerParts,
     name: basics.name,

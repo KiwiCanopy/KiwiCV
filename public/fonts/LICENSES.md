@@ -10,13 +10,19 @@ covered by KiwiCV's own license. Copyright notices below are read from each file
 | Lora                  | `lora-latin-{400,700}-{normal,italic}.ttf`                                          | 3.008   | Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic), with Reserved Font Name "Lora". | SIL OFL 1.1 — [OFL.txt](OFL.txt)                                                 |
 | JetBrains Mono        | `jetbrains-mono-latin-{400,700}-{normal,italic}.ttf`                                | 2.211   | Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)                         | SIL OFL 1.1 — [OFL.txt](OFL.txt)                                                 |
 | Noto Sans CJK JP / SC | `noto-sans-cjk-jp-regular.otf`, `noto-sans-cjk-sc-regular.otf`                      | 2.004   | © 2014-2021 Adobe (http://www.adobe.com/). Noto is a trademark of Google Inc.                                          | SIL OFL 1.1 — [OFL.txt](OFL.txt)                                                 |
+| Herr Von Muellerhoff  | `herr-von-muellerhoff-regular.ttf`                                                  | 1.000   | Copyright (c) 2004 Alejandro Paul (sudtipos@sudtipos.com), with Reserved Font Name "Herr Von Mullerhoff"               | SIL OFL 1.1 — [OFL.txt](OFL.txt)                                                 |
+| Great Vibes           | `great-vibes-regular.ttf`                                                           | 1.103   | Copyright 2010 The Great Vibes Pro Project Authors (https://github.com/googlefonts/great-vibes)                        | SIL OFL 1.1 — [OFL.txt](OFL.txt)                                                 |
+| Alex Brush            | `alex-brush-regular.ttf`                                                            | 1.111   | Copyright 2011 The Alex Brush Project Authors (https://github.com/googlefonts/alex-brush)                              | SIL OFL 1.1 — [OFL.txt](OFL.txt)                                                 |
+| Pinyon Script         | `pinyon-script-regular.ttf`                                                         | 1.008   | Copyright 2022 The PinyonScript Project Authors (https://github.com/SorkinType/Pinyon)                                 | SIL OFL 1.1 — [OFL.txt](OFL.txt)                                                 |
 | DejaVu Sans           | `DejaVuSans.ttf`                                                                    | 2.37    | Copyright (c) 2003 by Bitstream, Inc. Copyright (c) 2006 by Tavmjong Bah. DejaVu changes are in public domain.         | Bitstream Vera and Arev font licenses — [LICENSE-DejaVu.txt](LICENSE-DejaVu.txt) |
 
 ## Sources of the license texts
 
 - [OFL.txt](OFL.txt): the license body is the SIL Open Font License 1.1 verbatim from
-  https://openfontlicense.org/documents/OFL.txt, under the copyright lines of the four families
-  above.
+  https://openfontlicense.org/documents/OFL.txt, under the copyright lines of the OFL families above. The four script faces
+  (typed signatures, #103) are the Google Fonts `ofl/` files, unmodified; their copyright lines
+  there are taken from each family's upstream `OFL.txt`, which can differ in year from the
+  `name` table quoted in the table.
 - [LICENSE-DejaVu.txt](LICENSE-DejaVu.txt): verbatim `LICENSE` of the DejaVu fonts 2.37 release,
   https://github.com/dejavu-fonts/dejavu-fonts/blob/version_2_37/LICENSE. Only its first two parts
   (Bitstream Vera and Arev) apply to `DejaVuSans.ttf`; the TeX Gyre DJV Math part covers a font

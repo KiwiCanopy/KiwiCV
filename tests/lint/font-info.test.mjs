@@ -97,11 +97,19 @@ test('the font stack still names every lazily-registered family', () => {
     'utf8',
   );
 
+  // The typed-signature faces are named by `SIGNATURE_FACES` instead: a
+  // signature sets its face directly, never through a theme's stack.
+  const signatureFaces = fs.readFileSync(
+    path.join(ROOT, 'src', 'components', 'preview', 'themes', 'shared', 'signature.ts'),
+    'utf8',
+  );
+
   for (const entry of info.fonts) {
+    const owner = signatureFaces.includes(`file: '${entry.file}'`) ? signatureFaces : utils;
     for (const face of entry.info.info) {
       assert.ok(
-        utils.includes(`'${face.family}'`) || utils.includes(`"${face.family}"`),
-        `${face.family} is registered but absent from TYPST_FONTS in typstUtils.ts`,
+        owner.includes(`'${face.family}'`) || owner.includes(`"${face.family}"`),
+        `${face.family} is registered but absent from ${owner === utils ? 'TYPST_FONTS in typstUtils.ts' : 'SIGNATURE_FACES in signature.ts'}`,
       );
     }
   }

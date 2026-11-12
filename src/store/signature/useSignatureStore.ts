@@ -28,8 +28,17 @@ export type StoredSignature =
 
 interface SignatureStore {
   signature: StoredSignature | null;
+  /**
+   * The account the signature was saved under, or `null` when it was saved
+   * signed out. A different account signing in clears it (#108).
+   */
+  ownerUserId: string | null;
+  /** The signed-in account right now; not persisted. */
+  sessionUserId: string | null;
   setSignature: (signature: StoredSignature) => void;
   removeSignature: () => void;
+  /** Called on every session change, from `AuthProvider`. */
+  bindToUser: (userId: string | null) => void;
 }
 
 const STORE_VERSION = 1;
@@ -77,22 +86,42 @@ export const newSignatureId = (): string =>
 
 export const useSignatureStore = create<SignatureStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       signature: null,
-      setSignature: (signature) => set({ signature }),
-      removeSignature: () => set({ signature: null }),
+      ownerUserId: null,
+      sessionUserId: null,
+      setSignature: (signature) => set({ signature, ownerUserId: get().sessionUserId }),
+      removeSignature: () => set({ signature: null, ownerUserId: null }),
+      bindToUser: (userId) => {
+        // Owner ruling 2026-11-12 (#108): sign-out keeps the signature, like the
+        // résumé beside it; a different person signing in does not inherit it,
+        // like the GitHub token. One saved signed out goes to whoever signs in.
+        const { signature, ownerUserId } = get();
+        if (userId && signature && ownerUserId && ownerUserId !== userId) {
+          set({ signature: null, ownerUserId: null, sessionUserId: userId });
+          return;
+        }
+        set({
+          sessionUserId: userId,
+          ownerUserId: userId && signature ? userId : ownerUserId,
+        });
+      },
     }),
     {
       name: BRAND_STORAGE_KEYS.signature,
       version: STORE_VERSION,
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ signature: state.signature }),
-      merge: (persisted, current) => ({
-        ...current,
-        signature: parseStoredSignature(
-          (persisted as { signature?: unknown } | undefined)?.signature,
-        ),
-      }),
+      partialize: (state) => ({ signature: state.signature, ownerUserId: state.ownerUserId }),
+      merge: (persisted, current) => {
+        const stored = persisted as { signature?: unknown; ownerUserId?: unknown } | undefined;
+        const signature = parseStoredSignature(stored?.signature);
+        return {
+          ...current,
+          signature,
+          ownerUserId:
+            signature && typeof stored?.ownerUserId === 'string' ? stored.ownerUserId : null,
+        };
+      },
     },
   ),
 );

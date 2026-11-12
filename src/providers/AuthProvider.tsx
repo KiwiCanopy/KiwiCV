@@ -25,6 +25,7 @@ import {
 } from '@/services/storage/googleStorage';
 import { useCvLibraryStore } from '@/store/library/useCvLibraryStore';
 import { useResumeStore } from '@/store/resume/useResumeStore';
+import { useSignatureStore } from '@/store/signature/useSignatureStore';
 import { useFlowStore } from '@/store/ui/useFlowStore';
 import { useToastStore } from '@/store/ui/useToastStore';
 import { useUIStore } from '@/store/ui/useUIStore';
@@ -509,6 +510,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         if (!session) {
           bindCoverLetterStyleToUser(null);
+          useSignatureStore.getState().bindToUser(null);
           setSession(null);
           setUser(null);
           setProfile(null);
@@ -587,6 +589,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         // Independent of Drive: a session can end without SIGNED_OUT.
         bindCoverLetterStyleToUser({ userId: session.user.id });
+        useSignatureStore.getState().bindToUser(session.user.id);
         // Only a switch: a signed-out visitor signing in keeps the draft they typed.
         if (lastSessionUserIdRef.current && lastSessionUserIdRef.current !== session.user.id) {
           forgetSignedInUserMemory();

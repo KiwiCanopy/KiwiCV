@@ -144,7 +144,7 @@ Preserve proper nouns, person names, company names, brand names, product names, 
   return `### LANGUAGE RULES
 The current CV language is ${sourceLabel}.
 TRANSLATE ALL provided content into ${targetLabel}. This is a translation task; ensure every single field, bullet point, and summary is rewritten in ${targetLabel} while maintaining a professional and impactful tone.
-Every string field of every entry is in ${targetLabel} in your output, including the fields no other instruction asks you to change: locations, institutions, fields of study, courses, award and certificate titles, awarders, project names, interests and keywords. A fact that must not change keeps its meaning and still changes language. Before you answer, check every entry: a value still in ${sourceLabel} is an error unless it is a proper noun with no ${targetLabel} form.
+Every string field of every entry is in ${targetLabel} in your output, including the fields no other instruction asks you to change: locations, institutions, fields of study, courses, award and certificate titles, awarders, project names, interests and keywords. A fact that must not change keeps its meaning and still changes language. Before you answer, check every entry: a value still in ${sourceLabel} is an error unless it is a proper noun with no ${targetLabel} form. References and recommendations are the one exception: they stay exactly as written.
 If the source content is mixed-language or partially inconsistent, normalize it into ${targetLabel}.
 Preserve proper nouns, person names, company names, brand names, product names, certificates, URLs, acronyms, and clearly intentional foreign-language terms unless they have a standard translated form in ${targetLabel}.`;
 };

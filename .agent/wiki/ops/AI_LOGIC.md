@@ -336,6 +336,18 @@ The backend functions and libraries use **ECMAScript Modules (ESM)**. To ensure 
 - **Translation Tasks**: `TRANSLATION_COMPOSITION` extends the base section composition with `entryLocation` for those same sections, allowing translation flows to localize place names while keeping the schema shape stable.
 - **Generator Behavior**: `generator.js` switches between the base section composition and `TRANSLATION_COMPOSITION` depending on whether the request is a translation pass.
 
+### A tailored translation must be told to translate what it does not tailor
+
+Measured 2026-11-12 against Vertex, an English CV tailored and translated to German: with the
+plain "TRANSLATE ALL" rule, 2 of 2 runs translated only what tailoring rewrote. Locations,
+institutions, fields of study, courses, the award title and awarder, and interests came back in
+English, while a plain `translate_close` run of the same CV translated all of them. The tailoring
+role's "Facts are fixed" and `WHOLE_CV_TAILORING`'s field list read to the model as "leave the
+rest alone". A scope-only sentence fixed 1 of 3 runs, the field list in `LANGUAGE_INSTRUCTIONS`
+3 of 4; both together (`TAILORED_TRANSLATION_SCOPE`) fixed 6 of 6, with tailoring intact. A
+German-to-English tailoring run and a plain translation were unchanged. Do not shorten either
+sentence without re-running that comparison.
+
 ### Tailoring names its facts, and matches everything else
 
 **Owner ruling (2026-10-26, #55): tailoring errs toward matching, and the user's review catches

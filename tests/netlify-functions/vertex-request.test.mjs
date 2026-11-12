@@ -510,6 +510,23 @@ test('a differing target language turns the prompt into a translation task', () 
   assert.match(systemPrompt, /TRANSLATE ALL provided content into German/);
 });
 
+test('a translation names the fields no other instruction rewrites', () => {
+  const { systemPrompt } = improveRequest({ targetLang: 'de' });
+  assert.match(
+    systemPrompt,
+    /including the fields no other instruction asks you to change: locations, institutions/,
+  );
+});
+
+test('a tailored translation is told tailoring does not bound what is translated', () => {
+  const tailored = improveRequest({ mode: 'job_description', targetLang: 'de' }).systemPrompt;
+  const plain = improveRequest({ mode: 'translate_close', targetLang: 'de' }).systemPrompt;
+  const untranslated = improveRequest({ mode: 'job_description' }).systemPrompt;
+  assert.match(tailored, /A field tailoring leaves as it was is still translated/);
+  assert.doesNotMatch(plain, /A field tailoring leaves/);
+  assert.doesNotMatch(untranslated, /A field tailoring leaves/);
+});
+
 test('a matching target language normalizes instead of translating', () => {
   const { systemPrompt } = improveRequest({ targetLang: 'en' });
   assert.doesNotMatch(systemPrompt, /TRANSLATE ALL/);

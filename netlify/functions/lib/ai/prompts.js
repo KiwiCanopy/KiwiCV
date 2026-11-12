@@ -144,6 +144,7 @@ Preserve proper nouns, person names, company names, brand names, product names, 
   return `### LANGUAGE RULES
 The current CV language is ${sourceLabel}.
 TRANSLATE ALL provided content into ${targetLabel}. This is a translation task; ensure every single field, bullet point, and summary is rewritten in ${targetLabel} while maintaining a professional and impactful tone.
+Every string field of every entry is in ${targetLabel} in your output, including the fields no other instruction asks you to change: locations, institutions, fields of study, courses, award and certificate titles, awarders, project names, interests and keywords. A fact that must not change keeps its meaning and still changes language. Before you answer, check every entry: a value still in ${sourceLabel} is an error unless it is a proper noun with no ${targetLabel} form.
 If the source content is mixed-language or partially inconsistent, normalize it into ${targetLabel}.
 Preserve proper nouns, person names, company names, brand names, product names, certificates, URLs, acronyms, and clearly intentional foreign-language terms unless they have a standard translated form in ${targetLabel}.`;
 };
@@ -438,6 +439,11 @@ You have permission to restructure skill categories for optimal ATS impact:
 const WHOLE_CV_TAILORING =
   "Carry the job description's terms into the summary, every work entry's summary and highlights, the skills, and the headline label, wherever the CV gives them a footing. Rewrite every work entry the job description bears on; an entry left as it was is a missed match. A tool, an industry, or a claim the CV gives no footing for stays out, however often the job description asks for it.";
 
+// Measured 2026-11-12: without this and the field list in LANGUAGE_INSTRUCTIONS, a
+// tailored translation left every untailored field in the source language (AI_LOGIC.md).
+const TAILORED_TRANSLATION_SCOPE =
+  'Tailoring decides which fields are rewritten; translation reaches every field. A field tailoring leaves as it was is still translated.';
+
 export const getSystemPrompt = (
   mode,
   activeTarget,
@@ -478,7 +484,7 @@ export const getSystemPrompt = (
     scopeInstruction =
       targetGranularity === 'cv'
         ? isTranslating
-          ? `You are performing a full CV translation and optimization. You MUST translate ALL provided sections into the target language. CRITICAL: Do not skip or omit any sections (like education, projects, privateProjects, customSections, etc.) from the output JSON, even if their professional content is already optimal or if they do not change under the current optimization mode (e.g. job_description). Return every single section that contains input data fully translated, including the title of every entry in customSections.${tailoring ? ` ${WHOLE_CV_TAILORING}` : ''}`
+          ? `You are performing a full CV translation and optimization. You MUST translate ALL provided sections into the target language. CRITICAL: Do not skip or omit any sections (like education, projects, privateProjects, customSections, etc.) from the output JSON, even if their professional content is already optimal or if they do not change under the current optimization mode (e.g. job_description). Return every single section that contains input data fully translated, including the title of every entry in customSections.${tailoring ? ` ${WHOLE_CV_TAILORING} ${TAILORED_TRANSLATION_SCOPE}` : ''}`
           : tailoring
             ? `You are tailoring the entire CV. ${WHOLE_CV_TAILORING}`
             : 'You are optimizing the entire CV. Improve only sections that benefit from revision, and do not invent missing content.'

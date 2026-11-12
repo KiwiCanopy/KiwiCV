@@ -70,12 +70,14 @@ export const design: Translations['design'] = {
     add: 'Ajouter une signature',
     change: 'Changer',
     crop_description:
-      "Recadre, fais pivoter ou retourne l'image. Le fond du papier est retiré ensuite.",
+      "Recadre, fais pivoter ou mets en miroir l'image. Le fond du papier est retiré ensuite.",
     crop_title: 'Recadrer ta signature',
-    device_note: 'Enregistrée uniquement sur cet appareil. Ni sauvegardée ni synchronisée.',
+    device_note:
+      "Enregistrée uniquement sur cet appareil, hors de tes sauvegardes et de la synchronisation. Les PDF que tu crées l'incluent.",
     dialog_title: 'Ta signature',
     draw_hint: 'Dessine avec ta souris, ton doigt ou un stylet.',
     draw_label: 'Zone de dessin pour ta signature',
+    edit_label: 'Changer la signature',
     face_unavailable: 'Ce style ne peut pas afficher toutes les lettres de ce nom.',
     footer_off: 'Apparaît dans le pied de page PDF, qui est désactivé.',
     preview_alt: 'Ta signature',
@@ -94,8 +96,10 @@ export const design: Translations['design'] = {
       'Aucune signature trouvée dans cette image. Un stylo foncé sur papier blanc donne le meilleur résultat.',
     upload_hint:
       "Une photo ou un scan sur papier blanc. Le fond est retiré sur cet appareil. Tu peux aussi coller une image. Depuis Aperçu sur macOS, exporte d'abord la signature en PNG.",
+    upload_ready: 'Signature prête. Vérifie-la, puis enregistre.',
     upload_too_large: "L'image est trop volumineuse (max. {{size}} Mo).",
     upload_unreadable: 'Ce fichier ne peut pas être lu comme une image. Essaie un PNG ou un JPG.',
+    upload_working: "Suppression de l'arrière-plan…",
   },
   swap_column_named: "Déplacer « {{name}} » vers l'autre colonne",
   template: 'Modèle',

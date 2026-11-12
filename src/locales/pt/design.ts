@@ -68,12 +68,14 @@ export const design: Translations['design'] = {
   signature: {
     add: 'Adicionar assinatura',
     change: 'Alterar',
-    crop_description: 'Recorta, roda ou inverte a imagem. O fundo do papel é removido a seguir.',
+    crop_description: 'Recorta, roda ou vira a imagem. O fundo do papel é removido a seguir.',
     crop_title: 'Recortar a tua assinatura',
-    device_note: 'Guardada apenas neste dispositivo. Sem cópia de segurança nem sincronização.',
+    device_note:
+      'Guardada apenas neste dispositivo, fora das tuas cópias de segurança e da sincronização. Os PDF que crias incluem-na.',
     dialog_title: 'A tua assinatura',
     draw_hint: 'Desenha com o rato, o dedo ou uma caneta.',
     draw_label: 'Área de desenho para a tua assinatura',
+    edit_label: 'Alterar assinatura',
     face_unavailable: 'Este estilo não consegue mostrar todas as letras deste nome.',
     footer_off: 'Aparece no rodapé do PDF, que está desativado.',
     preview_alt: 'A tua assinatura',
@@ -92,8 +94,10 @@ export const design: Translations['design'] = {
       'Não foi encontrada nenhuma assinatura nesta imagem. Uma caneta escura em papel branco funciona melhor.',
     upload_hint:
       'Uma fotografia ou digitalização em papel branco. O fundo é removido neste dispositivo. Também podes colar uma imagem. A partir da Pré-visualização do macOS, exporta primeiro a assinatura como PNG.',
+    upload_ready: 'Assinatura pronta. Verifica-a e depois guarda.',
     upload_too_large: 'A imagem é demasiado grande (máx. {{size}} MB).',
     upload_unreadable: 'Este ficheiro não pode ser lido como imagem. Experimenta PNG ou JPG.',
+    upload_working: 'A remover o fundo…',
   },
   swap_column_named: 'Mover «{{name}}» para a outra coluna',
   template: 'Modelo',

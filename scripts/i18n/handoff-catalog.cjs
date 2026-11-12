@@ -172,7 +172,7 @@ const entries = [
     'design',
     'signature.change',
     'Change',
-    "Button beside the saved signature's thumbnail; reopens the dialog to replace it.",
+    "Button beside the saved signature's thumbnail; reopens the dialog to replace it. A short verb: the thumbnail beside it names the object.",
   ],
   [
     'design',
@@ -189,8 +189,8 @@ const entries = [
   [
     'design',
     'signature.device_note',
-    'Saved on this device only. Not backed up or synced.',
-    'Calm footnote in the signature dialog, not a warning: the signature is stored only in this browser and is never included in cloud backups or sync.',
+    'Saved on this device only, outside your backups and sync. PDFs you create include it.',
+    'Calm footnote in the signature dialog, not a warning: the signature is stored only in this browser and never goes into cloud backups or sync, but it is printed in the PDFs the user creates. Must not claim it never leaves the device.',
   ],
   ['design', 'signature.dialog_title', 'Your signature', 'Title of the signature dialog.'],
   [
@@ -204,6 +204,12 @@ const entries = [
     'signature.draw_label',
     'Drawing area for your signature',
     'Accessible name of the drawing canvas in the signature dialog.',
+  ],
+  [
+    'design',
+    'signature.edit_label',
+    'Change signature',
+    'Accessible name and tooltip of the signature thumbnail button under the photo; opens the dialog to change or remove it.',
   ],
   [
     'design',
@@ -282,7 +288,7 @@ const entries = [
     'design',
     'signature.upload_hint',
     'A photo or scan on white paper. The background is removed on this device. You can also paste an image. From macOS Preview, export the signature as a PNG first.',
-    "Hint on the upload tab. 'macOS Preview' is Apple's app name and stays as is; the user must export the signature as a PNG file first because pasting from Preview does not work.",
+    "Hint on the upload tab. 'macOS' stays verbatim. 'Preview' is Apple's app, named as macOS shows it in this language (de Vorschau, fr Aperçu, es Vista Previa, …); where macOS has no interface in this language, keep 'Preview'. The user must export a PNG first because pasting from Preview does not work.",
     ['macOS', 'PNG'],
   ],
   [
@@ -293,9 +299,21 @@ const entries = [
   ],
   [
     'design',
+    'signature.upload_ready',
+    'Signature ready. Check it, then save.',
+    'Screen-reader announcement once an uploaded image has been cropped and its background removed.',
+  ],
+  [
+    'design',
     'signature.upload_too_large',
     'This image is too large (max {{size}} MB).',
     'Error: the chosen image file exceeds the size limit. {{size}} is a number of megabytes.',
+  ],
+  [
+    'design',
+    'signature.upload_working',
+    'Removing the background…',
+    'Screen-reader announcement while an uploaded signature image is processed on the device.',
   ],
   [
     'design',

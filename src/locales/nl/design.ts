@@ -71,10 +71,12 @@ export const design: Translations['design'] = {
     crop_description:
       'Snijd de afbeelding bij, draai of spiegel hem. Daarna wordt de papieren achtergrond verwijderd.',
     crop_title: 'Handtekening bijsnijden',
-    device_note: 'Alleen op dit apparaat opgeslagen. Geen back-up of synchronisatie.',
+    device_note:
+      'Alleen op dit apparaat opgeslagen, buiten je back-ups en synchronisatie. PDF’s die je maakt bevatten hem.',
     dialog_title: 'Je handtekening',
     draw_hint: 'Teken met je muis, vinger of pen.',
     draw_label: 'Tekenvlak voor je handtekening',
+    edit_label: 'Handtekening wijzigen',
     face_unavailable: 'Deze stijl kan niet elke letter van deze naam tonen.',
     footer_off: 'Verschijnt in de PDF-voettekst, die uit staat.',
     preview_alt: 'Je handtekening',
@@ -93,8 +95,10 @@ export const design: Translations['design'] = {
       'Geen handtekening gevonden in deze afbeelding. Een donkere pen op wit papier werkt het best.',
     upload_hint:
       'Een foto of scan op wit papier. De achtergrond wordt op dit apparaat verwijderd. Je kunt ook een afbeelding plakken. Exporteer de handtekening vanuit Voorvertoning op macOS eerst als PNG.',
+    upload_ready: 'Handtekening klaar. Controleer hem en sla daarna op.',
     upload_too_large: 'De afbeelding is te groot (max. {{size}} MB).',
     upload_unreadable: 'Dit bestand kan niet als afbeelding worden gelezen. Probeer PNG of JPG.',
+    upload_working: 'Achtergrond wordt verwijderd…',
   },
   swap_column_named: '“{{name}}” naar andere kolom verplaatsen',
   template: 'Sjabloon',

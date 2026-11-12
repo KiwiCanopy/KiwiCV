@@ -69,12 +69,14 @@ export const design: Translations['design'] = {
   signature: {
     add: 'Añadir firma',
     change: 'Cambiar',
-    crop_description: 'Recorta, gira o voltea la imagen. Después se quita el fondo del papel.',
+    crop_description: 'Recorta, rota o voltea la imagen. Después se quita el fondo del papel.',
     crop_title: 'Recortar tu firma',
-    device_note: 'Guardada solo en este dispositivo. Sin copia de seguridad ni sincronización.',
+    device_note:
+      'Guardada solo en este dispositivo, fuera de tus copias de seguridad y de la sincronización. Los PDF que creas la incluyen.',
     dialog_title: 'Tu firma',
     draw_hint: 'Dibuja con el ratón, el dedo o un lápiz.',
     draw_label: 'Área de dibujo para tu firma',
+    edit_label: 'Cambiar firma',
     face_unavailable: 'Este estilo no puede mostrar todas las letras de este nombre.',
     footer_off: 'Aparece en el pie de página PDF, que está desactivado.',
     preview_alt: 'Tu firma',
@@ -93,8 +95,10 @@ export const design: Translations['design'] = {
       'No se encontró ninguna firma en esta imagen. Un bolígrafo oscuro sobre papel blanco funciona mejor.',
     upload_hint:
       'Una foto o un escaneo sobre papel blanco. El fondo se quita en este dispositivo. También puedes pegar una imagen. Desde Vista Previa de macOS, exporta antes la firma como PNG.',
+    upload_ready: 'Firma lista. Revísala y luego guarda.',
     upload_too_large: 'La imagen es demasiado grande (máx. {{size}} MB).',
     upload_unreadable: 'Este archivo no se puede leer como imagen. Prueba con PNG o JPG.',
+    upload_working: 'Quitando el fondo…',
   },
   swap_column_named: 'Mover «{{name}}» a la otra columna',
   template: 'Plantilla',

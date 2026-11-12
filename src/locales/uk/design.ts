@@ -94,7 +94,6 @@ export const design: Translations['design'] = {
     upload_ready: 'Підпис готовий. Перевір його й збережи.',
     upload_too_large: 'Зображення завелике (макс. {{size}} МБ).',
     upload_unreadable: 'Цей файл не можна прочитати як зображення. Спробуй PNG або JPG.',
-
     upload_working: 'Видалення фону…',
   },
   swap_column_named: 'Перемістити «{{name}}» в іншу колонку',

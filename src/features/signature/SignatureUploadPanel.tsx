@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { Button } from '@/components/ui/Button';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -21,6 +21,21 @@ interface SignatureUploadPanelProps {
 export function SignatureUploadPanel({ state, onFile, onEdit }: SignatureUploadPanelProps) {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
+  const chooseRef = useRef<HTMLButtonElement>(null);
+  const editRef = useRef<HTMLButtonElement>(null);
+  const wasWorking = useRef(false);
+
+  // The control the user pressed unmounts while the image is processed, so
+  // focus lands on the next one rather than on the dialog itself.
+  useEffect(() => {
+    if (state.status === 'working') {
+      wasWorking.current = true;
+      return;
+    }
+    if (!wasWorking.current) return;
+    wasWorking.current = false;
+    (state.status === 'ready' ? editRef.current : chooseRef.current)?.focus();
+  }, [state.status]);
 
   return (
     <div className="space-y-3">
@@ -45,7 +60,7 @@ export function SignatureUploadPanel({ state, onFile, onEdit }: SignatureUploadP
         ) : state.status === 'working' ? (
           <LoaderCircle aria-hidden="true" className="h-6 w-6 animate-spin text-zinc-500" />
         ) : (
-          <Button variant="secondary" onClick={() => inputRef.current?.click()}>
+          <Button ref={chooseRef} variant="secondary" onClick={() => inputRef.current?.click()}>
             <ImageUp className="h-4 w-4" aria-hidden="true" />
             {t('design.signature.upload_choose')}
           </Button>
@@ -57,7 +72,7 @@ export function SignatureUploadPanel({ state, onFile, onEdit }: SignatureUploadP
         </p>
         {state.status === 'ready' && (
           <div className="flex shrink-0 gap-1">
-            <Button variant="quiet" size="sm" onClick={onEdit}>
+            <Button ref={editRef} variant="quiet" size="sm" onClick={onEdit}>
               <Crop className="h-4 w-4" aria-hidden="true" />
               {t('common.edit')}
             </Button>
@@ -69,6 +84,14 @@ export function SignatureUploadPanel({ state, onFile, onEdit }: SignatureUploadP
       </div>
       <p role="status" className="text-destructive text-sm empty:hidden">
         {state.status === 'error' ? state.message : ''}
+      </p>
+      {/* Progress and success have no visible text of their own to announce. */}
+      <p role="status" className="sr-only">
+        {state.status === 'working'
+          ? t('design.signature.upload_working')
+          : state.status === 'ready'
+            ? t('design.signature.upload_ready')
+            : ''}
       </p>
     </div>
   );

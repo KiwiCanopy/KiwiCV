@@ -8,7 +8,7 @@ import { createImage, encodeTransparentPng } from '@/utils/image';
 
 /** Longest side a source is reduced to before keying, so a 3456 px paste stays fast. */
 const WORK_MAX_SIDE = 1600;
-/** Stored size cap: about 3× the printed 180 × 34 pt mark at 72 dpi, so it prints sharp. */
+/** Stored size cap: several times the printed mark's size in pt, so it prints sharp. */
 export const SIGNATURE_MAX_WIDTH = 900;
 export const SIGNATURE_MAX_HEIGHT = 300;
 

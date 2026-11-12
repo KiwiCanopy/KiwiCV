@@ -12,6 +12,8 @@ export interface SegmentedOption<T> {
   hint?: string;
   /** Kept visible, as `ui.md` asks; the caller shows the reason beside the control. */
   disabled?: boolean;
+  /** Id of the visible reason, when there is one, for assistive tech. */
+  describedBy?: string;
 }
 
 interface SegmentedToggleProps<T> {
@@ -95,6 +97,7 @@ export const SegmentedToggle = memo(function SegmentedToggle<T extends string | 
             key={String(option.value)}
             type="button"
             disabled={option.disabled}
+            aria-describedby={option.describedBy}
             onClick={() => onChange(option.value)}
             title={isSmallScreen || !option.label ? option.hint : undefined}
             aria-pressed={isActive}

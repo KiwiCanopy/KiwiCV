@@ -55,7 +55,9 @@ export function SignatureRow({ compact = false }: { compact?: boolean }) {
       )}
     </span>
   );
-  const dialog = open && <SignatureDialog onClose={() => setOpen(false)} />;
+  const dialog = open && (
+    <SignatureDialog onClose={() => setOpen(false)} restoreFocusTo={() => addRef.current} />
+  );
 
   if (compact) {
     return (
@@ -64,14 +66,14 @@ export function SignatureRow({ compact = false }: { compact?: boolean }) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            aria-label={t('design.signature.change')}
-            title={t('design.signature.change')}
+            aria-label={t('design.signature.edit_label')}
+            title={t('design.signature.edit_label')}
             className="hover:border-primary-strong/50 cursor-pointer rounded-md"
           >
             {thumbnail}
           </button>
         ) : (
-          <Button variant="quiet" size="sm" onClick={() => setOpen(true)}>
+          <Button ref={addRef} variant="quiet" size="sm" onClick={() => setOpen(true)}>
             <PenLine className="h-4 w-4" aria-hidden="true" />
             {t('design.signature.add')}
           </Button>

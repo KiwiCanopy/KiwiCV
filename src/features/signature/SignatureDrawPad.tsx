@@ -13,6 +13,14 @@ interface SignatureDrawPadProps {
   onInkChange: (hasInk: boolean) => void;
 }
 
+function copyOf(canvas: HTMLCanvasElement): HTMLCanvasElement {
+  const copy = document.createElement('canvas');
+  copy.width = canvas.width;
+  copy.height = canvas.height;
+  copy.getContext('2d')?.drawImage(canvas, 0, 0);
+  return copy;
+}
+
 /** CSS px; widened for a pen's pressure, so a stylus line reads as a pen line. */
 const BASE_WIDTH = 2.4;
 
@@ -25,6 +33,7 @@ export const SignatureDrawPad = forwardRef<SignatureDrawPadHandle, SignatureDraw
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const last = useRef<{ x: number; y: number; mid: { x: number; y: number } } | null>(null);
     const hasInk = useRef(false);
+    const cssSize = useRef({ width: 0, height: 0 });
 
     const context = useCallback(() => canvasRef.current?.getContext('2d') ?? null, []);
 
@@ -34,8 +43,9 @@ export const SignatureDrawPad = forwardRef<SignatureDrawPadHandle, SignatureDraw
       const ratio = window.devicePixelRatio || 1;
       const { width, height } = canvas.getBoundingClientRect();
       if (canvas.width === Math.round(width * ratio)) return;
-      // Resizing wipes the bitmap; a drawing only survives as long as the pad
-      // keeps its size, which it does while the dialog is open.
+      // Resizing wipes the bitmap (zoom, rotation, reflow), so the drawing is
+      // copied out and scaled back in rather than lost.
+      const previous = hasInk.current && canvas.width && canvas.height ? copyOf(canvas) : null;
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
       const ctx = context();
@@ -45,11 +55,17 @@ export const SignatureDrawPad = forwardRef<SignatureDrawPadHandle, SignatureDraw
       ctx.lineJoin = 'round';
       ctx.strokeStyle = SIGNATURE_INK;
       ctx.fillStyle = SIGNATURE_INK;
-      if (hasInk.current) {
-        hasInk.current = false;
-        onInkChange(false);
+      // Uniform scale, so a narrower pad shrinks the drawing instead of squashing it.
+      const was = cssSize.current;
+      if (previous && was.width && was.height) {
+        const k = Math.min(width / was.width, height / was.height);
+        ctx.drawImage(previous, 0, 0, was.width * k, was.height * k);
       }
-    }, [context, onInkChange]);
+      cssSize.current = { width, height };
+    }, [context]);
+
+    // A fresh pad has no ink, whatever the dialog last heard from a previous one.
+    useEffect(() => onInkChange(false), [onInkChange]);
 
     useEffect(() => {
       resize();

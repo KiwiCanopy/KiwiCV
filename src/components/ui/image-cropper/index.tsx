@@ -15,10 +15,6 @@ interface ImageCropperProps {
   isEditMode?: boolean;
   /** `signature` hides format and shape, which a signature has no use for. */
   purpose?: 'photo' | 'signature';
-  /** Title, image alt and description for a non-photo purpose. */
-  title?: string;
-  imageAlt?: string;
-  description?: string;
 }
 
 export function ImageCropper({
@@ -28,11 +24,21 @@ export function ImageCropper({
   onCropComplete,
   isEditMode = false,
   purpose = 'photo',
-  title,
-  imageAlt,
-  description,
 }: ImageCropperProps) {
   const { t } = useTranslation();
+  // Copy follows the purpose, so a signature caller cannot show photo strings.
+  const copy =
+    purpose === 'signature'
+      ? {
+          title: t('design.signature.crop_title'),
+          alt: t('design.signature.preview_alt'),
+          description: t('design.signature.crop_description'),
+        }
+      : {
+          title: t('image_cropper.title'),
+          alt: t('image_cropper.alt_crop'),
+          description: t('image_cropper.description'),
+        };
   const {
     imgRef,
     crop,
@@ -76,7 +82,7 @@ export function ImageCropper({
       header={
         <div className="border-border flex items-center border-b p-4 pr-14">
           <DialogFrameTitle className="text-foreground font-semibold">
-            {title ?? t('image_cropper.title')}
+            {copy.title}
           </DialogFrameTitle>
         </div>
       }
@@ -93,16 +99,14 @@ export function ImageCropper({
         imageSrc={imageSrc}
         onImageLoad={onImageLoad}
         imageTransform={imageTransform}
-        imageAlt={imageAlt ?? t('image_cropper.alt_crop')}
+        imageAlt={copy.alt}
       />
 
       {/* Controls. No `overflow` here: it would become the sticky footer's
           scroll ancestor and, being uncapped, kill the sticky. The scroll region
           is ModalContainer's, which the footer pins against. */}
       <div className="flex flex-col">
-        <DialogFrameDescription className="sr-only">
-          {description ?? t('image_cropper.description')}
-        </DialogFrameDescription>
+        <DialogFrameDescription className="sr-only">{copy.description}</DialogFrameDescription>
 
         <CropperControls
           t={t}

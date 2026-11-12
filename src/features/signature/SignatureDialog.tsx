@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useId, useRef, useState } from 'react';
 
 import {
   DEFAULT_SIGNATURE_FACE,
@@ -25,12 +25,15 @@ import {
   newSignatureId,
   useSignatureStore,
 } from '@/store/signature/useSignatureStore';
+import { type FocusAnchor } from '@/utils/focus';
 import { PenLine, Signature } from 'lucide-react';
 
 type Tab = 'draw' | 'type' | 'upload';
 
 interface SignatureDialogProps {
   onClose: () => void;
+  /** Where focus goes when the opener is gone, as after Remove. */
+  restoreFocusTo: FocusAnchor;
 }
 
 type Coverage = Map<SignatureFaceId, Set<number>>;
@@ -42,7 +45,7 @@ const firstCoveringFace = (coverage: Coverage, text: string): SignatureFaceId | 
  * Draw, type or upload one signature for both documents' footers (#103).
  * Mounted only while open, so every opening starts from the stored signature.
  */
-export function SignatureDialog({ onClose }: SignatureDialogProps) {
+export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProps) {
   const { t } = useTranslation();
   const name = useResumeStore((state) => state.resume.basics.name).trim();
   const stored = useSignatureStore((state) => state.signature);
@@ -51,7 +54,10 @@ export function SignatureDialog({ onClose }: SignatureDialogProps) {
 
   const [coverage, setCoverage] = useState<Coverage | null>(null);
   const [tab, setTab] = useState<Tab | null>(null);
-  const [text, setText] = useState(() => (stored?.kind === 'typed' ? stored.text : name));
+  // The text the Type tab opens with; whether it can be typed is decided once,
+  // on that text, so the tab and its reason never contradict each other.
+  const [initialText] = useState(() => (stored?.kind === 'typed' ? stored.text : name));
+  const [text, setText] = useState(initialText);
   const [faceId, setFaceId] = useState<SignatureFaceId>(DEFAULT_SIGNATURE_FACE);
   const [hasInk, setHasInk] = useState(false);
   const [upload, setUpload] = useState<UploadState>(() =>
@@ -63,21 +69,20 @@ export function SignatureDialog({ onClose }: SignatureDialogProps) {
 
   const seed = useEffectEvent((loaded: Coverage) => {
     setCoverage(loaded);
-    const nameFace = name ? firstCoveringFace(loaded, name) : undefined;
-    const defaultCovers = faceCovers(loaded.get(DEFAULT_SIGNATURE_FACE), name);
+    const textFace = initialText ? firstCoveringFace(loaded, initialText) : undefined;
+    const defaultCovers = faceCovers(loaded.get(DEFAULT_SIGNATURE_FACE), initialText);
     setFaceId(
-      stored?.kind === 'typed'
+      stored?.kind === 'typed' && textFace
         ? stored.faceId
         : defaultCovers
           ? DEFAULT_SIGNATURE_FACE
-          : (nameFace ?? DEFAULT_SIGNATURE_FACE),
+          : (textFace ?? DEFAULT_SIGNATURE_FACE),
     );
     // Opens on Type when a face covers the name, otherwise on Draw.
     setTab((current) => {
       if (current) return current;
-      if (stored?.kind === 'typed') return 'type';
       if (stored?.kind === 'image') return stored.source === 'upload' ? 'upload' : 'draw';
-      return nameFace ? 'type' : 'draw';
+      return textFace ? 'type' : 'draw';
     });
   });
 
@@ -93,7 +98,8 @@ export function SignatureDialog({ onClose }: SignatureDialogProps) {
     };
   }, []);
 
-  const typeAvailable = !name || !coverage || !!firstCoveringFace(coverage, name);
+  const typeAvailable = !initialText || !coverage || !!firstCoveringFace(coverage, initialText);
+  const typeReasonId = useId();
 
   // Every upload or paste goes through the cropper first (crop, rotate, flip),
   // then the local background key. `cropSource` keeps the unkeyed image so
@@ -146,8 +152,15 @@ export function SignatureDialog({ onClose }: SignatureDialogProps) {
 
   // Paste is dialog-wide and has no tab of its own: any pasted image goes
   // through the Upload pipeline. Text pastes into the name field untouched.
+  const pasteBlocked = useEffectEvent(() => cropOpen);
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
+      if (pasteBlocked()) return;
+      // A copy can carry text and an image together; into a text field, the text wins.
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('input, textarea') && event.clipboardData?.types.includes('text/plain')) {
+        return;
+      }
       const file = Array.from(event.clipboardData?.files ?? []).find((f) =>
         f.type.startsWith('image/'),
       );
@@ -186,6 +199,7 @@ export function SignatureDialog({ onClose }: SignatureDialogProps) {
   return (
     <DialogFrame
       open
+      restoreFocusTo={restoreFocusTo}
       onOpenChange={(next) => {
         if (!next) onClose();
       }}
@@ -220,7 +234,8 @@ export function SignatureDialog({ onClose }: SignatureDialogProps) {
     >
       <div className="space-y-4 px-6 pb-4">
         <SegmentedToggle<Tab>
-          value={tab ?? 'type'}
+          // No segment reads as selected until the opening tab is known.
+          value={tab ?? ('' as Tab)}
           onChange={(next) => {
             if (next === 'type' && !typeAvailable) return;
             setTab(next);
@@ -235,12 +250,15 @@ export function SignatureDialog({ onClose }: SignatureDialogProps) {
               value: 'type',
               label: t('design.signature.tab_type'),
               disabled: !typeAvailable,
+              describedBy: typeAvailable ? undefined : typeReasonId,
             },
             { value: 'upload', label: t('design.signature.tab_upload') },
           ]}
         />
         {!typeAvailable && (
-          <p className="text-muted-foreground text-xs">{t('design.signature.type_unavailable')}</p>
+          <p id={typeReasonId} className="text-muted-foreground text-xs">
+            {t('design.signature.type_unavailable')}
+          </p>
         )}
 
         {tab === 'draw' && (
@@ -288,9 +306,6 @@ export function SignatureDialog({ onClose }: SignatureDialogProps) {
           <ImageCropper
             purpose="signature"
             imageSrc={cropSource}
-            title={t('design.signature.crop_title')}
-            imageAlt={t('design.signature.preview_alt')}
-            description={t('design.signature.crop_description')}
             onCancel={cancelCrop}
             onCropComplete={(cropped) => void applyCrop(cropped)}
           />

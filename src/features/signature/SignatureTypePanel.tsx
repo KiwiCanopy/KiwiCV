@@ -87,10 +87,13 @@ export function SignatureTypePanel({
                     className="text-primary-strong absolute top-1.5 right-1.5 h-4 w-4"
                   />
                 )}
+                {/* Script swashes ink past the glyph box (up to 0.3em sideways, 0.5em
+                    down), and `truncate` clips at the padding edge. The margin reaches
+                    into the card's px-3; vertically it relies on min-h-20 centring. */}
                 <span
                   aria-hidden="true"
                   className={cn(
-                    'max-w-full truncate text-3xl leading-tight',
+                    '-mx-[0.35em] -my-[0.4em] max-w-[calc(100%+0.7em)] truncate px-[0.35em] py-[0.4em] text-3xl leading-tight',
                     !covered && 'opacity-30',
                   )}
                   // Ink on white paper in both app themes, as in the PDF.
@@ -99,7 +102,7 @@ export function SignatureTypePanel({
                   {sample || face.family}
                 </span>
                 {!covered && (
-                  <span id={reasonId} className="mt-1 text-xs text-zinc-600">
+                  <span id={reasonId} className="mt-2 text-xs text-zinc-600">
                     {t('design.signature.face_unavailable')}
                   </span>
                 )}

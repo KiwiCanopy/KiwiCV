@@ -110,7 +110,7 @@ export const editor: Translations['editor'] = {
     entry_title: 'Название',
     highlight: 'Выделение',
     highlights: 'Достижения',
-    institution: 'Ученое заведение',
+    institution: 'Учебное заведение',
     interest_name: 'Интерес',
     issuer: 'Кем выдано',
     keyword: 'Ключевое слово',

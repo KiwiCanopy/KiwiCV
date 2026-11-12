@@ -13,7 +13,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
  *
  * ⚠️ Never move it into `ResumeData`. The résumé leaves the device through
  * Drive and GitHub sync, the JSON export and AI calls; the signature must not
- * travel with any of them. `signaturePrivacy.test.ts` pins that.
+ * travel with any of them. `signaturePrivacy.test.tsx` pins that.
  */
 export type StoredSignature =
   | {

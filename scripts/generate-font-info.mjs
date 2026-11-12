@@ -32,7 +32,7 @@ const OUT_FILE = path.join(ROOT, 'src', 'workers', 'lazy-font-info.json');
 const LAZY_FONTS = [
   'noto-sans-cjk-sc-regular.otf',
   'noto-sans-cjk-jp-regular.otf',
-  // The typed-signature faces (`signatureFaces.ts`), fetched only when a signature names one.
+  // The typed-signature faces (`SIGNATURE_FACES` in `signature.ts`), fetched only when a signature names one.
   'herr-von-muellerhoff-regular.ttf',
   'great-vibes-regular.ttf',
   'alex-brush-regular.ttf',

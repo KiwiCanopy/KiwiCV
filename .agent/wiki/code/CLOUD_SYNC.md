@@ -1,6 +1,6 @@
 # Cloud Sync and Google Drive Compatibility
 
-> **Last Updated: 2026-08-29**
+> **Last Updated: 2026-11-12**
 
 ## Overview
 
@@ -52,6 +52,13 @@ restore and delete actions use a Drive file ID.
   worked because both hooks were constructed in the same render
 - Restore action, shared by the library page and the language-switch prompt:
   `src/hooks/cloud/useCloudRestoreAction.ts`
+
+## Deliberately Not Synced: the Signature
+
+The document signature (`code/STATE.md` § Signature Store) is device-only. It is never in
+`resume.json` on Drive or GitHub, never in the JSON export, never in an AI payload. The exported
+PDF does carry it — that is the document. An opt-in sync to a separate file was proposed by the
+owner and deferred to a follow-up issue; until then, do not add the signature to any sync payload.
 
 ## Validation
 

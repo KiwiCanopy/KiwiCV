@@ -1,6 +1,6 @@
 # Theme System
 
-> **Last Updated: 2026-09-05**
+> **Last Updated: 2026-11-12**
 
 ## Contents
 
@@ -321,6 +321,10 @@ files (the word "PDF" in some names refers to the **PDF output**, not react-pdf)
   on those three the swatch is a _background_.
 - `typstFooter.ts` — footer/signature markup (`getTypstFooterParts`,
   `renderTypstSignatureFooter`, `renderTypstPageRightFooter`).
+  `renderTypstSignatureFooter` takes a **required** `signature` option (a `TypstSignature`
+  from `signature.ts`, or `undefined`); serializers pass it from their `SerializeContext`, never
+  from `ResumeData`. The footer is PDF-only — the HTML preview never renders it — so the
+  signature has no HTML parity surface. Geometry and fonts: `PDF_ENGINE_TYPST.md` § The Signature (#103).
 - `typstSectionGuards.ts` — header-orphan pagination guards
   (`keepTypstHeaderWithFirstEntry`, `keepTypstHeaderWithFirstGridRow`).
 - `coverLetterTypst.ts` — `buildCoverLetterTypst(data, opts)`. The letter is

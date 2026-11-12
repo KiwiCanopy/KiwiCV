@@ -1,6 +1,6 @@
 # State Management
 
-> **Last Updated: 2026-08-09**
+> **Last Updated: 2026-11-12**
 
 ## Overview
 
@@ -68,6 +68,23 @@ layer speaks. It replaced `useBackupSelectorStore` on 2026-08-09.
 The store the page replaced was **also a dialog protocol** — `openManagement`
 returned a promise the modal resolved. Nothing in the store resolves anything
 now; restoring is `useCloudRestoreAction`, called from a row.
+
+## Signature Store (`src/store/signature/useSignatureStore.ts`)
+
+The document signature, persisted with zustand `persist` under the localStorage key
+`kiwicv-signature` (`BRAND_STORAGE_KEYS.signature`, `src/config/brand.ts`). ⚠️ **Device-only, by
+owner ruling (2026-11-12, #103).** The résumé leaves the device through Drive/GitHub sync, the JSON
+export and AI calls, so the signature lives outside `ResumeData` and can never ride on it. Do not
+move it into the resume store. `src/features/signature/__tests__/signaturePrivacy.test.tsx` feeds
+each of those roads and fails if the signature appears.
+
+- Shape: `{kind:'image', id, dataUrl (transparent PNG), source:'draw'|'upload'}` or
+  `{kind:'typed', id, faceId, text}`.
+- `parseStoredSignature` runs on rehydrate and drops anything invalid rather than trusting
+  storage. `id` is restricted to `[a-z0-9-]` because it names a virtual compile path
+  (`/signature/<id>.png`).
+- It is **not cleared on sign-out** — current behaviour, and an open owner question (a shared
+  device keeps the previous user's signature).
 
 ## Auth & Persistence (`AuthProvider.tsx`)
 

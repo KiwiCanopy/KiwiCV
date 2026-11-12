@@ -62,7 +62,7 @@ export function SignatureUploadPanel({ state, onFile, onEdit }: SignatureUploadP
               {t('common.edit')}
             </Button>
             <Button variant="quiet" size="sm" onClick={() => inputRef.current?.click()}>
-              {t('design.signature.upload_other')}
+              {t('design.signature.upload_another')}
             </Button>
           </div>
         )}

@@ -83,11 +83,11 @@ export const design = {
     type_style: 'Style',
     type_unavailable:
       "Handwriting styles can't show every letter in this name. Draw or upload it instead.",
+    upload_another: 'Choose another',
     upload_choose: 'Choose an image',
     upload_empty: 'No signature found in this image. A dark pen on white paper works best.',
     upload_hint:
       'A photo or scan on white paper. The background is removed on this device. You can also paste an image. From macOS Preview, export the signature as a PNG first.',
-    upload_other: 'Choose another',
     upload_too_large: 'This image is too large (max {{size}} MB).',
     upload_unreadable: "This file can't be read as an image. Try a PNG or JPG.",
   },

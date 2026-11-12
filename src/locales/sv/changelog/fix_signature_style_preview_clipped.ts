@@ -1,4 +1,4 @@
 export const fix_signature_style_preview_clipped = {
   fix_signature_style_preview_clipped:
-    'Förhandsvisningarna av handskriftsstilarna i signaturdialogen visar nu hela ditt namn, inklusive det sista draget i den sista bokstaven.',
+    'Förhandsvisningarna av handskriftsstilarna i signaturdialogen skär inte längre av kanterna på ditt namn, till exempel det sista draget i den sista bokstaven.',
 };

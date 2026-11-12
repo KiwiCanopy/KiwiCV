@@ -1,4 +1,4 @@
 export const fix_signature_style_preview_clipped = {
   fix_signature_style_preview_clipped:
-    'Podglądy stylów odręcznych w oknie podpisu pokazują teraz całe Twoje imię i nazwisko, łącznie z ostatnim pociągnięciem ostatniej litery.',
+    'Podglądy stylów odręcznych w oknie podpisu nie ucinają już krawędzi Twojego imienia i nazwiska, na przykład ostatniego pociągnięcia ostatniej litery.',
 };

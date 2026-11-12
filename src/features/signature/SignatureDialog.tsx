@@ -61,6 +61,8 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
   const stored = useSignatureStore((state) => state.signature);
   const backupEnabled = useSignatureStore((state) => state.backupEnabled);
   const [targets, setTargets] = useState<SignatureBackupTargets | null>(null);
+  // Where an existing copy could be deleted from, for naming it while it cannot be written.
+  const [deleteTargets, setDeleteTargets] = useState<SignatureBackupTargets | null>(null);
   const [backupChecked, setBackupChecked] = useState(backupEnabled);
   const [restoreCandidate, setRestoreCandidate] = useState<StoredSignature | null>(null);
   const backupNoteId = useId();
@@ -114,13 +116,21 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
   // Which backups are connected, and on a device with no signature yet, whether
   // one of them holds one to offer (never applied silently, #106).
   const offerRestore = useEffectEvent((found: StoredSignature | null) => {
-    if (found && !useSignatureStore.getState().signature) setRestoreCandidate(found);
+    if (!found || useSignatureStore.getState().signature) return;
+    setRestoreCandidate(found);
+    // The copy exists by consent given on another device: the box says so, and
+    // unticking it before saving withdraws that consent.
+    setBackupChecked(true);
   });
   useEffect(() => {
     let current = true;
     void resolveBackupTargets().then(async (resolved) => {
       if (!current) return;
       setTargets(resolved);
+      if (useSignatureStore.getState().backupEnabled && !hasBackupTarget(resolved)) {
+        const reachable = await resolveBackupTargets({ forDelete: true });
+        if (current) setDeleteTargets(reachable);
+      }
       if (!hasBackupTarget(resolved) || useSignatureStore.getState().signature) return;
       const found = await fetchSignatureBackup(resolved);
       if (current) offerRestore(found);
@@ -130,13 +140,17 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
     };
   }, []);
   const canBackUp = targets !== null && hasBackupTarget(targets);
-  // With nothing connected right now, the stored choice stands untouched.
-  const backupWanted = canBackUp ? backupChecked : backupEnabled;
+  // The box stays while a copy exists even if it cannot be written right now:
+  // unticking it is how the policy says consent is withdrawn.
+  const showBackupChoice = canBackUp || (backupEnabled && targets !== null);
+  const backupWanted = showBackupChoice ? backupChecked : backupEnabled;
   // Named, not "your backup": the user should see the copy leaves the device.
+  const named = canBackUp ? targets : deleteTargets;
+  const nameList = [named?.drive && 'Google Drive', named?.github && 'GitHub'].filter(
+    (name): name is string => Boolean(name),
+  );
   const backupNames = new Intl.ListFormat(locale, { type: 'conjunction' }).format(
-    [targets?.drive && 'Google Drive', targets?.github && 'GitHub'].filter((name): name is string =>
-      Boolean(name),
-    ),
+    nameList.length ? nameList : ['Google Drive', 'GitHub'],
   );
 
   const typeAvailable = !initialText || !coverage || !!firstCoveringFace(coverage, initialText);
@@ -233,7 +247,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
           : { kind: 'image', id: newSignatureId(), dataUrl: upload.dataUrl, source: 'upload' };
     }
     if (!next) return;
-    void saveSignature(next, backupWanted, t);
+    void saveSignature(next, backupWanted, t, { copyExists: restoreCandidate !== null });
     onClose();
   };
 
@@ -290,7 +304,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
               variant="secondary"
               size="sm"
               onClick={() => {
-                void saveSignature(restoreCandidate, backupWanted, t);
+                void saveSignature(restoreCandidate, backupWanted, t, { copyExists: true });
                 onClose();
               }}
             >
@@ -367,7 +381,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
             }}
           />
         )}
-        {canBackUp && (
+        {showBackupChoice && (
           <div className="space-y-1">
             <label className="flex cursor-pointer items-center gap-2 text-sm">
               <input

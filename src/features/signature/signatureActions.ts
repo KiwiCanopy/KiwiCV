@@ -24,43 +24,65 @@ const toast = (message: string) => useToastStore.getState().addToast(message, 'w
  * not be undone by the Save's upload landing last.
  */
 let queue: Promise<void> = Promise.resolve();
-const enqueue = (job: () => Promise<void>): Promise<void> => {
-  queue = queue.then(job, job);
+const enqueue = (job: () => Promise<void>, onError: () => void): Promise<void> => {
+  // A job that throws reports itself and never stalls or rejects the queue.
+  const safe = () => job().catch(onError);
+  queue = queue.then(safe, safe);
   return queue;
 };
 
 const writeCurrentBackup = (t: Translate) =>
-  enqueue(async () => {
-    const { signature, backupEnabled } = useSignatureStore.getState();
-    if (!signature || !backupEnabled) return;
-    const targets = await resolveBackupTargets();
-    if (!hasBackupTarget(targets)) return;
-    if (!(await pushSignatureBackup(signature, targets, commitMessages(t)))) {
-      toast(t('design.signature.backup_failed'));
-    }
-  });
+  enqueue(
+    async () => {
+      const { signature, backupEnabled } = useSignatureStore.getState();
+      if (!signature || !backupEnabled) return;
+      const targets = await resolveBackupTargets();
+      if (!hasBackupTarget(targets)) return;
+      if (!(await pushSignatureBackup(signature, targets, commitMessages(t)))) {
+        toast(t('design.signature.backup_failed'));
+      }
+    },
+    () => toast(t('design.signature.backup_failed')),
+  );
 
-const deleteBackup = (t: Translate) =>
-  enqueue(async () => {
-    const targets = await resolveBackupTargets({ forDelete: true });
-    // A copy that cannot be reached is a copy the user believes is gone: say so.
-    const ok =
-      hasBackupTarget(targets) && (await deleteSignatureBackup(targets, commitMessages(t)));
-    if (!ok) toast(t('design.signature.backup_delete_failed'));
-  });
+/**
+ * `expected`: the copy is known to exist, so not reaching it is worth a warning.
+ * Otherwise the delete is a quiet sweep: a copy may exist from another device.
+ */
+const deleteBackup = (t: Translate, expected: boolean) =>
+  enqueue(
+    async () => {
+      const targets = await resolveBackupTargets({ forDelete: true });
+      if (!hasBackupTarget(targets)) {
+        // A copy that cannot be reached is a copy the user believes is gone: say so.
+        if (expected) toast(t('design.signature.backup_delete_failed'));
+        return;
+      }
+      if (!(await deleteSignatureBackup(targets, commitMessages(t)))) {
+        toast(t('design.signature.backup_delete_failed'));
+      }
+    },
+    () => toast(t('design.signature.backup_delete_failed')),
+  );
 
 /**
  * Saves a signature on the device and applies the backup choice made with it:
  * on, the copy is written; switched off, the copy is deleted. The device copy
  * never waits on, or fails with, the network.
  */
-export function saveSignature(next: StoredSignature, backup: boolean, t: Translate): Promise<void> {
+export function saveSignature(
+  next: StoredSignature,
+  backup: boolean,
+  t: Translate,
+  { copyExists = false }: { copyExists?: boolean } = {},
+): Promise<void> {
   const store = useSignatureStore.getState();
   const wasBackedUp = store.backupEnabled;
   store.setSignature(next);
   store.setBackupEnabled(backup);
   if (backup) return writeCurrentBackup(t);
-  return wasBackedUp ? deleteBackup(t) : Promise.resolve();
+  // Unticking withdraws consent wherever the copy came from, this device or another.
+  return wasBackedUp || copyExists ? deleteBackup(t, true) : Promise.resolve();
 }
 
 /**
@@ -70,7 +92,9 @@ export function saveSignature(next: StoredSignature, backup: boolean, t: Transla
 export function removeSignature(t: Translate): Promise<void> {
   const wasBackedUp = useSignatureStore.getState().backupEnabled;
   useSignatureStore.getState().removeSignature();
-  return wasBackedUp ? deleteBackup(t) : Promise.resolve();
+  // Always swept where a destination is connected: a signature restored on this
+  // device was backed up on another, and Remove must withdraw it here too.
+  return deleteBackup(t, wasBackedUp);
 }
 
 export { fetchSignatureBackup, hasBackupTarget, resolveBackupTargets };

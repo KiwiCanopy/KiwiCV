@@ -75,6 +75,10 @@ never given it silently. The signature is still never in `resume.json` or any sy
   passing `isPrivateBackupRepo`. **Deletes** skip both checks (`forDelete`): deleting leaks
   nothing, and a repo made public since must still lose the file. One queue runs backup jobs in
   order and each reads the store when it starts, so a Remove is never undone by a slower upload.
+- **Withdrawal works on every device.** Remove always sweeps the connected destinations (quietly
+  when this device never opted in), and a restored signature arrives with the box ticked, so
+  unticking it deletes the copy. While a copy exists but cannot be written, the box stays: the
+  policy names unticking as the way to withdraw consent.
 - ⚠️ **A named exception to "identity is the Drive file id"** (`rules/cloud-sync.md`): delete
   removes every file named `signature.json` in `KiwiCV/signature/`, KiwiCV's own folder that holds
   nothing else. Known limit: with duplicate `KiwiCV` roots, `ensureFolderPath` takes the first

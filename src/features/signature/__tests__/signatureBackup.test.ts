@@ -57,6 +57,7 @@ function connectBoth() {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  github.getRepo.mockReset().mockResolvedValue({ private: true });
   localStorage.clear();
   sessionStorage.clear();
   useSignatureStore.setState({ signature: null, ownerUserId: null, backupEnabled: false });
@@ -166,9 +167,63 @@ describe('saving and removing with the backup choice', () => {
     expect(drive.deleteFile).toHaveBeenCalledWith('drive-token', 'drive-1');
   });
 
+  it('a Remove during an upload deletes only after the upload has landed', async () => {
+    connectBoth();
+    let land!: () => void;
+    drive.sync.mockImplementationOnce(
+      () => new Promise((resolve) => (land = () => resolve({ folderId: 'f' }))),
+    );
+    const saving = saveSignature(SIGNATURE, true, t);
+    await vi.waitFor(() => expect(drive.sync).toHaveBeenCalled());
+    const removing = removeSignature(t);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(drive.deleteFile).not.toHaveBeenCalled();
+    land();
+    await Promise.all([saving, removing]);
+    expect(drive.deleteFile).toHaveBeenCalledWith('drive-token', 'drive-1');
+  });
+
+  it('Remove with the backup off sweeps quietly: no destination, no request; no copy, no toast', async () => {
+    const addToast = vi.spyOn(useToastStore.getState(), 'addToast');
+    useSignatureStore.setState({ signature: SIGNATURE, backupEnabled: false });
+    await removeSignature(t);
+    expect(drive.listFiles).not.toHaveBeenCalled();
+
+    connectBoth();
+    drive.listFiles.mockResolvedValueOnce([]);
+    github.getSha.mockResolvedValueOnce(undefined);
+    useSignatureStore.setState({ signature: SIGNATURE, backupEnabled: false });
+    await removeSignature(t);
+    expect(drive.deleteFile).not.toHaveBeenCalled();
+    expect(github.deleteFile).not.toHaveBeenCalled();
+    expect(addToast).not.toHaveBeenCalled();
+    addToast.mockRestore();
+  });
+
+  it('Remove on a device that only restored the signature deletes the copy there too', async () => {
+    connectBoth();
+    useSignatureStore.setState({ signature: SIGNATURE, backupEnabled: false });
+    await removeSignature(t);
+    expect(drive.deleteFile).toHaveBeenCalledWith('drive-token', 'drive-1');
+    expect(github.deleteFile).toHaveBeenCalled();
+  });
+
+  it('a job that throws reports itself and does not stall the next one', async () => {
+    const addToast = vi.spyOn(useToastStore.getState(), 'addToast');
+    connectBoth();
+    github.getRepo.mockImplementationOnce(() => {
+      throw new Error('sync throw');
+    });
+    await saveSignature(SIGNATURE, true, t).catch(() => {});
+    await saveSignature(SIGNATURE, true, t);
+    expect(drive.sync).toHaveBeenCalled();
+    addToast.mockRestore();
+  });
+
   it('Remove deletes from a repo that has since been made public', async () => {
     connectBoth();
     await saveSignature(SIGNATURE, true, t);
+    // Made public since: deletes do not ask, so this would block a write but not the delete.
     github.getRepo.mockResolvedValue({ private: false });
     await removeSignature(t);
     expect(github.deleteFile).toHaveBeenCalledWith(
@@ -177,7 +232,6 @@ describe('saving and removing with the backup choice', () => {
       'signature/signature.json',
       expect.any(String),
     );
-    github.getRepo.mockResolvedValue({ private: true });
   });
 
   it('Remove withdraws the backup choice, and says so when the copy cannot be reached', async () => {

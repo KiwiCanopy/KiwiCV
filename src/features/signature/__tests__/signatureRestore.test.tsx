@@ -11,7 +11,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const SAVED: StoredSignature = { kind: 'typed', id: 'saved', faceId: 'great-vibes', text: 'Ada' };
 const drive = vi.hoisted(() => ({
   sync: vi.fn(async (..._args: unknown[]) => ({ folderId: 'f' })),
-  listFiles: vi.fn(async (..._args: unknown[]) => []),
+  listFiles: vi.fn(async (..._args: unknown[]): Promise<{ id: string; name: string }[]> => []),
   deleteFile: vi.fn(async (..._args: unknown[]) => undefined),
   downloadJsonByName: vi.fn(async (..._args: unknown[]): Promise<unknown> => null),
 }));
@@ -28,7 +28,7 @@ beforeEach(() => {
 });
 
 describe('restoring the backed-up signature', () => {
-  it('is offered, not applied, and only taken on the click, with the box as the user left it', async () => {
+  it('is offered, not applied, and taken on the click with its backup still on', async () => {
     const user = userEvent.setup();
     drive.downloadJsonByName.mockResolvedValue({ v: 1, signature: SAVED });
     render(<SignatureRow />);
@@ -37,10 +37,27 @@ describe('restoring the backed-up signature', () => {
     const use = await screen.findByRole('button', { name: 'Use it' });
     expect(useSignatureStore.getState().signature).toBeNull();
 
+    // The copy exists by earlier consent, so the box arrives ticked.
+    expect(screen.getByRole('checkbox')).toHaveProperty('checked', true);
     await user.click(use);
     expect(useSignatureStore.getState().signature).toEqual(SAVED);
-    // The checkbox was never ticked here, so restoring does not switch the backup on.
+    expect(useSignatureStore.getState().backupEnabled).toBe(true);
+  });
+
+  it('unticking before taking it withdraws consent and deletes the copy', async () => {
+    const user = userEvent.setup();
+    drive.downloadJsonByName.mockResolvedValue({ v: 1, signature: SAVED });
+    drive.listFiles.mockResolvedValue([{ id: 'drive-1', name: 'signature.json' }]);
+    render(<SignatureRow />);
+
+    await user.click(screen.getByRole('button', { name: 'Add signature' }));
+    const use = await screen.findByRole('button', { name: 'Use it' });
+    await user.click(screen.getByRole('checkbox'));
+    await user.click(use);
+
+    expect(useSignatureStore.getState().signature).toEqual(SAVED);
     expect(useSignatureStore.getState().backupEnabled).toBe(false);
+    await vi.waitFor(() => expect(drive.deleteFile).toHaveBeenCalledWith('drive-token', 'drive-1'));
   });
 
   it('is not offered when the device already has a signature', async () => {
@@ -55,5 +72,26 @@ describe('restoring the backed-up signature', () => {
     await screen.findByRole('checkbox');
     expect(screen.queryByRole('button', { name: 'Use it' })).toBeNull();
     expect(drive.downloadJsonByName).not.toHaveBeenCalled();
+  });
+});
+
+describe('withdrawing while the copy cannot be written', () => {
+  it('keeps the box, and unticking it deletes the copy', async () => {
+    const user = userEvent.setup();
+    // Drive sync switched off: no write target, but a copy exists.
+    useResumeStore.setState((state) => ({
+      sync: { ...state.sync, googleDrive: { ...state.sync.googleDrive, enabled: false } },
+    }));
+    useSignatureStore.setState({ signature: SAVED, backupEnabled: true });
+    render(<SignatureRow />);
+
+    await user.click(screen.getByRole('button', { name: 'Change' }));
+    const box = await screen.findByRole('checkbox', { name: /Google Drive/ });
+    expect(box).toHaveProperty('checked', true);
+    await user.click(box);
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    await vi.waitFor(() => expect(drive.listFiles).toHaveBeenCalled());
+    expect(useSignatureStore.getState().backupEnabled).toBe(false);
   });
 });

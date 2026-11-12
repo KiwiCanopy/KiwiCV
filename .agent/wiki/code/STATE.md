@@ -85,7 +85,9 @@ each of those roads and fails if the signature appears.
   (`/signature/<id>.png`).
 - **Lifecycle** (owner, #108): sign-out and account deletion keep it; a **different account**
   signing in clears it. `ownerUserId` is persisted beside it, so a switch after a reload is caught;
-  `AuthProvider` calls `bindToUser` on every session change. One saved signed out goes to whoever
+  `AuthProvider` calls `bindToUser` on every session change, which re-reads storage and writes only
+  a change, so a stale tab cannot write its old copy back. A signed-out edit keeps the owner; one
+  saved unowned (signed out, after Remove) goes to whoever
   signs in next.
 
 ## Auth & Persistence (`AuthProvider.tsx`)

@@ -1246,7 +1246,7 @@ describe('AuthProvider and the device-only signature (#108)', () => {
   };
 
   beforeEach(() => {
-    useSignatureStore.setState({ signature: null, ownerUserId: null, sessionUserId: null });
+    useSignatureStore.setState({ signature: null, ownerUserId: null });
   });
 
   it('keeps it through a sign-out, and drops it when a different account signs in', async () => {
@@ -1258,5 +1258,17 @@ describe('AuthProvider and the device-only signature (#108)', () => {
 
     await emit('SIGNED_IN', sessionFor(USER_B));
     await waitFor(() => expect(useSignatureStore.getState().signature).toBeNull());
+  });
+
+  it('adopts one saved after the session ended for the next account', async () => {
+    await emit('SIGNED_IN', sessionFor(USER_A));
+    await emit('SIGNED_OUT', null);
+    useSignatureStore.getState().removeSignature();
+    useSignatureStore.getState().setSignature(SIGNATURE);
+    expect(useSignatureStore.getState().ownerUserId).toBeNull();
+
+    await emit('SIGNED_IN', sessionFor(USER_B));
+    expect(useSignatureStore.getState().signature).toEqual(SIGNATURE);
+    expect(useSignatureStore.getState().ownerUserId).toBe(USER_B);
   });
 });

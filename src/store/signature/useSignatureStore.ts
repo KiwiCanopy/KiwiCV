@@ -33,8 +33,6 @@ interface SignatureStore {
    * signed out. A different account signing in clears it (#108).
    */
   ownerUserId: string | null;
-  /** The signed-in account right now; not persisted. */
-  sessionUserId: string | null;
   setSignature: (signature: StoredSignature) => void;
   removeSignature: () => void;
   /** Called on every session change, from `AuthProvider`. */
@@ -84,27 +82,36 @@ export const newSignatureId = (): string =>
     ? crypto.randomUUID()
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 
+/**
+ * The signed-in account, outside the store: a `set` on a persisted store writes
+ * storage, so tracking the session there let any auth event in a stale tab
+ * write that tab's old signature back.
+ */
+let sessionUserId: string | null = null;
+
 export const useSignatureStore = create<SignatureStore>()(
   persist(
     (set, get) => ({
       signature: null,
       ownerUserId: null,
-      sessionUserId: null,
-      setSignature: (signature) => set({ signature, ownerUserId: get().sessionUserId }),
+      // Signed out, an edit keeps the owner, so it cannot hand an account's
+      // signature to the next one; after Remove, a new one starts unowned.
+      setSignature: (signature) =>
+        set({ signature, ownerUserId: sessionUserId ?? get().ownerUserId }),
       removeSignature: () => set({ signature: null, ownerUserId: null }),
       bindToUser: (userId) => {
         // Owner ruling 2026-11-12 (#108): sign-out keeps the signature, like the
         // résumé beside it; a different person signing in does not inherit it,
-        // like the GitHub token. One saved signed out goes to whoever signs in.
+        // like the GitHub token. One saved unowned goes to whoever signs in.
+        sessionUserId = userId;
+        if (!userId) return;
+        // Decide on what storage holds now, not on this tab's copy, and write
+        // only a change. Synchronous: the storage is localStorage.
+        void useSignatureStore.persist.rehydrate();
         const { signature, ownerUserId } = get();
-        if (userId && signature && ownerUserId && ownerUserId !== userId) {
-          set({ signature: null, ownerUserId: null, sessionUserId: userId });
-          return;
-        }
-        set({
-          sessionUserId: userId,
-          ownerUserId: userId && signature ? userId : ownerUserId,
-        });
+        if (!signature || ownerUserId === userId) return;
+        if (ownerUserId) set({ signature: null, ownerUserId: null });
+        else set({ ownerUserId: userId });
       },
     }),
     {

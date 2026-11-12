@@ -75,9 +75,9 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
   const [faceId, setFaceId] = useState<SignatureFaceId>(DEFAULT_SIGNATURE_FACE);
   const [hasInk, setHasInk] = useState(false);
   const [upload, setUpload] = useState<UploadState>(() =>
-    stored?.kind === 'image' && stored.source === 'upload'
-      ? { status: 'ready', dataUrl: stored.dataUrl }
-      : { status: 'idle' },
+    // Any stored image opens as the current one, drawn or uploaded: a blank pad
+    // read as a lost signature, and Save can apply a new backup choice to it.
+    stored?.kind === 'image' ? { status: 'ready', dataUrl: stored.dataUrl } : { status: 'idle' },
   );
   const padRef = useRef<SignatureDrawPadHandle>(null);
 
@@ -95,7 +95,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
     // Opens on Type when a face covers the name, otherwise on Draw.
     setTab((current) => {
       if (current) return current;
-      if (stored?.kind === 'image') return stored.source === 'upload' ? 'upload' : 'draw';
+      if (stored?.kind === 'image') return 'upload';
       return textFace ? 'type' : 'draw';
     });
   });

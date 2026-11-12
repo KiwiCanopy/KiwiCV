@@ -6,6 +6,7 @@ import {
 } from '@/features/signature/signatureFonts';
 import { fitScale, keyOutPaper } from '@/features/signature/signatureImage';
 import { parseStoredSignature } from '@/store/signature/useSignatureStore';
+import lazyFontInfo from '@/workers/lazy-font-info.json';
 import { describe, expect, it } from 'vitest';
 
 const rgba = (pixels: number[][]) => new Uint8ClampedArray(pixels.flat());
@@ -49,6 +50,11 @@ describe('glyph coverage', () => {
     expect([...decodeCoverage([65, 3, 2, 1])]).toEqual([65, 66, 67, 70]);
   });
 
+  it('every face is a lazy Typst face, or the worker never fetches it', () => {
+    const lazyFiles = lazyFontInfo.fonts.map((font) => font.file);
+    for (const face of SIGNATURE_FACES) expect(lazyFiles, face.file).toContain(face.file);
+  });
+
   it('per face, from the same tables Typst uses', async () => {
     const coverage = await loadSignatureCoverage();
     expect([...coverage.keys()].sort()).toEqual(SIGNATURE_FACES.map((face) => face.id).sort());
@@ -68,10 +74,15 @@ describe('parseStoredSignature', () => {
       parseStoredSignature({
         kind: 'image',
         id: 'a1',
-        dataUrl: 'data:image/png;base64,AAAA',
+        dataUrl: 'data:image/png;base64,iVBORw0KGgoAAAA',
         source: 'draw',
       }),
-    ).toEqual({ kind: 'image', id: 'a1', dataUrl: 'data:image/png;base64,AAAA', source: 'draw' });
+    ).toEqual({
+      kind: 'image',
+      id: 'a1',
+      dataUrl: 'data:image/png;base64,iVBORw0KGgoAAAA',
+      source: 'draw',
+    });
     expect(
       parseStoredSignature({ kind: 'typed', id: 'a1', faceId: 'great-vibes', text: ' Jane ' }),
     ).toEqual({ kind: 'typed', id: 'a1', faceId: 'great-vibes', text: 'Jane' });
@@ -79,10 +90,19 @@ describe('parseStoredSignature', () => {
 
   it.each([
     ['a non-PNG image', { kind: 'image', id: 'a1', dataUrl: 'data:image/svg+xml;base64,AA' }],
+    // Every compile would fail on it, preview and export alike.
+    [
+      'bytes that are not a PNG',
+      { kind: 'image', id: 'a1', dataUrl: 'data:image/png;base64,AAAA' },
+    ],
+    ['broken base64', { kind: 'image', id: 'a1', dataUrl: 'data:image/png;base64,iVBORw0KGgo!!' }],
     ['an unknown face', { kind: 'typed', id: 'a1', faceId: 'comic-sans', text: 'Jane' }],
     ['blank text', { kind: 'typed', id: 'a1', faceId: 'great-vibes', text: '  ' }],
     // The id names a virtual file path inside the compile.
-    ['a path in the id', { kind: 'image', id: '../x', dataUrl: 'data:image/png;base64,AA' }],
+    [
+      'a path in the id',
+      { kind: 'image', id: '../x', dataUrl: 'data:image/png;base64,iVBORw0KGgoAAAA' },
+    ],
     ['nothing', null],
   ])('drops %s', (_label, value) => {
     expect(parseStoredSignature(value)).toBeNull();

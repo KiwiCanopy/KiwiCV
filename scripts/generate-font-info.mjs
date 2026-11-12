@@ -28,7 +28,10 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FONT_DIR = path.join(ROOT, 'public', 'fonts');
 const OUT_FILE = path.join(ROOT, 'src', 'workers', 'lazy-font-info.json');
 
-/** Faces registered lazily. Keep in sync with `LAZY_FONT_FILES` in the worker. */
+/**
+ * Faces registered lazily; the worker registers every entry of the output.
+ * Each `SIGNATURE_FACES[].file` must be here too (`signatureHelpers.test.ts`).
+ */
 const LAZY_FONTS = [
   'noto-sans-cjk-sc-regular.otf',
   'noto-sans-cjk-jp-regular.otf',

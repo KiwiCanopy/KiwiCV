@@ -11,7 +11,7 @@ import {
   resolvePalette,
 } from '@/components/preview/themes/shared';
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
-import { NO_SIGNATURE, type SerializeContext } from '@/components/preview/themes/shared/signature';
+import type { SerializeContext } from '@/components/preview/themes/shared/signature';
 import {
   getTypstFooterParts,
   renderTypstSignatureFooter,
@@ -79,7 +79,7 @@ function escapeString(str: string | null | undefined): string {
   return escapeTypst(str).replace(/"/g, '\\"');
 }
 
-export function serializeToTypst(data: ResumeData, ctx: SerializeContext = NO_SIGNATURE): string {
+export function serializeToTypst(data: ResumeData, ctx: SerializeContext): string {
   const { meta, basics } = data;
   const { cvLocale, cvTitle, formatCVDate, formatCVDateRange } = getBoundFormatters(data);
   // ⚠️ `getSectionLabels`, not `cvLocale.sections`. The locale map holds

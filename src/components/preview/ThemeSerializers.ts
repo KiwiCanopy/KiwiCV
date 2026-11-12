@@ -23,8 +23,8 @@ import type { ResumeData } from '@/types/resume';
  * of a silent gap. `__tests__/typstCompile.test.ts` asserts the same property
  * at runtime, since that is what keeps its table from shrinking unnoticed.
  *
- * `ctx` is required here although each serializer defaults it: every app call
- * site must state the signature, and only tests may omit it.
+ * `ctx` is required, here and on each serializer: a call that omits it would
+ * drop the device-only signature from that PDF without a word (#103).
  */
 export const SERIALIZERS: Record<ThemeId, (resume: ResumeData, ctx: SerializeContext) => string> = {
   elegant: elegantSerialize,

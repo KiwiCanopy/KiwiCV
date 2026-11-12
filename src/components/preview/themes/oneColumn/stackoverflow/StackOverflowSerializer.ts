@@ -30,7 +30,6 @@ import {
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
 import { getProfileDisplayPDF } from '@/components/preview/themes/shared/profiles-pdf';
 import {
-  NO_SIGNATURE,
   type SerializeContext,
   type TypstSignature,
 } from '@/components/preview/themes/shared/signature';
@@ -126,7 +125,7 @@ function footerMarkup(
   });
 }
 
-export function serializeToTypst(data: ResumeData, ctx: SerializeContext = NO_SIGNATURE): string {
+export function serializeToTypst(data: ResumeData, ctx: SerializeContext): string {
   const { meta, basics } = data;
   const { cvLocale, cvTitle, formatCVDate, formatCVDateRange } = getBoundFormatters(data);
   const labels = getSectionLabels(cvLocale.sections || {}, meta?.theme?.params?.sectionLabels);

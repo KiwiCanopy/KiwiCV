@@ -34,8 +34,19 @@ interface SignatureStore {
 
 const STORE_VERSION = 1;
 
-const isPngDataUrl = (value: unknown): value is string =>
-  typeof value === 'string' && value.startsWith('data:image/png;base64,');
+const PNG_PREFIX = 'data:image/png;base64,';
+/** Base64 of the 8-byte PNG signature, so a corrupt value fails here, not in every compile. */
+const PNG_MAGIC_BASE64 = 'iVBORw0KGgo';
+
+const isPngDataUrl = (value: unknown): value is string => {
+  if (typeof value !== 'string' || !value.startsWith(PNG_PREFIX + PNG_MAGIC_BASE64)) return false;
+  try {
+    atob(value.slice(PNG_PREFIX.length));
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 /** Drops anything this version cannot render, rather than trusting storage. */
 export function parseStoredSignature(value: unknown): StoredSignature | null {

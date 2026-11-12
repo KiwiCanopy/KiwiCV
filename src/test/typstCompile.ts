@@ -144,12 +144,6 @@ export async function mapProfileImage(image: string): Promise<void> {
   compiler.mapShadow(getProfileImagePath(image), bytes);
 }
 
-/**
- * Compiles markup to PDF bytes. Rejects with the compiler's own diagnostic when
- * the document does not compile, which is the entire point: a failure here
- * reads as e.g. `cannot spread string` — the single-element-tuple shape —
- * rather than as a silently empty export.
- */
 /** Maps data-URL images at their virtual paths, as the worker does for the signature. */
 export async function mapImages(images: Record<string, string> | undefined): Promise<void> {
   if (!images) return;
@@ -166,6 +160,12 @@ export async function mapImages(images: Record<string, string> | undefined): Pro
   }
 }
 
+/**
+ * Compiles markup to PDF bytes. Rejects with the compiler's own diagnostic when
+ * the document does not compile, which is the entire point: a failure here
+ * reads as e.g. `cannot spread string` — the single-element-tuple shape —
+ * rather than as a silently empty export.
+ */
 export async function compileToPdf(markup: string): Promise<Uint8Array> {
   return (await $typst.pdf({ mainContent: markup })) as Uint8Array;
 }

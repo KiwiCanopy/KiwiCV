@@ -10,7 +10,7 @@ import {
   resolvePalette,
 } from '@/components/preview/themes/shared';
 import { buildCoverLetterTypst } from '@/components/preview/themes/shared/coverLetterTypst';
-import { NO_SIGNATURE, type SerializeContext } from '@/components/preview/themes/shared/signature';
+import type { SerializeContext } from '@/components/preview/themes/shared/signature';
 import {
   getTypstFooterParts,
   renderTypstSignatureFooter,
@@ -46,7 +46,7 @@ import type { ResumeData, ResumeSectionItem } from '@/types/resume';
 import type { SectionKey } from '@/utils/layout/constants';
 import type { LayoutSectionId } from '@/utils/layout/customSections';
 
-export function serializeToTypst(data: ResumeData, ctx: SerializeContext = NO_SIGNATURE): string {
+export function serializeToTypst(data: ResumeData, ctx: SerializeContext): string {
   const { basics, meta } = data;
   const { cvLocale, cvTitle, formatCVDate, formatCVDateRange } = getBoundFormatters(data);
   const labels = getSectionLabels(cvLocale.sections || {}, meta?.theme?.params?.sectionLabels);

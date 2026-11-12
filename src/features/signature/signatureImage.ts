@@ -1,4 +1,4 @@
-import { createImage } from '@/utils/image';
+import { createImage, encodeTransparentPng } from '@/utils/image';
 
 /**
  * The signature image pipeline: every drawn, uploaded or pasted signature ends
@@ -106,10 +106,8 @@ export function toSignaturePng(
   outCtx.imageSmoothingQuality = 'high';
   outCtx.drawImage(work, box.x, box.y, box.width, box.height, 0, 0, out.width, out.height);
 
-  const dataUrl = out.toDataURL('image/png');
-  return dataUrl.startsWith('data:image/png;base64,')
-    ? { ok: true, dataUrl }
-    : { ok: false, reason: 'unreadable' };
+  const dataUrl = encodeTransparentPng(out);
+  return dataUrl ? { ok: true, dataUrl } : { ok: false, reason: 'unreadable' };
 }
 
 /**
@@ -131,10 +129,8 @@ export async function fileToWorkingDataUrl(
     const ctx = canvas.getContext('2d');
     if (!ctx) return { ok: false, reason: 'unreadable' };
     ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const dataUrl = canvas.toDataURL('image/png');
-    return dataUrl.startsWith('data:image/png')
-      ? { ok: true, dataUrl }
-      : { ok: false, reason: 'unreadable' };
+    const dataUrl = encodeTransparentPng(canvas);
+    return dataUrl ? { ok: true, dataUrl } : { ok: false, reason: 'unreadable' };
   } finally {
     bitmap.close();
   }

@@ -70,3 +70,12 @@ export function encodeOpaquePng(
   const encoded = drawOpaqueCanvas(width, height, draw)?.toDataURL('image/png');
   return encoded?.startsWith('data:image/png') ? encoded : null;
 }
+
+/**
+ * Encodes a canvas as PNG, keeping its alpha. The one encode here that does not
+ * paint white first: a signature's transparency is the point (#103).
+ */
+export function encodeTransparentPng(canvas: HTMLCanvasElement): string | null {
+  const encoded = canvas.toDataURL('image/png');
+  return encoded.startsWith('data:image/png;base64,') ? encoded : null;
+}

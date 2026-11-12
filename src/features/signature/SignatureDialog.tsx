@@ -29,6 +29,7 @@ import {
 } from '@/features/signature/signatureBackup';
 import { faceCovers, loadSignatureCoverage } from '@/features/signature/signatureFonts';
 import { dataUrlToSignaturePng, fileToWorkingDataUrl } from '@/features/signature/signatureImage';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import {
@@ -58,6 +59,7 @@ const firstCoveringFace = (coverage: Coverage, text: string): SignatureFaceId | 
  */
 export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProps) {
   const { t } = useTranslation();
+  const locale = useLanguage();
   const name = useResumeStore((state) => state.resume.basics.name).trim();
   const stored = useSignatureStore((state) => state.signature);
   const backupEnabled = useSignatureStore((state) => state.backupEnabled);
@@ -133,9 +135,12 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
   const canBackUp = hasBackupTarget(targets);
   // With nothing connected right now, the stored choice stands untouched.
   const backupWanted = canBackUp ? backupChecked : backupEnabled;
-  const backupNames = [targets.drive && 'Google Drive', targets.github && 'GitHub']
-    .filter(Boolean)
-    .join(', ');
+  // Named, not "your backup": the user should see the copy leaves the device.
+  const backupNames = new Intl.ListFormat(locale, { type: 'conjunction' }).format(
+    [targets.drive && 'Google Drive', targets.github && 'GitHub'].filter((name): name is string =>
+      Boolean(name),
+    ),
+  );
 
   const typeAvailable = !initialText || !coverage || !!firstCoveringFace(coverage, initialText);
   const typeReasonId = useId();
@@ -373,7 +378,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
                 aria-describedby={backupNoteId}
                 className="accent-primary h-4 w-4"
               />
-              {t('design.signature.backup_label')}
+              {t('design.signature.backup_label', { targets: backupNames })}
             </label>
             {backupChecked && targets.github && (
               <p className="text-muted-foreground pl-6 text-xs">

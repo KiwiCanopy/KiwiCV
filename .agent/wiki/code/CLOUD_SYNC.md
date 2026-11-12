@@ -71,6 +71,16 @@ same gate as the full backup). Remove and switching it off delete the copy; GitH
 earlier versions, and the dialog says so. A device with no signature is offered the saved one,
 never given it silently. The signature is still never in `resume.json` or any sync payload.
 
+- **Writes** go only to a destination switched on in the sync settings and, for GitHub, a repo
+  passing `isPrivateBackupRepo`. **Deletes** skip both checks (`forDelete`): deleting leaks
+  nothing, and a repo made public since must still lose the file. One queue runs backup jobs in
+  order and each reads the store when it starts, so a Remove is never undone by a slower upload.
+- ⚠️ **A named exception to "identity is the Drive file id"** (`rules/cloud-sync.md`): delete
+  removes every file named `signature.json` in `KiwiCV/signature/`, KiwiCV's own folder that holds
+  nothing else. Known limit: with duplicate `KiwiCV` roots, `ensureFolderPath` takes the first
+  match, so a copy under the other root survives; the failure toast names both paths to delete by
+  hand.
+
 ## Validation
 
 Function tests cover both supported roots, retired-root exclusion, same-name

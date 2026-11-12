@@ -63,12 +63,16 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Добавить подпись',
+    backup_delete_failed:
+      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
     backup_failed: 'Подпись сохранена на этом устройстве, но резервную копию не удалось обновить.',
     backup_github_history:
       'При удалении подпись удаляется из репозитория; более ранние версии в его истории ее сохраняют.',
     backup_label: 'Также сохранить копию в {{targets}}',
     backup_note:
       'Сохранено на этом устройстве и в {{targets}}. Создаваемые тобой PDF включают подпись.',
+    backup_unreachable:
+      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
     change: 'Изменить',
     commit_removed: 'Удалить копию подписи',
     commit_saved: 'Сохранить копию подписи',

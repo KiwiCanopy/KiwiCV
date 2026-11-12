@@ -103,7 +103,9 @@ export const useSignatureStore = create<SignatureStore>()(
       // signature to the next one; after Remove, a new one starts unowned.
       setSignature: (signature) =>
         set({ signature, ownerUserId: sessionUserId ?? get().ownerUserId }),
-      removeSignature: () => set({ signature: null, ownerUserId: null }),
+      // Remove withdraws the backup choice too (#106): the next signature, maybe
+      // someone else's, starts with the box unticked.
+      removeSignature: () => set({ signature: null, ownerUserId: null, backupEnabled: false }),
       bindToUser: (userId) => {
         // Owner ruling 2026-11-12 (#108): sign-out keeps the signature, like the
         // résumé beside it; a different person signing in does not inherit it,

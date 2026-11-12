@@ -65,12 +65,16 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Lägg till signatur',
+    backup_delete_failed:
+      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
     backup_failed:
       'Din signatur är sparad på den här enheten, men säkerhetskopian kunde inte uppdateras.',
     backup_github_history:
       'Om du tar bort den raderas den från ditt arkiv; tidigare versioner i historiken behåller den.',
     backup_label: 'Spara även en kopia i {{targets}}',
     backup_note: 'Sparas på den här enheten och i {{targets}}. PDF:er du skapar innehåller den.',
+    backup_unreachable:
+      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
     change: 'Ändra',
     commit_removed: 'Ta bort säkerhetskopia av signatur',
     commit_saved: 'Säkerhetskopiera signatur',

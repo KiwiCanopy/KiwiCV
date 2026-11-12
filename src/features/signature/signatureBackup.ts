@@ -31,22 +31,38 @@ export const hasBackupTarget = (targets: SignatureBackupTargets) =>
   Boolean(targets.drive || targets.github);
 
 /**
- * The destinations connected on this device. GitHub counts only for a repo
- * that may hold the full backup (`isPrivateBackupRepo`): any other repo never
- * receives the signature file.
+ * The destinations a copy may be written to: switched on in the sync settings,
+ * as the export's own check reads them, and, for GitHub, a repo that may hold
+ * the full backup (`isPrivateBackupRepo`). Any other repo never receives it.
+ *
+ * `forDelete` drops both conditions: deleting leaks nothing, and a copy must
+ * still go when the repo has since been made public or sync was switched off.
  */
-export async function resolveBackupTargets(): Promise<SignatureBackupTargets> {
-  const drive = loadGoogleDriveCreds() || null;
+export async function resolveBackupTargets({
+  forDelete = false,
+}: { forDelete?: boolean } = {}): Promise<SignatureBackupTargets> {
+  const { sync } = useResumeStore.getState();
+  const driveToken = loadGoogleDriveCreds();
+  const drive = driveToken && (forDelete || sync.googleDrive?.enabled) ? driveToken : null;
   const { pat } = loadGitHubCreds();
-  const repoName = useResumeStore.getState().sync.github?.repo ?? '';
-  const [owner, repo] = repoName.split('/');
+  const [owner, repo] = (sync.github?.repo ?? '').split('/');
   let github: SignatureBackupTargets['github'] = null;
-  if (pat && owner && repo) {
-    const info = await new GitHubService(pat).getRepo(owner, repo).catch(() => null);
-    if (isPrivateBackupRepo(info)) github = { pat, owner, repo };
+  if (pat && owner && repo && (forDelete || sync.github?.enabled)) {
+    if (forDelete) {
+      github = { pat, owner, repo };
+    } else {
+      const info = await new GitHubService(pat).getRepo(owner, repo).catch(() => null);
+      if (isPrivateBackupRepo(info)) github = { pat, owner, repo };
+    }
   }
   return { drive, github };
 }
+
+/** Where the copy lives, for the message that asks the user to delete one by hand. */
+export const BACKUP_PATHS = {
+  drive: `${DRIVE_FOLDER.join('/')}/${FILE_NAME}`,
+  github: GITHUB_PATH,
+};
 
 const fileContent = (signature: StoredSignature) =>
   JSON.stringify({ v: FILE_VERSION, signature }, null, 2);

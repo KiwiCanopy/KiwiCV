@@ -10,6 +10,7 @@ import { saveGitHubCreds } from '@/services/storage/githubStorage';
 import { saveGoogleDriveCreds } from '@/services/storage/googleStorage';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import { type StoredSignature, useSignatureStore } from '@/store/signature/useSignatureStore';
+import { useToastStore } from '@/store/ui/useToastStore';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /** The opt-in signature backup (#106): its own file, only where it may go. */
@@ -46,7 +47,11 @@ function connectBoth() {
   saveGoogleDriveCreds('drive-token');
   saveGitHubCreds('pat', 'me/cv', true);
   useResumeStore.setState((state) => ({
-    sync: { ...state.sync, github: { ...state.sync.github, enabled: true, repo: 'me/cv' } },
+    sync: {
+      ...state.sync,
+      github: { ...state.sync.github, enabled: true, repo: 'me/cv' },
+      googleDrive: { ...state.sync.googleDrive, enabled: true },
+    },
   }));
 }
 
@@ -74,6 +79,21 @@ describe('where the signature backup may go', () => {
     connectBoth();
     github.getRepo.mockResolvedValueOnce(repo);
     expect((await resolveBackupTargets()).github).toBeNull();
+  });
+
+  it('a repo whose visibility cannot be read is never a write target', async () => {
+    connectBoth();
+    github.getRepo.mockRejectedValueOnce(new Error('rate limited'));
+    expect((await resolveBackupTargets()).github).toBeNull();
+  });
+
+  it('a destination switched off in the sync settings is not a write target, but is deleted from', async () => {
+    connectBoth();
+    useResumeStore.setState((state) => ({
+      sync: { ...state.sync, googleDrive: { ...state.sync.googleDrive, enabled: false } },
+    }));
+    expect((await resolveBackupTargets()).drive).toBeNull();
+    expect((await resolveBackupTargets({ forDelete: true })).drive).toBe('drive-token');
   });
 
   it('nothing connected means no target and no request', async () => {
@@ -132,6 +152,43 @@ describe('the backup file', () => {
 });
 
 describe('saving and removing with the backup choice', () => {
+  it('the store starts with the backup off', () => {
+    expect(useSignatureStore.getInitialState().backupEnabled).toBe(false);
+  });
+
+  it('a Remove right after a Save is not undone by the upload landing last', async () => {
+    connectBoth();
+    const saving = saveSignature(SIGNATURE, true, t);
+    const removing = removeSignature(t);
+    await Promise.all([saving, removing]);
+    expect(drive.sync).not.toHaveBeenCalled();
+    expect(github.pushFile).not.toHaveBeenCalled();
+    expect(drive.deleteFile).toHaveBeenCalledWith('drive-token', 'drive-1');
+  });
+
+  it('Remove deletes from a repo that has since been made public', async () => {
+    connectBoth();
+    await saveSignature(SIGNATURE, true, t);
+    github.getRepo.mockResolvedValue({ private: false });
+    await removeSignature(t);
+    expect(github.deleteFile).toHaveBeenCalledWith(
+      'me',
+      'cv',
+      'signature/signature.json',
+      expect.any(String),
+    );
+    github.getRepo.mockResolvedValue({ private: true });
+  });
+
+  it('Remove withdraws the backup choice, and says so when the copy cannot be reached', async () => {
+    const addToast = vi.spyOn(useToastStore.getState(), 'addToast');
+    useSignatureStore.setState({ signature: SIGNATURE, backupEnabled: true });
+    await removeSignature(t);
+    expect(useSignatureStore.getState().backupEnabled).toBe(false);
+    expect(addToast).toHaveBeenCalledWith('design.signature.backup_delete_failed', 'warning', 8000);
+    addToast.mockRestore();
+  });
+
   it('off by default: a save touches no network at all', async () => {
     connectBoth();
     await saveSignature(SIGNATURE, false, t);
@@ -161,11 +218,14 @@ describe('saving and removing with the backup choice', () => {
     expect(github.deleteFile).toHaveBeenCalled();
   });
 
-  it('a failed backup keeps the device copy', async () => {
+  it('a failed backup keeps the device copy and says so', async () => {
+    const addToast = vi.spyOn(useToastStore.getState(), 'addToast');
     connectBoth();
     drive.sync.mockRejectedValueOnce(new Error('offline'));
     await saveSignature(SIGNATURE, true, t);
     expect(useSignatureStore.getState().signature).toEqual(SIGNATURE);
+    expect(addToast).toHaveBeenCalledWith('design.signature.backup_failed', 'warning', 8000);
+    addToast.mockRestore();
   });
 
   it('a different account signing in drops the backup choice with the signature', () => {

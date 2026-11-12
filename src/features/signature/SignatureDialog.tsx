@@ -23,13 +23,9 @@ import {
   resolveBackupTargets,
   saveSignature,
 } from '@/features/signature/signatureActions';
-import {
-  NO_BACKUP_TARGETS,
-  type SignatureBackupTargets,
-} from '@/features/signature/signatureBackup';
+import { type SignatureBackupTargets } from '@/features/signature/signatureBackup';
 import { faceCovers, loadSignatureCoverage } from '@/features/signature/signatureFonts';
 import { dataUrlToSignaturePng, fileToWorkingDataUrl } from '@/features/signature/signatureImage';
-import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useResumeStore } from '@/store/resume/useResumeStore';
 import {
@@ -37,6 +33,7 @@ import {
   newSignatureId,
   useSignatureStore,
 } from '@/store/signature/useSignatureStore';
+import { useUIStore } from '@/store/ui/useUIStore';
 import { type FocusAnchor } from '@/utils/focus';
 import { PenLine, Signature } from 'lucide-react';
 
@@ -59,11 +56,11 @@ const firstCoveringFace = (coverage: Coverage, text: string): SignatureFaceId | 
  */
 export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProps) {
   const { t } = useTranslation();
-  const locale = useLanguage();
+  const locale = useUIStore((state) => state.appLanguage);
   const name = useResumeStore((state) => state.resume.basics.name).trim();
   const stored = useSignatureStore((state) => state.signature);
   const backupEnabled = useSignatureStore((state) => state.backupEnabled);
-  const [targets, setTargets] = useState<SignatureBackupTargets>(NO_BACKUP_TARGETS);
+  const [targets, setTargets] = useState<SignatureBackupTargets | null>(null);
   const [backupChecked, setBackupChecked] = useState(backupEnabled);
   const [restoreCandidate, setRestoreCandidate] = useState<StoredSignature | null>(null);
   const backupNoteId = useId();
@@ -132,12 +129,12 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
       current = false;
     };
   }, []);
-  const canBackUp = hasBackupTarget(targets);
+  const canBackUp = targets !== null && hasBackupTarget(targets);
   // With nothing connected right now, the stored choice stands untouched.
   const backupWanted = canBackUp ? backupChecked : backupEnabled;
   // Named, not "your backup": the user should see the copy leaves the device.
   const backupNames = new Intl.ListFormat(locale, { type: 'conjunction' }).format(
-    [targets.drive && 'Google Drive', targets.github && 'GitHub'].filter((name): name is string =>
+    [targets?.drive && 'Google Drive', targets?.github && 'GitHub'].filter((name): name is string =>
       Boolean(name),
     ),
   );
@@ -256,7 +253,9 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
           <p id={backupNoteId} className="text-muted-foreground text-xs">
             {backupWanted && canBackUp
               ? t('design.signature.backup_note', { targets: backupNames })
-              : t('design.signature.device_note')}
+              : backupEnabled && targets !== null && !canBackUp
+                ? t('design.signature.backup_unreachable')
+                : t('design.signature.device_note')}
           </p>
           <div className="flex justify-end gap-2">
             {stored && (
@@ -291,7 +290,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
               variant="secondary"
               size="sm"
               onClick={() => {
-                void saveSignature(restoreCandidate, true, t);
+                void saveSignature(restoreCandidate, backupWanted, t);
                 onClose();
               }}
             >
@@ -380,7 +379,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
               />
               {t('design.signature.backup_label', { targets: backupNames })}
             </label>
-            {backupChecked && targets.github && (
+            {backupChecked && targets?.github && (
               <p className="text-muted-foreground pl-6 text-xs">
                 {t('design.signature.backup_github_history')}
               </p>

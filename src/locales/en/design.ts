@@ -64,11 +64,15 @@ export const design = {
   },
   signature: {
     add: 'Add signature',
+    backup_delete_failed:
+      'Your signature is removed from this device, but its backup copy could not be deleted. Delete KiwiCV/signature/signature.json in Google Drive or signature/signature.json in GitHub yourself.',
     backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
     backup_github_history:
       'Removing it deletes it from your repository; earlier versions in its history keep it.',
     backup_label: 'Also save a copy to {{targets}}',
     backup_note: 'Saved on this device and in {{targets}}. PDFs you create include it.',
+    backup_unreachable:
+      "Saved on this device. Your backup copy can't be reached right now. PDFs you create include it.",
     change: 'Change',
     commit_removed: 'Remove signature backup',
     commit_saved: 'Back up signature',

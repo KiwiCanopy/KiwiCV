@@ -1,10 +1,10 @@
 export const highlight_signatures = {
   _highlights: {
     signatures: {
-      badge: 'Signatures',
+      badge: 'Assinaturas',
       content:
-        'Draw it, type your name in a handwriting style, or upload a photo: your signature appears above your name in the PDF footer of your CV and cover letter. It stays on this device and, if you choose, as a copy in Google Drive or your private GitHub repository.',
-      title: 'Your signature on every PDF',
+        'Desenha-a, escreve o teu nome num estilo de caligrafia ou carrega uma fotografia: a tua assinatura aparece por cima do teu nome no rodapé do PDF do teu CV e da tua carta de apresentação. Fica neste dispositivo e, se quiseres, como cópia no Google Drive ou no teu repositório privado do GitHub.',
+      title: 'A tua assinatura em cada PDF',
     },
   },
 };

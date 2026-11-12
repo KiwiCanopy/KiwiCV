@@ -405,9 +405,12 @@ The device-only signature (`code/STATE.md` § Signature Store) is drawn in the s
 - **Geometry (measured).** The mark is `#place`d over the existing 24pt signing gap inside the rule
   box, so a signature adds **no flow height**. A first version that reserved its own block pushed
   the placeholder CV from one page to two; `signatureCompile.test.ts` "a signature costs no page"
-  pins it. Mark height 28pt, image bottom 2pt below the rule, typed baseline lifted 6pt, per-face
-  sizes 26/23/24/23pt (read off rendered output). A long name scales down to the rule width
-  instead of wrapping — two lines read as two signatures.
+  pins it on every theme. An image mark is 28pt tall, its bottom 2pt below the rule. A typed mark
+  is measured by its **ink bounds** and scaled to fit a slot from 22pt above the rule to 1pt above
+  the printed name, in both directions: descenders crossed the name and accented capitals touched
+  the date line when it was sized by font metrics instead. `sizePt` (26/23/24/23) is the size
+  before that fit. A long name shrinks to the rule width rather than wrapping — two lines read as
+  two signatures.
 - **Looking at it.** `RENDER_SIGNATURE=image|typed:<faceId>` (and `RENDER_SIGNATURE_TEXT`) on
   `npm run pdf:render` renders one.
 

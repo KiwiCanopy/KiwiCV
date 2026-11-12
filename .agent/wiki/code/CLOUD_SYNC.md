@@ -63,7 +63,7 @@ cover letter, because a public signature image is an easy forgery source. Drive 
 PDFs keep it by owner ruling (#108): the user's own document in the user's own storage.
 `buildExportArtifacts` takes the signature as a required parameter so every caller decides
 (`githubSyncSignature.test.ts`). An opt-in sync to a separate file was proposed by the
-owner and deferred to #106; until then, do not add the signature to any sync payload.
+owner and designed in #106 (opt-in, Drive and gated private GitHub, a separate file); until it lands, do not add the signature to any sync payload.
 
 ## Validation
 

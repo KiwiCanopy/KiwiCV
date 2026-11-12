@@ -41,7 +41,7 @@ export const VERTEX_CONFIG = {
   API_HOST: 'aiplatform.eu.rep.googleapis.com',
 };
 
-export const PROMPT_VERSION = '2026-10-26d';
+export const PROMPT_VERSION = '2026-11-12b';
 
 /**
  * Largest CV, serialised, that may be sent for improvement or tailoring.

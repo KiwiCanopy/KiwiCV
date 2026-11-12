@@ -16,6 +16,17 @@ import {
 } from '@/features/signature/SignatureDrawPad';
 import { SignatureTypePanel } from '@/features/signature/SignatureTypePanel';
 import { SignatureUploadPanel, type UploadState } from '@/features/signature/SignatureUploadPanel';
+import {
+  fetchSignatureBackup,
+  hasBackupTarget,
+  removeSignature,
+  resolveBackupTargets,
+  saveSignature,
+} from '@/features/signature/signatureActions';
+import {
+  NO_BACKUP_TARGETS,
+  type SignatureBackupTargets,
+} from '@/features/signature/signatureBackup';
 import { faceCovers, loadSignatureCoverage } from '@/features/signature/signatureFonts';
 import { dataUrlToSignaturePng, fileToWorkingDataUrl } from '@/features/signature/signatureImage';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -49,8 +60,11 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
   const { t } = useTranslation();
   const name = useResumeStore((state) => state.resume.basics.name).trim();
   const stored = useSignatureStore((state) => state.signature);
-  const setSignature = useSignatureStore((state) => state.setSignature);
-  const removeSignature = useSignatureStore((state) => state.removeSignature);
+  const backupEnabled = useSignatureStore((state) => state.backupEnabled);
+  const [targets, setTargets] = useState<SignatureBackupTargets>(NO_BACKUP_TARGETS);
+  const [backupChecked, setBackupChecked] = useState(backupEnabled);
+  const [restoreCandidate, setRestoreCandidate] = useState<StoredSignature | null>(null);
+  const backupNoteId = useId();
 
   const [coverage, setCoverage] = useState<Coverage | null>(null);
   const [tab, setTab] = useState<Tab | null>(null);
@@ -97,6 +111,31 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
       current = false;
     };
   }, []);
+
+  // Which backups are connected, and on a device with no signature yet, whether
+  // one of them holds one to offer (never applied silently, #106).
+  const offerRestore = useEffectEvent((found: StoredSignature | null) => {
+    if (found && !useSignatureStore.getState().signature) setRestoreCandidate(found);
+  });
+  useEffect(() => {
+    let current = true;
+    void resolveBackupTargets().then(async (resolved) => {
+      if (!current) return;
+      setTargets(resolved);
+      if (!hasBackupTarget(resolved) || useSignatureStore.getState().signature) return;
+      const found = await fetchSignatureBackup(resolved);
+      if (current) offerRestore(found);
+    });
+    return () => {
+      current = false;
+    };
+  }, []);
+  const canBackUp = hasBackupTarget(targets);
+  // With nothing connected right now, the stored choice stands untouched.
+  const backupWanted = canBackUp ? backupChecked : backupEnabled;
+  const backupNames = [targets.drive && 'Google Drive', targets.github && 'GitHub']
+    .filter(Boolean)
+    .join(', ');
 
   const typeAvailable = !initialText || !coverage || !!firstCoveringFace(coverage, initialText);
   const typeReasonId = useId();
@@ -192,7 +231,7 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
           : { kind: 'image', id: newSignatureId(), dataUrl: upload.dataUrl, source: 'upload' };
     }
     if (!next) return;
-    setSignature(next);
+    void saveSignature(next, backupWanted, t);
     onClose();
   };
 
@@ -209,13 +248,17 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
       title={t('design.signature.dialog_title')}
       footer={
         <div className="border-border flex flex-col gap-3 border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-muted-foreground text-xs">{t('design.signature.device_note')}</p>
+          <p id={backupNoteId} className="text-muted-foreground text-xs">
+            {backupWanted && canBackUp
+              ? t('design.signature.backup_note', { targets: backupNames })
+              : t('design.signature.device_note')}
+          </p>
           <div className="flex justify-end gap-2">
             {stored && (
               <Button
                 variant="quiet"
                 onClick={() => {
-                  removeSignature();
+                  void removeSignature(t);
                   onClose();
                 }}
               >
@@ -233,6 +276,24 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
       }
     >
       <div className="space-y-4 px-6 pb-4">
+        {restoreCandidate && (
+          <div
+            role="status"
+            className="border-input bg-muted/40 flex flex-wrap items-center justify-between gap-2 rounded-lg border p-3"
+          >
+            <p className="text-sm">{t('design.signature.restore_found')}</p>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                void saveSignature(restoreCandidate, true, t);
+                onClose();
+              }}
+            >
+              {t('design.signature.restore_use')}
+            </Button>
+          </div>
+        )}
         <SegmentedToggle<Tab>
           // No segment reads as selected until the opening tab is known.
           value={tab ?? ('' as Tab)}
@@ -301,6 +362,25 @@ export function SignatureDialog({ onClose, restoreFocusTo }: SignatureDialogProp
               setCropOpen(true);
             }}
           />
+        )}
+        {canBackUp && (
+          <div className="space-y-1">
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={backupChecked}
+                onChange={(event) => setBackupChecked(event.target.checked)}
+                aria-describedby={backupNoteId}
+                className="accent-primary h-4 w-4"
+              />
+              {t('design.signature.backup_label')}
+            </label>
+            {backupChecked && targets.github && (
+              <p className="text-muted-foreground pl-6 text-xs">
+                {t('design.signature.backup_github_history')}
+              </p>
+            )}
+          </div>
         )}
         {cropOpen && cropSource && (
           <ImageCropper

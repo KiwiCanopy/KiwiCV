@@ -66,7 +66,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: '署名を追加',
+    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_github_history:
+      'Removing it deletes it from your repository; earlier versions in its history keep it.',
+    backup_label: 'Also keep a copy in my backup',
+    backup_note:
+      'Saved on this device and in your backup ({{targets}}). PDFs you create include it.',
     change: '変更',
+    commit_removed: 'Remove signature backup',
+    commit_saved: 'Back up signature',
     crop_description: '画像を切り抜き、回転、反転できます。その後、紙の背景が取り除かれます。',
     crop_title: '署名を切り抜く',
     device_note:
@@ -78,6 +86,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'このスタイルでは、この名前のすべての文字を表示できません。',
     footer_off: 'PDFフッターに表示されますが、フッターはオフになっています。',
     preview_alt: 'あなたの署名',
+    restore_found: 'Your backup has a saved signature.',
+    restore_use: 'Use it',
     row_empty: 'このデバイスには署名がありません',
     row_label: '署名',
     tab_draw: '描く',

@@ -65,7 +65,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Lägg till signatur',
+    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_github_history:
+      'Removing it deletes it from your repository; earlier versions in its history keep it.',
+    backup_label: 'Also keep a copy in my backup',
+    backup_note:
+      'Saved on this device and in your backup ({{targets}}). PDFs you create include it.',
     change: 'Ändra',
+    commit_removed: 'Remove signature backup',
+    commit_saved: 'Back up signature',
     crop_description: 'Beskär, rotera eller vänd bilden. Pappersbakgrunden tas bort efteråt.',
     crop_title: 'Beskär din signatur',
     device_note:
@@ -77,6 +85,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Den här stilen kan inte visa alla bokstäver i namnet.',
     footer_off: 'Visas i PDF-sidfoten, som är avstängd.',
     preview_alt: 'Din signatur',
+    restore_found: 'Your backup has a saved signature.',
+    restore_use: 'Use it',
     row_empty: 'Ingen signatur på den här enheten',
     row_label: 'Signatur',
     tab_draw: 'Rita',

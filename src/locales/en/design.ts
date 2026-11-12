@@ -64,7 +64,15 @@ export const design = {
   },
   signature: {
     add: 'Add signature',
+    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_github_history:
+      'Removing it deletes it from your repository; earlier versions in its history keep it.',
+    backup_label: 'Also keep a copy in my backup',
+    backup_note:
+      'Saved on this device and in your backup ({{targets}}). PDFs you create include it.',
     change: 'Change',
+    commit_removed: 'Remove signature backup',
+    commit_saved: 'Back up signature',
     crop_description: 'Crop, rotate or flip the image. The paper background is removed afterwards.',
     crop_title: 'Crop your signature',
     device_note:
@@ -76,6 +84,8 @@ export const design = {
     face_unavailable: "This style can't show every letter in this name.",
     footer_off: 'Shows in the PDF footer, which is off.',
     preview_alt: 'Your signature',
+    restore_found: 'Your backup has a saved signature.',
+    restore_use: 'Use it',
     row_empty: 'No signature on this device',
     row_label: 'Signature',
     tab_draw: 'Draw',

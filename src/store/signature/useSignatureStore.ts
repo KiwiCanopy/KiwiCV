@@ -33,6 +33,9 @@ interface SignatureStore {
    * signed out. A different account signing in clears it (#108).
    */
   ownerUserId: string | null;
+  /** Opt-in: also keep a copy on the connected backup destinations (#106). Off by default. */
+  backupEnabled: boolean;
+  setBackupEnabled: (enabled: boolean) => void;
   setSignature: (signature: StoredSignature) => void;
   removeSignature: () => void;
   /** Called on every session change, from `AuthProvider`. */
@@ -94,6 +97,8 @@ export const useSignatureStore = create<SignatureStore>()(
     (set, get) => ({
       signature: null,
       ownerUserId: null,
+      backupEnabled: false,
+      setBackupEnabled: (backupEnabled) => set({ backupEnabled }),
       // Signed out, an edit keeps the owner, so it cannot hand an account's
       // signature to the next one; after Remove, a new one starts unowned.
       setSignature: (signature) =>
@@ -110,7 +115,8 @@ export const useSignatureStore = create<SignatureStore>()(
         void useSignatureStore.persist.rehydrate();
         const { signature, ownerUserId } = get();
         if (!signature || ownerUserId === userId) return;
-        if (ownerUserId) set({ signature: null, ownerUserId: null });
+        // A different person: their signature and their backup choice both go.
+        if (ownerUserId) set({ signature: null, ownerUserId: null, backupEnabled: false });
         else set({ ownerUserId: userId });
       },
     }),
@@ -118,15 +124,21 @@ export const useSignatureStore = create<SignatureStore>()(
       name: BRAND_STORAGE_KEYS.signature,
       version: STORE_VERSION,
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ signature: state.signature, ownerUserId: state.ownerUserId }),
+      partialize: (state) => ({
+        signature: state.signature,
+        ownerUserId: state.ownerUserId,
+        backupEnabled: state.backupEnabled,
+      }),
       merge: (persisted, current) => {
-        const stored = persisted as { signature?: unknown; ownerUserId?: unknown } | undefined;
+        const stored = persisted as
+          { signature?: unknown; ownerUserId?: unknown; backupEnabled?: unknown } | undefined;
         const signature = parseStoredSignature(stored?.signature);
         return {
           ...current,
           signature,
           ownerUserId:
             signature && typeof stored?.ownerUserId === 'string' ? stored.ownerUserId : null,
+          backupEnabled: stored?.backupEnabled === true,
         };
       },
     },

@@ -68,7 +68,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Ajouter une signature',
+    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_github_history:
+      'Removing it deletes it from your repository; earlier versions in its history keep it.',
+    backup_label: 'Also keep a copy in my backup',
+    backup_note:
+      'Saved on this device and in your backup ({{targets}}). PDFs you create include it.',
     change: 'Changer',
+    commit_removed: 'Remove signature backup',
+    commit_saved: 'Back up signature',
     crop_description:
       "Recadre, fais pivoter ou mets en miroir l'image. Le fond du papier est retiré ensuite.",
     crop_title: 'Recadrer ta signature',
@@ -81,6 +89,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Ce style ne peut pas afficher toutes les lettres de ce nom.',
     footer_off: 'Apparaît dans le pied de page PDF, qui est désactivé.',
     preview_alt: 'Ta signature',
+    restore_found: 'Your backup has a saved signature.',
+    restore_use: 'Use it',
     row_empty: 'Aucune signature sur cet appareil',
     row_label: 'Signature',
     tab_draw: 'Dessiner',

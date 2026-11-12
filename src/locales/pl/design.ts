@@ -64,7 +64,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Dodaj podpis',
+    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_github_history:
+      'Removing it deletes it from your repository; earlier versions in its history keep it.',
+    backup_label: 'Also keep a copy in my backup',
+    backup_note:
+      'Saved on this device and in your backup ({{targets}}). PDFs you create include it.',
     change: 'Zmień',
+    commit_removed: 'Remove signature backup',
+    commit_saved: 'Back up signature',
     crop_description: 'Przytnij, obróć lub odbij obraz. Tło papieru zostanie potem usunięte.',
     crop_title: 'Przytnij podpis',
     device_note:
@@ -76,6 +84,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Ten styl nie pokaże wszystkich liter tego imienia i nazwiska.',
     footer_off: 'Pojawia się w stopce PDF, która jest wyłączona.',
     preview_alt: 'Twój podpis',
+    restore_found: 'Your backup has a saved signature.',
+    restore_use: 'Use it',
     row_empty: 'Brak podpisu na tym urządzeniu',
     row_label: 'Podpis',
     tab_draw: 'Rysuj',

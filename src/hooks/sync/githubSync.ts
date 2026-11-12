@@ -1,6 +1,7 @@
 import { buildExportArtifacts } from '@/hooks/export/buildExportArtifacts';
 import { type SyncParams, type SyncResult } from '@/hooks/sync/types';
 import { GitHubService } from '@/services/github';
+import { isPrivateBackupRepo } from '@/services/githubRepoAccess';
 import {
   GITHUB_LAST_FULL_PUSH_HASH_KEY,
   GITHUB_LAST_HOSTING_HASH_KEY,
@@ -64,10 +65,7 @@ export const performGitHubSync = async (
     // Enterprise "internal" one, not one Pages publishes, and never one whose
     // visibility is unknown. Any other gets getPublicBackupData.
     const repoInfo = await gh.getRepo(owner, repoName).catch(() => null);
-    const isPrivateRepo =
-      repoInfo?.private === true &&
-      repoInfo.visibility !== 'internal' &&
-      repoInfo.has_pages !== true;
+    const isPrivateRepo = isPrivateBackupRepo(repoInfo);
     const backupJson = isPrivateRepo
       ? stringifyResume(resume)
       : JSON.stringify(getPublicBackupData(resume), null, 2);

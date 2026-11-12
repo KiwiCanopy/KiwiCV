@@ -67,7 +67,15 @@ export const design: Translations['design'] = {
   },
   signature: {
     add: 'Добави подпис',
+    backup_failed: 'Your signature is saved on this device, but the backup could not be updated.',
+    backup_github_history:
+      'Removing it deletes it from your repository; earlier versions in its history keep it.',
+    backup_label: 'Also keep a copy in my backup',
+    backup_note:
+      'Saved on this device and in your backup ({{targets}}). PDFs you create include it.',
     change: 'Промени',
+    commit_removed: 'Remove signature backup',
+    commit_saved: 'Back up signature',
     crop_description:
       'Изрежи, завърти или обърни изображението. След това фонът на хартията се премахва.',
     crop_title: 'Изрежи подписа си',
@@ -80,6 +88,8 @@ export const design: Translations['design'] = {
     face_unavailable: 'Този стил не може да покаже всички букви от това име.',
     footer_off: 'Показва се в PDF футъра, който е изключен.',
     preview_alt: 'Твоят подпис',
+    restore_found: 'Your backup has a saved signature.',
+    restore_use: 'Use it',
     row_empty: 'Няма подпис на това устройство',
     row_label: 'Подпис',
     tab_draw: 'Рисувай',

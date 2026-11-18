@@ -22,6 +22,7 @@ truth.
 [![Try KiwiCV](https://img.shields.io/badge/🥝_Try_KiwiCV-8DB354?style=for-the-badge)](https://kiwicv.kiwicanopy.com)
 [![Changelog](https://img.shields.io/badge/📖_Changelog-627D3A?style=for-the-badge)](https://kiwicv.kiwicanopy.com/extras?tab=changelog)
 [![Support on Ko-fi](https://img.shields.io/badge/Support-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/kiwicanopy)
+[![KiwiCanopy on LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/company/kiwicanopy/)
 
 </div>
 

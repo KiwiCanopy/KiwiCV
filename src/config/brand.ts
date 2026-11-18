@@ -55,6 +55,11 @@ export const BRAND_CONFIG = {
      */
     x: 'https://x.com/kiwicvapp',
     /**
+     * The KiwiCanopy umbrella's Company Page, shared with the sibling products.
+     * A plain outbound link only: no LinkedIn script, badge or embed.
+     */
+    linkedin: 'https://www.linkedin.com/company/kiwicanopy/',
+    /**
      * Sibling-product destinations. KiwiCanopy is the parent brand (apex
      * domain); KiwiDesk is a sibling product on the same subdomain pattern as
      * KiwiCV. Both went live ahead of the 4.1.0 release, which is what unblocked

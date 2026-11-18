@@ -1,11 +1,18 @@
 import { useState } from 'react';
+import { FaLinkedin } from 'react-icons/fa6';
 import { SiGithub, SiKofi, SiX } from 'react-icons/si';
 import { Link } from 'react-router-dom';
 
 import { JsonLd } from '@/components/ui/JsonLd';
 import { BRAND_CONFIG } from '@/config/brand';
 import { RESPONSIBLE_NAME } from '@/constants/contact';
-import { KIWICANOPY_URL, KIWICV_KOFI_URL, KIWICV_SOURCE_URL, KIWICV_X_URL } from '@/constants/urls';
+import {
+  KIWICANOPY_LINKEDIN_URL,
+  KIWICANOPY_URL,
+  KIWICV_KOFI_URL,
+  KIWICV_SOURCE_URL,
+  KIWICV_X_URL,
+} from '@/constants/urls';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslation } from '@/hooks/useTranslation';
 import { LandingBadge } from '@/pages/LandingPage/components/LandingBadge';
@@ -180,6 +187,16 @@ export function FAQ({ hasCv, onCreate, onImport }: FAQProps) {
           >
             <SiX className="h-3.5 w-3.5" aria-hidden="true" />
             X.com
+          </a>
+          {/* simple-icons dropped the LinkedIn mark, so it comes from fa6, not `si`. */}
+          <a
+            href={KIWICANOPY_LINKEDIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5"
+          >
+            <FaLinkedin className="h-4 w-4" aria-hidden="true" />
+            LinkedIn
           </a>
           <a
             href={KIWICV_SOURCE_URL}
